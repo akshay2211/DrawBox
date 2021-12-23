@@ -1,4 +1,4 @@
-package io.ak1.pencil
+package io.ak1.pencilsample
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -8,7 +8,8 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import io.ak1.pencil.ui.theme.PencilTheme
+import io.ak1.pencil.Pencil
+import io.ak1.pencilsample.ui.theme.PencilTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -17,7 +18,7 @@ class MainActivity : ComponentActivity() {
             PencilTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
-                    Greeting("Android")
+                    Pencil()
                 }
             }
         }

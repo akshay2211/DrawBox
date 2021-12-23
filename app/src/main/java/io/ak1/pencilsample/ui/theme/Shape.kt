@@ -1,4 +1,4 @@
-package io.ak1.pencil.ui.theme
+package io.ak1.pencilsample.ui.theme
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Shapes
