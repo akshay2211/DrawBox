@@ -1,93 +1,104 @@
 package io.ak1.pencil
 
-import android.util.Log
+import android.graphics.Bitmap
+import android.view.MotionEvent
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.gestures.detectDragGestures
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Canvas
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.asAndroidPath
-import androidx.compose.ui.graphics.asComposePath
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.drawscope.CanvasDrawScope
 import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.input.pointer.pointerInput
-import io.ak1.pencil.models.PathWrapper
-import java.util.*
+import androidx.compose.ui.input.pointer.pointerInteropFilter
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.LayoutDirection
 
 /**
  * Created by akshay on 10/12/21
  * https://ak1.io
  */
+
+
+internal var strokeAlpha = 1f
+internal var strokeWidth = 5f
+internal var strokeColor = Color.Red
+val undoStack = ArrayList<PathWrapper>()
+internal var bitmap: Bitmap? = null
+
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun Pencil() {
-    val path = remember { mutableStateOf(Path()) }
+fun Pencil(modifier: Modifier = Modifier.fillMaxSize()) {
+    var size = remember { mutableStateOf(IntSize.Zero) }
+    var path = Path()
     val action: MutableState<Any?> = remember { mutableStateOf(null) }
-    val stack = remember {
-        mutableStateOf(Stack<PathWrapper>())
-    }
-    /*   LaunchedEffect("hi") {
-           paintBitmap = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888)
-           mPaintCanvas = Canvas(paintBitmap!!)
-       }*/
+    /*LaunchedEffect(size) {
+        bitmap =
+            Bitmap.createBitmap(size.value.width, size.value.height, Bitmap.Config.ARGB_8888)
+                val imageBitmapCanvas = Canvas(bitmap!!.asImageBitmap())
+                val scope = CanvasDrawScope().draw(
+                    Density(1.0f), LayoutDirection.Ltr, imageBitmapCanvas,
+                    Size(size.value.width.toFloat(), size.value.height.toFloat()),
+                ) {
+                    action.value?.let {
+                        undoStack.forEach {
+                            this.drawSomePath(
+                                path = it.path,
+                                color = it.strokeColor,
+                                width = it.strokeWidth
+                            )
+                        }
+                        this.drawSomePath(path = path)
+                    }
+                }
 
-    Canvas(modifier = Modifier
-        .fillMaxSize()
-        .pointerInput(Unit) {
-            detectDragGestures({
-                Log.e("detectDragGestures", "started")
-                path.value.reset()
-                path.value.moveTo(it.x, it.y)
-
-            }, {
-                stack.value.push(PathWrapper(android.graphics.Path(path.value.asAndroidPath()), 5f, Color.Red))
-                Log.e("detectDragGestures", "ended")
-            }, {
-                Log.e("detectDragGestures", "canceled")
-            }, { change, dragAmount ->
-                path.value.lineTo(change.position.x, change.position.y)
-                action.value = change.position
-            })
-            detectTapGestures(
-                onPress = { /* Called when the gesture starts */ },
-                onDoubleTap = { /* Called on Double Tap */ },
-                onLongPress = { /* Called on Long Press */ },
-                onTap = { /* Called on Tap */ }
-            )
+    }*/
+    Canvas(modifier = modifier
+        .pointerInteropFilter {
+            when (it.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    path.moveTo(it.x, it.y)
+                    path.addOval(Rect(it.x - 0.5f, it.y - 0.5f, it.x + 0.5f, it.y + 0.5f))
+                }
+                MotionEvent.ACTION_MOVE -> path.lineTo(it.x, it.y)
+                MotionEvent.ACTION_CANCEL, MotionEvent.ACTION_UP -> {
+                    undoStack.add(
+                        PathWrapper(
+                            path, strokeWidth,
+                            if (strokeAlpha == 1f) strokeColor else strokeColor.copy(strokeAlpha)
+                        )
+                    )
+                    path = Path()
+                }
+                else -> false
+            }
+            action.value = "${it.x},${it.y}"
+            true
         }
-    ) {
-        stack.value.forEach {
-            //Log.e("stack","${stack.value.size}  ${it.path}")
-            this.drawSomePath(path = it.path.asComposePath())
-        }
+        .onSizeChanged {
+            size.value = it
+        }){
         action.value?.let {
-            this.drawSomePath(path = path.value)
+            undoStack.forEach {
+                this.drawSomePath(
+                    path = it.path,
+                    color = it.strokeColor,
+                    width = it.strokeWidth
+                )
+            }
+            this.drawSomePath(path = path)
         }
-
-
-        // mPaintCanvas!!.drawPath(path.value)
-        //mPaintCanvas?.drawPath(path, brushStrokePaint)
-        // this.drawImage(paintBitmap!!)
-        //this.(paintBitmap!!, 0f, 0f, null)
     }
-
 }
 
 
-fun DrawScope.drawSomePath(path: Path) {
-    Log.e("drawSomePath", "called")
-    drawPath(path, Color.Red, style = Stroke(5f))
-    /*val canvasWidth = size.width
-    val canvasHeight = size.height
-    drawCircle(
-        color = Color.Blue,
-        center = Offset(x = canvasWidth / 2, y = canvasHeight / 2),
-        radius = size.minDimension / 4
-    )*/
-}
+
+
+
