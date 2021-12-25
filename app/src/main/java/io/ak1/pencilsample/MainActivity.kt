@@ -27,7 +27,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.core.view.drawToBitmap
 import io.ak1.pencil.*
 import io.ak1.pencilsample.ui.theme.PencilTheme
 
@@ -47,9 +46,9 @@ class MainActivity : ComponentActivity() {
                         Pencil(
                             modifier = Modifier
                                 .fillMaxSize()
-                                .weight(1f, fill = true)
+                                .weight(1f, fill = false)
                         )
-                        /*bitmap.value?.let {
+                        bitmap.value?.let {
                             Image(
                                 painter = BitmapPainter(it.asImageBitmap()),
                                 contentDescription = "hi",
@@ -57,9 +56,12 @@ class MainActivity : ComponentActivity() {
                             )
 
                         }
-                        Button(onClick = { bitmap.value = getBitmap() }) {
+                        Button(onClick = {
+                            Log.e("trying to ", "get the bitmap")
+                            bitmap.value = getBitmap()
+                        }) {
 
-                        }*/
+                        }
                         Text(text = "Alpha")
                         CustomSeekbar(10) {
                             setStrokeAlpha(it.toFloat() / 10)
