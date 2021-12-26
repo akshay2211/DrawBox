@@ -9,7 +9,9 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -29,8 +31,22 @@ import androidx.compose.ui.viewinterop.AndroidView
 import io.ak1.drawbox.*
 import io.ak1.drawboxsample.ui.theme.DrawBoxTheme
 
+
+val arr = arrayOf(
+    Color.Black,
+    Color.DarkGray,
+    Color.Gray,
+    Color.LightGray,
+    Color.White,
+    Color.Red,
+    Color.Green,
+    Color.Blue,
+    Color.Yellow,
+    Color.Cyan,
+    Color.Magenta
+)
+
 class MainActivity : ComponentActivity() {
-    val arr = arrayOf(Color.Red, Color.Green, Color.Blue, Color.Yellow, Color.Magenta, Color.Cyan)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,28 +81,28 @@ class MainActivity : ComponentActivity() {
                             setStrokeWidth(it.toFloat())
                         }
                         Text(text = "Colors")
-                        Row(
+                        LazyRow(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(55.dp)
+                                .height(50.dp)
                         ) {
-                            arr.forEach {
+                            items(arr) { item ->
                                 Image(
-                                    painter = ColorPainter(it),
+                                    painter = ColorPainter(item),
                                     contentDescription = "hi",
                                     Modifier
                                         .padding(2.dp)
                                         .fillMaxHeight()
-                                        .width(55.dp)
+                                        .width(50.dp)
                                         .clip(
-                                            RoundedCornerShape(12.dp)
+                                            CircleShape
                                         )
                                         .clickable {
-                                            setStrokeColor(it)
+                                            setStrokeColor(item)
                                         }
                                 )
-
                             }
+
                         }
 
                     }

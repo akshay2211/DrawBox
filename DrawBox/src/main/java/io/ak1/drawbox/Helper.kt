@@ -1,10 +1,13 @@
 package io.ak1.drawbox
 
+import android.graphics.Bitmap
+import android.util.Log
 import android.view.MotionEvent
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.unit.IntSize
 
 /**
  * Created by akshay on 24/12/21
@@ -47,6 +50,12 @@ fun Canvas.drawSomePath(
 
 fun MotionEvent.getRect() = Rect(this.x - 0.5f, this.y - 0.5f, this.x + 0.5f, this.y + 0.5f)
 
+fun generateCanvas(size: IntSize): Canvas {
+    Log.i("Bitmap", "created $size")
+    bitmap = Bitmap.createBitmap(size.width, size.height, Bitmap.Config.ARGB_8888)
+    return Canvas(bitmap!!.asImageBitmap())
+
+}
 
 //Model
 data class PathWrapper(val path: Path, val strokeWidth: Float = 5f, val strokeColor: Color)
