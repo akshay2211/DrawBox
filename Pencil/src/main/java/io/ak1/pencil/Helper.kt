@@ -19,17 +19,12 @@ fun setStrokeWidth(width: Float) {
     strokeWidth = width
 }
 
-fun setStrokeAlpha(alpha: Float) {
-    strokeAlpha = alpha
-}
 
 fun getBitmap() = bitmap
 
 fun DrawScope.drawSomePath(
     path: Path,
-    color: Color = if (strokeAlpha == 1f) strokeColor else strokeColor.copy(
-        strokeAlpha
-    ),
+    color: Color = strokeColor,
     width: Float = strokeWidth
 ) = drawPath(
     path,
@@ -39,9 +34,7 @@ fun DrawScope.drawSomePath(
 
 fun Canvas.drawSomePath(
     path: Path,
-    color: Color = if (strokeAlpha == 1f) strokeColor else strokeColor.copy(
-        strokeAlpha
-    ),
+    color: Color = strokeColor,
     width: Float = strokeWidth
 ) = this.drawPath(path, Paint().apply {
     this.style = PaintingStyle.Stroke

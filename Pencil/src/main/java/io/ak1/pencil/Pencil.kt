@@ -20,7 +20,6 @@ import androidx.compose.ui.unit.IntSize
  */
 
 
-internal var strokeAlpha = 1f
 internal var strokeWidth = 5f
 internal var strokeColor = Color.Red
 
@@ -54,12 +53,7 @@ fun Pencil(modifier: Modifier = Modifier.fillMaxSize()) {
                 }
                 MotionEvent.ACTION_MOVE -> path.lineTo(it.x, it.y)
                 MotionEvent.ACTION_CANCEL, MotionEvent.ACTION_UP -> {
-                    undoStack.add(
-                        PathWrapper(
-                            path, strokeWidth,
-                            if (strokeAlpha == 1f) strokeColor else strokeColor.copy(strokeAlpha)
-                        )
-                    )
+                    undoStack.add(PathWrapper(path, strokeWidth, strokeColor))
                     path = Path()
                 }
                 else -> false

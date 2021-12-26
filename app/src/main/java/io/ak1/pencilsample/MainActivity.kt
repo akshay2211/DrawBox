@@ -38,7 +38,6 @@ class MainActivity : ComponentActivity() {
         setContent {
             PencilTheme {
                 val bitmap = remember { mutableStateOf<Bitmap?>(null) }
-                val context = LocalContext.current
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
                     Column {
@@ -61,10 +60,6 @@ class MainActivity : ComponentActivity() {
                             bitmap.value = getBitmap()
                         }) {
 
-                        }
-                        Text(text = "Alpha")
-                        CustomSeekbar(10) {
-                            setStrokeAlpha(it.toFloat() / 10)
                         }
                         Text(text = "Stroke Width")
                         CustomSeekbar {
@@ -102,18 +97,6 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    PencilTheme {
-        Greeting("Android")
-    }
-}
 
 @Composable
 fun CustomSeekbar(max: Int = 200, onProgressChanged: (Int) -> Unit) {
