@@ -93,6 +93,12 @@ class MainActivity : ComponentActivity() {
                             }) {
                                 Text(text = "reDo")
                             }
+                            Button(onClick = {
+                                Log.e("trying to ", "reset")
+                                reset()
+                            }) {
+                                Text(text = "reset")
+                            }
                         }
 
                         Text(text = "Stroke Width")
