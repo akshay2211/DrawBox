@@ -8,6 +8,7 @@ import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.IntSize
+import kotlinx.coroutines.flow.MutableStateFlow
 
 /**
  * Created by akshay on 24/12/21
@@ -20,6 +21,26 @@ fun setStrokeColor(color: Color) {
 
 fun setStrokeWidth(width: Float) {
     strokeWidth = width
+}
+
+fun unDo() {
+    if (undoStack.isNotEmpty()) {
+        val last = undoStack.last()
+        redoStack.add(last)
+        undoStack.remove(last)
+        bitmap?.eraseColor(android.graphics.Color.TRANSPARENT)
+        (state as MutableStateFlow).tryEmit("${undoStack.size}")
+    }
+}
+
+fun reDo() {
+    if (redoStack.isNotEmpty()) {
+        val last = redoStack.last()
+        undoStack.add(last)
+        redoStack.remove(last)
+        bitmap?.eraseColor(android.graphics.Color.TRANSPARENT)
+        (state as MutableStateFlow).tryEmit("${undoStack.size}")
+    }
 }
 
 
