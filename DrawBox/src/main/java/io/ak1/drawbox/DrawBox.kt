@@ -8,11 +8,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.*
+import androidx.compose.ui.graphics.Canvas
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
+import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.unit.IntSize
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
 
 /**
  * Created by akshay on 10/12/21
@@ -27,21 +33,28 @@ internal var strokeColor = Color.Red
 //  currently Stack is internal in 'androidx.compose.runtime'
 
 internal val undoStack = ArrayList<PathWrapper>()
+internal val redoStack = ArrayList<PathWrapper>()
 internal var bitmap: Bitmap? = null
+
+val state: StateFlow<String> = MutableStateFlow("")
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun DrawBox(modifier: Modifier = Modifier.fillMaxSize()) {
+
     var size = remember { mutableStateOf(IntSize.Zero) }
     var path = Path()
     val action: MutableState<Any?> = remember { mutableStateOf(null) }
     var imageBitmapCanvas: Canvas? = null
 
     LaunchedEffect(size) {
-        Log.i("Bitmap", "created ${size.value}")
-        bitmap = Bitmap.createBitmap(size.value.width, size.value.height, Bitmap.Config.ARGB_8888)
-        imageBitmapCanvas = Canvas(bitmap!!.asImageBitmap())
+        imageBitmapCanvas = generateCanvas(size.value)
         action.value = "-"
+
+        state.collect {
+            Log.e("Collecting state", "hi $it")
+            action.value = it
+        }
     }
 
     Canvas(modifier = modifier
