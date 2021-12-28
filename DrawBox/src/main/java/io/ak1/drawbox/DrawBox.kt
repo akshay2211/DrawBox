@@ -38,9 +38,7 @@ fun DrawBox(modifier: Modifier = Modifier.fillMaxSize()) {
     var imageBitmapCanvas: Canvas? = null
 
     LaunchedEffect(size) {
-        Log.i("Bitmap", "created ${size.value}")
-        bitmap = Bitmap.createBitmap(size.value.width, size.value.height, Bitmap.Config.ARGB_8888)
-        imageBitmapCanvas = Canvas(bitmap!!.asImageBitmap())
+        imageBitmapCanvas = generateCanvas(size.value)
         action.value = "-"
     }
 
