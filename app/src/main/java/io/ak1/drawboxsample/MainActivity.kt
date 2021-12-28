@@ -30,6 +30,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import io.ak1.drawbox.*
 import io.ak1.drawboxsample.ui.theme.DrawBoxTheme
+import io.ak1.drawboxsample.ui.theme.isSystemInDarkThemeCustom
+import io.ak1.drawboxsample.ui.theme.statusBarConfig
 
 
 val arr = arrayOf(
@@ -51,7 +53,9 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            DrawBoxTheme {
+            val isDark = isSystemInDarkThemeCustom()
+            DrawBoxTheme(isDark) {
+                window.statusBarConfig(isDark)
                 val bitmap = remember { mutableStateOf<Bitmap?>(null) }
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
@@ -99,7 +103,7 @@ class MainActivity : ComponentActivity() {
                         LazyRow(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(50.dp)
+                                .height(47.dp)
                         ) {
                             items(arr) { item ->
                                 Image(
@@ -107,8 +111,7 @@ class MainActivity : ComponentActivity() {
                                     contentDescription = "hi",
                                     Modifier
                                         .padding(2.dp)
-                                        .fillMaxHeight()
-                                        .width(50.dp)
+                                        .size(45.dp)
                                         .clip(
                                             CircleShape
                                         )
