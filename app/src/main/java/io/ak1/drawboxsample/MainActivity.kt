@@ -70,12 +70,27 @@ class MainActivity : ComponentActivity() {
                             )
 
                         }
-                        Button(onClick = {
-                            Log.e("trying to ", "get the bitmap")
-                            bitmap.value = getBitmap()
-                        }) {
-
+                        Row {
+                            Button(onClick = {
+                                Log.e("trying to ", "get the bitmap")
+                                bitmap.value = getBitmap()
+                            }) {
+                                Text(text = "download")
+                            }
+                            Button(onClick = {
+                                Log.e("trying to ", "undo")
+                                unDo()
+                            }) {
+                                Text(text = "unDo")
+                            }
+                            Button(onClick = {
+                                Log.e("trying to ", "redo")
+                                reDo()
+                            }) {
+                                Text(text = "reDo")
+                            }
                         }
+
                         Text(text = "Stroke Width")
                         CustomSeekbar {
                             setStrokeWidth(it.toFloat())
