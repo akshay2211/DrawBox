@@ -1,7 +1,6 @@
 package io.ak1.drawbox
 
 import android.graphics.Bitmap
-import android.util.Log
 import android.view.MotionEvent
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.*
@@ -47,7 +46,7 @@ fun reset() {
     redoStack.clear()
     undoStack.clear()
     bitmap?.eraseColor(android.graphics.Color.TRANSPARENT)
-    (state as MutableStateFlow).tryEmit("${undoStack.size}")
+    (state as MutableStateFlow).tryEmit("reset")
 }
 
 
@@ -76,12 +75,14 @@ internal fun Canvas.drawSomePath(
     this.strokeWidth = width
 })
 
-internal fun MotionEvent.getRect() = Rect(this.x - 0.5f, this.y - 0.5f, this.x + 0.5f, this.y + 0.5f)
+internal fun MotionEvent.getRect() =
+    Rect(this.x - 0.5f, this.y - 0.5f, this.x + 0.5f, this.y + 0.5f)
 
-internal fun generateCanvas(size: IntSize): Canvas {
-    bitmap = Bitmap.createBitmap(size.width, size.height, Bitmap.Config.ARGB_8888)
-    return Canvas(bitmap!!.asImageBitmap())
-}
+internal fun generateCanvas(size: IntSize): Canvas? = if (size.width > 0 && size.height > 0) {
+        bitmap = Bitmap.createBitmap(size.width, size.height, Bitmap.Config.ARGB_8888)
+        Canvas(bitmap!!.asImageBitmap())
+    } else null
+
 
 //Model
 data class PathWrapper(val path: Path, val strokeWidth: Float = 5f, val strokeColor: Color)
