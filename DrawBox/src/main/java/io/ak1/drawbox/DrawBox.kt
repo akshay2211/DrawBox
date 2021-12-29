@@ -19,6 +19,8 @@ import androidx.compose.ui.unit.IntSize
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
+import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * Created by akshay on 10/12/21
@@ -40,20 +42,22 @@ val state: StateFlow<String> = MutableStateFlow("")
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun DrawBox(modifier: Modifier = Modifier.fillMaxSize()) {
-
+fun DrawBox(
+    modifier: Modifier = Modifier.fillMaxSize(),
+    trackHistory: (undoCount: Int, redoCount: Int) -> Unit = { _, _ -> }
+) {
+    val refreshState = UUID.randomUUID().toString()
     var size = remember { mutableStateOf(IntSize.Zero) }
     var path = Path()
     val action: MutableState<Any?> = remember { mutableStateOf(null) }
     var imageBitmapCanvas: Canvas? = null
 
-    LaunchedEffect(size) {
+    LaunchedEffect(refreshState) {
         imageBitmapCanvas = generateCanvas(size.value)
-        action.value = "-"
-
+        action.value = UUID.randomUUID().toString()
         state.collect {
-            Log.e("Collecting state", "hi $it")
             action.value = it
+            trackHistory(undoStack.size, redoStack.size)
         }
     }
 
@@ -66,7 +70,9 @@ fun DrawBox(modifier: Modifier = Modifier.fillMaxSize()) {
                 }
                 MotionEvent.ACTION_MOVE -> path.lineTo(it.x, it.y)
                 MotionEvent.ACTION_CANCEL, MotionEvent.ACTION_UP -> {
+                    redoStack.clear()
                     undoStack.add(PathWrapper(path, strokeWidth, strokeColor))
+                    trackHistory(undoStack.size, redoStack.size)
                     path = Path()
                 }
                 else -> false

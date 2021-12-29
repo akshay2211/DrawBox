@@ -1,6 +1,12 @@
 package io.ak1.drawboxsample.data.local
 
 import android.content.Context
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
+import androidx.core.graphics.alpha
+import androidx.core.graphics.blue
+import androidx.core.graphics.green
+import androidx.core.graphics.red
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.intPreferencesKey
@@ -17,7 +23,19 @@ val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "se
 // Preference Keys
 val themePreferenceKey = intPreferencesKey("list_theme")
 
-
+val arrayOfColors = arrayOf(
+    Color.Black,
+    Color.DarkGray,
+    Color.Gray,
+    Color.LightGray,
+    Color.White,
+    Color.Red,
+    Color.Green,
+    Color.Blue,
+    Color.Yellow,
+    Color.Cyan,
+    Color.Magenta
+)
 
 
 // Retrieving functions
@@ -30,3 +48,13 @@ fun Context.isDarkThemeOn() = dataStore.data
         // No type safety.
         preferences[themePreferenceKey] ?: 0
     }
+
+fun Color.convertToOldColor(): Int {
+    val color = this.toArgb()
+    return android.graphics.Color.argb(
+        color.alpha,
+        color.red,
+        color.green,
+        color.blue
+    )
+}
