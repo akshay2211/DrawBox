@@ -29,8 +29,8 @@ fun unDo() {
         redoStack.add(last)
         undoStack.remove(last)
         bitmap?.eraseColor(android.graphics.Color.TRANSPARENT)
-        (state as MutableStateFlow).tryEmit("${undoStack.size}")
     }
+    (state as MutableStateFlow).tryEmit("${undoStack.size}")
 }
 
 fun reDo() {
@@ -39,14 +39,21 @@ fun reDo() {
         undoStack.add(last)
         redoStack.remove(last)
         bitmap?.eraseColor(android.graphics.Color.TRANSPARENT)
-        (state as MutableStateFlow).tryEmit("${undoStack.size}")
     }
+    (state as MutableStateFlow).tryEmit("${undoStack.size}")
+}
+
+fun reset() {
+    redoStack.clear()
+    undoStack.clear()
+    bitmap?.eraseColor(android.graphics.Color.TRANSPARENT)
+    (state as MutableStateFlow).tryEmit("${undoStack.size}")
 }
 
 
-fun getBitmap() = bitmap
+fun getDrawBoxBitmap() = bitmap
 
-fun DrawScope.drawSomePath(
+internal fun DrawScope.drawSomePath(
     path: Path,
     color: Color = strokeColor,
     width: Float = strokeWidth
@@ -56,7 +63,7 @@ fun DrawScope.drawSomePath(
     style = Stroke(width, miter = 0f, join = StrokeJoin.Round, cap = StrokeCap.Round),
 )
 
-fun Canvas.drawSomePath(
+internal fun Canvas.drawSomePath(
     path: Path,
     color: Color = strokeColor,
     width: Float = strokeWidth
@@ -69,13 +76,11 @@ fun Canvas.drawSomePath(
     this.strokeWidth = width
 })
 
-fun MotionEvent.getRect() = Rect(this.x - 0.5f, this.y - 0.5f, this.x + 0.5f, this.y + 0.5f)
+internal fun MotionEvent.getRect() = Rect(this.x - 0.5f, this.y - 0.5f, this.x + 0.5f, this.y + 0.5f)
 
-fun generateCanvas(size: IntSize): Canvas {
-    Log.i("Bitmap", "created $size")
+internal fun generateCanvas(size: IntSize): Canvas {
     bitmap = Bitmap.createBitmap(size.width, size.height, Bitmap.Config.ARGB_8888)
     return Canvas(bitmap!!.asImageBitmap())
-
 }
 
 //Model

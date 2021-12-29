@@ -57,6 +57,8 @@ class MainActivity : ComponentActivity() {
             DrawBoxTheme(isDark) {
                 window.statusBarConfig(isDark)
                 val bitmap = remember { mutableStateOf<Bitmap?>(null) }
+                val undoVisibility = remember { mutableStateOf(false) }
+                val redoVisibility = remember { mutableStateOf(false) }
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
                     Column {
@@ -65,7 +67,12 @@ class MainActivity : ComponentActivity() {
                             modifier = Modifier
                                 .fillMaxSize()
                                 .weight(1f, fill = false)
-                        )
+                        ) { undoCount, redoCount ->
+
+                            Log.e("DrawBox", "$undoCount   $redoCount")
+                            undoVisibility.value = undoCount != 0
+                            redoVisibility.value = redoCount != 0
+                        }
                         bitmap.value?.let {
                             Image(
                                 painter = BitmapPainter(it.asImageBitmap()),
@@ -77,26 +84,20 @@ class MainActivity : ComponentActivity() {
                         Row {
                             Button(onClick = {
                                 Log.e("trying to ", "get the bitmap")
-                                bitmap.value = getBitmap()
+                                bitmap.value = getDrawBoxBitmap()
                             }) {
                                 Text(text = "download")
                             }
-                            Button(onClick = {
-                                Log.e("trying to ", "undo")
-                                unDo()
-                            }) {
+                            Button(onClick = { unDo() }, enabled = undoVisibility.value) {
                                 Text(text = "unDo")
                             }
-                            Button(onClick = {
-                                Log.e("trying to ", "redo")
-                                reDo()
-                            }) {
+                            Button(onClick = { reDo() }, enabled = redoVisibility.value) {
                                 Text(text = "reDo")
                             }
-                            Button(onClick = {
-                                Log.e("trying to ", "reset")
-                                reset()
-                            }) {
+                            Button(
+                                onClick = { reset() },
+                                enabled = redoVisibility.value || undoVisibility.value
+                            ) {
                                 Text(text = "reset")
                             }
                         }
