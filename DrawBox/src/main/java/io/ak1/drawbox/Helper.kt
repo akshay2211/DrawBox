@@ -8,6 +8,7 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.IntSize
 import kotlinx.coroutines.flow.MutableStateFlow
+import java.util.*
 
 /**
  * Created by akshay on 24/12/21
@@ -46,7 +47,7 @@ fun reset() {
     redoStack.clear()
     undoStack.clear()
     bitmap?.eraseColor(android.graphics.Color.TRANSPARENT)
-    (state as MutableStateFlow).tryEmit("reset")
+    (state as MutableStateFlow).tryEmit(UUID.randomUUID().toString())
 }
 
 
@@ -79,9 +80,9 @@ internal fun MotionEvent.getRect() =
     Rect(this.x - 0.5f, this.y - 0.5f, this.x + 0.5f, this.y + 0.5f)
 
 internal fun generateCanvas(size: IntSize): Canvas? = if (size.width > 0 && size.height > 0) {
-        bitmap = Bitmap.createBitmap(size.width, size.height, Bitmap.Config.ARGB_8888)
-        Canvas(bitmap!!.asImageBitmap())
-    } else null
+    bitmap = Bitmap.createBitmap(size.width, size.height, Bitmap.Config.ARGB_8888)
+    Canvas(bitmap!!.asImageBitmap())
+} else null
 
 
 //Model

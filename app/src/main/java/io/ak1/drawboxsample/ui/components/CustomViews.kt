@@ -8,23 +8,27 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.Button
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
+import drawboxsample.R
 import io.ak1.drawbox.reDo
 import io.ak1.drawbox.reset
 import io.ak1.drawbox.unDo
 import io.ak1.drawboxsample.data.local.arrayOfColors
+
 
 /**
  * Created by akshay on 29/12/21
@@ -35,7 +39,7 @@ fun ColorRow(isVisible: Boolean, clicked: (Color) -> Unit) {
     if (isVisible) {
         Column(
             modifier = Modifier
-                .height(120.dp)
+                .height(100.dp)
                 .fillMaxWidth(),
             verticalArrangement = Arrangement.SpaceEvenly
         ) {
@@ -50,7 +54,7 @@ fun ColorRow(isVisible: Boolean, clicked: (Color) -> Unit) {
                         contentDescription = "hi",
                         Modifier
                             .padding(10.dp)
-                            .size(35.dp)
+                            .size(25.dp)
                             .clip(
                                 CircleShape
                             )
@@ -74,40 +78,63 @@ fun ControlsBar(
     colorValue: MutableState<Color>,
     sizeValue: MutableState<Int>
 ) {
-    Row(modifier = Modifier.padding(12.dp)) {
-        /*Button(onClick = onDownloadClick) {
-            Text(text = "download")
-        }*/
-        Button(onClick = { unDo() }, enabled = undoVisibility.value) {
-            Text(text = "unDo")
-        }
-        Button(onClick = { reDo() }, enabled = redoVisibility.value) {
-            Text(text = "reDo")
-        }
-        Button(
-            onClick = { reset() },
-            enabled = redoVisibility.value || undoVisibility.value
-        ) {
-            Text(text = "reset")
-        }
+    Row(modifier = Modifier.padding(12.dp), horizontalArrangement = Arrangement.SpaceAround) {
 
         Image(
-            painter = ColorPainter(colorValue.value),
-            contentDescription = "hi",
-            Modifier
-                .padding(12.dp,2.dp,12.dp,2.dp)
-                .size(32.dp)
-                .clip(
-                    CircleShape
-                )
-                .clickable {
-                    onColorClick()
-                }
+            painter = painterResource(id = R.drawable.ic_download),
+            contentDescription = "download",
+            colorFilter = ColorFilter.tint(if (undoVisibility.value) MaterialTheme.colors.primary else MaterialTheme.colors.primaryVariant),
+            modifier = Modifier
+                .clickable { if (undoVisibility.value) onDownloadClick() }
+                .padding(12.dp)
+                .weight(1f, true),
+        )
+        Image(
+            painter = painterResource(id = R.drawable.ic_undo),
+            contentDescription = "undo",
+            colorFilter = ColorFilter.tint(if (undoVisibility.value) MaterialTheme.colors.primary else MaterialTheme.colors.primaryVariant),
+            modifier = Modifier
+                .clickable { if (undoVisibility.value) unDo() }
+                .padding(12.dp)
+                .weight(1f, true),
+        )
+        Image(
+            painter = painterResource(id = R.drawable.ic_redo),
+            contentDescription = "redo",
+            colorFilter = ColorFilter.tint(if (redoVisibility.value) MaterialTheme.colors.primary else MaterialTheme.colors.primaryVariant),
+            modifier = Modifier
+                .clickable { if (redoVisibility.value) reDo() }
+                .padding(12.dp)
+                .weight(1f, true),
+        )
+        Image(
+            painter = painterResource(id = R.drawable.ic_refresh),
+            contentDescription = "reset",
+            colorFilter = ColorFilter.tint(if (redoVisibility.value || undoVisibility.value) MaterialTheme.colors.primary else MaterialTheme.colors.primaryVariant),
+            modifier = Modifier
+                .clickable { reset() }
+                .padding(12.dp)
+                .weight(1f, true),
+        )
+        Image(
+            painter = painterResource(id = R.drawable.ic_color),
+            contentDescription = "stroke color",
+            colorFilter = ColorFilter.tint(colorValue.value),
+            modifier = Modifier
+                .clickable { onColorClick() }
+                .padding(12.dp)
+                .weight(1f, true),
+        )
+        Image(
+            painter = painterResource(id = R.drawable.ic_size),
+            contentDescription = "stroke size",
+            colorFilter = ColorFilter.tint(MaterialTheme.colors.primary),
+            modifier = Modifier
+                .clickable { onSizeClick() }
+                .padding(12.dp)
+                .weight(1f, true),
         )
 
-        Button(onClick = onSizeClick) {
-            Text(text = "${sizeValue.value} size")
-        }
     }
 }
 
@@ -124,7 +151,7 @@ fun CustomSeekbar(
         val context = LocalContext.current
         Column(
             modifier = Modifier
-                .height(120.dp)
+                .height(100.dp)
                 .fillMaxWidth(),
             verticalArrangement = Arrangement.SpaceEvenly
         ) {
@@ -139,10 +166,11 @@ fun CustomSeekbar(
                         progressColor,
                         BlendModeCompat.SRC_ATOP
                     )
-                it.thumb.colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
-                    thumbColor,
-                    BlendModeCompat.SRC_ATOP
-                )
+                it.thumb.colorFilter =
+                    BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
+                        thumbColor,
+                        BlendModeCompat.SRC_ATOP
+                    )
                 it.max = max
                 it.progress = progress
                 it.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
