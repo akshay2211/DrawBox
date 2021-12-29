@@ -1,5 +1,6 @@
 package io.ak1.drawboxsample.data.local
 
+import android.Manifest
 import android.content.Context
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
@@ -36,7 +37,8 @@ val arrayOfColors = arrayOf(
     Color.Cyan,
     Color.Magenta
 )
-
+internal val permissions = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+internal const val PERMISSION_CODE = 100
 
 // Retrieving functions
 /**

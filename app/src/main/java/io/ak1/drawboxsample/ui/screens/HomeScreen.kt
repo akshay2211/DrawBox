@@ -1,7 +1,6 @@
 package io.ak1.drawboxsample.ui.screens
 
 import android.graphics.Bitmap
-import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
@@ -11,6 +10,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import io.ak1.drawbox.DrawBox
+import io.ak1.drawbox.getDrawBoxBitmap
 import io.ak1.drawbox.setStrokeColor
 import io.ak1.drawbox.setStrokeWidth
 import io.ak1.drawboxsample.data.local.convertToOldColor
@@ -24,7 +24,7 @@ import io.ak1.drawboxsample.ui.components.CustomSeekbar
  */
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(save: (Bitmap) -> Unit) {
     val bitmap = remember { mutableStateOf<Bitmap?>(null) }
     val undoVisibility = remember { mutableStateOf(false) }
     val redoVisibility = remember { mutableStateOf(false) }
@@ -59,7 +59,12 @@ fun HomeScreen() {
 
         }
         ControlsBar(
-            { Log.e("bitmap", "Download") },
+            {
+                getDrawBoxBitmap()?.let {
+                    save(it)
+                }
+
+            },
             {
                 colorBarVisibility.value = true
                 sizeBarVisibility.value = false

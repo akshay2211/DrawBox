@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
-import drawboxsample.R
+import io.ak1.drawboxsample.R
 import io.ak1.drawbox.reDo
 import io.ak1.drawbox.reset
 import io.ak1.drawbox.unDo
@@ -79,7 +79,6 @@ fun ControlsBar(
     sizeValue: MutableState<Int>
 ) {
     Row(modifier = Modifier.padding(12.dp), horizontalArrangement = Arrangement.SpaceAround) {
-
         Image(
             painter = painterResource(id = R.drawable.ic_download),
             contentDescription = "download",
