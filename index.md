@@ -1,37 +1,67 @@
-## Welcome to GitHub Pages
+<img src="https://raw.githubusercontent.com/akshay2211/DrawBox/main/media/banner.gif"/>
 
-You can use the [editor on GitHub](https://github.com/akshay2211/DrawBox/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+# DrawBox
+DrawBox is a multi-purpose tool to draw anything on canvas, written completely on jetpack compose.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+## Features
+* Customisable stoke size and color
+* Inbuilt Undo and Redo options
+* Reset option
+* Easy Implementations
+* Written on Jetpack-Compose
 
-### Markdown
+## Demo
+<img src="https://raw.githubusercontent.com/akshay2211/DrawBox/main/media/media.gif"/>
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
-
-```markdown
-Syntax highlighted code block
-
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
+## Usage
+ ```kotlin
+ DrawBox(Modifier.fillMaxSize().weight(1f, true))
+ ```
+With multiple necessary extension methods
+```kotlin
+* setStrokeColor(color: Color)
+* setStrokeWidth(width: Float)
+* unDo()
+* reDo()
+* reset()
+* getDrawBoxBitmap()    // gives the result bitmap from canvas
 ```
 
-For more details see [Basic writing and formatting syntax](https://docs.github.com/en/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax).
+## Download
+[![Download](https://search.maven.org/artifact/io.ak1/drawbox)](https://search.maven.org/artifact/io.ak1/drawbox) or grab via Gradle:
+ 
+include in app level build.gradle
+ ```groovy
+ repositories {
+    mavenCentral()
+ }
+ ```
+```groovy
+ implementation  'io.ak1:drawbox:1.0.0'
+```
+or Maven:
+```xml
+<dependency>
+  <groupId>io.ak1</groupId>
+  <artifactId>drawbox</artifactId>
+  <version>1.0.0</version>
+  <type>pom</type>
+</dependency>
+```
+or ivy:
+```xml
+<dependency org='io.ak1' name='drawbox' rev='1.0.0'>
+  <artifact name='drawbox' ext='pom' ></artifact>
+</dependency>
+```
 
-### Jekyll Themes
+## License
+Licensed under the Apache License, Version 2.0, [click here for the full license](/LICENSE).
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/akshay2211/DrawBox/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+## Author & support
+This project was created by [Akshay Sharma](https://akshay2211.github.io/).
 
-### Support or Contact
+> If you appreciate my work, consider buying me a cup of :coffee: to keep me recharged :metal: by [PayPal](https://www.paypal.me/akshay2211)
 
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+> I love using my work and I'm available for contract work. Freelancing helps to maintain and keep [my open source projects](https://github.com/akshay2211/) up to date!
+
