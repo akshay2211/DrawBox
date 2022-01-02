@@ -25,7 +25,6 @@ import io.ak1.drawboxsample.ui.components.CustomSeekbar
 
 @Composable
 fun HomeScreen(save: (Bitmap) -> Unit) {
-    val bitmap = remember { mutableStateOf<Bitmap?>(null) }
     val undoVisibility = remember { mutableStateOf(false) }
     val redoVisibility = remember { mutableStateOf(false) }
     val colorBarVisibility = remember { mutableStateOf(true) }
