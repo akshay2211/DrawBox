@@ -1,7 +1,31 @@
-# DrawBox [ 🚧 Under Construction ]
+<img src="media/banner.gif"/>
 
-DrawBox - Drawpad, Doodle artpad
+# DrawBox
+DrawBox is a multi-purpose tool to draw anything on canvas, written completely on jetpack compose.
 
+## Features
+* Customisable stoke size and color
+* Inbuilt Undo and Redo options
+* Reset option
+* Easy Implementations
+* Written on Jetpack-Compose
+
+## Demo
+<img src="media/media.gif"/>
+
+## Usage
+ ```kotlin
+ DrawBox(Modifier.fillMaxSize().weight(1f, true))
+ ```
+With multiple necessary extension methods
+```kotlin
+* setStrokeColor(color: Color)
+* setStrokeWidth(width: Float)
+* unDo()
+* reDo()
+* reset()
+* getDrawBoxBitmap()    // gives the result bitmap from canvas
+```
 
 ## Download
 [![Download](https://search.maven.org/artifact/io.ak1/drawbox)](https://search.maven.org/artifact/io.ak1/drawbox) or grab via Gradle:
