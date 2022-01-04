@@ -1,6 +1,8 @@
 <img src="media/banner.gif"/>
 
 # DrawBox
+[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-DrawBox-green.svg?style=flat-square)](https://android-arsenal.com/details/1/8292)
+
 DrawBox is a multi-purpose tool to draw anything on canvas, written completely on jetpack compose.
 
 ## Features
