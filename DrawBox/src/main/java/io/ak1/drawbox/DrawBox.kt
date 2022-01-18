@@ -1,6 +1,5 @@
 package io.ak1.drawbox
 
-import android.graphics.Bitmap
 import android.util.Log
 import android.view.MotionEvent
 import androidx.compose.foundation.Canvas
@@ -9,18 +8,14 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Canvas
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.unit.IntSize
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 import java.util.*
-import kotlin.collections.ArrayList
 
 /**
  * Created by akshay on 10/12/21
@@ -28,21 +23,10 @@ import kotlin.collections.ArrayList
  */
 
 
-internal var strokeWidth = 5f
-internal var strokeColor = Color.Red
-
-// TODO: 25/12/21 convert datatype to Stack
-//  currently Stack is internal in 'androidx.compose.runtime'
-
-internal val undoStack = ArrayList<PathWrapper>()
-internal val redoStack = ArrayList<PathWrapper>()
-internal var bitmap: Bitmap? = null
-
-val state: StateFlow<String> = MutableStateFlow("")
-
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun DrawBox(
+    drawController: DrawController,
     modifier: Modifier = Modifier.fillMaxSize(),
     trackHistory: (undoCount: Int, redoCount: Int) -> Unit = { _, _ -> }
 ) {
@@ -53,11 +37,11 @@ fun DrawBox(
     var imageBitmapCanvas: Canvas? = null
 
     LaunchedEffect(refreshState) {
-        imageBitmapCanvas = generateCanvas(size.value)
+        imageBitmapCanvas = drawController.generateCanvas(size.value)
         action.value = UUID.randomUUID().toString()
-        state.collect {
+        drawController.changeRequests.collect {
             action.value = it
-            trackHistory(undoStack.size, redoStack.size)
+            trackHistory(drawController.undoStack.size, drawController.redoStack.size)
         }
     }
 
@@ -70,9 +54,15 @@ fun DrawBox(
                 }
                 MotionEvent.ACTION_MOVE -> path.lineTo(it.x, it.y)
                 MotionEvent.ACTION_CANCEL, MotionEvent.ACTION_UP -> {
-                    redoStack.clear()
-                    undoStack.add(PathWrapper(path, strokeWidth, strokeColor))
-                    trackHistory(undoStack.size, redoStack.size)
+                    drawController.redoStack.clear()
+                    drawController.undoStack.add(
+                        PathWrapper(
+                            path,
+                            drawController.strokeWidth,
+                            drawController.strokeColor
+                        )
+                    )
+                    trackHistory(drawController.undoStack.size, drawController.redoStack.size)
                     path = Path()
                 }
                 else -> false
@@ -83,16 +73,21 @@ fun DrawBox(
         .onSizeChanged {
             size.value = it
         }) {
-        bitmap?.let { bitmap ->
+        Log.i("actions", "${action.value}")
+        drawController.getDrawBoxBitmap()?.let { bitmap ->
             action.value?.let {
-                undoStack.forEach {
+                drawController.undoStack.forEach {
                     imageBitmapCanvas?.drawSomePath(
                         path = it.path,
                         color = it.strokeColor,
                         width = it.strokeWidth
                     )
                 }
-                imageBitmapCanvas?.drawSomePath(path = path)
+                imageBitmapCanvas?.drawSomePath(
+                    path = path,
+                    color = drawController.strokeColor,
+                    width = drawController.strokeWidth
+                )
             }
             this.drawIntoCanvas {
                 it.nativeCanvas.drawBitmap(bitmap, 0f, 0f, null)

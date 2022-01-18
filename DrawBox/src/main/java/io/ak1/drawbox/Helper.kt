@@ -15,48 +15,14 @@ import java.util.*
  * https://ak1.io
  */
 
-fun setStrokeColor(color: Color) {
-    strokeColor = color
-}
 
-fun setStrokeWidth(width: Float) {
-    strokeWidth = width
-}
-
-fun unDo() {
-    if (undoStack.isNotEmpty()) {
-        val last = undoStack.last()
-        redoStack.add(last)
-        undoStack.remove(last)
-        bitmap?.eraseColor(android.graphics.Color.TRANSPARENT)
-    }
-    (state as MutableStateFlow).tryEmit("${undoStack.size}")
-}
-
-fun reDo() {
-    if (redoStack.isNotEmpty()) {
-        val last = redoStack.last()
-        undoStack.add(last)
-        redoStack.remove(last)
-        bitmap?.eraseColor(android.graphics.Color.TRANSPARENT)
-    }
-    (state as MutableStateFlow).tryEmit("${undoStack.size}")
-}
-
-fun reset() {
-    redoStack.clear()
-    undoStack.clear()
-    bitmap?.eraseColor(android.graphics.Color.TRANSPARENT)
-    (state as MutableStateFlow).tryEmit(UUID.randomUUID().toString())
-}
-
-
-fun getDrawBoxBitmap() = bitmap
+internal fun MotionEvent.getRect() =
+    Rect(this.x - 0.5f, this.y - 0.5f, this.x + 0.5f, this.y + 0.5f)
 
 internal fun DrawScope.drawSomePath(
     path: Path,
-    color: Color = strokeColor,
-    width: Float = strokeWidth
+    color: Color,
+    width: Float
 ) = drawPath(
     path,
     color,
@@ -65,8 +31,8 @@ internal fun DrawScope.drawSomePath(
 
 internal fun Canvas.drawSomePath(
     path: Path,
-    color: Color = strokeColor,
-    width: Float = strokeWidth
+    color: Color,
+    width: Float,
 ) = this.drawPath(path, Paint().apply {
     this.style = PaintingStyle.Stroke
     this.isAntiAlias = true
@@ -75,14 +41,6 @@ internal fun Canvas.drawSomePath(
     this.strokeCap = StrokeCap.Round
     this.strokeWidth = width
 })
-
-internal fun MotionEvent.getRect() =
-    Rect(this.x - 0.5f, this.y - 0.5f, this.x + 0.5f, this.y + 0.5f)
-
-internal fun generateCanvas(size: IntSize): Canvas? = if (size.width > 0 && size.height > 0) {
-    bitmap = Bitmap.createBitmap(size.width, size.height, Bitmap.Config.ARGB_8888)
-    Canvas(bitmap!!.asImageBitmap())
-} else null
 
 
 //Model
