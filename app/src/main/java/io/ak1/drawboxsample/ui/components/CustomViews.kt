@@ -23,10 +23,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
+import io.ak1.drawbox.DrawController
 import io.ak1.drawboxsample.R
-import io.ak1.drawbox.reDo
-import io.ak1.drawbox.reset
-import io.ak1.drawbox.unDo
 import io.ak1.drawboxsample.data.local.arrayOfColors
 
 
@@ -70,6 +68,7 @@ fun ColorRow(isVisible: Boolean, clicked: (Color) -> Unit) {
 
 @Composable
 fun ControlsBar(
+    drawController:DrawController,
     onDownloadClick: () -> Unit,
     onColorClick: () -> Unit,
     onSizeClick: () -> Unit,
@@ -93,7 +92,7 @@ fun ControlsBar(
             contentDescription = "undo",
             colorFilter = ColorFilter.tint(if (undoVisibility.value) MaterialTheme.colors.primary else MaterialTheme.colors.primaryVariant),
             modifier = Modifier
-                .clickable { if (undoVisibility.value) unDo() }
+                .clickable { if (undoVisibility.value) drawController.unDo() }
                 .padding(12.dp)
                 .weight(1f, true),
         )
@@ -102,7 +101,7 @@ fun ControlsBar(
             contentDescription = "redo",
             colorFilter = ColorFilter.tint(if (redoVisibility.value) MaterialTheme.colors.primary else MaterialTheme.colors.primaryVariant),
             modifier = Modifier
-                .clickable { if (redoVisibility.value) reDo() }
+                .clickable { if (redoVisibility.value) drawController.reDo() }
                 .padding(12.dp)
                 .weight(1f, true),
         )
@@ -111,7 +110,7 @@ fun ControlsBar(
             contentDescription = "reset",
             colorFilter = ColorFilter.tint(if (redoVisibility.value || undoVisibility.value) MaterialTheme.colors.primary else MaterialTheme.colors.primaryVariant),
             modifier = Modifier
-                .clickable { reset() }
+                .clickable { drawController.reset() }
                 .padding(12.dp)
                 .weight(1f, true),
         )

@@ -10,9 +10,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import io.ak1.drawbox.DrawBox
-import io.ak1.drawbox.getDrawBoxBitmap
-import io.ak1.drawbox.setStrokeColor
-import io.ak1.drawbox.setStrokeWidth
+import io.ak1.drawbox.rememberDrawController
 import io.ak1.drawboxsample.data.local.convertToOldColor
 import io.ak1.drawboxsample.ui.components.ColorRow
 import io.ak1.drawboxsample.ui.components.ControlsBar
@@ -32,8 +30,10 @@ fun HomeScreen(save: (Bitmap) -> Unit) {
     val currentColor = remember { mutableStateOf(Color.Red) }
     val currentSize = remember { mutableStateOf(10) }
 
+    val drawController = rememberDrawController()
     Column {
         DrawBox(
+            drawController = drawController,
             modifier = Modifier
                 .fillMaxSize()
                 .weight(1f, fill = false)
@@ -48,21 +48,21 @@ fun HomeScreen(save: (Bitmap) -> Unit) {
             thumbColor = currentColor.value.convertToOldColor()
         ) {
             currentSize.value = it
-            setStrokeWidth(it.toFloat())
+            drawController.setStrokeWidth(it.toFloat())
             colorBarVisibility.value = false
         }
 
         ColorRow(colorBarVisibility.value) {
             currentColor.value = it
-            setStrokeColor(it)
+            drawController.setStrokeColor(it)
 
         }
         ControlsBar(
+            drawController = drawController,
             {
-                getDrawBoxBitmap()?.let {
+                drawController.getDrawBoxBitmap()?.let {
                     save(it)
                 }
-
             },
             {
                 colorBarVisibility.value = true
