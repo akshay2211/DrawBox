@@ -28,6 +28,14 @@ class DrawController internal constructor() {
 
     private var bitmap: Bitmap? = null
 
+
+    fun importPath(path: ArrayList<PathWrapper>) = undoStack.apply {
+        this.clear()
+        this.addAll(path)
+    }
+
+    fun exportPath() = undoStack
+
     fun executeRefresh() {
         refreshState = UUID.randomUUID().toString()
     }
