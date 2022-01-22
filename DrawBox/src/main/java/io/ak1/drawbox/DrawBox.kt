@@ -30,13 +30,13 @@ fun DrawBox(
     modifier: Modifier = Modifier.fillMaxSize(),
     trackHistory: (undoCount: Int, redoCount: Int) -> Unit = { _, _ -> }
 ) {
-    val refreshState = UUID.randomUUID().toString()
+
     var size = remember { mutableStateOf(IntSize.Zero) }
     var path = Path()
     val action: MutableState<Any?> = remember { mutableStateOf(null) }
     var imageBitmapCanvas: Canvas? = null
 
-    LaunchedEffect(refreshState) {
+    LaunchedEffect(drawController.refreshState) {
         imageBitmapCanvas = drawController.generateCanvas(size.value)
         action.value = UUID.randomUUID().toString()
         drawController.changeRequests.collect {

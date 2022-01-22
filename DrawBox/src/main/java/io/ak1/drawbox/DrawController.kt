@@ -24,8 +24,13 @@ class DrawController internal constructor() {
     //  currently Stack is internal in 'androidx.compose.runtime'
     internal val undoStack = ArrayList<PathWrapper>()
     internal val redoStack = ArrayList<PathWrapper>()
+    internal var refreshState = UUID.randomUUID().toString()
+
     private var bitmap: Bitmap? = null
 
+    fun executeRefresh() {
+        refreshState = UUID.randomUUID().toString()
+    }
 
     fun setStrokeColor(color: Color) {
         strokeColor = color
