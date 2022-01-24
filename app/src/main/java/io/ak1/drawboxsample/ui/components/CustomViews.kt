@@ -1,6 +1,5 @@
 package io.ak1.drawboxsample.ui.components
 
-import android.util.Log
 import android.widget.SeekBar
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -178,7 +177,6 @@ fun CustomSeekbar(
 
                     override fun onStartTrackingTouch(p0: SeekBar?) {}
                     override fun onStopTrackingTouch(p0: SeekBar?) {
-                        Log.e("Progress", "-> ${p0?.progress}")
                         onProgressChanged(p0?.progress ?: it.progress)
                     }
                 })
