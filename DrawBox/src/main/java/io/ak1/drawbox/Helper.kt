@@ -1,14 +1,10 @@
 package io.ak1.drawbox
 
-import android.graphics.Bitmap
 import android.view.MotionEvent
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.unit.IntSize
-import kotlinx.coroutines.flow.MutableStateFlow
-import java.util.*
 
 /**
  * Created by akshay on 24/12/21

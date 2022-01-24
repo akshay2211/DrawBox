@@ -3,6 +3,13 @@ package io.ak1.drawboxsample
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
+import androidx.compose.material.BottomAppBar
+import androidx.compose.material.BottomNavigation
+import androidx.compose.material.ExtendedFloatingActionButton
+import androidx.compose.material.FloatingActionButton
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import io.ak1.drawboxsample.helper.activityChooser
 import io.ak1.drawboxsample.helper.checkAndAskPermission
 import io.ak1.drawboxsample.helper.saveImage

@@ -1,6 +1,5 @@
 package io.ak1.drawbox
 
-import android.util.Log
 import android.view.MotionEvent
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,7 +13,8 @@ import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.unit.IntSize
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.mapNotNull
 import java.util.*
 
 /**
@@ -30,19 +30,20 @@ fun DrawBox(
     modifier: Modifier = Modifier.fillMaxSize(),
     trackHistory: (undoCount: Int, redoCount: Int) -> Unit = { _, _ -> }
 ) {
-    val refreshState = UUID.randomUUID().toString()
+
     var size = remember { mutableStateOf(IntSize.Zero) }
     var path = Path()
     val action: MutableState<Any?> = remember { mutableStateOf(null) }
     var imageBitmapCanvas: Canvas? = null
+    var refreshState = UUID.randomUUID().toString()
 
     LaunchedEffect(refreshState) {
         imageBitmapCanvas = drawController.generateCanvas(size.value)
         action.value = UUID.randomUUID().toString()
-        drawController.changeRequests.collect {
-            action.value = it
+        drawController.changeRequests.mapNotNull { request ->
+            action.value = request
             trackHistory(drawController.undoStack.size, drawController.redoStack.size)
-        }
+        }.launchIn(this)
     }
 
     Canvas(modifier = modifier
@@ -73,7 +74,6 @@ fun DrawBox(
         .onSizeChanged {
             size.value = it
         }) {
-        Log.i("actions", "${action.value}")
         drawController.getDrawBoxBitmap()?.let { bitmap ->
             action.value?.let {
                 drawController.undoStack.forEach {

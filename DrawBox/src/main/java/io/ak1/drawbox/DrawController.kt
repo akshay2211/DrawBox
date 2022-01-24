@@ -24,7 +24,18 @@ class DrawController internal constructor() {
     //  currently Stack is internal in 'androidx.compose.runtime'
     internal val undoStack = ArrayList<PathWrapper>()
     internal val redoStack = ArrayList<PathWrapper>()
+
     private var bitmap: Bitmap? = null
+
+
+    fun importPath(path: ArrayList<PathWrapper>) {
+        reset()
+        undoStack.addAll(path)
+        bitmap?.eraseColor(android.graphics.Color.TRANSPARENT)
+        emit("${undoStack.size}")
+    }
+
+    fun exportPath() = undoStack
 
 
     fun setStrokeColor(color: Color) {
@@ -72,7 +83,7 @@ class DrawController internal constructor() {
     } else null
 
 
-    private val _changeRequests = MutableSharedFlow<String>()
+    private val _changeRequests = MutableSharedFlow<String>(extraBufferCapacity = 1)
     internal val changeRequests = _changeRequests.asSharedFlow()
 
     private fun emit(state: String = "") {
