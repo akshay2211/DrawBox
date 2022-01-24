@@ -18,9 +18,10 @@ DrawBox is a multi-purpose tool to draw anything on canvas, written completely o
 
 ## Usage
  ```kotlin
- DrawBox(Modifier.fillMaxSize().weight(1f, true))
+ val controller = rememberDrawController()
+ DrawBox(drawController = controller, modifier = Modifier.fillMaxSize().weight(1f, true))
  ```
-With multiple necessary extension methods
+With multiple methods in DrawController
 ```kotlin
 * setStrokeColor(color: Color)
 * setStrokeWidth(width: Float)
@@ -28,6 +29,8 @@ With multiple necessary extension methods
 * reDo()
 * reset()
 * getDrawBoxBitmap()    // gives the result bitmap from canvas
+* importPath(path)
+* exportPath()
 ```
 
 ## Download
@@ -40,20 +43,20 @@ include in app level build.gradle
  }
  ```
 ```groovy
- implementation  'io.ak1:drawbox:1.0.0'
+ implementation  'io.ak1:drawbox:1.0.2'
 ```
 or Maven:
 ```xml
 <dependency>
   <groupId>io.ak1</groupId>
   <artifactId>drawbox</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.2</version>
   <type>pom</type>
 </dependency>
 ```
 or ivy:
 ```xml
-<dependency org='io.ak1' name='drawbox' rev='1.0.0'>
+<dependency org='io.ak1' name='drawbox' rev='1.0.2'>
   <artifact name='drawbox' ext='pom' ></artifact>
 </dependency>
 ```
