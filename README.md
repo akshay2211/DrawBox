@@ -1,7 +1,7 @@
 <img src="media/banner.gif"/>
 
 # DrawBox
-[![](https://androidweekly.net/issues/issue-502/badge?style=flat-square)](https://androidweekly.net/issues/issue-502)
+[![Android Weekly](https://androidweekly.net/issues/issue-502/badge?style=flat-square)](https://androidweekly.net/issues/issue-502)
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-DrawBox-green.svg?style=flat-square)](https://android-arsenal.com/details/1/8292)
 [![Maven Central](https://img.shields.io/maven-central/v/io.ak1/drawbox?style=flat-square)](https://search.maven.org/artifact/io.ak1/drawbox)
 
@@ -12,6 +12,7 @@ DrawBox is a multi-purpose tool to draw anything on canvas, written completely o
 * Inbuilt Undo and Redo options
 * Reset option
 * Easy Implementations
+* Export feature to store history localy
 * Written on Jetpack-Compose
 
 ## Demo
@@ -20,6 +21,7 @@ DrawBox is a multi-purpose tool to draw anything on canvas, written completely o
 ## Usage
  ```kotlin
  val controller = rememberDrawController()
+ 
  DrawBox(drawController = controller, modifier = Modifier.fillMaxSize().weight(1f, true))
  ```
 With multiple methods in DrawController
