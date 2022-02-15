@@ -35,7 +35,10 @@ fun HomeScreen(save: (Bitmap) -> Unit) {
     val currentColor = remember { mutableStateOf(Color.Red) }
     val currentSize = remember { mutableStateOf(10) }
 
-    val drawController = rememberDrawController()
+    val drawController = rememberDrawController{ undoCount, redoCount ->
+        undoVisibility.value = undoCount != 0
+        redoVisibility.value = redoCount != 0
+    }
 
     Box {
         Column {
@@ -44,10 +47,7 @@ fun HomeScreen(save: (Bitmap) -> Unit) {
                 modifier = Modifier
                     .fillMaxSize()
                     .weight(1f, fill = false)
-            ) { undoCount, redoCount ->
-                undoVisibility.value = undoCount != 0
-                redoVisibility.value = redoCount != 0
-            }
+            )
 
 
             CustomSeekbar(
@@ -57,7 +57,7 @@ fun HomeScreen(save: (Bitmap) -> Unit) {
                 thumbColor = currentColor.value.convertToOldColor()
             ) {
                 currentSize.value = it
-                drawController.setStrokeWidth(it.toFloat())
+                drawController.changeStrokeWidth(it.toFloat())
                 colorBarVisibility.value = false
             }
 
@@ -94,7 +94,7 @@ fun HomeScreen(save: (Bitmap) -> Unit) {
             selectedArchAnimationDuration = 300,
             verticalAlignment = VerticalAlignment.Bottom,
             horizontalAlignment = HorizontalAlignment.End,
-            onColorSelected = { drawController.setStrokeColor(it) }
+            onColorSelected = { drawController.changeColor(it) }
         )
     }
 }
