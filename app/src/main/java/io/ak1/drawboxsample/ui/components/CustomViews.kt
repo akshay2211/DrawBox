@@ -114,15 +114,6 @@ fun ControlsBar(
                 .weight(1f, true),
         )
         Image(
-            painter = painterResource(id = R.drawable.ic_color),
-            contentDescription = "stroke color",
-            colorFilter = ColorFilter.tint(colorValue.value),
-            modifier = Modifier
-                .clickable { onColorClick() }
-                .padding(12.dp)
-                .weight(1f, true),
-        )
-        Image(
             painter = painterResource(id = R.drawable.ic_size),
             contentDescription = "stroke size",
             colorFilter = ColorFilter.tint(MaterialTheme.colors.primary),
@@ -130,6 +121,11 @@ fun ControlsBar(
                 .clickable { onSizeClick() }
                 .padding(12.dp)
                 .weight(1f, true),
+        )
+        Spacer(
+            modifier = Modifier
+                .padding(12.dp)
+                .weight(1f, true)
         )
 
     }
