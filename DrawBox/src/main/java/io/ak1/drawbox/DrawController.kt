@@ -1,9 +1,15 @@
 package io.ak1.drawbox
 
+import android.graphics.Bitmap
+import android.view.View
 import androidx.compose.runtime.*
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.*
 
 /**
  * Created by akshay on 18/01/22
@@ -13,8 +19,27 @@ class DrawController internal constructor(val trackHistory: (undoCount: Int, red
 
     private val _redoPathList = mutableStateListOf<PathWrapper>()
     private val _undoPathList = mutableStateListOf<PathWrapper>()
-    val pathList: SnapshotStateList<PathWrapper> = _undoPathList
+    internal val pathList: SnapshotStateList<PathWrapper> = _undoPathList
 
+
+    private val _historyTracker = MutableSharedFlow<String>(extraBufferCapacity = 1)
+    private val historyTracker = _historyTracker.asSharedFlow()
+
+    fun trackHistory(
+        scope: CoroutineScope,
+        trackHistory: (undoCount: Int, redoCount: Int) -> Unit
+    ) {
+        historyTracker
+            .onEach { trackHistory(_undoPathList.size, _redoPathList.size) }
+            .launchIn(scope)
+    }
+
+
+    private val _bitmapGenerators = MutableSharedFlow<Bitmap.Config>(extraBufferCapacity = 1)
+    private val bitmapGenerators = _bitmapGenerators.asSharedFlow()
+
+    fun saveBitmap(config: Bitmap.Config = Bitmap.Config.ARGB_8888) =
+        _bitmapGenerators.tryEmit(config)
 
     var opacity by mutableStateOf(1f)
         private set
@@ -25,20 +50,23 @@ class DrawController internal constructor(val trackHistory: (undoCount: Int, red
     var color by mutableStateOf(Color.Red)
         private set
 
-    fun changeOpacity(value: Float) { opacity = value }
+    fun changeOpacity(value: Float) {
+        opacity = value
+    }
 
-    fun changeColor(value: Color) { color = value }
+    fun changeColor(value: Color) {
+        color = value
+    }
 
-    fun changeStrokeWidth(value: Float) { strokeWidth = value }
-
-    //internal var bitmap: Bitmap? = null
-
+    fun changeStrokeWidth(value: Float) {
+        strokeWidth = value
+    }
 
     fun importPath(path: ArrayList<PathWrapper>) {
         reset()
         _undoPathList.addAll(path)
+        _historyTracker.tryEmit("${_undoPathList.size}")
     }
-
 
     fun exportPath() = pathList.toList()
 
@@ -48,21 +76,25 @@ class DrawController internal constructor(val trackHistory: (undoCount: Int, red
             _redoPathList.add(last)
             _undoPathList.remove(last)
             trackHistory(_undoPathList.size, _redoPathList.size)
+            _historyTracker.tryEmit("Undo - ${_undoPathList.size}")
         }
     }
 
     fun reDo() {
-        if (_undoPathList.isNotEmpty()) {
+        if (_redoPathList.isNotEmpty()) {
             val last = _redoPathList.last()
             _undoPathList.add(last)
             _redoPathList.remove(last)
             trackHistory(_undoPathList.size, _redoPathList.size)
+            _historyTracker.tryEmit("Redo - ${_redoPathList.size}")
         }
     }
+
 
     fun reset() {
         _redoPathList.clear()
         _undoPathList.clear()
+        _historyTracker.tryEmit("-")
     }
 
     fun updateLatestPath(newPoint: Offset) {
@@ -78,15 +110,22 @@ class DrawController internal constructor(val trackHistory: (undoCount: Int, red
             strokeWidth = strokeWidth,
         )
         _undoPathList.add(pathWrapper)
+        _redoPathList.clear()
+        _historyTracker.tryEmit("${_undoPathList.size}")
     }
 
-
-    fun getDrawBoxBitmap() = null //bitmap
-
-
+    fun trackBitmaps(
+        it: View,
+        coroutineScope: CoroutineScope,
+        onCaptured: (ImageBitmap?, Throwable?) -> Unit
+    ) = bitmapGenerators
+        .mapNotNull { config -> it.drawBitmapFromView(it.context, config) }
+        .onEach { bitmap -> onCaptured(bitmap.asImageBitmap(), null) }
+        .catch { error -> onCaptured(null, error) }
+        .launchIn(coroutineScope)
 }
 
 @Composable
-fun rememberDrawController(trackHistory: (undoCount: Int, redoCount: Int) -> Unit = { _, _ -> }): DrawController {
-    return remember { DrawController(trackHistory) }
+fun rememberDrawController(): DrawController {
+    return remember { DrawController() }
 }
