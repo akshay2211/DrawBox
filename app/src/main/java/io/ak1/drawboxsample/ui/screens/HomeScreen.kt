@@ -10,6 +10,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.unit.dp
 import com.elixer.palette.Presets
 import com.elixer.palette.composables.Palette
@@ -30,11 +31,9 @@ import io.ak1.drawboxsample.ui.components.CustomSeekbar
 fun HomeScreen(save: (Bitmap) -> Unit) {
     val undoVisibility = remember { mutableStateOf(false) }
     val redoVisibility = remember { mutableStateOf(false) }
-    val colorBarVisibility = remember { mutableStateOf(true) }
     val sizeBarVisibility = remember { mutableStateOf(false) }
     val currentColor = remember { mutableStateOf(Color.Red) }
     val currentSize = remember { mutableStateOf(10) }
-
     val drawController = rememberDrawController()
 
     Box {
@@ -43,8 +42,14 @@ fun HomeScreen(save: (Bitmap) -> Unit) {
                 drawController = drawController,
                 modifier = Modifier
                     .fillMaxSize()
-                    .weight(1f, fill = false)
+                    .weight(1f, fill = false),
+                bitmapCallback = { captured, error ->
+                    captured?.let {
+                        save(it.asAndroidBitmap())
+                    }
+                }
             ) { undoCount, redoCount ->
+                sizeBarVisibility.value = false
                 undoVisibility.value = undoCount != 0
                 redoVisibility.value = redoCount != 0
             }
@@ -57,22 +62,16 @@ fun HomeScreen(save: (Bitmap) -> Unit) {
                 thumbColor = currentColor.value.convertToOldColor()
             ) {
                 currentSize.value = it
-                drawController.setStrokeWidth(it.toFloat())
-                colorBarVisibility.value = false
+                drawController.changeStrokeWidth(it.toFloat())
             }
 
             ControlsBar(
                 drawController = drawController,
                 {
-                    drawController.getDrawBoxBitmap()?.let { save(it) }
+                    drawController.saveBitmap()
                 },
                 {
-                    colorBarVisibility.value = true
-                    sizeBarVisibility.value = false
-                },
-                {
-                    sizeBarVisibility.value = true
-                    colorBarVisibility.value = false
+                    sizeBarVisibility.value = !sizeBarVisibility.value
                 },
                 undoVisibility = undoVisibility,
                 redoVisibility = redoVisibility,
@@ -84,17 +83,20 @@ fun HomeScreen(save: (Bitmap) -> Unit) {
             defaultColor = Color.Red,
             buttonSize = 120.dp,
             swatches = Presets.material(),
-            innerRadius = 800f,
+            innerRadius = 700f,
             strokeWidth = 120f,
             spacerRotation = 5f,
-            spacerOutward = 2f,
+            spacerOutward = 10f,
             colorWheelZIndexOnWheelDisplayed = 0f,
             colorWheelZIndexOnWheelHidden = -1f,
             buttonColorChangeAnimationDuration = 1000,
             selectedArchAnimationDuration = 300,
             verticalAlignment = VerticalAlignment.Bottom,
             horizontalAlignment = HorizontalAlignment.End,
-            onColorSelected = { drawController.setStrokeColor(it) }
+            onColorSelected = {
+                currentColor.value = it
+                drawController.changeColor(it)
+            }
         )
     }
 }

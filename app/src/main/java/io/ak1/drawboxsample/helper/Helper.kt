@@ -11,7 +11,6 @@ import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import io.ak1.drawboxsample.data.local.PERMISSION_CODE
