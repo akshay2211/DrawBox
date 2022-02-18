@@ -4,6 +4,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
@@ -26,6 +27,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 fun DrawBox(
     drawController: DrawController,
     modifier: Modifier = Modifier.fillMaxSize(),
+    backgroundColor: Color = MaterialTheme.colors.background,
     bitmapCallback: (ImageBitmap?, Throwable?) -> Unit,
     trackHistory: (undoCount: Int, redoCount: Int) -> Unit = { _, _ -> }
 ) = AndroidView(
@@ -37,7 +39,7 @@ fun DrawBox(
                     drawController.trackHistory(this, trackHistory)
                 }
                 Canvas(modifier = modifier
-                    .background(Color.Transparent)
+                    .background(backgroundColor)
                     .pointerInput(Unit) {
                         detectDragGestures(
                             onDragStart = { offset ->
