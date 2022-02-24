@@ -4,13 +4,18 @@ import android.widget.SeekBar
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -19,6 +24,7 @@ import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
 import io.ak1.drawbox.DrawController
 import io.ak1.drawboxsample.R
+import io.ak1.drawboxsample.data.local.arrayOfColors
 
 
 /**
@@ -26,11 +32,45 @@ import io.ak1.drawboxsample.R
  * https://ak1.io
  */
 
+@Composable
+fun ColorRow(isVisible: Boolean, clicked: (Color) -> Unit) {
+    if (isVisible) {
+        Column(
+            modifier = Modifier
+                .height(100.dp)
+                .fillMaxWidth(),
+            verticalArrangement = Arrangement.SpaceEvenly
+        ) {
+            Text(text = "Colors", modifier = Modifier.padding(12.dp, 0.dp, 0.dp, 0.dp))
+            LazyRow(
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                items(arrayOfColors) { item ->
+                    Image(
+                        painter = ColorPainter(item),
+                        contentDescription = "hi",
+                        Modifier
+                            .padding(10.dp)
+                            .size(25.dp)
+                            .clip(
+                                CircleShape
+                            )
+                            .clickable {
+                                clicked.invoke(item)
+                            }
+                    )
+                }
+            }
+        }
+    }
+}
 
 @Composable
 fun ControlsBar(
     drawController:DrawController,
     onDownloadClick: () -> Unit,
+    onColorClick: () -> Unit,
     onSizeClick: () -> Unit,
     undoVisibility: MutableState<Boolean>,
     redoVisibility: MutableState<Boolean>,
@@ -75,6 +115,15 @@ fun ControlsBar(
                 .weight(1f, true),
         )
         Image(
+            painter = painterResource(id = R.drawable.ic_color),
+            contentDescription = "stroke color",
+            colorFilter = ColorFilter.tint(colorValue.value),
+            modifier = Modifier
+                .clickable { onColorClick() }
+                .padding(12.dp)
+                .weight(1f, true),
+        )
+        Image(
             painter = painterResource(id = R.drawable.ic_size),
             contentDescription = "stroke size",
             colorFilter = ColorFilter.tint(MaterialTheme.colors.primary),
@@ -82,11 +131,6 @@ fun ControlsBar(
                 .clickable { onSizeClick() }
                 .padding(12.dp)
                 .weight(1f, true),
-        )
-        Spacer(
-            modifier = Modifier
-                .padding(12.dp)
-                .weight(1f, true)
         )
 
     }
