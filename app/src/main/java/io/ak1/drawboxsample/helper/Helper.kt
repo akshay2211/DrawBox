@@ -34,16 +34,6 @@ internal fun Activity.checkAndAskPermission(continueNext: () -> Unit) {
     continueNext()
 }
 
-//visibility extension for any view
-fun View.show() {
-    visibility = View.VISIBLE
-}
-
-//visibility extension for any view
-fun View.hide() {
-    visibility = View.GONE
-}
-
 internal fun activityChooser(uri: Uri?) = Intent.createChooser(Intent().apply {
     type = "image/*"
     action = Intent.ACTION_VIEW

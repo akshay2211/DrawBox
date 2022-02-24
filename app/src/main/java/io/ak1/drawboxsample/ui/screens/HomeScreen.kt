@@ -41,8 +41,8 @@ fun HomeScreen(save: (Bitmap) -> Unit) {
                 modifier = Modifier
                     .fillMaxSize()
                     .weight(1f, fill = false),
-                bitmapCallback = { captured, error ->
-                    captured?.let {
+                bitmapCallback = { imageBitmap, error ->
+                    imageBitmap?.let {
                         save(it.asAndroidBitmap())
                     }
                 }
