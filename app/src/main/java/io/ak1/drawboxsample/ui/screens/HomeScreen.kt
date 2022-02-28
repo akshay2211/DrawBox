@@ -17,6 +17,7 @@ import io.ak1.drawboxsample.data.local.convertToOldColor
 import io.ak1.drawboxsample.ui.components.ColorRow
 import io.ak1.drawboxsample.ui.components.ControlsBar
 import io.ak1.drawboxsample.ui.components.CustomSeekbar
+import io.ak1.drawboxsample.ui.theme.colors500
 
 
 /**
@@ -28,7 +29,7 @@ import io.ak1.drawboxsample.ui.components.CustomSeekbar
 fun HomeScreen(save: (Bitmap) -> Unit) {
     val undoVisibility = remember { mutableStateOf(false) }
     val redoVisibility = remember { mutableStateOf(false) }
-    val colorBarVisibility = remember { mutableStateOf(true) }
+    val colorBarVisibility = remember { mutableStateOf(false) }
     val sizeBarVisibility = remember { mutableStateOf(false) }
     val currentColor = remember { mutableStateOf(Color.Red) }
     val currentSize = remember { mutableStateOf(10) }
@@ -53,7 +54,34 @@ fun HomeScreen(save: (Bitmap) -> Unit) {
                 redoVisibility.value = redoCount != 0
             }
 
-
+            ControlsBar(
+                drawController = drawController,
+                {
+                    drawController.saveBitmap()
+                },
+                {
+                    colorBarVisibility.value = !colorBarVisibility.value
+                    sizeBarVisibility.value = false
+                },
+                {
+                    sizeBarVisibility.value = !sizeBarVisibility.value
+                    colorBarVisibility.value = false
+                },
+                undoVisibility = undoVisibility,
+                redoVisibility = redoVisibility,
+                colorValue = currentColor,
+                sizeValue = currentSize
+            )
+            ColorRow(
+                colorBarVisibility.value,
+                colors = ArrayList<Color>(colors500.asList())
+                    .apply {
+                        add(MaterialTheme.colors.primary)
+                    }.toTypedArray()
+            ) { color ->
+                currentColor.value = color
+                drawController.changeColor(color)
+            }
             CustomSeekbar(
                 isVisible = sizeBarVisibility.value,
                 progress = currentSize.value,
@@ -63,30 +91,6 @@ fun HomeScreen(save: (Bitmap) -> Unit) {
                 currentSize.value = it
                 drawController.changeStrokeWidth(it.toFloat())
             }
-            ColorRow(colorBarVisibility.value) {
-                currentColor.value = it
-                drawController.changeColor(it)
-            }
-
-
-            ControlsBar(
-                drawController = drawController,
-                {
-                    drawController.saveBitmap()
-                },
-                {
-                    colorBarVisibility.value = true
-                    sizeBarVisibility.value = false
-                },
-                {
-                    colorBarVisibility.value = false
-                    sizeBarVisibility.value = true
-                },
-                undoVisibility = undoVisibility,
-                redoVisibility = redoVisibility,
-                colorValue = currentColor,
-                sizeValue = currentSize
-            )
         }
 
     }
