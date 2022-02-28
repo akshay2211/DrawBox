@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">DrawBox</string>
+    <string name="image_desc">Button description</string>
 </resources>
