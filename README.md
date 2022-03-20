@@ -3,6 +3,7 @@
 # DrawBox
 [![Android Weekly](https://androidweekly.net/issues/issue-502/badge?style=flat-square)](https://androidweekly.net/issues/issue-502)
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-DrawBox-green.svg?style=flat-square)](https://android-arsenal.com/details/1/8292)
+[![Kotlin Weekly](https://img.shields.io/badge/Kotlin%20Weekly-DrawBox-purple.svg?style=flat-square)](https://mailchi.mp/kotlinweekly/kotlin-weekly-294)
 [![Maven Central](https://img.shields.io/maven-central/v/io.ak1/drawbox?style=flat-square)](https://search.maven.org/artifact/io.ak1/drawbox)
 
 DrawBox is a multi-purpose tool to draw anything on canvas, written completely on jetpack compose.
