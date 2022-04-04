@@ -77,7 +77,7 @@ fun HomeScreen(save: (Bitmap) -> Unit) {
                 colors = ArrayList<Color>(colors500.asList())
                     .apply {
                         add(MaterialTheme.colors.primary)
-                    }.toTypedArray()
+                    }
             ) { color ->
                 currentColor.value = color
                 drawController.changeColor(color)

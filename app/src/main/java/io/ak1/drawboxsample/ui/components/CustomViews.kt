@@ -1,26 +1,23 @@
 package io.ak1.drawboxsample.ui.components
 
 import android.widget.SeekBar
+import androidx.annotation.DrawableRes
 import androidx.compose.animation.*
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.graphics.BlendModeColorFilterCompat
@@ -39,18 +36,21 @@ import io.ak1.drawboxsample.R
 fun ColorRow(
     isVisible: Boolean,
     rowElementsCount: Int = 8,
-    colors: Array<Color>,
+    colors: List<Color>,
     clickedColor: (Color) -> Unit
 ) {
     val density = LocalDensity.current
     val defaultColor = remember {
         mutableStateOf(colors[0])
     }
+
     AnimatedVisibility(
         visible = isVisible,
         enter = slideInVertically {
             // Slide in from 40 dp from the top.
-            with(density) { -40.dp.roundToPx() }
+            with(density) {
+                -40.dp.roundToPx()
+            }
         } + expandVertically(
             // Expand from the top.
             expandFrom = Alignment.Top
@@ -60,53 +60,52 @@ fun ColorRow(
         ),
         exit = slideOutVertically() + shrinkVertically() + fadeOut()
     ) {
+        val parentList = colors.chunked(rowElementsCount)
 
-        var columnsSize: Int = colors.size / rowElementsCount
-        val remaining = colors.size % rowElementsCount
-        if (remaining > 0) {
-            columnsSize++
-        }
-        Column(modifier = Modifier.padding(16.dp, 8.dp,16.dp, 16.dp)) {
-            repeat(columnsSize) { column ->
-                println()
+        Column(modifier = Modifier.padding(16.dp, 8.dp, 16.dp, 16.dp)) {
+            parentList.forEachIndexed { _, colorRow ->
                 Row {
-                    repeat(rowElementsCount) { row ->
-                        val pos = (column * rowElementsCount) + row
-                        var size = 22.dp
-                        if (pos < colors.size) {
-                            val color = colors[pos]
-                            if (defaultColor.value == color) {
-                                size = 36.dp
-                            }
-
-                            IconButton(
-                                onClick = {
-                                    defaultColor.value = color
-                                    clickedColor(color)
-
-                                }, modifier = Modifier
-                                    .weight(1f, true)
-
-                            ) {
-                                Icon(
-                                    painterResource(id = R.drawable.ic_color),
-                                    contentDescription = stringResource(id = R.string.image_desc),
-                                    tint = color,
-                                    modifier = Modifier.size(size)
-                                    //.animateContentSize(animationSpec = tween(1000,100,LinearOutSlowInEasing))
-                                )
-                            }
-                        } else {
-                            Spacer(
-                                modifier = Modifier
-                                    .weight(1f, true)
-                            )
+                    repeat(rowElementsCount) { rowIndex ->
+                        if (colorRow.size - 1 < rowIndex) {
+                            Spacer(Modifier.weight(1f, true))
+                            return@repeat
                         }
-
+                        val color = colorRow[rowIndex]
+                        ColorDots(color, color == defaultColor.value, 24.dp, 36.dp) {
+                            defaultColor.value = it
+                            clickedColor(color)
+                        }
                     }
                 }
             }
         }
+    }
+}
+
+
+@Composable
+internal fun RowScope.ColorDots(
+    color: Color,
+    selected: Boolean,
+    defaultSize: Dp,
+    expandedSize: Dp,
+    clickedColor: (Color) -> Unit
+) {
+    val dbAnimateAsState: Dp by animateDpAsState(
+        targetValue = if (selected) expandedSize else defaultSize
+    )
+    IconButton(
+        onClick = {
+            clickedColor(color)
+        }, modifier = Modifier
+            .weight(1f, true)
+    ) {
+        Icon(
+            painterResource(id = R.drawable.ic_color),
+            contentDescription = stringResource(id = R.string.image_desc),
+            tint = color,
+            modifier = Modifier.size(dbAnimateAsState)
+        )
     }
 }
 
@@ -122,61 +121,59 @@ fun ControlsBar(
     sizeValue: MutableState<Int>
 ) {
     Row(modifier = Modifier.padding(12.dp), horizontalArrangement = Arrangement.SpaceAround) {
-        Image(
-            painter = painterResource(id = R.drawable.ic_download),
-            contentDescription = "download",
-            colorFilter = ColorFilter.tint(if (undoVisibility.value) MaterialTheme.colors.primary else MaterialTheme.colors.primaryVariant),
-            modifier = Modifier
-                .clickable { if (undoVisibility.value) onDownloadClick() }
-                .padding(12.dp)
-                .weight(1f, true),
-        )
-        Image(
-            painter = painterResource(id = R.drawable.ic_undo),
-            contentDescription = "undo",
-            colorFilter = ColorFilter.tint(if (undoVisibility.value) MaterialTheme.colors.primary else MaterialTheme.colors.primaryVariant),
-            modifier = Modifier
-                .clickable { if (undoVisibility.value) drawController.unDo() }
-                .padding(12.dp)
-                .weight(1f, true),
-        )
-        Image(
-            painter = painterResource(id = R.drawable.ic_redo),
-            contentDescription = "redo",
-            colorFilter = ColorFilter.tint(if (redoVisibility.value) MaterialTheme.colors.primary else MaterialTheme.colors.primaryVariant),
-            modifier = Modifier
-                .clickable { if (redoVisibility.value) drawController.reDo() }
-                .padding(12.dp)
-                .weight(1f, true),
-        )
-        Image(
-            painter = painterResource(id = R.drawable.ic_refresh),
-            contentDescription = "reset",
-            colorFilter = ColorFilter.tint(if (redoVisibility.value || undoVisibility.value) MaterialTheme.colors.primary else MaterialTheme.colors.primaryVariant),
-            modifier = Modifier
-                .clickable { drawController.reset() }
-                .padding(12.dp)
-                .weight(1f, true),
-        )
-        Image(
-            painter = painterResource(id = R.drawable.ic_color),
-            contentDescription = "stroke color",
-            colorFilter = ColorFilter.tint(colorValue.value),
-            modifier = Modifier
-                .clickable { onColorClick() }
-                .padding(12.dp)
-                .weight(1f, true),
-        )
-        Image(
-            painter = painterResource(id = R.drawable.ic_size),
-            contentDescription = "stroke size",
-            colorFilter = ColorFilter.tint(MaterialTheme.colors.primary),
-            modifier = Modifier
-                .clickable { onSizeClick() }
-                .padding(12.dp)
-                .weight(1f, true),
-        )
+        MenuItems(
+            R.drawable.ic_download,
+            "download",
+            if (undoVisibility.value) MaterialTheme.colors.primary else MaterialTheme.colors.primaryVariant
+        ) {
+            if (undoVisibility.value) onDownloadClick()
+        }
+        MenuItems(
+            R.drawable.ic_undo,
+            "undo",
+            if (undoVisibility.value) MaterialTheme.colors.primary else MaterialTheme.colors.primaryVariant
+        ) {
+            if (undoVisibility.value) drawController.unDo()
+        }
+        MenuItems(
+            R.drawable.ic_redo,
+            "redo",
+            if (redoVisibility.value) MaterialTheme.colors.primary else MaterialTheme.colors.primaryVariant
+        ) {
+            if (redoVisibility.value) drawController.reDo()
+        }
+        MenuItems(
+            R.drawable.ic_refresh,
+            "reset",
+            if (redoVisibility.value || undoVisibility.value) MaterialTheme.colors.primary else MaterialTheme.colors.primaryVariant
+        ) {
+            drawController.reset()
+        }
+        MenuItems(R.drawable.ic_color, "stroke color", colorValue.value) {
+            onColorClick()
+        }
+        MenuItems(R.drawable.ic_size, "stroke size", MaterialTheme.colors.primary) {
+            onSizeClick()
+        }
+    }
+}
 
+@Composable
+fun RowScope.MenuItems(
+    @DrawableRes resId: Int,
+    desc: String,
+    colorTint: Color,
+    onClick: () -> Unit
+) {
+    IconButton(
+        onClick = onClick, modifier = Modifier.weight(1f, true)
+    ) {
+        Icon(
+            painterResource(id = resId),
+            contentDescription = desc,
+            tint = colorTint,
+            modifier = Modifier.size(24.dp)
+        )
     }
 }
 
