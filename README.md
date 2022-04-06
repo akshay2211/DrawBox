@@ -38,7 +38,7 @@ With multiple methods in DrawController
 ```
 
 ## Download
-[![Download](https://search.maven.org/artifact/io.ak1/drawbox)](https://search.maven.org/artifact/io.ak1/drawbox) or grab via Gradle:
+[![Download](https://img.shields.io/badge/Download-blue.svg?style=flat-square)](https://search.maven.org/artifact/io.ak1/drawbox) or grab via Gradle:
  
 include in app level build.gradle
  ```groovy
