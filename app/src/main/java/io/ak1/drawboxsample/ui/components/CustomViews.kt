@@ -58,11 +58,13 @@ fun ColorRow(
             // Fade in with the initial alpha of 0.3f.
             initialAlpha = 0.3f
         ),
-        exit = slideOutVertically() + shrinkVertically() + fadeOut()
+        exit = slideOutVertically() + shrinkVertically(
+            shrinkTowards = Alignment.Top
+        ) + fadeOut()
     ) {
         val parentList = colors.chunked(rowElementsCount)
 
-        Column(modifier = Modifier.padding(16.dp, 8.dp, 16.dp, 16.dp)) {
+        Column(modifier = Modifier.padding(16.dp, 0.dp)) {
             parentList.forEachIndexed { _, colorRow ->
                 Row {
                     repeat(rowElementsCount) { rowIndex ->
