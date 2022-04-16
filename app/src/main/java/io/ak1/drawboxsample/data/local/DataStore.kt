@@ -24,21 +24,6 @@ val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "se
 // Preference Keys
 val themePreferenceKey = intPreferencesKey("list_theme")
 
-
-val arrayOfColors = arrayOf(
-    Color.Black,
-    Color.DarkGray,
-    Color.Gray,
-    Color.LightGray,
-    Color.White,
-    Color.Red,
-    Color.Green,
-    Color.Blue,
-    Color.Yellow,
-    Color.Cyan,
-    Color.Magenta
-)
-
 internal val permissions = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
 internal const val PERMISSION_CODE = 100
 
