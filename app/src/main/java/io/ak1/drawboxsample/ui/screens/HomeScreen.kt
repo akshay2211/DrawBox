@@ -17,6 +17,7 @@ import io.ak1.drawboxsample.data.local.convertToOldColor
 import io.ak1.drawboxsample.ui.components.ControlsBar
 import io.ak1.drawboxsample.ui.components.CustomSeekbar
 import io.ak1.rangvikalp.RangVikalp
+import io.ak1.rangvikalp.defaultSelectedColor
 
 
 /**
@@ -30,7 +31,7 @@ fun HomeScreen(save: (Bitmap) -> Unit) {
     val redoVisibility = remember { mutableStateOf(false) }
     val colorBarVisibility = remember { mutableStateOf(false) }
     val sizeBarVisibility = remember { mutableStateOf(false) }
-    val currentColor = remember { mutableStateOf(Color.Red) }
+    val currentColor = remember { mutableStateOf(defaultSelectedColor) }
     val currentSize = remember { mutableStateOf(10) }
     val drawController = rememberDrawController()
 
