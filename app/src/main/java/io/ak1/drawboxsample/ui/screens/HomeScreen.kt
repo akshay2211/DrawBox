@@ -14,10 +14,9 @@ import androidx.compose.ui.graphics.asAndroidBitmap
 import io.ak1.drawbox.DrawBox
 import io.ak1.drawbox.rememberDrawController
 import io.ak1.drawboxsample.data.local.convertToOldColor
-import io.ak1.drawboxsample.ui.components.ColorRow
 import io.ak1.drawboxsample.ui.components.ControlsBar
 import io.ak1.drawboxsample.ui.components.CustomSeekbar
-import io.ak1.drawboxsample.ui.theme.colors500
+import io.ak1.rangvikalp.RangVikalp
 
 
 /**
@@ -72,15 +71,9 @@ fun HomeScreen(save: (Bitmap) -> Unit) {
                 colorValue = currentColor,
                 sizeValue = currentSize
             )
-            ColorRow(
-                colorBarVisibility.value,
-                colors = ArrayList<Color>(colors500.asList())
-                    .apply {
-                        add(MaterialTheme.colors.primary)
-                    }
-            ) { color ->
-                currentColor.value = color
-                drawController.changeColor(color)
+            RangVikalp(isVisible = colorBarVisibility.value, showShades = true){
+                currentColor.value = it
+                drawController.changeColor(it)
             }
             CustomSeekbar(
                 isVisible = sizeBarVisibility.value,
