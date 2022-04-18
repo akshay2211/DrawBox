@@ -67,6 +67,9 @@ or ivy:
 </dependency>
 ```
 
+## Thanks to
+[RangVikalp](https://github.com/akshay2211/rang-vikalp) for the beautiful color picker used in DrawBox
+
 ## License
 Licensed under the Apache License, Version 2.0, [click here for the full license](/LICENSE).
 
