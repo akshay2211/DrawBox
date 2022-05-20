@@ -50,6 +50,9 @@ class DrawController internal constructor(val trackHistory: (undoCount: Int, red
     var color by mutableStateOf(Color.Red)
         private set
 
+    var bgColor by mutableStateOf(Color.Black)
+        private set
+
     fun changeOpacity(value: Float) {
         opacity = value
     }
@@ -58,17 +61,23 @@ class DrawController internal constructor(val trackHistory: (undoCount: Int, red
         color = value
     }
 
+    fun changeBgColor(value: Color) {
+        bgColor = value
+    }
+
     fun changeStrokeWidth(value: Float) {
         strokeWidth = value
     }
 
-    fun importPath(path: ArrayList<PathWrapper>) {
+    fun importPath(drawBoxPayLoad: DrawBoxPayLoad) {
         reset()
-        _undoPathList.addAll(path)
+        bgColor = drawBoxPayLoad.bgColor
+        _undoPathList.addAll(drawBoxPayLoad.path)
         _historyTracker.tryEmit("${_undoPathList.size}")
     }
 
-    fun exportPath() = pathList.toList()
+    fun exportPath() = DrawBoxPayLoad(bgColor, pathList.toList())
+
 
     fun unDo() {
         if (_undoPathList.isNotEmpty()) {
