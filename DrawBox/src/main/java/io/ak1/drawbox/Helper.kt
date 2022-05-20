@@ -10,7 +10,8 @@ import android.view.PixelCopy
 import android.view.View
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.*
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
 import androidx.core.view.doOnLayout
 import androidx.core.view.drawToBitmap
 import kotlin.coroutines.resume
@@ -38,6 +39,7 @@ data class PathWrapper(
     val alpha: Float = 1f
 )
 
+data class DrawBoxPayLoad(val bgColor: Color, val path: List<PathWrapper>)
 
 fun createPath(points: List<Offset>) = Path().apply {
     if (points.size > 1) {

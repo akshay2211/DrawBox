@@ -35,11 +35,12 @@ fun DrawBox(
         ComposeView(it).apply {
             setContent {
                 LaunchedEffect(drawController) {
+                    drawController.changeBgColor(backgroundColor)
                     drawController.trackBitmaps(this@apply, this, bitmapCallback)
                     drawController.trackHistory(this, trackHistory)
                 }
                 Canvas(modifier = modifier
-                    .background(backgroundColor)
+                    .background(drawController.bgColor)
                     .pointerInput(Unit) {
                         detectDragGestures(
                             onDragStart = { offset ->

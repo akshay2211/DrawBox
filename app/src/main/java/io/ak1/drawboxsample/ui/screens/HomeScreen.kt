@@ -9,7 +9,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asAndroidBitmap
 import io.ak1.drawbox.DrawBox
 import io.ak1.drawbox.rememberDrawController
@@ -32,13 +31,17 @@ fun HomeScreen(save: (Bitmap) -> Unit) {
     val colorBarVisibility = remember { mutableStateOf(false) }
     val sizeBarVisibility = remember { mutableStateOf(false) }
     val currentColor = remember { mutableStateOf(defaultSelectedColor) }
+    val bg = MaterialTheme.colors.background
+    val currentBgColor = remember { mutableStateOf(bg) }
     val currentSize = remember { mutableStateOf(10) }
+    val colorIsBg = remember { mutableStateOf(false) }
     val drawController = rememberDrawController()
 
     Box {
         Column {
             DrawBox(
                 drawController = drawController,
+                backgroundColor = currentBgColor.value,
                 modifier = Modifier
                     .fillMaxSize()
                     .weight(1f, fill = false),
@@ -60,7 +63,21 @@ fun HomeScreen(save: (Bitmap) -> Unit) {
                     drawController.saveBitmap()
                 },
                 {
-                    colorBarVisibility.value = !colorBarVisibility.value
+                    colorBarVisibility.value = when (colorBarVisibility.value) {
+                        false -> true
+                        colorIsBg.value -> true
+                        else -> false
+                    }
+                    colorIsBg.value = false
+                    sizeBarVisibility.value = false
+                },
+                {
+                    colorBarVisibility.value = when (colorBarVisibility.value) {
+                        false -> true
+                        !colorIsBg.value -> true
+                        else -> false
+                    }
+                    colorIsBg.value = true
                     sizeBarVisibility.value = false
                 },
                 {
@@ -70,11 +87,17 @@ fun HomeScreen(save: (Bitmap) -> Unit) {
                 undoVisibility = undoVisibility,
                 redoVisibility = redoVisibility,
                 colorValue = currentColor,
+                bgColorValue = currentBgColor,
                 sizeValue = currentSize
             )
-            RangVikalp(isVisible = colorBarVisibility.value, showShades = true){
-                currentColor.value = it
-                drawController.changeColor(it)
+            RangVikalp(isVisible = colorBarVisibility.value, showShades = true) {
+                if (colorIsBg.value) {
+                    currentBgColor.value = it
+                    drawController.changeBgColor(it)
+                } else {
+                    currentColor.value = it
+                    drawController.changeColor(it)
+                }
             }
             CustomSeekbar(
                 isVisible = sizeBarVisibility.value,
