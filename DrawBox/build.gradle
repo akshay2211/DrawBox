@@ -14,6 +14,16 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
     }
+    sourceSets {
+        main {
+            java {
+                srcDir 'src/main/java'
+            }
+            resources {
+                srcDir 'src/../lib'
+            }
+        }
+    }
 
     buildTypes {
         release {
@@ -47,3 +57,15 @@ dependencies {
     implementation "androidx.compose.material:material:$compose_version"
     implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
 }
+task clearJar(type: Delete) {
+    delete 'build/outputs/ProjectName.jar'
+}
+
+task makeJar(type: Copy) {
+    from('build/intermediates/bundles/release/')
+    into('build/outputs/')
+    include('classes.jar')
+    rename ('classes.jar', 'ProjectName.jar')
+}
+
+makeJar.dependsOn(clearJar, build)
