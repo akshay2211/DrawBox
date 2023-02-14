@@ -3,6 +3,7 @@ package io.ak1.drawbox
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -42,16 +43,31 @@ fun DrawBox(
                 Canvas(modifier = modifier
                     .background(drawController.bgColor)
                     .pointerInput(Unit) {
+                        detectTapGestures(
+                            onTap = {offset->
+                             //   println("TAP!")
+                                drawController.insertNewPath(offset)
+                                drawController.updateLatestPath(offset)
+
+                                drawController.pathList
+                               /* drawController.pathList.forEach { pw->
+                                    drawP
+                                }*/
+                            }
+                        )
+                    }
+                    .pointerInput(Unit) {
                         detectDragGestures(
                             onDragStart = { offset ->
                                 drawController.insertNewPath(offset)
+                               // println("DRAG!")
                             }
                         ) { change, _ ->
                             val newPoint = change.position
                             drawController.updateLatestPath(newPoint)
                         }
-                    }) {
 
+                    }) {
                     drawController.pathList.forEach { pw ->
                         drawPath(
                             createPath(pw.points),
