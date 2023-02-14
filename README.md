@@ -49,20 +49,20 @@ include in app level build.gradle
  }
  ```
 ```groovy
- implementation  'io.ak1:drawbox:1.0.2'
+ implementation  'io.ak1:drawbox:1.0.3'
 ```
 or Maven:
 ```xml
 <dependency>
   <groupId>io.ak1</groupId>
   <artifactId>drawbox</artifactId>
-  <version>1.0.2</version>
+  <version>1.0.3</version>
   <type>pom</type>
 </dependency>
 ```
 or ivy:
 ```xml
-<dependency org='io.ak1' name='drawbox' rev='1.0.2'>
+<dependency org='io.ak1' name='drawbox' rev='1.0.3'>
   <artifact name='drawbox' ext='pom' ></artifact>
 </dependency>
 ```
