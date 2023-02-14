@@ -48,11 +48,7 @@ fun DrawBox(
                              //   println("TAP!")
                                 drawController.insertNewPath(offset)
                                 drawController.updateLatestPath(offset)
-
                                 drawController.pathList
-                               /* drawController.pathList.forEach { pw->
-                                    drawP
-                                }*/
                             }
                         )
                     }
