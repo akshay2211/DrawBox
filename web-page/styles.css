@@ -3,16 +3,16 @@
   --text-color: #2d3748;
   --gradient-1: #e77f67;
   --gradient-2: #63cdda;
-  --gradient-3: #818CF8;
+  --gradient-3: #818cf8;
   --shadow-color: rgba(79, 70, 229, 0.1);
 }
 
 [data-theme="dark"] {
   --bg-color: #1a1c2e;
   --text-color: #e2e8f0;
-  --gradient-1: #9F7AEA;
-  --gradient-2: #7AB8EA;
-  --gradient-3: #7AEAC5;
+  --gradient-1: #9f7aea;
+  --gradient-2: #7ab8ea;
+  --gradient-3: #7aeac5;
   --shadow-color: rgba(0, 0, 0, 0.2);
 }
 
@@ -25,10 +25,15 @@
 body {
   background: var(--bg-color);
   color: var(--text-color);
-  font-family: 'Outfit', sans-serif;
+  font-family: "Outfit", sans-serif;
   min-height: 100vh;
   display: flex;
   transition: all 0.3s ease;
+}
+
+a {
+  color: var(--gradient-1);
+  text-decoration: none;
 }
 
 #particles-js {
@@ -71,18 +76,23 @@ body {
 }
 
 h1 {
-  font-family: 'Syne', sans-serif;
+  font-family: "Syne", sans-serif;
   font-size: 6rem;
   font-weight: 600;
   margin-bottom: 2rem;
   line-height: 1.1;
-  background: linear-gradient(90deg, var(--gradient-1), var(--gradient-2), var(--gradient-3));
+  background: linear-gradient(
+    90deg,
+    var(--gradient-1),
+    var(--gradient-2),
+    var(--gradient-3)
+  );
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
   background-size: 200% auto;
   animation: fadeUp 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards,
-             textShine 3s linear infinite;
+    textShine 3s linear infinite;
   opacity: 0;
   transform: translateY(30px);
 }
@@ -97,10 +107,15 @@ p {
 }
 
 .highlight {
-  font-family: 'Syne', sans-serif;
+  font-family: "Syne", sans-serif;
   font-size: 2.5rem;
   font-weight: 600;
-  background: linear-gradient(90deg, var(--gradient-2), var(--gradient-3), var(--gradient-1));
+  background: linear-gradient(
+    90deg,
+    var(--gradient-2),
+    var(--gradient-3),
+    var(--gradient-1)
+  );
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -108,7 +123,7 @@ p {
   opacity: 0;
   transform: translateY(30px);
   animation: fadeUp 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards 0.4s,
-             textShine 3s linear infinite;
+    textShine 3s linear infinite;
 }
 
 .features {
@@ -140,10 +155,40 @@ p {
   animation: textShine 3s linear infinite;
   font-weight: 600;
 }
+.footer {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  z-index: 2;
+  padding: 1rem;
+  font-size: 0.875rem;
+  color: var(--text-color);
+  opacity: 0.7;
+  background: var(--bg-color);
+}
+
+@media (max-width: 768px) {
+  .content {
+    padding: 2rem;
+  }
+  h1 {
+    font-size: 3rem;
+  }
+  .highlight {
+    font-size: 2rem;
+  }
+  p {
+    font-size: 1.25rem;
+  }
+}
 
 @keyframes textShine {
-  0% { background-position: 0% 50%; }
-  100% { background-position: 100% 50%; }
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
 }
 
 @keyframes fadeUp {
@@ -154,8 +199,16 @@ p {
 }
 
 @media (max-width: 768px) {
-  .content { padding: 2rem; }
-  h1 { font-size: 3rem; }
-  .highlight { font-size: 2rem; }
-  p { font-size: 1.25rem; }
+  .content {
+    padding: 2rem;
+  }
+  h1 {
+    font-size: 3rem;
+  }
+  .highlight {
+    font-size: 2rem;
+  }
+  p {
+    font-size: 1.25rem;
+  }
 }

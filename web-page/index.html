@@ -1,158 +1,125 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Coming Soon</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;400;600&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
-</head>
-<body>
-    <div id="particles-js"></div>
-    
-    <button class="theme-toggle" onclick="toggleTheme()">
-        ☀️
-    </button>
-    
-    <main class="content">
-        <h1>Something Exciting is Coming</h1>
-        <p>We're building a powerful real-time collaboration platform to transform the way teams and educators brainstorm, plan, and create.</p>
-        <div class="features">
-            <div class="feature"><span>→ Seamless teamwork</span></div>
-            <div class="feature"><span>→ Effortless brainstorming</span></div>
-            <div class="feature"><span>→ Visual collaboration reimagined</span></div>
-        </div>
-
-         <p class="highlight">Stay tuned – launching soon!</p>
-    </main>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            particlesJS('particles-js', {
-                particles: {
-                     number: {
-      value: 204,
-      density: {
-        enable: true,
-        value_area: 868.0624057955
-      }
-    },
-     color: { value: '#4F46E5' },
-    shape: {
-      type: "circle"
-    },
-    opacity: {
-      value: 0.5,
-      random: false,
-      anim: {
-        enable: false,
-        speed: 1,
-        opacity_min: 0.1,
-        sync: false
-      }
-    },
-    size: {
-      value: 3.9,
-      random: true,
-      anim: {
-        enable: false,
-        speed: 40,
-        size_min: 0.1,
-        sync: false
-      }
-    },
-    line_linked: {
-      enable: true,
-      distance: 78.91476416322726,
-      color: "#AAAAAA",
-      opacity: 0.15782952832645453,
-      width: 0.7891476416322727
-    },
-    move: {
-      enable: true,
-      speed: 6,
-      direction: "none",
-      random: true,
-      straight: false,
-      out_mode: "out",
-      bounce: false,
-      attract: {
-        enable: true,
-        rotateX: 600,
-        rotateY: 1200
-      }
-    }
-  },
-                   interactivity: {
-    detect_on: "canvas",
-    events: {
-      onhover: {
-        enable: true,
-        mode: "repulse"
-      },
-      onclick: {
-        enable: true,
-        mode: "push"
-      },
-      resize: true
-    },
-    modes: {
-      grab: {
-        distance: 400,
+<!doctypehtml><html lang="en"><meta charset="UTF-8"><meta content="width=device-width,initial-scale=1" name="viewport"><title>DrawBox</title><link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;400;600&family=Syne:wght@400;600;800&display=swap" rel="stylesheet"><link href="styles.css" rel="stylesheet"><script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script><div id="particles-js"></div><button class="theme-toggle" onclick="toggleTheme()">☀️</button><main class="content"><h1>Something Exciting is Coming</h1><p>We're building a powerful real-time collaboration platform to transform the way teams and educators brainstorm, plan, and create.<div class="features"><div class="feature"><span>→ Seamless teamwork</span></div><div class="feature"><span>→ Effortless brainstorming</span></div><div class="feature"><span>→ Visual collaboration reimagined</span></div></div><p class="highlight">Stay tuned – launching soon!<footer>© 2025 All Rights Reserved. By <a href="https://www.redigit.io">Redigit Softwares Pvt Ltd</a></footer></main><script>document.addEventListener('DOMContentLoaded', function() {
+                particlesJS('particles-js', {
+                    particles: {
+                         number: {
+          value: 204,
+          density: {
+            enable: true,
+            value_area: 868.0624057955
+          }
+        },
+         color: { value: '#4F46E5' },
+        shape: {
+          type: "circle"
+        },
+        opacity: {
+          value: 0.5,
+          random: false,
+          anim: {
+            enable: false,
+            speed: 1,
+            opacity_min: 0.1,
+            sync: false
+          }
+        },
+        size: {
+          value: 3.9,
+          random: true,
+          anim: {
+            enable: false,
+            speed: 40,
+            size_min: 0.1,
+            sync: false
+          }
+        },
         line_linked: {
-          opacity: 1
+          enable: true,
+          distance: 78.91476416322726,
+          color: "#AAAAAA",
+          opacity: 0.15782952832645453,
+          width: 0.7891476416322727
+        },
+        move: {
+          enable: true,
+          speed: 6,
+          direction: "none",
+          random: true,
+          straight: false,
+          out_mode: "out",
+          bounce: false,
+          attract: {
+            enable: true,
+            rotateX: 600,
+            rotateY: 1200
+          }
         }
       },
-      bubble: {
-        distance: 400,
-        size: 40,
-        duration: 2,
-        opacity: 8,
-        speed: 3
+                       interactivity: {
+        detect_on: "canvas",
+        events: {
+          onhover: {
+            enable: true,
+            mode: "repulse"
+          },
+          onclick: {
+            enable: true,
+            mode: "push"
+          },
+          resize: true
+        },
+        modes: {
+          grab: {
+            distance: 400,
+            line_linked: {
+              opacity: 1
+            }
+          },
+          bubble: {
+            distance: 400,
+            size: 40,
+            duration: 2,
+            opacity: 8,
+            speed: 3
+          },
+          repulse: {
+            distance: 200,
+            duration: 0.4
+          },
+          push: {
+            particles_nb: 4
+          },
+          remove: {
+            particles_nb: 2
+          }
+        }
       },
-      repulse: {
-        distance: 200,
-        duration: 0.4
-      },
-      push: {
-        particles_nb: 4
-      },
-      remove: {
-        particles_nb: 2
-      }
-    }
-  },
-                retina_detect: true
+                    retina_detect: true
+                });
+    
+                const features = document.querySelectorAll('.feature');
+                let currentFeature = 0;
+    
+                function rotateFeatures() {
+                    features.forEach(f => f.classList.remove('active'));
+                    features[currentFeature].classList.add('active');
+                    currentFeature = (currentFeature + 1) % features.length;
+                }
+    
+                rotateFeatures();
+                setInterval(rotateFeatures, 4000);
             });
-
-            const features = document.querySelectorAll('.feature');
-            let currentFeature = 0;
-
-            function rotateFeatures() {
-                features.forEach(f => f.classList.remove('active'));
-                features[currentFeature].classList.add('active');
-                currentFeature = (currentFeature + 1) % features.length;
-            }
-
-            rotateFeatures();
-            setInterval(rotateFeatures, 4000);
-        });
-
-        function toggleTheme() {
-            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-            document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
-            
-            const themeToggle = document.querySelector('.theme-toggle');
-            themeToggle.innerHTML = isDark ? '☀️' : '🌙';
-            
-            const newColor = isDark ? '#4F46E5' : '#9F7AEA';
-            if (window.pJSDom && window.pJSDom[0]) {
-                window.pJSDom[0].pJS.particles.color.value = newColor;
-                window.pJSDom[0].pJS.particles.line_linked.color = newColor;
-                window.pJSDom[0].pJS.fn.particlesRefresh();
-            }
-        }
-    </script>
-</body>
-</html>
+    
+            function toggleTheme() {
+                const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+                document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
+                
+                const themeToggle = document.querySelector('.theme-toggle');
+                themeToggle.innerHTML = isDark ? '☀️' : '🌙';
+                
+                const newColor = isDark ? '#4F46E5' : '#9F7AEA';
+                if (window.pJSDom && window.pJSDom[0]) {
+                    window.pJSDom[0].pJS.particles.color.value = newColor;
+                    window.pJSDom[0].pJS.particles.line_linked.color = newColor;
+                    window.pJSDom[0].pJS.fn.particlesRefresh();
+                }
+            }</script>
