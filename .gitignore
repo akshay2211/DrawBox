@@ -13,3 +13,11 @@
 .externalNativeBuild
 .cxx
 local.properties
+/.kotlin/
+/.idea/
+/shared/build/
+/webApp/build/
+/androidApp/build/
+/desktopApp/build/
+/kotlin-js-store/
+/kotlin-js-store/
