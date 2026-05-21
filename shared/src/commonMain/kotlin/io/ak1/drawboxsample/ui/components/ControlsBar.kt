@@ -48,8 +48,9 @@ fun ControlsBar(
     val active = MaterialTheme.colorScheme.primary
     val inactive = MaterialTheme.colorScheme.surfaceVariant
     Row(
-        modifier = Modifier.fillMaxWidth().padding(12.dp),
-        horizontalArrangement = Arrangement.SpaceAround,
+        modifier = Modifier.fillMaxWidth().padding(8.dp),
+        horizontalArrangement = Arrangement.SpaceEvenly,
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         MenuItem(DrawBoxIcons.Download, "download", if (undoVisibility.value) active else inactive) {
             if (undoVisibility.value) onDownloadClick()
@@ -86,8 +87,8 @@ private fun RowScope.MenuItem(
     border: Boolean = false,
     onClick: () -> Unit,
 ) {
-    val iconModifier = Modifier.size(24.dp)
-    IconButton(onClick = onClick, modifier = Modifier.weight(1f)) {
+    val iconModifier = Modifier.size(20.dp)
+    IconButton(onClick = onClick, modifier = Modifier.weight(1f).size(36.dp)) {
         Icon(
             imageVector = icon,
             contentDescription = desc,

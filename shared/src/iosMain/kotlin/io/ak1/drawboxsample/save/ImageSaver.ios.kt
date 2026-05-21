@@ -11,6 +11,7 @@ import kotlinx.cinterop.usePinned
 import org.jetbrains.skia.EncodedImageFormat
 import org.jetbrains.skia.Image
 import platform.Foundation.NSData
+import platform.Foundation.NSLog
 import platform.Foundation.create
 import platform.UIKit.UIImage
 import platform.UIKit.UIImageWriteToSavedPhotosAlbum
@@ -21,16 +22,26 @@ actual fun rememberImageSaver(): ImageSaver = remember { IosImageSaver() }
 private class IosImageSaver : ImageSaver {
     @OptIn(ExperimentalForeignApi::class, BetaInteropApi::class)
     override fun save(bitmap: ImageBitmap) {
-        val bytes = Image.makeFromBitmap(bitmap.asSkiaBitmap())
-            .encodeToData(EncodedImageFormat.PNG)?.bytes ?: return
-        bytes.usePinned { pinned ->
-            val data = NSData.create(
-                bytes = pinned.addressOf(0),
-                length = bytes.size.toULong(),
-            )
-            UIImage.imageWithData(data)?.let { image ->
-                UIImageWriteToSavedPhotosAlbum(image, null, null, null)
+        try {
+            val bytes = Image.makeFromBitmap(bitmap.asSkiaBitmap())
+                .encodeToData(EncodedImageFormat.PNG)?.bytes ?: run {
+                NSLog("Failed to encode bitmap to PNG")
+                return
             }
+            bytes.usePinned { pinned ->
+                val data = NSData.create(
+                    bytes = pinned.addressOf(0),
+                    length = bytes.size.toULong(),
+                )
+                UIImage.imageWithData(data)?.let { image ->
+                    UIImageWriteToSavedPhotosAlbum(image, null, null, null)
+                    NSLog("Image saved successfully to Photos album")
+                } ?: run {
+                    NSLog("Failed to create UIImage from data")
+                }
+            }
+        } catch (e: Exception) {
+            NSLog("Error saving image: ${e.message}")
         }
     }
 }
