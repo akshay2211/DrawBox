@@ -61,7 +61,9 @@ internal fun Context.saveImage(bitmap: Bitmap): Uri? {
         uri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
         uri?.let {
             contentResolver.openOutputStream(it).use { output ->
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, output)
+                output?.let {
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, it)
+                }
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 values.apply {
