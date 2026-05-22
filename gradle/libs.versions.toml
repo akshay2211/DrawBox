@@ -1,6 +1,6 @@
 [versions]
 agp = "9.0.1"
-android-compileSdk = "36"
+android-compileSdk = "37"
 android-minSdk = "23"
 android-targetSdk = "36"
 androidx-activity = "1.13.0"
@@ -14,6 +14,7 @@ kotlinTest = "2.3.21"
 runner = "1.7.0"
 core = "1.7.0"
 junit = "1.3.0"
+vanniktech-maven-publish = "0.36.0"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity" }
@@ -41,3 +42,4 @@ composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "k
 kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 androidLint = { id = "com.android.lint", version.ref = "agp" }
+vanniktech-maven-publish = { id = "com.vanniktech.maven.publish", version.ref = "vanniktech-maven-publish" }

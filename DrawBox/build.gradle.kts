@@ -7,8 +7,8 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.androidLint)
+    alias(libs.plugins.vanniktech.maven.publish)
 }
-
 kotlin {
     androidLibrary {
         namespace = "io.ak1.drawbox"
@@ -16,7 +16,7 @@ kotlin {
         minSdk = libs.versions.android.minSdk.get().toInt()
 
         compilerOptions {
-            jvmTarget = JvmTarget.JVM_11
+            jvmTarget = JvmTarget.JVM_21
         }
     }
 
@@ -27,7 +27,7 @@ kotlin {
         browser()
     }
 
-    val xcfName = "DrawBoxKit"
+    val xcfName = "DrawBox"
     listOf(
         iosArm64(),
         iosSimulatorArm64(),
@@ -49,4 +49,7 @@ kotlin {
             implementation(libs.kotlin.test)
         }
     }
+}
+signing {
+    sign(publishing.publications)
 }
