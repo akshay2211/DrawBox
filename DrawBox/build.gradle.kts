@@ -7,13 +7,21 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.androidLint)
+    alias(libs.plugins.spotless)
+    alias(libs.plugins.dokka)
     alias(libs.plugins.vanniktech.maven.publish)
 }
 kotlin {
     androidLibrary {
         namespace = "io.ak1.drawbox"
-        compileSdk = libs.versions.android.compileSdk.get().toInt()
-        minSdk = libs.versions.android.minSdk.get().toInt()
+        compileSdk =
+            libs.versions.android.compileSdk
+                .get()
+                .toInt()
+        minSdk =
+            libs.versions.android.minSdk
+                .get()
+                .toInt()
 
         compilerOptions {
             jvmTarget = JvmTarget.JVM_21
@@ -50,6 +58,20 @@ kotlin {
         }
     }
 }
+
+spotless {
+    kotlin {
+        target("src/**/*.kt")
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
+    kotlinGradle {
+        target("**/*.gradle.kts")
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
+}
+
 signing {
     sign(publishing.publications)
 }

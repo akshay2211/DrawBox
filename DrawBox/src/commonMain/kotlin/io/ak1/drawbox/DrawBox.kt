@@ -54,7 +54,7 @@ fun DrawBox(
                     onTap = { offset ->
                         drawController.insertNewPath(offset)
                         drawController.updateLatestPath(offset)
-                    }
+                    },
                 )
             }
             .pointerInput(Unit) {
@@ -63,7 +63,7 @@ fun DrawBox(
                 ) { change, _ ->
                     drawController.updateLatestPath(change.position)
                 }
-            }
+            },
     ) {
         Canvas(modifier = Modifier.fillMaxSize()) {
             drawController.pathList.forEach { pw ->

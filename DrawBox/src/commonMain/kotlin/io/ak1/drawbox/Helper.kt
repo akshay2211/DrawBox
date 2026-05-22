@@ -34,5 +34,4 @@ fun createPath(points: List<Offset>) = Path().apply {
     }
 }
 
-private fun calculateMidpoint(start: Offset, end: Offset) =
-    Offset((start.x + end.x) / 2, (start.y + end.y) / 2)
+private fun calculateMidpoint(start: Offset, end: Offset) = Offset((start.x + end.x) / 2, (start.y + end.y) / 2)
