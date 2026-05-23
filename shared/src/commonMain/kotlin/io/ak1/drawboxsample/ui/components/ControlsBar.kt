@@ -24,26 +24,24 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
-import io.ak1.drawbox.DrawController
+import io.ak1.drawbox.presentation.viewmodel.DrawBoxController
 import io.ak1.drawboxsample.ui.icons.DrawBoxIcons
 
 @Composable
 fun ControlsBar(
-    drawController: DrawController,
-    onDownloadClick: () -> Unit,
+    viewModel: DrawBoxController,
+    canUndo: Boolean,
+    canRedo: Boolean,
+    currentColor: Color,
+    currentBgColor: Color,
     onColorClick: () -> Unit,
     onBgColorClick: () -> Unit,
     onSizeClick: () -> Unit,
-    undoVisibility: MutableState<Boolean>,
-    redoVisibility: MutableState<Boolean>,
-    colorValue: MutableState<Color>,
-    bgColorValue: MutableState<Color>,
 ) {
     val active = MaterialTheme.colorScheme.primary
     val inactive = MaterialTheme.colorScheme.surfaceVariant
@@ -52,29 +50,29 @@ fun ControlsBar(
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        MenuItem(DrawBoxIcons.Download, "download", if (undoVisibility.value) active else inactive) {
-            if (undoVisibility.value) onDownloadClick()
+        MenuItem(DrawBoxIcons.Download, "download", if (canUndo) active else inactive) {
+            if (canUndo) viewModel.saveBitmap()
         }
-        MenuItem(DrawBoxIcons.Undo, "undo", if (undoVisibility.value) active else inactive) {
-            if (undoVisibility.value) drawController.unDo()
+        MenuItem(DrawBoxIcons.Undo, "undo", if (canUndo) active else inactive) {
+            if (canUndo) viewModel.undo()
         }
-        MenuItem(DrawBoxIcons.Redo, "redo", if (redoVisibility.value) active else inactive) {
-            if (redoVisibility.value) drawController.reDo()
+        MenuItem(DrawBoxIcons.Redo, "redo", if (canRedo) active else inactive) {
+            if (canRedo) viewModel.redo()
         }
         MenuItem(
             DrawBoxIcons.Refresh,
             "reset",
-            if (redoVisibility.value || undoVisibility.value) active else inactive,
+            if (canRedo || canUndo) active else inactive,
         ) {
-            drawController.reset()
+            viewModel.reset()
         }
         MenuItem(
             DrawBoxIcons.Color,
             "background color",
-            bgColorValue.value,
-            border = bgColorValue.value == MaterialTheme.colorScheme.background,
+            currentBgColor,
+            border = currentBgColor == MaterialTheme.colorScheme.background,
         ) { onBgColorClick() }
-        MenuItem(DrawBoxIcons.Color, "stroke color", colorValue.value) { onColorClick() }
+        MenuItem(DrawBoxIcons.Color, "stroke color", currentColor) { onColorClick() }
         MenuItem(DrawBoxIcons.Size, "stroke size", active) { onSizeClick() }
     }
 }

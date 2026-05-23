@@ -6,78 +6,378 @@ import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
+import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.layer.drawLayer
 import androidx.compose.ui.graphics.rememberGraphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
+import io.ak1.drawbox.domain.model.Element
+import io.ak1.drawbox.domain.model.Intent
+import io.ak1.drawbox.domain.model.State
+import io.ak1.drawbox.domain.model.ShapeType
+import io.ak1.drawbox.domain.model.Mode
+import kotlinx.coroutines.launch
+import kotlin.math.PI
+import kotlin.math.absoluteValue
+import kotlin.math.atan2
+import kotlin.math.cos
+import kotlin.math.sin
+import kotlin.math.sqrt
 
+/**
+ * Main drawing canvas composable supporting both freehand drawing and geometric shapes.
+ *
+ * [DrawBox] is a high-performance drawing surface that:
+ * - Renders both [Element.Path] (freehand) and [Element.Shape] (geometric) elements
+ * - Handles user gestures (tap, drag) and converts them to intents
+ * - Adapts gesture behavior based on the current [Mode]
+ * - Supports undo/redo for all drawing operations
+ * - Captures canvas as bitmap for saving
+ *
+ * **Drawing Modes:**
+ * - **PEN** ([Mode.PEN]): Tap/drag creates [Element.Path] for freehand drawing
+ * - **RECTANGLE/CIRCLE/TRIANGLE/ARROW/LINE**: Tap/drag creates [Element.Shape] of that type
+ *
+ * **Rendering Pipeline:**
+ * 1. Sort elements by [Element.zIndex] (lower values render first)
+ * 2. Render each element using [renderElement]
+ * 3. Paths are rendered with strokes, shapes with their specific geometry
+ *
+ * **Architecture:**
+ * ```
+ * DrawBox (UI Layer)
+ *   ↓ gesture input
+ * Intent dispatch
+ *   ↓
+ * ViewMode/Reducer (State Layer)
+ *   ↓ new state
+ * DrawBox recomposes
+ *   ↓ reads state.mode
+ * Changes gesture behavior
+ * ```
+ *
+ * **Performance Notes:**
+ * - Uses [rememberGraphicsLayer] to render elements efficiently
+ * - Pointer input is keyed by [state.mode] to update on mode changes
+ * - Large element lists may impact frame rate; consider implementing virtualization
+ * - On-screen canvas changes are tracked via state hashCode
+ *
+ * @param state Current drawing state containing elements, colors, and current mode
+ * @param onIntent Callback to dispatch intents (user actions)
+ * @param modifier Layout modifier for the canvas (defaults to fillMaxSize)
+ *
+ * @see State
+ * @see Intent
+ * @see Mode
+ * @see Element
+ * @see renderElement for element-specific rendering
+ */
 @Composable
 fun DrawBox(
-    drawController: DrawController,
+    state: State,
+    onIntent: (Intent) -> Unit,
     modifier: Modifier = Modifier.fillMaxSize(),
-    backgroundColor: Color = MaterialTheme.colorScheme.background,
-    bitmapCallback: (ImageBitmap?, Throwable?) -> Unit,
-    trackHistory: (undoCount: Int, redoCount: Int) -> Unit = { _, _ -> },
 ) {
     val graphicsLayer = rememberGraphicsLayer()
-
-    LaunchedEffect(drawController) {
-        drawController.changeBgColor(backgroundColor)
-        drawController.trackHistory(this, trackHistory)
-        drawController.captureRequests.collect {
-            try {
-                bitmapCallback(graphicsLayer.toImageBitmap(), null)
-            } catch (e: Throwable) {
-                bitmapCallback(null, e)
+    val scope = rememberCoroutineScope()
+    LaunchedEffect(state.hashCode()){
+        state.invokeBitmap = {
+            scope.launch {
+                try {
+                    onIntent(Intent.SaveBitmap(graphicsLayer.toImageBitmap(), null))
+                } catch (e: Throwable) {
+                    onIntent(Intent.SaveBitmap(null, e))
+                }
             }
         }
+    }
+
+    val isPenMode = state.mode == Mode.PEN
+    val shapeType = when (state.mode) {
+        Mode.RECTANGLE -> ShapeType.RECTANGLE
+        Mode.CIRCLE -> ShapeType.CIRCLE
+        Mode.TRIANGLE -> ShapeType.TRIANGLE
+        Mode.ARROW -> ShapeType.ARROW
+        Mode.LINE -> ShapeType.LINE
+        Mode.PEN -> null
     }
 
     Box(
         modifier = modifier
-            .background(drawController.bgColor)
+            .background(state.bgColor)
             .drawWithContent {
                 graphicsLayer.record { this@drawWithContent.drawContent() }
                 drawLayer(graphicsLayer)
             }
-            .pointerInput(Unit) {
+            .pointerInput(state.mode) {
                 detectTapGestures(
                     onTap = { offset ->
-                        drawController.insertNewPath(offset)
-                        drawController.updateLatestPath(offset)
+                        if (isPenMode) {
+                            onIntent(Intent.InsertNewPath(offset))
+                            onIntent(Intent.UpdateLatestPath(offset))
+                        } else if (shapeType != null) {
+                            onIntent(Intent.InsertNewShape(shapeType, offset))
+                            onIntent(Intent.UpdateLatestShape(offset))
+                        }
                     },
                 )
             }
-            .pointerInput(Unit) {
+            .pointerInput(state.mode) {
                 detectDragGestures(
-                    onDragStart = { offset -> drawController.insertNewPath(offset) },
+                    onDragStart = { offset ->
+                        if (isPenMode) {
+                            onIntent(Intent.InsertNewPath(offset))
+                        } else if (shapeType != null) {
+                            onIntent(Intent.InsertNewShape(shapeType, offset))
+                        }
+                    },
                 ) { change, _ ->
-                    drawController.updateLatestPath(change.position)
+                    if (isPenMode) {
+                        onIntent(Intent.UpdateLatestPath(change.position))
+                    } else if (shapeType != null) {
+                        onIntent(Intent.UpdateLatestShape(change.position))
+                    }
                 }
             },
     ) {
         Canvas(modifier = Modifier.fillMaxSize()) {
-            drawController.pathList.forEach { pw ->
-                drawPath(
-                    createPath(pw.points),
-                    color = pw.strokeColor,
-                    alpha = pw.alpha,
-                    style = Stroke(
-                        width = pw.strokeWidth,
-                        cap = StrokeCap.Round,
-                        join = StrokeJoin.Round,
-                    ),
-                )
-            }
+            state.elements
+                .sortedBy { it.zIndex }
+                .forEach { element ->
+                    renderElement(element)
+                }
         }
     }
+}
+
+/**
+ * Render an element on the canvas based on its type.
+ *
+ * Dispatches to specific rendering functions:
+ * - [Element.Path]: Draws as a continuous stroke using [drawPath]
+ * - [Element.Shape]: Delegates to [drawShape] for type-specific rendering
+ *
+ * @param element The element to render
+ *
+ * @see drawShape for shape-specific rendering
+ */
+private fun DrawScope.renderElement(element: Element) {
+    when (element) {
+        is Element.Path -> {
+            drawPath(
+                createPath(element.points),
+                color = element.strokeColor,
+                alpha = element.alpha,
+                style = Stroke(
+                    width = element.strokeWidth,
+                    cap = StrokeCap.Round,
+                    join = StrokeJoin.Round,
+                ),
+            )
+        }
+        is Element.Shape -> {
+            drawShape(element)
+        }
+    }
+}
+
+/**
+ * Render a geometric shape on the canvas.
+ *
+ * Dispatches to type-specific rendering based on [Element.Shape.shapeType].
+ * All shapes are defined by two points (start and end) and render within
+ * the bounding box formed by these points.
+ *
+ * **Bounding Box Calculation:**
+ * - topLeft: minimum (x, y) of start and end points
+ * - width: absolute difference in x coordinates
+ * - height: absolute difference in y coordinates
+ *
+ * **Fill vs Stroke:**
+ * - If [Element.Shape.fillColor] is set: shape is filled
+ * - If null: shape is stroked with [Element.Shape.strokeColor]
+ *
+ * @param shape The shape element to render
+ *
+ * @see DrawScope.drawRect for rectangle rendering
+ * @see DrawScope.drawCircle for circle rendering
+ * @see drawTriangle for triangle rendering
+ * @see drawArrowShape for arrow rendering
+ */
+private fun DrawScope.drawShape(shape: Element.Shape) {
+    if (shape.points.size < 2) return
+
+    val start = shape.points[0]
+    val end = shape.points.last()
+    val width = (end.x - start.x).absoluteValue
+    val height = (end.y - start.y).absoluteValue
+    val topLeft = Offset(
+        minOf(start.x, end.x),
+        minOf(start.y, end.y)
+    )
+
+    when (shape.shapeType) {
+        ShapeType.RECTANGLE -> {
+            drawRect(
+                color = shape.fillColor ?: shape.strokeColor,
+                topLeft = topLeft,
+                size = androidx.compose.ui.geometry.Size(width, height),
+                style = if (shape.fillColor != null) Fill else Stroke(shape.strokeWidth)
+            )
+        }
+        ShapeType.CIRCLE -> {
+            val center = start + Offset(
+                (end.x - start.x) / 2,
+                (end.y - start.y) / 2
+            )
+            val distance = sqrt((end.x - start.x) * (end.x - start.x) + (end.y - start.y) * (end.y - start.y))
+            val radius = distance / 2
+            drawCircle(
+                color = shape.fillColor ?: shape.strokeColor,
+                radius = radius,
+                center = center,
+                style = if (shape.fillColor != null) Fill else Stroke(shape.strokeWidth)
+            )
+        }
+        ShapeType.TRIANGLE -> {
+            drawTriangle(topLeft, width, height, shape)
+        }
+        ShapeType.ARROW -> {
+            drawArrowShape(start, end, shape.strokeColor, shape.strokeWidth)
+        }
+        ShapeType.LINE -> {
+            drawLine(
+                color = shape.strokeColor,
+                start = start,
+                end = end,
+                strokeWidth = shape.strokeWidth
+            )
+        }
+    }
+}
+
+/**
+ * Render an isosceles triangle shape.
+ *
+ * The triangle is drawn with the apex at the top center, and the base at the bottom.
+ * The shape is filled if [Element.Shape.fillColor] is set, otherwise stroked.
+ *
+ * **Geometry:**
+ * - Top apex: (topLeft.x + width/2, topLeft.y)
+ * - Bottom right: (topLeft.x + width, topLeft.y + height)
+ * - Bottom left: (topLeft.x, topLeft.y + height)
+ *
+ * @param topLeft Top-left corner of the bounding box
+ * @param width Width of the bounding box
+ * @param height Height of the bounding box
+ * @param shape Shape element containing color and stroke information
+ */
+private fun DrawScope.drawTriangle(
+    topLeft: Offset,
+    width: Float,
+    height: Float,
+    shape: Element.Shape,
+) {
+    val path = Path().apply {
+        moveTo(topLeft.x + width / 2, topLeft.y)
+        lineTo(topLeft.x + width, topLeft.y + height)
+        lineTo(topLeft.x, topLeft.y + height)
+        close()
+    }
+    drawPath(
+        path,
+        color = shape.fillColor ?: shape.strokeColor,
+        style = if (shape.fillColor != null) Fill else Stroke(shape.strokeWidth)
+    )
+}
+
+/**
+ * Render an arrow shape with intelligent head sizing.
+ *
+ * The arrow consists of:
+ * 1. **Line**: From start to lineEnd (calculated to not overlap arrow head)
+ * 2. **Arrowhead**: Equilateral triangle at the end point, filled and stroked
+ *
+ * **Features:**
+ * - Arrow head scales with stroke width: `arrowSize = max(30f, strokeWidth * 3f)`
+ * - Line length reduced by arrow depth: `arrowDepth = arrowSize * cos(π/6)`
+ * - Arrowhead has both fill and stroke for visibility at any zoom level
+ * - Rotates to match line direction using angle calculation
+ *
+ * **Geometry:**
+ * ```
+ *         /\  ← arrowhead (filled + stroked)
+ *        /  \
+ *       /____\
+ *       |    |  ← line (stroked, length reduced by arrowDepth)
+ *       |____|
+ *      start
+ * ```
+ *
+ * @param start Starting point of the arrow line
+ * @param end Ending point (arrowhead apex)
+ * @param color Color for line and arrowhead
+ * @param strokeWidth Width of the line stroke (arrowhead scales with this)
+ */
+private fun DrawScope.drawArrowShape(
+    start: Offset,
+    end: Offset,
+    color: Color,
+    strokeWidth: Float,
+) {
+    val angle = atan2(end.y - start.y, end.x - start.x)
+    val arrowSize = maxOf(30f, strokeWidth * 3f)
+    val arrowDepth = arrowSize * cos(PI / 6).toFloat()
+
+    val dx = end.x - start.x
+    val dy = end.y - start.y
+    val distance = sqrt(dx * dx + dy * dy)
+    val lineEnd = if (distance > 0) {
+        Offset(
+            end.x - (dx / distance) * arrowDepth,
+            end.y - (dy / distance) * arrowDepth
+        )
+    } else {
+        end
+    }
+
+    drawLine(
+        color = color,
+        start = start,
+        end = lineEnd,
+        strokeWidth = strokeWidth
+    )
+
+    val arrowPoint1 = Offset(
+        end.x - arrowSize * cos(angle - PI / 6).toFloat(),
+        end.y - arrowSize * sin(angle - PI / 6).toFloat()
+    )
+    val arrowPoint2 = Offset(
+        end.x - arrowSize * cos(angle + PI / 6).toFloat(),
+        end.y - arrowSize * sin(angle + PI / 6).toFloat()
+    )
+
+    val arrowPath = Path().apply {
+        moveTo(end.x, end.y)
+        lineTo(arrowPoint1.x, arrowPoint1.y)
+        lineTo(arrowPoint2.x, arrowPoint2.y)
+        close()
+    }
+    drawPath(arrowPath, color = color, style = Fill)
+    drawPath(
+        arrowPath,
+        color = color,
+        style = Stroke(width = maxOf(1f, strokeWidth * 0.5f), cap = StrokeCap.Round, join = StrokeJoin.Round)
+    )
 }

@@ -5,14 +5,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 
-data class PathWrapper(
-    var points: SnapshotStateList<Offset>,
-    val strokeWidth: Float = 5f,
-    val strokeColor: Color,
-    val alpha: Float = 1f,
-)
-
-data class DrawBoxPayLoad(val bgColor: Color, val path: List<PathWrapper>)
 
 fun createPath(points: List<Offset>) = Path().apply {
     if (points.size > 1) {

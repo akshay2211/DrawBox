@@ -9,6 +9,7 @@ plugins {
     alias(libs.plugins.androidLint)
     alias(libs.plugins.spotless)
     alias(libs.plugins.dokka)
+    alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.vanniktech.maven.publish)
 }
 kotlin {
@@ -50,8 +51,9 @@ kotlin {
         commonMain.dependencies {
             implementation(libs.compose.runtime)
             implementation(libs.compose.foundation)
-            implementation(libs.compose.material3)
             implementation(libs.compose.ui)
+            implementation(libs.androidx.lifecycle.viewmodel.compose)
+            implementation(libs.kotlinx.serialization.json)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

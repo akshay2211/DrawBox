@@ -8,15 +8,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import io.ak1.drawboxsample.save.rememberImageSaver
 import io.ak1.drawboxsample.ui.HomeScreen
 import io.ak1.drawboxsample.ui.theme.DrawBoxTheme
 
 @Composable
 fun App() {
-    Column(Modifier.fillMaxSize().background(Color.Cyan)) {  }
-    /*val isDark = isSystemInDarkTheme()
+    val isDark = isSystemInDarkTheme()
     DrawBoxTheme(darkTheme = isDark) {
         Surface(
             color = MaterialTheme.colorScheme.background,
@@ -25,5 +23,5 @@ fun App() {
             val saver = rememberImageSaver()
             HomeScreen(onSave = { saver.save(it) })
         }
-    }*/
+    }
 }

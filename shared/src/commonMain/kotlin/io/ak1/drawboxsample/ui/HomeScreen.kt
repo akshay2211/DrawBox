@@ -1,56 +1,84 @@
 package io.ak1.drawboxsample.ui
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import io.ak1.drawbox.DrawBox
-import io.ak1.drawbox.rememberDrawController
+import io.ak1.drawbox.domain.model.Event
+import io.ak1.drawbox.presentation.viewmodel.rememberDrawBoxController
 import io.ak1.drawboxsample.ui.components.ColorPalette
 import io.ak1.drawboxsample.ui.components.ControlsBar
+import io.ak1.drawboxsample.ui.components.ShapeSelector
 import io.ak1.drawboxsample.ui.components.StrokeSizeSlider
 
 @Composable
 fun HomeScreen(onSave: (ImageBitmap) -> Unit) {
-    val undoVisibility = remember { mutableStateOf(false) }
-    val redoVisibility = remember { mutableStateOf(false) }
     val colorBarVisibility = remember { mutableStateOf(false) }
     val sizeBarVisibility = remember { mutableStateOf(false) }
-    val currentColor = remember { mutableStateOf(Color(0xFFE53935)) }
-    val bg = MaterialTheme.colorScheme.background
-    val currentBgColor = remember { mutableStateOf(bg) }
-    val currentSize = remember { mutableStateOf(10) }
     val colorIsBg = remember { mutableStateOf(false) }
-    val drawController = rememberDrawController()
+    var json by remember { mutableStateOf("") }
+
+    // Use DrawBoxController
+    val viewModel = rememberDrawBoxController()
+    val state by viewModel.state.collectAsState()
+    val canUndo by viewModel.canUndo.collectAsState()
+    val canRedo by viewModel.canRedo.collectAsState()
+
+    LaunchedEffect(viewModel) {
+        viewModel.events.collect { event ->
+            // Handle events if needed
+            if (event is Event.PngSaved){
+                if (event.bitmap!=null)  onSave.invoke(event.bitmap!!) else println("error ${event.throwable}")
+            }
+        }
+    }
 
     Box {
         Column {
+            // Drawing canvas with full shape support
+            ShapeSelector(state.mode){
+                viewModel.setMode(it)
+            }
             DrawBox(
-                drawController = drawController,
-                backgroundColor = currentBgColor.value,
+                state = state,
+                onIntent = viewModel::onIntent,
                 modifier = Modifier.fillMaxSize().weight(1f, fill = false).clipToBounds(),
-                bitmapCallback = { imageBitmap, _ ->
-                    imageBitmap?.let { onSave(it) }
-                },
-            ) { undoCount, redoCount ->
-                sizeBarVisibility.value = false
-                colorBarVisibility.value = false
-                undoVisibility.value = undoCount != 0
-                redoVisibility.value = redoCount != 0
+            )
+
+            Row {
+                Button({
+                    json = viewModel.exportPath()
+
+                }){
+                    Text("Export")
+                }
+
+                Button({
+                    viewModel.importPath(json)
+                }){
+                    Text("Import")
+                }
             }
 
             ControlsBar(
-                drawController = drawController,
-                onDownloadClick = { drawController.saveBitmap() },
+                viewModel = viewModel,
+                canUndo = canUndo,
+                canRedo = canRedo,
+                currentColor = state.strokeColor,
+                currentBgColor = state.bgColor,
                 onColorClick = {
                     colorBarVisibility.value = when (colorBarVisibility.value) {
                         false -> true
@@ -73,32 +101,25 @@ fun HomeScreen(onSave: (ImageBitmap) -> Unit) {
                     sizeBarVisibility.value = !sizeBarVisibility.value
                     colorBarVisibility.value = false
                 },
-                undoVisibility = undoVisibility,
-                redoVisibility = redoVisibility,
-                colorValue = currentColor,
-                bgColorValue = currentBgColor,
             )
 
             ColorPalette(
                 visible = colorBarVisibility.value,
-                selectedColor = if (colorIsBg.value) currentBgColor.value else currentColor.value,
+                selectedColor = if (colorIsBg.value) state.bgColor else state.strokeColor,
             ) {
                 if (colorIsBg.value) {
-                    currentBgColor.value = it
-                    drawController.changeBgColor(it)
+                    viewModel.setBgColor(it)
                 } else {
-                    currentColor.value = it
-                    drawController.changeColor(it)
+                    viewModel.setColor(it)
                 }
             }
 
             StrokeSizeSlider(
                 isVisible = sizeBarVisibility.value,
-                progress = currentSize.value,
-                color = currentColor.value,
+                progress = state.strokeWidth.toInt(),
+                color = state.strokeColor,
             ) {
-                currentSize.value = it
-                drawController.changeStrokeWidth(it.toFloat())
+                viewModel.setStrokeWidth(it.toFloat())
             }
         }
     }
