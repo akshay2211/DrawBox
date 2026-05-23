@@ -5,7 +5,7 @@ import androidx.compose.ui.graphics.Color
 import io.ak1.drawbox.domain.model.Element
 import io.ak1.drawbox.domain.model.ShapeType
 
-class UseCase() {
+class UseCase {
     // Element operations
     fun addElement(element: Element, currentElements: List<Element>): List<Element> {
         val newElement = when (element) {

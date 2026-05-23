@@ -15,12 +15,16 @@ import org.w3c.dom.HTMLAnchorElement
 import org.w3c.dom.url.URL
 import org.w3c.files.Blob
 import org.w3c.files.BlobPropertyBag
+import kotlin.time.Clock
+import kotlin.js.ExperimentalWasmJsInterop
 
 @Composable
 actual fun rememberImageSaver(): ImageSaver = remember { WasmJsImageSaver() }
 
+@OptIn(ExperimentalWasmJsInterop::class)
+@Suppress("UNCHECKED_CAST")
 private class WasmJsImageSaver : ImageSaver {
-    override fun save(bitmap: ImageBitmap) {
+    override fun savePng(bitmap: ImageBitmap) {
         val bytes = Image.makeFromBitmap(bitmap.asSkiaBitmap())
             .encodeToData(EncodedImageFormat.PNG)?.bytes ?: return
         val arr = Uint8Array(bytes.size)
@@ -31,7 +35,20 @@ private class WasmJsImageSaver : ImageSaver {
         val url = URL.createObjectURL(blob)
         val anchor = document.createElement("a") as HTMLAnchorElement
         anchor.href = url
-        anchor.download = "DrawBox.png"
+        anchor.download = "DrawBox-${Clock.System.now().nanosecondsOfSecond}.png"
+        anchor.click()
+        URL.revokeObjectURL(url)
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    override fun saveSvg(svgContent: String) {
+        val parts = JsArray<JsAny?>()
+        parts[0] = svgContent as JsAny?
+        val blob = Blob(parts, BlobPropertyBag(type = "image/svg+xml"))
+        val url = URL.createObjectURL(blob)
+        val anchor = document.createElement("a") as HTMLAnchorElement
+        anchor.href = url
+        anchor.download = "DrawBox-${Clock.System.now().nanosecondsOfSecond}.svg"
         anchor.click()
         URL.revokeObjectURL(url)
     }

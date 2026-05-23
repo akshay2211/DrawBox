@@ -8,6 +8,7 @@ import io.ak1.drawbox.domain.model.Intent
 import io.ak1.drawbox.domain.model.State
 import io.ak1.drawbox.domain.model.Mode
 import io.ak1.drawbox.domain.usecase.UseCase
+import io.ak1.drawbox.domain.usecase.SvgExporter
 import io.ak1.drawbox.presentation.reducer.Reducer
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -207,6 +208,19 @@ class DrawBoxController(
             elements = _state.value.elements
         )
         return DrawingSerializer.serialize(payLoad)
+    }
+
+    /**
+     * Export the current drawing as an SVG string.
+     *
+     * The exported string can be saved to a file and opened in any SVG viewer.
+     * Emits an Event.SvgExported event that can be collected to save the file.
+     */
+    fun exportSvg() {
+        val svgContent = SvgExporter.exportToSvg(
+            elements = _state.value.elements
+        )
+        _events.tryEmit(Event.SvgExported(svgContent))
     }
 
     /**

@@ -23,7 +23,7 @@ actual fun rememberImageSaver(): ImageSaver {
 }
 
 private class AndroidImageSaver(private val context: Context) : ImageSaver {
-    override fun save(bitmap: ImageBitmap) {
+    override fun savePng(bitmap: ImageBitmap) {
         GlobalScope.launch(Dispatchers.IO) {
             try {
                 val androidBitmap = bitmap.asAndroidBitmap()
@@ -62,10 +62,53 @@ private class AndroidImageSaver(private val context: Context) : ImageSaver {
                         null,
                     )
                 }
-                showToast("Image saved successfully!")
+                showToast("PNG saved successfully!")
             } catch (e: Throwable) {
-                android.util.Log.e("ImageSaver", "Error saving image", e)
-                showToast("Error saving image: ${e.message}")
+                android.util.Log.e("ImageSaver", "Error saving PNG", e)
+                showToast("Error saving PNG: ${e.message}")
+            }
+        }
+    }
+
+    override fun saveSvg(svgContent: String) {
+        GlobalScope.launch(Dispatchers.IO) {
+            try {
+                val fileName = "DrawBox-${System.currentTimeMillis()}.svg"
+                val values = ContentValues().apply {
+                    put(MediaStore.Files.FileColumns.DISPLAY_NAME, fileName)
+                    put(MediaStore.Files.FileColumns.MIME_TYPE, "image/svg+xml")
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        put(
+                            MediaStore.MediaColumns.RELATIVE_PATH,
+                            Environment.DIRECTORY_DOCUMENTS + "/DrawBox",
+                        )
+                        put(MediaStore.MediaColumns.IS_PENDING, 1)
+                    }
+                }
+                val resolver = context.contentResolver
+                val uri = resolver.insert(MediaStore.Files.getContentUri("external"), values)
+
+                if (uri == null) {
+                    showToast("Failed to create SVG file")
+                    return@launch
+                }
+
+                resolver.openOutputStream(uri)?.use { out ->
+                    out.write(svgContent.toByteArray())
+                }
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    resolver.update(
+                        uri,
+                        ContentValues().apply { put(MediaStore.MediaColumns.IS_PENDING, 0) },
+                        null,
+                        null,
+                    )
+                }
+                showToast("SVG saved successfully!")
+            } catch (e: Throwable) {
+                android.util.Log.e("ImageSaver", "Error saving SVG", e)
+                showToast("Error saving SVG: ${e.message}")
             }
         }
     }

@@ -20,8 +20,7 @@ fun App() {
             color = MaterialTheme.colorScheme.background,
             modifier = Modifier.fillMaxSize()
         ) {
-            val saver = rememberImageSaver()
-            HomeScreen(onSave = { saver.save(it) })
+            HomeScreen()
         }
     }
 }

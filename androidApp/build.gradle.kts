@@ -28,7 +28,6 @@ android {
     defaultConfig {
         applicationId = "io.ak1.drawboxsample"
         minSdk = libs.versions.android.minSdk.get().toInt()
-        targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
     }
@@ -46,4 +45,14 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+}
+
+tasks.register<Copy>("copyComposeResources") {
+    delete("src/main/assets/composeResources/drawboxsample.shared.generated.resources")
+    from("../shared/src/commonMain/composeResources")
+    into("src/main/assets/composeResources/drawboxsample.shared.generated.resources")
+}
+
+tasks.named("preBuild") {
+    dependsOn("copyComposeResources")
 }

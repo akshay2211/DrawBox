@@ -19,50 +19,30 @@ import drawboxsample.shared.generated.resources.triangle
 import drawboxsample.shared.generated.resources.undo
 import org.jetbrains.compose.resources.DrawableResource
 
-
-
 object DrawBoxIcons {
-
-    // Palette icon from SVG
+    // Shapes
     val Palette: DrawableResource = Res.drawable.palette
-
-    // Rectangle icon from SVG
     val Rectangle: DrawableResource = Res.drawable.square
-
-    // Circle icon from SVG
     val Circle: DrawableResource = Res.drawable.circle
-
-    // Triangle icon from SVG
     val Triangle: DrawableResource = Res.drawable.triangle
-
-    // Arrow icon from SVG
     val Arrow: DrawableResource = Res.drawable.arrow
-
-    // Line icon (stroke straight from SVG)
     val Line: DrawableResource = Res.drawable.line
 
-    // Refresh icon from SVG
-    val RefreshIcon: DrawableResource = Res.drawable.refresh
-
-    // Ruler/Size icon from SVG
+    // Drawing Tools
     val Ruler: DrawableResource = Res.drawable.ruler
-
-    // Pencil/Stroke curved icon from SVG
     val StrokeCurved: DrawableResource = Res.drawable.curved
 
-    // File PNG icon from SVG
-    val FilePng: DrawableResource = Res.drawable.png
+    // Actions
+    val Refresh: DrawableResource = Res.drawable.refresh
+    val Undo: DrawableResource = Res.drawable.undo
+    val Redo: DrawableResource = Res.drawable.redo
 
-    // File SVG icon from SVG
+    // File Formats
+    val FilePng: DrawableResource = Res.drawable.png
     val FileSvg: DrawableResource = Res.drawable.file_type_svg
 
-    // Undo icon
-    val Undo: DrawableResource = Res.drawable.undo
-
-    // Redo icon
-    val Redo: DrawableResource = Res.drawable.redo
+    // Menu & UI
     val Settings: DrawableResource = Res.drawable.dots_vertical
     val Import: DrawableResource = Res.drawable.file_import
     val Export: DrawableResource = Res.drawable.export
-
 }

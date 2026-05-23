@@ -41,17 +41,11 @@ fun ColorPalette(
         ) {
             palette.forEach { color ->
                 val borderWidth = if (color == selectedColor) 2.dp else 0.5.dp
-                val borderColor = if (color == selectedColor)
-                    MaterialTheme.colorScheme.onBackground
-                else
-                    MaterialTheme.colorScheme.surfaceVariant
+                val borderColor = if (color == selectedColor) MaterialTheme.colorScheme.onBackground
+                else MaterialTheme.colorScheme.surfaceVariant
                 Row(
-                    modifier = Modifier
-                        .size(32.dp)
-                        .clip(CircleShape)
-                        .background(color)
-                        .border(borderWidth, borderColor, CircleShape)
-                        .clickable { onColorSelected(color) },
+                    modifier = Modifier.size(32.dp).clip(CircleShape).background(color)
+                        .border(borderWidth, borderColor, CircleShape).clickable { onColorSelected(color) },
                 ) {}
             }
         }
