@@ -12,7 +12,8 @@ jobs:
 
       - uses: actions/setup-java@v3
         with:
-          java-version: 11
+          distribution: temurin
+          java-version: 21
 
       - uses: actions/setup-python@v4
         with:
