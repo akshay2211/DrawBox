@@ -1,0 +1,104 @@
+site_name: DrawBox - Kotlin Multiplatform Drawing Library
+site_description: DrawBox is a powerful, open-source Kotlin Multiplatform drawing library. Create vector drawings with multiple tools including pen, shapes, colors, and more. Available on Android, iOS, Desktop, and Web with SVG and PNG export.
+site_url: https://akshay2211.github.io/DrawBox/
+repo_url: https://github.com/akshay2211/DrawBox
+repo_name: DrawBox
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  logo: assets/logo.png
+  favicon: assets/favicon.ico
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/lightbulb-outline
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/lightbulb
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - toc.integrate
+    - search.suggest
+    - search.highlight
+    - search.share
+    - content.code.copy
+    - content.code.select
+    - content.tabs.link
+
+plugins:
+  - search:
+      lang: en
+#  - minify:
+#      minify_html: true
+#  - sitemap:
+#      priority: 0.5
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/akshay2211/DrawBox
+  generator: true
+
+extra_css:
+  - stylesheets/extra.css
+
+markdown_extensions:
+  - pymdownx.highlight:
+      use_pygments: true
+  - pymdownx.superfences
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.details
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - tables
+  - toc:
+      permalink: true
+      toc_depth: 3
+  - attr_list
+  - md_in_html
+  - admonition
+
+nav:
+  - Home: index.md
+  - Getting Started:
+    - Overview: getting-started/overview.md
+    - Installation: getting-started/installation.md
+    - Quick Start Guide: getting-started/quickstart.md
+    - System Requirements: getting-started/requirements.md
+  - Features:
+    - Drawing Modes: features/drawing-modes.md
+    - Drawing Tools: features/tools.md
+    - Colors & Stroke Styles: features/colors-styles.md
+    - Undo & Redo: features/undo-redo.md
+    - Export & Save: features/export-save.md
+  - User Guide:
+    - Basic Drawing: user-guide/basic-drawing.md
+    - Advanced Techniques: user-guide/advanced-techniques.md
+    - Keyboard Shortcuts: user-guide/shortcuts.md
+  - Development:
+    - Architecture: development/architecture.md
+    - Project Structure: development/project-structure.md
+    - Building from Source: development/build-from-source.md
+    - Contributing Guide: development/contributing.md
+  - Technical:
+    - Kotlin Multiplatform: technical/kotlin-multiplatform.md
+    - Compose Architecture: technical/compose-architecture.md
+    - API Reference: technical/api-reference.md
+    - Performance: technical/performance.md
+  - Dokka API Docs: https://akshay2211.github.io/DrawBox/dokka/
+  - FAQ: faq.md
+  - License: license.md

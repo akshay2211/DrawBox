@@ -1,0 +1,32 @@
+name: Deploy Docs
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-java@v3
+        with:
+          java-version: 11
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+
+      - run: pip install mkdocs-material
+
+      - run: ./gradlew dokkaHtml
+
+      - run: mkdir -p docs/dokka && cp -r DrawBox/build/dokka/html/* docs/dokka/
+
+      - run: mkdocs build
+
+      - uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./site
