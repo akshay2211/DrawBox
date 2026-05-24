@@ -1,0 +1,190 @@
+/* Custom stylesheet for DrawBox documentation */
+
+/* Main content padding and width */
+.md-main__inner {
+    max-width: 1200px;
+}
+
+/* Code blocks styling */
+.md-typeset code {
+    background-color: #f5f5f5;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: 'Courier New', monospace;
+}
+
+.md-typeset pre > code {
+    background-color: transparent;
+    padding: 0;
+}
+
+/* Admonition styling */
+.md-typeset .admonition {
+    border-left: 4px solid;
+    border-radius: 4px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+}
+
+.md-typeset .admonition.note {
+    border-color: #2196f3;
+    background-color: rgba(33, 150, 243, 0.1);
+}
+
+.md-typeset .admonition.warning {
+    border-color: #ff9800;
+    background-color: rgba(255, 152, 0, 0.1);
+}
+
+.md-typeset .admonition.danger {
+    border-color: #f44336;
+    background-color: rgba(244, 67, 54, 0.1);
+}
+
+/* Tables */
+.md-typeset table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 16px 0;
+}
+
+.md-typeset tbody tr:hover {
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+/* Links */
+.md-typeset a {
+    color: #2196f3;
+    text-decoration: none;
+}
+
+.md-typeset a:hover {
+    text-decoration: underline;
+}
+
+/* Headers */
+.md-typeset h1 {
+    font-size: 2.5em;
+    font-weight: 600;
+    margin-top: 0;
+    margin-bottom: 0.5em;
+}
+
+.md-typeset h2 {
+    font-size: 2em;
+    font-weight: 600;
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 0.3em;
+}
+
+.md-typeset h3 {
+    font-size: 1.5em;
+    font-weight: 600;
+    margin-top: 1.2em;
+    margin-bottom: 0.4em;
+}
+
+/* Lists */
+.md-typeset ul {
+    margin: 12px 0;
+    padding-left: 24px;
+}
+
+.md-typeset ul li {
+    margin-bottom: 8px;
+}
+
+/* Blockquotes */
+.md-typeset blockquote {
+    border-left: 4px solid #2196f3;
+    padding-left: 16px;
+    margin-left: 0;
+    color: #666;
+    font-style: italic;
+}
+
+/* Emphasis */
+.md-typeset strong {
+    font-weight: 600;
+    color: #333;
+}
+
+/* Code blocks */
+.md-typeset pre {
+    background-color: #f5f5f5;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    padding: 16px;
+    overflow-x: auto;
+    line-height: 1.5;
+}
+
+/* Navigation */
+.md-nav__link {
+    transition: all 0.2s ease;
+}
+
+.md-nav__link:hover {
+    color: #2196f3;
+}
+
+/* Task lists */
+.md-typeset .task-list-item {
+    list-style: none;
+    padding-left: 0;
+}
+
+.md-typeset .task-list-item input {
+    margin-right: 8px;
+}
+
+/* Horizontal line */
+.md-typeset hr {
+    border: none;
+    border-top: 2px solid #eee;
+    margin: 32px 0;
+}
+
+/* Inline code snippets */
+.md-typeset .highlight {
+    background-color: #f5f5f5;
+    border-radius: 3px;
+    padding: 2px 6px;
+}
+
+/* Search box styling */
+.md-search__input {
+    border-radius: 4px;
+}
+
+/* Footer */
+.md-footer {
+    background-color: #f5f5f5;
+}
+
+/* Tabs */
+.md-typeset .tabbed-set {
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+}
+
+.md-typeset .tabbed-content {
+    padding: 16px;
+}
+
+/* Responsive tables */
+@media (max-width: 768px) {
+    .md-typeset table {
+        font-size: 0.85em;
+    }
+
+    .md-typeset h1 {
+        font-size: 1.8em;
+    }
+
+    .md-typeset h2 {
+        font-size: 1.5em;
+    }
+}
