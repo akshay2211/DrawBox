@@ -4,6 +4,12 @@ site_url: https://akshay2211.github.io/DrawBox/
 repo_url: https://github.com/akshay2211/DrawBox
 repo_name: DrawBox
 edit_uri: edit/main/docs/
+docs_dir: docs
+site_dir: site
+
+# Copy additional files to build output
+copy_files:
+  - robots.txt
 
 theme:
   name: material
@@ -39,10 +45,8 @@ theme:
 plugins:
   - search:
       lang: en
-#  - minify:
-#      minify_html: true
-#  - sitemap:
-#      priority: 0.5
+  - minify:
+      minify_html: true
 
 extra:
   social:
@@ -79,6 +83,7 @@ nav:
     - Installation: getting-started/installation.md
     - Quick Start Guide: getting-started/quickstart.md
     - System Requirements: getting-started/requirements.md
+    - Use Cases: guides/use-cases.md
   - Features:
     - Drawing Modes: features/drawing-modes.md
     - Drawing Tools: features/tools.md
@@ -89,6 +94,9 @@ nav:
     - Basic Drawing: user-guide/basic-drawing.md
     - Advanced Techniques: user-guide/advanced-techniques.md
     - Keyboard Shortcuts: user-guide/shortcuts.md
+  - Guides:
+    - Use Cases & Applications: guides/use-cases.md
+    - Comparison with Alternatives: guides/comparison.md
   - Development:
     - Architecture: development/architecture.md
     - Project Structure: development/project-structure.md

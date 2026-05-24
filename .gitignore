@@ -23,3 +23,4 @@ local.properties
 /kotlin-js-store/
 /app/build/
 /androidApp/src/main/assets/composeResources/drawboxsample.shared.generated.resources/
+/site/

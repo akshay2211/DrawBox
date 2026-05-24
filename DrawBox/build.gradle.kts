@@ -77,3 +77,43 @@ spotless {
 signing {
     sign(publishing.publications)
 }
+
+mavenPublishing {
+    pom {
+        name.set("DrawBox")
+        description.set(
+            "Kotlin Multiplatform drawing library with vector graphics support. " +
+            "Create beautiful drawings with pen, shapes, colors, undo/redo, and export to SVG/PNG. " +
+            "Runs on Android, iOS, Web (WASM), and JVM with a single shared codebase."
+        )
+        inceptionYear.set("2021")
+        url.set("https://github.com/akshay2211/DrawBox")
+
+        licenses {
+            license {
+                name.set("Apache License 2.0")
+                url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
+            }
+        }
+
+        developers {
+            developer {
+                id.set("akshay2211")
+                name.set("Akshay Sharma")
+                email.set("fxn769@gmail.com")
+                url.set("https://akshay2211.github.io/")
+            }
+        }
+
+        scm {
+            url.set("https://github.com/akshay2211/DrawBox")
+            connection.set("scm:git:git://github.com/akshay2211/DrawBox.git")
+            developerConnection.set("scm:git:git@github.com:akshay2211/DrawBox.git")
+        }
+
+        issueManagement {
+            system.set("Github")
+            url.set("https://github.com/akshay2211/DrawBox/issues")
+        }
+    }
+}

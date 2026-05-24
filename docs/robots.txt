@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /
+
+Sitemap: https://akshay2211.github.io/DrawBox/sitemap.xml
