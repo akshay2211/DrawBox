@@ -1,2 +1,7 @@
-// Build configuration file for iosApp
-PRODUCT_NAME = DrawBoxSample
+TEAM_ID=
+
+PRODUCT_NAME=DrawboxSample
+PRODUCT_BUNDLE_IDENTIFIER=io.ak1.drawboxsample.DrawboxSample$(TEAM_ID)
+
+CURRENT_PROJECT_VERSION=1
+MARKETING_VERSION=1.0

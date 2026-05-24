@@ -13,8 +13,8 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "606544D8F6DE0F1206A4A8EA"
-               BuildableName = "iosApp.app"
+               BlueprintIdentifier = "FD030C3D0E859EC26822C634"
+               BuildableName = "DrawboxSample.app"
                BlueprintName = "iosApp"
                ReferencedContainer = "container:iosApp.xcodeproj">
             </BuildableReference>
@@ -42,8 +42,8 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "606544D8F6DE0F1206A4A8EA"
-            BuildableName = "iosApp.app"
+            BlueprintIdentifier = "FD030C3D0E859EC26822C634"
+            BuildableName = "DrawboxSample.app"
             BlueprintName = "iosApp"
             ReferencedContainer = "container:iosApp.xcodeproj">
          </BuildableReference>
