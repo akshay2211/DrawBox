@@ -57,14 +57,17 @@ tasks.register("updateVersion") {
                         .replace(Regex("""implementation 'io\.ak1:drawbox:[^']+'""")) {
                             """implementation 'io.ak1:drawbox:$version'"""
                         }
-                        .replace(Regex("""<version>[^<]+</version>""")) {
+                        .replace(Regex("""<version>.+?</version>""")) {
                             "<version>$version</version>"
                         }
-                        .replace(Regex("""rev='drawbox:[^']+""")) {
-                            """rev='drawbox:$version"""
+                        .replace(Regex("""rev='.+?'>""")) {
+                            "rev='$version'>"
                         }
-                        .replace(Regex("""Latest Version: \*\*[^\*]+\*\*""")) {
+                        .replace(Regex("""Latest Version: \*\*.+?\*\*""")) {
                             """Latest Version: **$version**"""
+                        }
+                        .replace(Regex("""\| \*\*Latest Version\*\* \| .+ \|""")) {
+                            "| **Latest Version** | $version |"
                         }
                 }
                 filePath.endsWith("libs.versions.toml") -> {
