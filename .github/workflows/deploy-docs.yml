@@ -21,7 +21,7 @@ jobs:
 
       - run: pip install mkdocs-material
 
-      - run: ./gradlew dokkaHtml
+      - run: ./gradlew dokkaGenerateHtml
 
       - run: mkdir -p docs/dokka && cp -r DrawBox/build/dokka/html/* docs/dokka/
 
