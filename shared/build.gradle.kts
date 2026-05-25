@@ -50,6 +50,9 @@ kotlin {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodel.compose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
+            implementation(libs.navigation3.ui)
+            implementation(libs.material3.adaptive.navigation3)
+            implementation(libs.lifecycle.viewmodel.navigation3)
         }
     }
 }
