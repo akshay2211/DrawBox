@@ -40,10 +40,9 @@ private class WasmJsImageSaver : ImageSaver {
         URL.revokeObjectURL(url)
     }
 
-    @Suppress("UNCHECKED_CAST")
     override fun saveSvg(svgContent: String) {
         val parts = JsArray<JsAny?>()
-        parts[0] = svgContent as JsAny?
+        parts[0] = svgContent.toJsString()
         val blob = Blob(parts, BlobPropertyBag(type = "image/svg+xml"))
         val url = URL.createObjectURL(blob)
         val anchor = document.createElement("a") as HTMLAnchorElement
