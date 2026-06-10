@@ -16,6 +16,16 @@ interface ImageSaver {
      * Save SVG content as SVG file
      */
     fun saveSvg(svgContent: String)
+
+    /**
+     * Save drawing JSON to a file the user can keep.
+     */
+    fun saveJson(jsonContent: String)
+
+    /**
+     * Prompt the user to pick a JSON file and deliver its contents to [onLoaded].
+     */
+    fun loadJson(onLoaded: (String) -> Unit)
 }
 
 @Composable

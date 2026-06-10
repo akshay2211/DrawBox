@@ -59,4 +59,18 @@ private class IosImageSaver : ImageSaver {
             NSLog("Error exporting SVG: ${e.message}")
         }
     }
+
+    override fun saveJson(jsonContent: String) {
+        try {
+            val fileName = "DrawBox-${Clock.System.now().nanosecondsOfSecond}.json"
+            NSLog("JSON export created: $fileName")
+            NSLog("JSON content length: ${jsonContent.length} characters")
+        } catch (e: Exception) {
+            NSLog("Error exporting JSON: ${e.message}")
+        }
+    }
+
+    override fun loadJson(onLoaded: (String) -> Unit) {
+        NSLog("Import JSON is not supported from the iOS sample yet")
+    }
 }

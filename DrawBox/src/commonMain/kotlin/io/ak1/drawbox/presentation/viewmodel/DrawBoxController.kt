@@ -202,7 +202,7 @@ class DrawBoxController(
      *
      * @return JSON string representation of the drawing
      */
-    fun exportPath(): String {
+    internal fun exportPath(): String {
         val payLoad = PayLoad(
             bgColor = _state.value.bgColor,
             elements = _state.value.elements
@@ -221,6 +221,15 @@ class DrawBoxController(
             elements = _state.value.elements
         )
         _events.tryEmit(Event.SvgExported(svgContent))
+    }
+
+    /**
+     * Export the current drawing as JSON.
+     *
+     * Emits an [Event.JsonExported] event so the platform layer can persist it.
+     */
+    fun exportJson() {
+        _events.tryEmit(Event.JsonExported(exportPath()))
     }
 
     /**

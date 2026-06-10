@@ -71,12 +71,24 @@ private class AndroidImageSaver(private val context: Context) : ImageSaver {
     }
 
     override fun saveSvg(svgContent: String) {
+        saveTextFile(svgContent, "svg", "image/svg+xml")
+    }
+
+    override fun saveJson(jsonContent: String) {
+        saveTextFile(jsonContent, "json", "application/json")
+    }
+
+    override fun loadJson(onLoaded: (String) -> Unit) {
+        showToast("Import JSON is not supported from the Android sample yet")
+    }
+
+    private fun saveTextFile(content: String, extension: String, mimeType: String) {
         GlobalScope.launch(Dispatchers.IO) {
             try {
-                val fileName = "DrawBox-${System.currentTimeMillis()}.svg"
+                val fileName = "DrawBox-${System.currentTimeMillis()}.$extension"
                 val values = ContentValues().apply {
                     put(MediaStore.Files.FileColumns.DISPLAY_NAME, fileName)
-                    put(MediaStore.Files.FileColumns.MIME_TYPE, "image/svg+xml")
+                    put(MediaStore.Files.FileColumns.MIME_TYPE, mimeType)
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                         put(
                             MediaStore.MediaColumns.RELATIVE_PATH,
@@ -89,12 +101,12 @@ private class AndroidImageSaver(private val context: Context) : ImageSaver {
                 val uri = resolver.insert(MediaStore.Files.getContentUri("external"), values)
 
                 if (uri == null) {
-                    showToast("Failed to create SVG file")
+                    showToast("Failed to create $extension file")
                     return@launch
                 }
 
                 resolver.openOutputStream(uri)?.use { out ->
-                    out.write(svgContent.toByteArray())
+                    out.write(content.toByteArray())
                 }
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -105,10 +117,10 @@ private class AndroidImageSaver(private val context: Context) : ImageSaver {
                         null,
                     )
                 }
-                showToast("SVG saved successfully!")
+                showToast("${extension.uppercase()} saved successfully!")
             } catch (e: Throwable) {
-                android.util.Log.e("ImageSaver", "Error saving SVG", e)
-                showToast("Error saving SVG: ${e.message}")
+                android.util.Log.e("ImageSaver", "Error saving $extension", e)
+                showToast("Error saving $extension: ${e.message}")
             }
         }
     }

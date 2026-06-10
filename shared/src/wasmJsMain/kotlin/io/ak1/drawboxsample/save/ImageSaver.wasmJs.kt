@@ -12,9 +12,12 @@ import org.jetbrains.skia.Image
 import org.khronos.webgl.Uint8Array
 import org.khronos.webgl.set
 import org.w3c.dom.HTMLAnchorElement
+import org.w3c.dom.HTMLInputElement
+import org.w3c.dom.events.Event as DomEvent
 import org.w3c.dom.url.URL
 import org.w3c.files.Blob
 import org.w3c.files.BlobPropertyBag
+import org.w3c.files.FileReader
 import kotlin.time.Clock
 import kotlin.js.ExperimentalWasmJsInterop
 
@@ -50,5 +53,34 @@ private class WasmJsImageSaver : ImageSaver {
         anchor.download = "DrawBox-${Clock.System.now().nanosecondsOfSecond}.svg"
         anchor.click()
         URL.revokeObjectURL(url)
+    }
+
+    override fun saveJson(jsonContent: String) {
+        val parts = JsArray<JsAny?>()
+        parts[0] = jsonContent.toJsString()
+        val blob = Blob(parts, BlobPropertyBag(type = "application/json"))
+        val url = URL.createObjectURL(blob)
+        val anchor = document.createElement("a") as HTMLAnchorElement
+        anchor.href = url
+        anchor.download = "DrawBox-${Clock.System.now().nanosecondsOfSecond}.json"
+        anchor.click()
+        URL.revokeObjectURL(url)
+    }
+
+    override fun loadJson(onLoaded: (String) -> Unit) {
+        val input = document.createElement("input") as HTMLInputElement
+        input.type = "file"
+        input.accept = "application/json,.json"
+        input.onchange = { _: DomEvent ->
+            val file = input.files?.item(0)
+            if (file != null) {
+                val reader = FileReader()
+                reader.onload = { _: DomEvent ->
+                    onLoaded(reader.result.toString())
+                }
+                reader.readAsText(file)
+            }
+        }
+        input.click()
     }
 }
