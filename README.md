@@ -14,9 +14,9 @@ DrawBox is a powerful, cross-platform drawing library built with Kotlin Multipla
 
 Run the sample right in your browser — no install required:
 
-**[Open the live WASM sample →](/sample/)**
+**[Open the live WASM sample →](https://akshay2211.github.io/DrawBox/sample/)**
 
-[![Try it Live](https://img.shields.io/badge/Try%20it%20Live-WASM%20Sample-orange.svg?style=for-the-badge&logo=webassembly)](https://akshay2211.github.io/DrawBox/sample/)
+[![Try it Live](https://img.shields.io/badge/Try%20it%20Live-WASM%20Sample-orange.svg?style=for-the-badge&logo=webassembly)](https://ak1.io/DrawBox/sample/)
 
 ## Features
 * **Multiplatform Support**: Native support for Android, iOS, Web (WASM), and JVM platforms
