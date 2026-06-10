@@ -10,6 +10,14 @@
 
 DrawBox is a powerful, cross-platform drawing library built with Kotlin Multiplatform (KMP) and Jetpack Compose. Create beautiful drawings with an intuitive canvas experience across Android, iOS, Web, and Desktop.
 
+## Try it Live
+
+Run the sample right in your browser — no install required:
+
+**[Open the live WASM sample →](/sample/)**
+
+[![Try it Live](https://img.shields.io/badge/Try%20it%20Live-WASM%20Sample-orange.svg?style=for-the-badge&logo=webassembly)](https://akshay2211.github.io/DrawBox/sample/)
+
 ## Features
 * **Multiplatform Support**: Native support for Android, iOS, Web (WASM), and JVM platforms
 * **Multiple Drawing Modes**: Freehand pen, rectangles, circles, triangles, arrows, and lines

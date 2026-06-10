@@ -78,6 +78,7 @@ markdown_extensions:
 
 nav:
   - Home: index.md
+  - Try it Live: /sample/
   - Getting Started:
     - Overview: getting-started/overview.md
     - Installation: getting-started/installation.md
