@@ -72,6 +72,9 @@ $dokka.location:io.ak1.drawbox.domain.model/Event.HistoryChanged///PointingToDec
 $dokka.location:io.ak1.drawbox.domain.model/Event.HistoryChanged/HistoryChanged/#kotlin.Boolean#kotlin.Boolean/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-event/-history-changed/-history-changed.html
 $dokka.location:io.ak1.drawbox.domain.model/Event.HistoryChanged/canRedo/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-event/-history-changed/can-redo.html
 $dokka.location:io.ak1.drawbox.domain.model/Event.HistoryChanged/canUndo/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-event/-history-changed/can-undo.html
+$dokka.location:io.ak1.drawbox.domain.model/Event.JsonExported///PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-event/-json-exported/index.html
+$dokka.location:io.ak1.drawbox.domain.model/Event.JsonExported/JsonExported/#kotlin.String/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-event/-json-exported/-json-exported.html
+$dokka.location:io.ak1.drawbox.domain.model/Event.JsonExported/json/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-event/-json-exported/json.html
 $dokka.location:io.ak1.drawbox.domain.model/Event.PngSaved///PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-event/-png-saved/index.html
 $dokka.location:io.ak1.drawbox.domain.model/Event.PngSaved/PngSaved/#androidx.compose.ui.graphics.ImageBitmap?#kotlin.Throwable?/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-event/-png-saved/-png-saved.html
 $dokka.location:io.ak1.drawbox.domain.model/Event.PngSaved/bitmap/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-event/-png-saved/bitmap.html
@@ -192,7 +195,7 @@ $dokka.location:io.ak1.drawbox.presentation.viewmodel/DrawBoxController/DrawBoxC
 $dokka.location:io.ak1.drawbox.presentation.viewmodel/DrawBoxController/canRedo/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/can-redo.html
 $dokka.location:io.ak1.drawbox.presentation.viewmodel/DrawBoxController/canUndo/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/can-undo.html
 $dokka.location:io.ak1.drawbox.presentation.viewmodel/DrawBoxController/events/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/events.html
-$dokka.location:io.ak1.drawbox.presentation.viewmodel/DrawBoxController/exportPath/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/export-path.html
+$dokka.location:io.ak1.drawbox.presentation.viewmodel/DrawBoxController/exportJson/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/export-json.html
 $dokka.location:io.ak1.drawbox.presentation.viewmodel/DrawBoxController/exportSvg/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/export-svg.html
 $dokka.location:io.ak1.drawbox.presentation.viewmodel/DrawBoxController/importPath/#kotlin.String/PointingToDeclaration/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/import-path.html
 $dokka.location:io.ak1.drawbox.presentation.viewmodel/DrawBoxController/onIntent/#io.ak1.drawbox.domain.model.Intent/PointingToDeclaration/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/on-intent.html
