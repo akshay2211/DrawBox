@@ -7,6 +7,7 @@
 [![Kotlin Weekly](https://img.shields.io/badge/Kotlin%20Weekly-DrawBox-purple.svg?style=flat-square)](https://mailchi.mp/kotlinweekly/kotlin-weekly-294)
 [![Maven Central](https://img.shields.io/maven-central/v/io.ak1/drawbox?style=flat-square)](https://search.maven.org/artifact/io.ak1/drawbox)
 [![Google Dev Library](https://img.shields.io/badge/Google%20Dev%20Library-DrawBox-brightgreen.svg?style=flat-square)](https://devlibrary.withgoogle.com/products/android/repos/akshay2211-DrawBox)
+[![Klibs](https://img.shields.io/badge/KLibs-DrawBox-purple.svg?style=flat-square)](https://klibs.io/project/akshay2211/DrawBox)
 
 DrawBox is a powerful, cross-platform drawing library built with Kotlin Multiplatform (KMP) and Jetpack Compose. Create beautiful drawings with an intuitive canvas experience across Android, iOS, Web, and Desktop.
 
