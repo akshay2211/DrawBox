@@ -38,6 +38,10 @@ fun HomeScreen() {
                     imageSaver.saveSvg(event.svg)
                 }
 
+                is Event.JsonExported -> {
+                    imageSaver.saveJson(event.json)
+                }
+
                 else -> {}
             }
         }
@@ -94,6 +98,9 @@ fun HomeScreen() {
         },
         onSizeSelected = { size ->
             viewModel.setStrokeWidth(size)
+        },
+        onImportJson = {
+            imageSaver.loadJson { json -> viewModel.importPath(json) }
         },
     )
 }

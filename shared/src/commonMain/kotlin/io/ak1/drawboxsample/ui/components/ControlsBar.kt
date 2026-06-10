@@ -62,6 +62,7 @@ fun ControlsBar(
     onSizeClick: () -> Unit,
     onModeSelected: (Mode) -> Unit,
     onSizeSelected: (Float) -> Unit,
+    onImportJson: () -> Unit,
 ) {
     val active = MaterialTheme.colorScheme.primary
     val inactive = MaterialTheme.colorScheme.surfaceVariant
@@ -239,9 +240,12 @@ fun ControlsBar(
             }
         }
 
-        SettingsMenu(viewModel, settingsMenuExpanded) {
-            settingsMenuExpanded = it
-        }
+        SettingsMenu(
+            viewModel = viewModel,
+            menuExpanded = settingsMenuExpanded,
+            onImportJson = onImportJson,
+            onMenuClick = { settingsMenuExpanded = it },
+        )
     }
 
 
@@ -295,7 +299,10 @@ private fun RowScope.SizeMenuItem(
 
 @Composable
 fun BoxScope.SettingsMenu(
-    viewModel: DrawBoxController, menuExpanded: Boolean, onMenuClick: (Boolean) -> Unit
+    viewModel: DrawBoxController,
+    menuExpanded: Boolean,
+    onImportJson: () -> Unit,
+    onMenuClick: (Boolean) -> Unit,
 ) {
     Box(modifier = Modifier.align(Alignment.TopEnd).padding(8.dp)) {
         IconButton(
@@ -330,7 +337,7 @@ fun BoxScope.SettingsMenu(
                 text = { Text("Export JSON") },
                 leadingIcon = { Icon(painterResource(DrawBoxIcons.Export), "Json Export") },
                 onClick = {
-                    // TODO: Implement JSON export
+                    viewModel.exportJson()
                     onMenuClick.invoke(false)
                 })
 
@@ -338,7 +345,7 @@ fun BoxScope.SettingsMenu(
                 text = { Text("Import JSON") },
                 leadingIcon = { Icon(painterResource(DrawBoxIcons.Import), "Json Import") },
                 onClick = {
-                    // TODO: Implement JSON import
+                    onImportJson()
                     onMenuClick.invoke(false)
                 })
         }

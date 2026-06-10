@@ -42,4 +42,28 @@ private class DesktopImageSaver : ImageSaver {
         target.writeText(svgContent)
         println("SVG saved to: ${target.absolutePath}")
     }
+
+    override fun saveJson(jsonContent: String) {
+        val chooser = JFileChooser().apply {
+            dialogTitle = "Export Drawing as JSON"
+            fileFilter = FileNameExtensionFilter("DrawBox JSON", "json")
+            selectedFile = File("DrawBox-${System.currentTimeMillis()}.json")
+        }
+        if (chooser.showSaveDialog(null) != JFileChooser.APPROVE_OPTION) return
+        val target = chooser.selectedFile.let {
+            if (it.extension.equals("json", ignoreCase = true)) it else File("${it.absolutePath}.json")
+        }
+        target.writeText(jsonContent)
+        println("JSON saved to: ${target.absolutePath}")
+    }
+
+    override fun loadJson(onLoaded: (String) -> Unit) {
+        val chooser = JFileChooser().apply {
+            dialogTitle = "Import Drawing from JSON"
+            fileFilter = FileNameExtensionFilter("DrawBox JSON", "json")
+        }
+        if (chooser.showOpenDialog(null) != JFileChooser.APPROVE_OPTION) return
+        val source = chooser.selectedFile ?: return
+        onLoaded(source.readText())
+    }
 }

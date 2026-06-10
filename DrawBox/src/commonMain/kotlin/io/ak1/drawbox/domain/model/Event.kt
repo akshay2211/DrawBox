@@ -9,6 +9,7 @@ sealed class Event {
     data class HistoryChanged(val canUndo: Boolean, val canRedo: Boolean) : Event()
     data class PngSaved(val bitmap: ImageBitmap?, val throwable: Throwable?) : Event()
     data class SvgExported(val svg: String) : Event()
+    data class JsonExported(val json: String) : Event()
     data class DrawingLoaded(val state: State) : Event()
     data class Error(val message: String, val throwable: Throwable? = null) : Event()
 }
