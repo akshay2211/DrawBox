@@ -63,6 +63,7 @@ data class ElementDto(
     val alpha: Float? = null,
     val shapeType: String? = null,
     val fillColor: String? = null,
+    val rotation: Float? = null,
 )
 
 fun Element.toDto(): ElementDto = when (this) {
@@ -74,6 +75,7 @@ fun Element.toDto(): ElementDto = when (this) {
         strokeColor = strokeColor.toHexString(),
         strokeWidth = strokeWidth,
         alpha = alpha,
+        rotation = rotation.takeIf { it != 0f },
     )
     is Element.Shape -> ElementDto(
         id = id,
@@ -84,6 +86,7 @@ fun Element.toDto(): ElementDto = when (this) {
         strokeColor = strokeColor.toHexString(),
         strokeWidth = strokeWidth,
         fillColor = fillColor?.toHexString(),
+        rotation = rotation.takeIf { it != 0f },
     )
 }
 
@@ -95,6 +98,7 @@ fun ElementDto.toElement(): Element = when (type) {
         strokeWidth = strokeWidth,
         alpha = alpha ?: 1f,
         zIndex = zIndex,
+        rotation = rotation ?: 0f,
     )
     "Shape" -> Element.Shape(
         id = id,
@@ -104,6 +108,7 @@ fun ElementDto.toElement(): Element = when (type) {
         fillColor = fillColor?.toColor(),
         strokeWidth = strokeWidth,
         zIndex = zIndex,
+        rotation = rotation ?: 0f,
     )
     else -> Element.Path(
         id = id,
@@ -112,6 +117,7 @@ fun ElementDto.toElement(): Element = when (type) {
         strokeWidth = strokeWidth,
         alpha = alpha ?: 1f,
         zIndex = zIndex,
+        rotation = rotation ?: 0f,
     )
 }
 
@@ -141,6 +147,7 @@ data class SerializableElement(
     val alpha: Float? = null,
     val shapeType: String? = null,
     val fillColor: String? = null,
+    val rotation: Float? = null,
 )
 
 @kotlinx.serialization.Serializable
@@ -167,6 +174,7 @@ object DrawingSerializer {
                     alpha = element.alpha,
                     shapeType = element.shapeType,
                     fillColor = element.fillColor,
+                    rotation = element.rotation,
                 )
             },
         )
@@ -188,6 +196,7 @@ object DrawingSerializer {
                     alpha = element.alpha,
                     shapeType = element.shapeType,
                     fillColor = element.fillColor,
+                    rotation = element.rotation,
                 )
             },
         )

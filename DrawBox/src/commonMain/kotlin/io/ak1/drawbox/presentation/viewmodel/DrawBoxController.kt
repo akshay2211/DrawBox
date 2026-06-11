@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.painter.Painter
@@ -151,8 +152,8 @@ class DrawBoxController(
     }
 
     private fun updateHistoryState() {
-        _canUndo.value = _state.value.elements.isNotEmpty()
-        _canRedo.value = _state.value.undoStack.isNotEmpty()
+        _canUndo.value = _state.value.history.isNotEmpty()
+        _canRedo.value = _state.value.future.isNotEmpty()
     }
 
     private fun emitSaveEvent(bitmap: ImageBitmap?, throwable: Throwable?) {
@@ -215,6 +216,30 @@ class DrawBoxController(
     /** Clear the canvas and reset to empty state */
     fun reset() = onIntent(Intent.Reset)
 
+    // ==================== Selection Methods ====================
+
+    /** Pick the topmost element at the given canvas offset (or clear selection on miss). */
+    fun selectAt(offset: Offset, tolerance: Float = 8f) =
+        onIntent(Intent.SelectAt(offset, tolerance))
+
+    /** Clear the current selection. */
+    fun clearSelection() = onIntent(Intent.ClearSelection)
+
+    /** Delete every selected element. */
+    fun deleteSelected() = onIntent(Intent.DeleteSelected)
+
+    /** Recolor every selected element's stroke. */
+    fun setSelectionColor(color: Color) = onIntent(Intent.SetSelectedStrokeColor(color))
+
+    /** Re-stroke every selected element. */
+    fun setSelectionStrokeWidth(width: Float) = onIntent(Intent.SetSelectedStrokeWidth(width))
+
+    /** Bring selected elements to the top of the z-order. */
+    fun bringSelectionToFront() = onIntent(Intent.BringSelectionToFront)
+
+    /** Send selected elements to the bottom of the z-order. */
+    fun sendSelectionToBack() = onIntent(Intent.SendSelectionToBack)
+
     // ==================== Persistence Methods ====================
 
     /** Capture and save the current drawing as a bitmap */
@@ -272,11 +297,10 @@ class DrawBoxController(
             reset()
             _state.value = State(
                 elements = payLoad.elements,
-                undoStack = emptyList(),
                 strokeColor = _state.value.strokeColor,
                 strokeWidth = _state.value.strokeWidth,
                 opacity = _state.value.opacity,
-                bgColor = payLoad.bgColor
+                bgColor = payLoad.bgColor,
             )
         } catch (e: Exception) {
             // Handle deserialization error

@@ -79,6 +79,7 @@ fun ControlsBar(
         Mode.TRIANGLE -> DrawBoxIcons.Triangle
         Mode.ARROW -> DrawBoxIcons.Arrow
         Mode.LINE -> DrawBoxIcons.Line
+        else -> DrawBoxIcons.StrokeCurved
     }
 
     val clickable = if (modeMenuExpanded || sizeMenuExpanded) Modifier.clickable(
@@ -208,6 +209,15 @@ fun ControlsBar(
                     ) {
                         if (canRedo) viewModel.redo()
                     }
+
+                    // Select mode
+                    MenuItem(
+                        DrawBoxIcons.Settings, "Select", if (currentMode == Mode.SELECT) inactive else active
+                    ) {
+                        onModeSelected(Mode.SELECT)
+                        modeMenuExpanded = false
+                    }
+
 
                     // Reset button
                     MenuItem(

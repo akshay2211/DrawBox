@@ -8,12 +8,15 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.isSpecified
 import androidx.compose.ui.graphics.BlendMode
@@ -23,6 +26,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.ImageShader
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.ShaderBrush
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
@@ -31,6 +35,7 @@ import androidx.compose.ui.graphics.drawscope.CanvasDrawScope
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.graphics.layer.drawLayer
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.rememberGraphicsLayer
@@ -44,9 +49,17 @@ import androidx.compose.ui.unit.dp
 import io.ak1.drawbox.domain.model.BackgroundPattern
 import io.ak1.drawbox.domain.model.Element
 import io.ak1.drawbox.domain.model.Intent
-import io.ak1.drawbox.domain.model.State
-import io.ak1.drawbox.domain.model.ShapeType
 import io.ak1.drawbox.domain.model.Mode
+import io.ak1.drawbox.domain.model.ResizeHandle
+import io.ak1.drawbox.domain.model.ShapeType
+import io.ak1.drawbox.domain.model.State
+import io.ak1.drawbox.domain.model.angleFromCenter
+import io.ak1.drawbox.domain.model.bounds
+import io.ak1.drawbox.domain.model.distance
+import io.ak1.drawbox.domain.model.hitTest
+import io.ak1.drawbox.domain.model.resizeBoundsForElement
+import io.ak1.drawbox.domain.model.rotateAround
+import io.ak1.drawbox.domain.model.topmostHit
 import kotlinx.coroutines.launch
 import kotlin.math.PI
 import kotlin.math.absoluteValue
@@ -129,16 +142,6 @@ fun DrawBox(
         }
     }
 
-    val isPenMode = state.mode == Mode.PEN
-    val shapeType = when (state.mode) {
-        Mode.RECTANGLE -> ShapeType.RECTANGLE
-        Mode.CIRCLE -> ShapeType.CIRCLE
-        Mode.TRIANGLE -> ShapeType.TRIANGLE
-        Mode.ARROW -> ShapeType.ARROW
-        Mode.LINE -> ShapeType.LINE
-        Mode.PEN -> null
-    }
-
     // Rasterize + tile the pattern once per [bgPattern] / density / layoutDirection
     // change. Without remember, every drag tick recomposes DrawBox, rebuilds the
     // modifier chain, and re-tiles N×M painter draws per frame; with remember the
@@ -148,6 +151,17 @@ fun DrawBox(
     val patternBrush: ShaderBrush? = remember(state.bgPattern, density, layoutDirection) {
         state.bgPattern?.toTiledBrush(density, layoutDirection)
     }
+
+    val handleHitPx = with(density) { 14.dp.toPx() }
+    val rotationOffsetPx = with(density) { 28.dp.toPx() }
+    val handleSizePx = with(density) { 8.dp.toPx() }
+    val pickTolerancePx = with(density) { 8.dp.toPx() }
+
+    // The pointerInput coroutines are long-lived; reading state/onIntent through
+    // rememberUpdatedState lets gesture callbacks see the current value without
+    // re-keying (and re-allocating) the pointerInput block on every state change.
+    val latestState by rememberUpdatedState(state)
+    val latestOnIntent by rememberUpdatedState(onIntent)
 
     Box(
         modifier = modifier
@@ -160,33 +174,113 @@ fun DrawBox(
                 graphicsLayer.record { this@drawWithContent.drawContent() }
                 drawLayer(graphicsLayer)
             }
-            .pointerInput(state.mode) {
+            .pointerInput(Unit) {
                 detectTapGestures(
                     onTap = { offset ->
-                        if (isPenMode) {
-                            onIntent(Intent.InsertNewPath(offset))
-                            onIntent(Intent.UpdateLatestPath(offset))
-                        } else if (shapeType != null) {
-                            onIntent(Intent.InsertNewShape(shapeType, offset))
-                            onIntent(Intent.UpdateLatestShape(offset))
+                        when (latestState.mode) {
+                            Mode.SELECT -> latestOnIntent(Intent.SelectAt(offset, pickTolerancePx))
+                            Mode.PEN -> {
+                                latestOnIntent(Intent.InsertNewPath(offset))
+                                latestOnIntent(Intent.UpdateLatestPath(offset))
+                            }
+                            else -> modeShapeType(latestState.mode)?.let { st ->
+                                latestOnIntent(Intent.InsertNewShape(st, offset))
+                                latestOnIntent(Intent.UpdateLatestShape(offset))
+                            }
                         }
                     },
                 )
             }
-            .pointerInput(state.mode) {
+            .pointerInput(Unit) {
+                var interaction: SelectionInteraction? = null
+                var lastPos = Offset.Zero
+
                 detectDragGestures(
                     onDragStart = { offset ->
-                        if (isPenMode) {
-                            onIntent(Intent.InsertNewPath(offset))
-                        } else if (shapeType != null) {
-                            onIntent(Intent.InsertNewShape(shapeType, offset))
+                        lastPos = offset
+                        val s = latestState
+                        when (s.mode) {
+                            Mode.SELECT -> {
+                                val classified = classifySelection(
+                                    state = s,
+                                    pointer = offset,
+                                    handleHitPx = handleHitPx,
+                                    rotationOffsetPx = rotationOffsetPx,
+                                    pickTolerancePx = pickTolerancePx,
+                                )
+                                interaction = when (classified) {
+                                    is SelectionInteraction.SelectAndMove -> {
+                                        latestOnIntent(Intent.SelectAt(offset, pickTolerancePx))
+                                        latestOnIntent(Intent.BeginTransform)
+                                        SelectionInteraction.Move
+                                    }
+                                    is SelectionInteraction.Move,
+                                    is SelectionInteraction.Resize,
+                                    is SelectionInteraction.Rotate -> {
+                                        latestOnIntent(Intent.BeginTransform)
+                                        classified
+                                    }
+                                    is SelectionInteraction.Marquee -> {
+                                        latestOnIntent(Intent.SetMarqueeRect(Rect(offset, offset)))
+                                        classified
+                                    }
+                                }
+                            }
+                            Mode.PEN -> latestOnIntent(Intent.InsertNewPath(offset))
+                            else -> modeShapeType(s.mode)?.let { st ->
+                                latestOnIntent(Intent.InsertNewShape(st, offset))
+                            }
                         }
                     },
+                    onDragEnd = {
+                        if (latestState.mode == Mode.SELECT) {
+                            val rect = latestState.marqueeRect
+                            if (interaction is SelectionInteraction.Marquee && rect != null) {
+                                latestOnIntent(Intent.CommitMarquee(rect))
+                            } else if (interaction is SelectionInteraction.Marquee) {
+                                latestOnIntent(Intent.SetMarqueeRect(null))
+                            }
+                        }
+                        interaction = null
+                    },
+                    onDragCancel = {
+                        if (latestState.mode == Mode.SELECT &&
+                            interaction is SelectionInteraction.Marquee
+                        ) {
+                            latestOnIntent(Intent.SetMarqueeRect(null))
+                        }
+                        interaction = null
+                    },
                 ) { change, _ ->
-                    if (isPenMode) {
-                        onIntent(Intent.UpdateLatestPath(change.position))
-                    } else if (shapeType != null) {
-                        onIntent(Intent.UpdateLatestShape(change.position))
+                    val pos = change.position
+                    when (latestState.mode) {
+                        Mode.SELECT -> when (val i = interaction) {
+                            is SelectionInteraction.Move -> {
+                                latestOnIntent(Intent.MoveSelected(pos - lastPos))
+                                lastPos = pos
+                            }
+                            is SelectionInteraction.Resize -> {
+                                val newBounds = resizeBoundsForElement(
+                                    i.originalElement, i.handle, pos,
+                                )
+                                latestOnIntent(Intent.SetElementBounds(i.elementId, newBounds))
+                            }
+                            is SelectionInteraction.Rotate -> {
+                                val current = angleFromCenter(i.center, pos)
+                                val delta = current - i.initialAngle
+                                latestOnIntent(Intent.SetElementRotation(
+                                    i.elementId, i.originalRotation + delta,
+                                ))
+                            }
+                            is SelectionInteraction.Marquee -> {
+                                latestOnIntent(Intent.SetMarqueeRect(Rect(i.anchor, pos)))
+                            }
+                            else -> {}
+                        }
+                        Mode.PEN -> latestOnIntent(Intent.UpdateLatestPath(pos))
+                        else -> if (modeShapeType(latestState.mode) != null) {
+                            latestOnIntent(Intent.UpdateLatestShape(pos))
+                        }
                     }
                 }
             },
@@ -197,7 +291,211 @@ fun DrawBox(
                 .forEach { element ->
                     renderElement(element)
                 }
+            drawSelectionChrome(
+                state = state,
+                handleSizePx = handleSizePx,
+                rotationOffsetPx = rotationOffsetPx,
+            )
         }
+    }
+}
+
+private fun modeShapeType(mode: Mode): ShapeType? = when (mode) {
+    Mode.RECTANGLE -> ShapeType.RECTANGLE
+    Mode.CIRCLE -> ShapeType.CIRCLE
+    Mode.TRIANGLE -> ShapeType.TRIANGLE
+    Mode.ARROW -> ShapeType.ARROW
+    Mode.LINE -> ShapeType.LINE
+    Mode.PEN, Mode.SELECT -> null
+}
+
+// ==================== Selection gesture support ====================
+
+/** Active interaction inferred from a drag-start in SELECT mode. */
+private sealed class SelectionInteraction {
+    data object Move : SelectionInteraction()
+    data object SelectAndMove : SelectionInteraction()
+    data class Resize(
+        val elementId: String,
+        val handle: ResizeHandle,
+        val originalElement: Element,
+    ) : SelectionInteraction()
+    data class Rotate(
+        val elementId: String,
+        val center: Offset,
+        val initialAngle: Float,
+        val originalRotation: Float,
+    ) : SelectionInteraction()
+    data class Marquee(val anchor: Offset) : SelectionInteraction()
+}
+
+private fun classifySelection(
+    state: State,
+    pointer: Offset,
+    handleHitPx: Float,
+    rotationOffsetPx: Float,
+    pickTolerancePx: Float,
+): SelectionInteraction {
+    // Single-selection: check rotation + resize handles first.
+    if (state.selectedIds.size == 1) {
+        val element = state.elements.firstOrNull { it.id in state.selectedIds }
+        if (element != null) {
+            val b = element.bounds()
+            val rotHandle = rotationHandleWorld(b, element.rotation, rotationOffsetPx)
+            if (distance(pointer, rotHandle) <= handleHitPx) {
+                return SelectionInteraction.Rotate(
+                    elementId = element.id,
+                    center = b.center,
+                    initialAngle = angleFromCenter(b.center, pointer),
+                    originalRotation = element.rotation,
+                )
+            }
+            for ((h, p) in resizeHandlesWorld(b, element.rotation)) {
+                if (distance(pointer, p) <= handleHitPx) {
+                    return SelectionInteraction.Resize(
+                        elementId = element.id,
+                        handle = h,
+                        originalElement = element,
+                    )
+                }
+            }
+        }
+    }
+    // Drag inside already-selected → move existing selection.
+    if (state.elements.any { it.id in state.selectedIds && it.hitTest(pointer, pickTolerancePx) }) {
+        return SelectionInteraction.Move
+    }
+    // Drag on unselected element → select-then-move.
+    val any = topmostHit(state.elements, pointer, pickTolerancePx)
+    if (any != null) return SelectionInteraction.SelectAndMove
+    // Empty space → marquee.
+    return SelectionInteraction.Marquee(pointer)
+}
+
+private fun resizeHandlesLocal(bounds: Rect): List<Pair<ResizeHandle, Offset>> = listOf(
+    ResizeHandle.TopLeft to Offset(bounds.left, bounds.top),
+    ResizeHandle.Top to Offset(bounds.center.x, bounds.top),
+    ResizeHandle.TopRight to Offset(bounds.right, bounds.top),
+    ResizeHandle.Right to Offset(bounds.right, bounds.center.y),
+    ResizeHandle.BottomRight to Offset(bounds.right, bounds.bottom),
+    ResizeHandle.Bottom to Offset(bounds.center.x, bounds.bottom),
+    ResizeHandle.BottomLeft to Offset(bounds.left, bounds.bottom),
+    ResizeHandle.Left to Offset(bounds.left, bounds.center.y),
+)
+
+private fun resizeHandlesWorld(
+    bounds: Rect,
+    rotation: Float,
+): List<Pair<ResizeHandle, Offset>> {
+    val local = resizeHandlesLocal(bounds)
+    return if (rotation == 0f) local
+    else local.map { (h, p) -> h to rotateAround(p, bounds.center, rotation) }
+}
+
+private fun rotationHandleLocal(bounds: Rect, offsetPx: Float): Offset =
+    Offset(bounds.center.x, bounds.top - offsetPx)
+
+private fun rotationHandleWorld(
+    bounds: Rect,
+    rotation: Float,
+    offsetPx: Float,
+): Offset {
+    val local = rotationHandleLocal(bounds, offsetPx)
+    return if (rotation == 0f) local else rotateAround(local, bounds.center, rotation)
+}
+
+// ==================== Selection chrome rendering ====================
+
+private val SelectionAccent = Color(0xFF2196F3)
+private val SelectionMarqueeFill = Color(0x222196F3)
+
+private fun DrawScope.drawSelectionChrome(
+    state: State,
+    handleSizePx: Float,
+    rotationOffsetPx: Float,
+) {
+    state.elements
+        .asSequence()
+        .filter { it.id in state.selectedIds }
+        .forEach { el ->
+            val b = el.bounds()
+            if (el.rotation == 0f) {
+                drawSelectionForElement(b, handleSizePx, rotationOffsetPx)
+            } else {
+                withTransform({ rotate(el.rotation, pivot = b.center) }) {
+                    drawSelectionForElement(b, handleSizePx, rotationOffsetPx)
+                }
+            }
+        }
+    state.marqueeRect?.let { rect ->
+        val r = Rect(
+            left = minOf(rect.left, rect.right),
+            top = minOf(rect.top, rect.bottom),
+            right = maxOf(rect.left, rect.right),
+            bottom = maxOf(rect.top, rect.bottom),
+        )
+        drawRect(
+            color = SelectionMarqueeFill,
+            topLeft = r.topLeft,
+            size = Size(r.width, r.height),
+        )
+        drawRect(
+            color = SelectionAccent,
+            topLeft = r.topLeft,
+            size = Size(r.width, r.height),
+            style = Stroke(
+                width = 1.5f,
+                pathEffect = PathEffect.dashPathEffect(floatArrayOf(8f, 6f)),
+            ),
+        )
+    }
+}
+
+private fun DrawScope.drawSelectionForElement(
+    bounds: Rect,
+    handleSizePx: Float,
+    rotationOffsetPx: Float,
+) {
+    // Bounding box.
+    drawRect(
+        color = SelectionAccent,
+        topLeft = bounds.topLeft,
+        size = Size(bounds.width, bounds.height),
+        style = Stroke(width = 1.5f),
+    )
+    // Rotation handle: short line up + filled circle.
+    val rotHandle = rotationHandleLocal(bounds, rotationOffsetPx)
+    drawLine(
+        color = SelectionAccent,
+        start = Offset(bounds.center.x, bounds.top),
+        end = rotHandle,
+        strokeWidth = 1.5f,
+    )
+    drawCircle(
+        color = Color.White,
+        radius = handleSizePx * 0.6f,
+        center = rotHandle,
+    )
+    drawCircle(
+        color = SelectionAccent,
+        radius = handleSizePx * 0.6f,
+        center = rotHandle,
+        style = Stroke(1.5f),
+    )
+    // Resize handles.
+    val half = handleSizePx * 0.5f
+    resizeHandlesLocal(bounds).forEach { (_, p) ->
+        drawRect(
+            color = Color.White,
+            topLeft = Offset(p.x - half, p.y - half),
+            size = Size(handleSizePx, handleSizePx),
+        )
+        drawRect(
+            color = SelectionAccent,
+            topLeft = Offset(p.x - half, p.y - half),
+            size = Size(handleSizePx, handleSizePx),
+            style = Stroke(1.5f),
+        )
     }
 }
 
@@ -267,6 +565,16 @@ private fun Painter.rasterize(
  * @see drawShape for shape-specific rendering
  */
 private fun DrawScope.renderElement(element: Element) {
+    if (element.rotation == 0f) {
+        renderElementContent(element)
+    } else {
+        withTransform({ rotate(element.rotation, pivot = element.bounds().center) }) {
+            renderElementContent(element)
+        }
+    }
+}
+
+private fun DrawScope.renderElementContent(element: Element) {
     when (element) {
         is Element.Path -> {
             drawPath(

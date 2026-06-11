@@ -1,6 +1,7 @@
 package io.ak1.drawbox.domain.model
 
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 
@@ -104,6 +105,63 @@ sealed class Intent {
      * next drag to create a rectangle instead of a path.
      */
     data class SetMode(val mode: Mode) : Intent()
+
+    // ==================== Selection Operations ====================
+
+    /**
+     * Pick the topmost element at [offset] and make it the sole selection. If no
+     * element is hit, clears selection. Tolerance is in canvas pixels.
+     */
+    data class SelectAt(val offset: Offset, val tolerance: Float = 8f) : Intent()
+
+    /** Replace the current marquee rectangle (or clear with null). Not undoable. */
+    data class SetMarqueeRect(val rect: Rect?) : Intent()
+
+    /**
+     * Finalize a marquee selection: select every element whose bounding box
+     * intersects [rect]. Also clears [State.marqueeRect].
+     */
+    data class CommitMarquee(val rect: Rect) : Intent()
+
+    /** Clear the current selection. */
+    data object ClearSelection : Intent()
+
+    /** Delete every element in [State.selectedIds]. */
+    data object DeleteSelected : Intent()
+
+    /**
+     * Push the current elements onto the undo history. Use at the start of a
+     * gesture that mutates the selection across many tiny updates (drag move,
+     * resize, rotate) so a single undo reverts the whole gesture.
+     */
+    data object BeginTransform : Intent()
+
+    /** Translate every selected element by [delta]. Does not snapshot history. */
+    data class MoveSelected(val delta: Offset) : Intent()
+
+    /**
+     * Set the absolute bounding box of a single element. Used during resize.
+     * Does not snapshot history (caller should dispatch [BeginTransform] first).
+     */
+    data class SetElementBounds(val id: String, val bounds: Rect) : Intent()
+
+    /**
+     * Set the absolute rotation in degrees of a single element. Used during
+     * rotate. Does not snapshot history.
+     */
+    data class SetElementRotation(val id: String, val rotationDegrees: Float) : Intent()
+
+    /** Replace the stroke color of every selected element. Snapshots history. */
+    data class SetSelectedStrokeColor(val color: Color) : Intent()
+
+    /** Replace the stroke width of every selected element. Snapshots history. */
+    data class SetSelectedStrokeWidth(val width: Float) : Intent()
+
+    /** Move selected elements to the top of the z-order. Snapshots history. */
+    data object BringSelectionToFront : Intent()
+
+    /** Move selected elements to the bottom of the z-order. Snapshots history. */
+    data object SendSelectionToBack : Intent()
 
     // ==================== History Operations ====================
 

@@ -1,5 +1,6 @@
 package io.ak1.drawbox.domain.model
 
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
 
 /**
@@ -13,6 +14,8 @@ import androidx.compose.ui.graphics.Color
  * - [TRIANGLE]: Creates [Element.Shape] with [ShapeType.TRIANGLE]
  * - [ARROW]: Creates [Element.Shape] with [ShapeType.ARROW]
  * - [LINE]: Creates [Element.Shape] with [ShapeType.LINE]
+ * - [SELECT]: Selects existing elements. Tap to select, drag to move, drag a handle
+ *   to resize or rotate, drag on empty space to marquee-select multiple elements.
  *
  * The mode is read from [State.mode] and passed to [DrawBox], which uses it to
  * determine how to interpret user gestures.
@@ -30,6 +33,16 @@ sealed class Mode {
     data object ARROW : Mode()
     /** Line shape mode */
     data object LINE : Mode()
+    /** Selection mode - tap / drag to select, move, resize, rotate existing elements */
+    data object SELECT : Mode()
+}
+
+/**
+ * Resize handle positions around a selected element's bounding box. Eight
+ * handles in total: four corners and four edge midpoints.
+ */
+enum class ResizeHandle {
+    TopLeft, Top, TopRight, Right, BottomRight, Bottom, BottomLeft, Left,
 }
 
 /**
@@ -42,7 +55,12 @@ sealed class Mode {
  * - Easy debugging and testing
  *
  * @property elements List of all drawable elements currently on canvas
- * @property undoStack Stack of previous states for redo functionality
+ * @property history Stack of prior element snapshots for undo. Newest entry is last.
+ * @property future Stack of element snapshots for redo (populated when Undo runs).
+ * @property selectedIds IDs of currently selected elements. Drives selection chrome
+ *           rendering and the targets of move/resize/rotate/delete intents.
+ * @property marqueeRect Transient rectangle drawn while a marquee selection is in
+ *           progress. Null when no marquee is active. Not undoable.
  * @property strokeColor Color for drawing lines and shape strokes
  * @property strokeWidth Width/thickness of strokes in pixels
  * @property opacity Alpha channel for drawing (0.0 = transparent, 1.0 = opaque)
@@ -58,7 +76,10 @@ sealed class Mode {
  */
 data class State(
     val elements: List<Element> = emptyList(),
-    val undoStack: List<Element> = emptyList(),
+    val history: List<List<Element>> = emptyList(),
+    val future: List<List<Element>> = emptyList(),
+    val selectedIds: Set<String> = emptySet(),
+    val marqueeRect: Rect? = null,
     val strokeColor: Color = Color.Red,
     val strokeWidth: Float = 10f,
     val opacity: Float = 1f,
@@ -68,3 +89,6 @@ data class State(
 ){
     internal var invokeBitmap :(() -> Unit) = {}
 }
+
+/** Maximum number of snapshots kept in [State.history] and [State.future]. */
+internal const val HISTORY_CAP: Int = 100

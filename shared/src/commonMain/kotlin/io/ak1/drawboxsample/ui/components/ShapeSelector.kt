@@ -41,6 +41,11 @@ fun ShapeSelector(
             horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             ShapeModeButton(
+                label = "↖",
+                isSelected = selectedShape == Mode.SELECT,
+                onClick = { onShapeSelected(Mode.SELECT) }
+            )
+            ShapeModeButton(
                 label = "✏️",
                 isSelected = selectedShape == Mode.PEN,
                 onClick = { onShapeSelected(Mode.PEN) }

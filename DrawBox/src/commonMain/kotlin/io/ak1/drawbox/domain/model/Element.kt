@@ -27,6 +27,16 @@ sealed class Element {
     abstract val type: String
 
     /**
+     * Rotation in degrees, applied around the element's axis-aligned bounding box
+     * center at render time. Points stored on the element are in the unrotated
+     * (logical) coordinate space.
+     *
+     * Default 0f preserves back-compat with drawings created before rotation
+     * existed.
+     */
+    abstract val rotation: Float
+
+    /**
      * Represents a freehand drawn path created in PEN mode.
      *
      * A path is a series of connected points drawn by the user. It's rendered
@@ -48,6 +58,7 @@ sealed class Element {
         val strokeWidth: Float,
         val alpha: Float,
         override val zIndex: Int = 0,
+        override val rotation: Float = 0f,
     ) : Element()
 
     /**
@@ -78,6 +89,7 @@ sealed class Element {
         val fillColor: Color? = null,
         val strokeWidth: Float,
         override val zIndex: Int = 0,
+        override val rotation: Float = 0f,
     ) : Element()
 }
 

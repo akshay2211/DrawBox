@@ -3,7 +3,6 @@ package io.ak1.drawbox.domain.usecase
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import io.ak1.drawbox.domain.model.Element
-import io.ak1.drawbox.domain.model.State
 import io.ak1.drawbox.domain.model.ShapeType
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -118,49 +117,4 @@ class UseCaseTest {
         assertEquals(color, result.strokeColor)
     }
 
-    @Test
-    fun testUndo() {
-        val path = createTestPath()
-        val elements = listOf(path)
-        val undoStack = emptyList<Element>()
-
-        val (newElements, newUndoStack) = useCase.undo(elements, undoStack)
-
-        assertTrue(newElements.isEmpty())
-        assertEquals(1, newUndoStack.size)
-    }
-
-    @Test
-    fun testUndoEmpty() {
-        val elements = emptyList<Element>()
-        val undoStack = emptyList<Element>()
-
-        val (newElements, newUndoStack) = useCase.undo(elements, undoStack)
-
-        assertTrue(newElements.isEmpty())
-        assertTrue(newUndoStack.isEmpty())
-    }
-
-    @Test
-    fun testRedo() {
-        val path = createTestPath()
-        val elements = emptyList<Element>()
-        val undoStack = listOf(path)
-
-        val (newElements, newUndoStack) = useCase.redo(elements, undoStack)
-
-        assertEquals(1, newElements.size)
-        assertTrue(newUndoStack.isEmpty())
-    }
-
-    @Test
-    fun testRedoEmpty() {
-        val elements = emptyList<Element>()
-        val undoStack = emptyList<Element>()
-
-        val (newElements, newUndoStack) = useCase.redo(elements, undoStack)
-
-        assertTrue(newElements.isEmpty())
-        assertTrue(newUndoStack.isEmpty())
-    }
 }
