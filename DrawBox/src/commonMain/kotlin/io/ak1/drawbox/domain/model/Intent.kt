@@ -88,6 +88,15 @@ sealed class Intent {
     data class SetBgColor(val bgColor: Color) : Intent()
 
     /**
+     * Set or clear the repeating background pattern painted above [SetBgColor]
+     * and below all drawing elements.
+     *
+     * Pass `null` to remove an existing pattern. The pattern is purely a runtime
+     * decoration — it is not captured by PNG/JSON/SVG export.
+     */
+    data class SetBackgroundPattern(val pattern: BackgroundPattern?) : Intent()
+
+    /**
      * Switch to a different drawing mode.
      *
      * Changes what type of element is created on the next user interaction.

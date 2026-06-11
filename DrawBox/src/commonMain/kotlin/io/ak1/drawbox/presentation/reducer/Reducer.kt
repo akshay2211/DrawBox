@@ -97,6 +97,8 @@ class Reducer(
             is Intent.SetStrokeWidth -> state.copy(strokeWidth = intent.width)
             is Intent.SetOpacity -> state.copy(opacity = intent.opacity)
             is Intent.SetBgColor -> state.copy(bgColor = intent.bgColor)
+            // Replaces any existing pattern; null clears it. Layered above bgColor at render time.
+            is Intent.SetBackgroundPattern -> state.copy(bgPattern = intent.pattern)
             is Intent.SetMode -> state.copy(mode = intent.mode)
             is Intent.Undo -> {
                 val (newElements, newUndoStack) = useCase.undo(state.elements, state.undoStack)

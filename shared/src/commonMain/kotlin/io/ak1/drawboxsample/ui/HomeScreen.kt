@@ -9,11 +9,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.graphics.Color
+import drawboxsample.shared.generated.resources.Res
+import drawboxsample.shared.generated.resources.bg_graph_paper
 import io.ak1.drawbox.DrawBox
 import io.ak1.drawbox.domain.model.Event
 import io.ak1.drawbox.presentation.viewmodel.rememberDrawBoxController
 import io.ak1.drawboxsample.save.rememberImageSaver
 import io.ak1.drawboxsample.ui.components.ControlsBar
+import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun HomeScreen() {
@@ -22,7 +26,12 @@ fun HomeScreen() {
     val imageSaver = rememberImageSaver()
 
     // Use DrawBoxController
-    val viewModel = rememberDrawBoxController()
+    val viewModel = rememberDrawBoxController().apply {
+        this.setBackgroundPattern(
+            painter = painterResource(Res.drawable.bg_graph_paper),   // any Painter, including SVG
+            tint    = Color.LightGray.copy(alpha = 0.2f)                           // optional, null keeps original colors
+        )
+    }
     val state by viewModel.state.collectAsState()
     val canUndo by viewModel.canUndo.collectAsState()
     val canRedo by viewModel.canRedo.collectAsState()

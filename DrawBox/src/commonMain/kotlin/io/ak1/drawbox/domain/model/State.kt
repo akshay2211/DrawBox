@@ -46,12 +46,15 @@ sealed class Mode {
  * @property strokeColor Color for drawing lines and shape strokes
  * @property strokeWidth Width/thickness of strokes in pixels
  * @property opacity Alpha channel for drawing (0.0 = transparent, 1.0 = opaque)
- * @property bgColor Background color of the canvas
+ * @property bgColor Solid background color of the canvas (painted underneath [bgPattern])
+ * @property bgPattern Optional repeating image tiled above [bgColor] and below all elements;
+ *           runtime decoration only and not persisted by JSON/SVG export
  * @property mode Current drawing mode determining what gets created on user input
  *
  * @see Element
  * @see Intent
  * @see Mode
+ * @see BackgroundPattern
  */
 data class State(
     val elements: List<Element> = emptyList(),
@@ -60,6 +63,7 @@ data class State(
     val strokeWidth: Float = 10f,
     val opacity: Float = 1f,
     val bgColor: Color = Color.Black,
+    val bgPattern: BackgroundPattern? = null,
     val mode: Mode = Mode.PEN,
 ){
     internal var invokeBitmap :(() -> Unit) = {}
