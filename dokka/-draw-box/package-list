@@ -11,6 +11,10 @@ $dokka.location:io.ak1.drawbox.domain.model//toOffset/kotlin.String#/PointingToD
 $dokka.location:io.ak1.drawbox.domain.model//toPayLoad/io.ak1.drawbox.domain.model.DrawingExportDto#/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/to-pay-load.html
 $dokka.location:io.ak1.drawbox.domain.model//toShapeType/kotlin.String#/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/to-shape-type.html
 $dokka.location:io.ak1.drawbox.domain.model//toTypeString/io.ak1.drawbox.domain.model.ShapeType#/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/to-type-string.html
+$dokka.location:io.ak1.drawbox.domain.model/BackgroundPattern///PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-background-pattern/index.html
+$dokka.location:io.ak1.drawbox.domain.model/BackgroundPattern/BackgroundPattern/#androidx.compose.ui.graphics.painter.Painter#androidx.compose.ui.graphics.Color?/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-background-pattern/-background-pattern.html
+$dokka.location:io.ak1.drawbox.domain.model/BackgroundPattern/painter/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-background-pattern/painter.html
+$dokka.location:io.ak1.drawbox.domain.model/BackgroundPattern/tint/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-background-pattern/tint.html
 $dokka.location:io.ak1.drawbox.domain.model/DrawingExportDto///PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-drawing-export-dto/index.html
 $dokka.location:io.ak1.drawbox.domain.model/DrawingExportDto/DrawingExportDto/#kotlin.String#kotlin.collections.List[io.ak1.drawbox.domain.model.ElementDto]/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-drawing-export-dto/-drawing-export-dto.html
 $dokka.location:io.ak1.drawbox.domain.model/DrawingExportDto/bgColor/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-drawing-export-dto/bg-color.html
@@ -103,6 +107,9 @@ $dokka.location:io.ak1.drawbox.domain.model/Intent.SaveBitmap///PointingToDeclar
 $dokka.location:io.ak1.drawbox.domain.model/Intent.SaveBitmap/SaveBitmap/#androidx.compose.ui.graphics.ImageBitmap?#kotlin.Throwable?/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-intent/-save-bitmap/-save-bitmap.html
 $dokka.location:io.ak1.drawbox.domain.model/Intent.SaveBitmap/bitmap/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-intent/-save-bitmap/bitmap.html
 $dokka.location:io.ak1.drawbox.domain.model/Intent.SaveBitmap/throwable/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-intent/-save-bitmap/throwable.html
+$dokka.location:io.ak1.drawbox.domain.model/Intent.SetBackgroundPattern///PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-background-pattern/index.html
+$dokka.location:io.ak1.drawbox.domain.model/Intent.SetBackgroundPattern/SetBackgroundPattern/#io.ak1.drawbox.domain.model.BackgroundPattern?/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-background-pattern/-set-background-pattern.html
+$dokka.location:io.ak1.drawbox.domain.model/Intent.SetBackgroundPattern/pattern/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-background-pattern/pattern.html
 $dokka.location:io.ak1.drawbox.domain.model/Intent.SetBgColor///PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-bg-color/index.html
 $dokka.location:io.ak1.drawbox.domain.model/Intent.SetBgColor/SetBgColor/#androidx.compose.ui.graphics.Color/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-bg-color/-set-bg-color.html
 $dokka.location:io.ak1.drawbox.domain.model/Intent.SetBgColor/bgColor/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-bg-color/bg-color.html
@@ -162,8 +169,9 @@ $dokka.location:io.ak1.drawbox.domain.model/ShapeType.RECTANGLE///PointingToDecl
 $dokka.location:io.ak1.drawbox.domain.model/ShapeType.TRIANGLE///PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-shape-type/-t-r-i-a-n-g-l-e/index.html
 $dokka.location:io.ak1.drawbox.domain.model/ShapeType///PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-shape-type/index.html
 $dokka.location:io.ak1.drawbox.domain.model/State///PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-state/index.html
-$dokka.location:io.ak1.drawbox.domain.model/State/State/#kotlin.collections.List[io.ak1.drawbox.domain.model.Element]#kotlin.collections.List[io.ak1.drawbox.domain.model.Element]#androidx.compose.ui.graphics.Color#kotlin.Float#kotlin.Float#androidx.compose.ui.graphics.Color#io.ak1.drawbox.domain.model.Mode/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-state/-state.html
+$dokka.location:io.ak1.drawbox.domain.model/State/State/#kotlin.collections.List[io.ak1.drawbox.domain.model.Element]#kotlin.collections.List[io.ak1.drawbox.domain.model.Element]#androidx.compose.ui.graphics.Color#kotlin.Float#kotlin.Float#androidx.compose.ui.graphics.Color#io.ak1.drawbox.domain.model.BackgroundPattern?#io.ak1.drawbox.domain.model.Mode/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-state/-state.html
 $dokka.location:io.ak1.drawbox.domain.model/State/bgColor/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-state/bg-color.html
+$dokka.location:io.ak1.drawbox.domain.model/State/bgPattern/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-state/bg-pattern.html
 $dokka.location:io.ak1.drawbox.domain.model/State/elements/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-state/elements.html
 $dokka.location:io.ak1.drawbox.domain.model/State/mode/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-state/mode.html
 $dokka.location:io.ak1.drawbox.domain.model/State/opacity/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-state/opacity.html
@@ -202,6 +210,7 @@ $dokka.location:io.ak1.drawbox.presentation.viewmodel/DrawBoxController/onIntent
 $dokka.location:io.ak1.drawbox.presentation.viewmodel/DrawBoxController/redo/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/redo.html
 $dokka.location:io.ak1.drawbox.presentation.viewmodel/DrawBoxController/reset/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/reset.html
 $dokka.location:io.ak1.drawbox.presentation.viewmodel/DrawBoxController/saveBitmap/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/save-bitmap.html
+$dokka.location:io.ak1.drawbox.presentation.viewmodel/DrawBoxController/setBackgroundPattern/#androidx.compose.ui.graphics.painter.Painter?#androidx.compose.ui.graphics.Color?/PointingToDeclaration/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/set-background-pattern.html
 $dokka.location:io.ak1.drawbox.presentation.viewmodel/DrawBoxController/setBgColor/#androidx.compose.ui.graphics.Color/PointingToDeclaration/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/set-bg-color.html
 $dokka.location:io.ak1.drawbox.presentation.viewmodel/DrawBoxController/setColor/#androidx.compose.ui.graphics.Color/PointingToDeclaration/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/set-color.html
 $dokka.location:io.ak1.drawbox.presentation.viewmodel/DrawBoxController/setMode/#io.ak1.drawbox.domain.model.Mode/PointingToDeclaration/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/set-mode.html

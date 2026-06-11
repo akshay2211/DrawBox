@@ -1,0 +1,31 @@
+<!--
+  ~ Copyright (C) 2026 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="100dp"
+    android:height="100dp"
+    android:viewportWidth="100"
+    android:viewportHeight="100">
+  <path
+      android:pathData="M96,95h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4L0,96v-1h15v-9L0,86v-1h15v-9L0,76v-1h15v-9L0,66v-1h15v-9L0,56v-1h15v-9L0,46v-1h15v-9L0,36v-1h15v-9L0,26v-1h15v-9L0,16v-1h15L15,0h1v15h9L25,0h1v15h9L35,0h1v15h9L45,0h1v15h9L55,0h1v15h9L65,0h1v15h9L75,0h1v15h9L85,0h1v15h9L95,0h1v15h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9zM95,95v-9h-9v9h9zM85,95v-9h-9v9h9zM75,95v-9h-9v9h9zM65,95v-9h-9v9h9zM55,95v-9h-9v9h9zM45,95v-9h-9v9h9zM35,95v-9h-9v9h9zM25,95v-9h-9v9h9zM16,85h9v-9h-9v9zM26,85h9v-9h-9v9zM36,85h9v-9h-9v9zM46,85h9v-9h-9v9zM56,85h9v-9h-9v9zM66,85h9v-9h-9v9zM76,85h9v-9h-9v9zM86,85h9v-9h-9v9zM95,75v-9h-9v9h9zM85,75v-9h-9v9h9zM75,75v-9h-9v9h9zM65,75v-9h-9v9h9zM55,75v-9h-9v9h9zM45,75v-9h-9v9h9zM35,75v-9h-9v9h9zM25,75v-9h-9v9h9zM16,65h9v-9h-9v9zM26,65h9v-9h-9v9zM36,65h9v-9h-9v9zM46,65h9v-9h-9v9zM56,65h9v-9h-9v9zM66,65h9v-9h-9v9zM76,65h9v-9h-9v9zM86,65h9v-9h-9v9zM95,55v-9h-9v9h9zM85,55v-9h-9v9h9zM75,55v-9h-9v9h9zM65,55v-9h-9v9h9zM55,55v-9h-9v9h9zM45,55v-9h-9v9h9zM35,55v-9h-9v9h9zM25,55v-9h-9v9h9zM16,45h9v-9h-9v9zM26,45h9v-9h-9v9zM36,45h9v-9h-9v9zM46,45h9v-9h-9v9zM56,45h9v-9h-9v9zM66,45h9v-9h-9v9zM76,45h9v-9h-9v9zM86,45h9v-9h-9v9zM95,35v-9h-9v9h9zM85,35v-9h-9v9h9zM75,35v-9h-9v9h9zM65,35v-9h-9v9h9zM55,35v-9h-9v9h9zM45,35v-9h-9v9h9zM35,35v-9h-9v9h9zM25,35v-9h-9v9h9zM16,25h9v-9h-9v9zM26,25h9v-9h-9v9zM36,25h9v-9h-9v9zM46,25h9v-9h-9v9zM56,25h9v-9h-9v9zM66,25h9v-9h-9v9zM76,25h9v-9h-9v9zM86,25h9v-9h-9v9z"
+      android:strokeAlpha="0.5"
+      android:fillColor="#000"
+      android:fillType="evenOdd"
+      android:fillAlpha="0.5"/>
+  <path
+      android:pathData="M6,5V0H5v5H0v1h5v94h1V6h94V5H6z"
+      android:fillColor="#000"
+      android:fillType="evenOdd"/>
+</vector>
