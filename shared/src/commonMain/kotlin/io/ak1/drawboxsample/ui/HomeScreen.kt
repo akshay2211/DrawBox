@@ -12,9 +12,6 @@ import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
 import drawboxsample.shared.generated.resources.Res
 import drawboxsample.shared.generated.resources.bg_graph_paper
-import drawboxsample.shared.generated.resources.bg_hideout
-import drawboxsample.shared.generated.resources.bg_texture
-import drawboxsample.shared.generated.resources.bg_tiny_checkers
 import io.ak1.drawbox.DrawBox
 import io.ak1.drawbox.domain.model.Event
 import io.ak1.drawbox.presentation.viewmodel.rememberDrawBoxController

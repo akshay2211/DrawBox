@@ -92,7 +92,7 @@ import kotlin.math.sqrt
  *
  * **Performance Notes:**
  * - Uses [rememberGraphicsLayer] to render elements efficiently
- * - Pointer input is keyed by [state.mode] to update on mode changes
+ * - Pointer input is keyed by [State.mode] to update on mode changes
  * - [State.bgPattern] is converted to a tiled [ShaderBrush] via [remember];
  *   per-frame work is a single `drawRect` rather than an N×M painter tile loop
  * - Large element lists may impact frame rate; consider implementing virtualization
@@ -259,7 +259,7 @@ private fun Painter.rasterize(
  * Render an element on the canvas based on its type.
  *
  * Dispatches to specific rendering functions:
- * - [Element.Path]: Draws as a continuous stroke using [drawPath]
+ * - [Element.Path]: Draws as a continuous stroke using [DrawScope.drawPath]
  * - [Element.Shape]: Delegates to [drawShape] for type-specific rendering
  *
  * @param element The element to render
@@ -326,7 +326,7 @@ private fun DrawScope.drawShape(shape: Element.Shape) {
             drawRect(
                 color = shape.fillColor ?: shape.strokeColor,
                 topLeft = topLeft,
-                size = androidx.compose.ui.geometry.Size(width, height),
+                size = Size(width, height),
                 style = if (shape.fillColor != null) Fill else Stroke(shape.strokeWidth)
             )
         }
