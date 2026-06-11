@@ -18,6 +18,8 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.painter.Painter
+import io.ak1.drawbox.domain.model.BackgroundPattern
 import io.ak1.drawbox.domain.model.PayLoad
 import io.ak1.drawbox.domain.model.DrawingSerializer
 
@@ -176,6 +178,30 @@ class DrawBoxController(
 
     /** Change the canvas background color */
     fun setBgColor(color: Color) = onIntent(Intent.SetBgColor(color))
+
+    /**
+     * Set a repeating image — typically an SVG vector drawable — painted above
+     * the solid [setBgColor] background and below all strokes/shapes.
+     *
+     * The painter is rasterized once at its intrinsic size (64dp square fallback
+     * when no intrinsic size is reported) into a tileable [ImageBitmap], wrapped
+     * in a [ShaderBrush] with [TileMode.Repeated], and reused across recompositions.
+     * Tile work happens once per call, not per frame.
+     *
+     * Pass `null` for [painter] to clear the pattern.
+     *
+     * [tint] recolors the painter via SrcIn blending — ideal for monochrome /
+     * alpha-driven SVGs. Multi-color SVGs and raster-backed assets will be
+     * collapsed to the tint color (every opaque pixel becomes [tint]); pass
+     * `null` to keep the painter's original colors.
+     *
+     * The pattern is a runtime decoration and is intentionally excluded from
+     * PNG / JSON / SVG export.
+     */
+    fun setBackgroundPattern(painter: Painter?, tint: Color? = null) {
+        val pattern = painter?.let { BackgroundPattern(it, tint) }
+        onIntent(Intent.SetBackgroundPattern(pattern))
+    }
 
     /** Switch to a different drawing mode */
     fun setMode(mode: Mode) = onIntent(Intent.SetMode(mode))

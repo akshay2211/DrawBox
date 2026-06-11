@@ -8,20 +8,40 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.geometry.isSpecified
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.Canvas
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.ImageShader
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.ShaderBrush
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
+import androidx.compose.ui.graphics.TileMode
+import androidx.compose.ui.graphics.drawscope.CanvasDrawScope
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.layer.drawLayer
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.rememberGraphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.unit.dp
+import io.ak1.drawbox.domain.model.BackgroundPattern
 import io.ak1.drawbox.domain.model.Element
 import io.ak1.drawbox.domain.model.Intent
 import io.ak1.drawbox.domain.model.State
@@ -50,9 +70,12 @@ import kotlin.math.sqrt
  * - **RECTANGLE/CIRCLE/TRIANGLE/ARROW/LINE**: Tap/drag creates [Element.Shape] of that type
  *
  * **Rendering Pipeline:**
- * 1. Sort elements by [Element.zIndex] (lower values render first)
- * 2. Render each element using [renderElement]
- * 3. Paths are rendered with strokes, shapes with their specific geometry
+ * 1. Solid [State.bgColor] fill
+ * 2. Optional [State.bgPattern] tiled via a cached [ShaderBrush] (rasterized once
+ *    per pattern change with tint baked in; per-frame cost is a single `drawRect`)
+ * 3. Sort elements by [Element.zIndex] (lower values render first)
+ * 4. Render each element using [renderElement]
+ * 5. Paths are rendered with strokes, shapes with their specific geometry
  *
  * **Architecture:**
  * ```
@@ -70,6 +93,8 @@ import kotlin.math.sqrt
  * **Performance Notes:**
  * - Uses [rememberGraphicsLayer] to render elements efficiently
  * - Pointer input is keyed by [state.mode] to update on mode changes
+ * - [State.bgPattern] is converted to a tiled [ShaderBrush] via [remember];
+ *   per-frame work is a single `drawRect` rather than an N×M painter tile loop
  * - Large element lists may impact frame rate; consider implementing virtualization
  * - On-screen canvas changes are tracked via state hashCode
  *
@@ -81,6 +106,7 @@ import kotlin.math.sqrt
  * @see Intent
  * @see Mode
  * @see Element
+ * @see BackgroundPattern
  * @see renderElement for element-specific rendering
  */
 @Composable
@@ -113,9 +139,23 @@ fun DrawBox(
         Mode.PEN -> null
     }
 
+    // Rasterize + tile the pattern once per [bgPattern] / density / layoutDirection
+    // change. Without remember, every drag tick recomposes DrawBox, rebuilds the
+    // modifier chain, and re-tiles N×M painter draws per frame; with remember the
+    // per-frame work in `.drawBehind` collapses to a single shader-backed drawRect.
+    val density = LocalDensity.current
+    val layoutDirection = LocalLayoutDirection.current
+    val patternBrush: ShaderBrush? = remember(state.bgPattern, density, layoutDirection) {
+        state.bgPattern?.toTiledBrush(density, layoutDirection)
+    }
+
     Box(
         modifier = modifier
+            // Layering: solid bgColor → tiled bgPattern (if any) → graphicsLayer of strokes/shapes.
             .background(state.bgColor)
+            .drawBehind {
+                patternBrush?.let { drawRect(it) }
+            }
             .drawWithContent {
                 graphicsLayer.record { this@drawWithContent.drawContent() }
                 drawLayer(graphicsLayer)
@@ -159,6 +199,60 @@ fun DrawBox(
                 }
         }
     }
+}
+
+/**
+ * Build a [ShaderBrush] that tiles the pattern's painter across the canvas via a
+ * GPU-cached [ImageShader] with [TileMode.Repeated]. The painter is rasterized
+ * to an [ImageBitmap] at its intrinsic size (64dp square fallback), with the
+ * optional [BackgroundPattern.tint] baked in as a SrcIn color filter. Built once
+ * per pattern change and reused across recompositions, so per-frame work in
+ * `.drawBehind` reduces to a single [androidx.compose.ui.graphics.drawscope.DrawScope.drawRect] call.
+ */
+private fun BackgroundPattern.toTiledBrush(
+    density: Density,
+    layoutDirection: LayoutDirection,
+): ShaderBrush {
+    val intrinsic = painter.intrinsicSize
+    val tileSize = if (intrinsic.isSpecified && intrinsic.width > 0f && intrinsic.height > 0f) {
+        IntSize(
+            intrinsic.width.toInt().coerceAtLeast(1),
+            intrinsic.height.toInt().coerceAtLeast(1),
+        )
+    } else {
+        val fallback = with(density) { 64.dp.toPx().toInt() }.coerceAtLeast(1)
+        IntSize(fallback, fallback)
+    }
+    val bitmap = painter.rasterize(tileSize, density, layoutDirection, tint)
+    return ShaderBrush(
+        ImageShader(bitmap, TileMode.Repeated, TileMode.Repeated),
+    )
+}
+
+/**
+ * Render the painter into a freshly allocated [ImageBitmap] sized to [tileSize],
+ * applying an optional SrcIn [tint]. Used to bake a tileable bitmap for shader-based
+ * background tiling.
+ */
+private fun Painter.rasterize(
+    tileSize: IntSize,
+    density: Density,
+    layoutDirection: LayoutDirection,
+    tint: Color?,
+): ImageBitmap {
+    val bitmap = ImageBitmap(tileSize.width, tileSize.height)
+    val canvas = Canvas(bitmap)
+    val sizeF = Size(tileSize.width.toFloat(), tileSize.height.toFloat())
+    val filter = tint?.let { ColorFilter.tint(it, BlendMode.SrcIn) }
+    CanvasDrawScope().draw(
+        density = density,
+        layoutDirection = layoutDirection,
+        canvas = canvas,
+        size = sizeF,
+    ) {
+        with(this@rasterize) { draw(size = sizeF, colorFilter = filter) }
+    }
+    return bitmap
 }
 
 /**
