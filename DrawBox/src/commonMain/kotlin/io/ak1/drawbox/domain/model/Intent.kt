@@ -82,6 +82,19 @@ sealed class Intent {
     /** Change the stroke width for new drawings */
     data class SetStrokeWidth(val width: Float) : Intent()
 
+    /**
+     * Default corner radius applied to new RECTANGLE / TRIANGLE shapes. Has
+     * no effect on shapes that ignore it (circle, line, arrow) and on shapes
+     * already on the canvas.
+     */
+    data class SetCornerRadius(val radius: Float) : Intent()
+
+    /**
+     * Default stroke pattern applied to new shapes. Has no effect on existing
+     * shapes on the canvas; use [SetSelectedStrokeStyle] to retro-edit those.
+     */
+    data class SetStrokeStyle(val style: StrokeStyle) : Intent()
+
     /** Change the opacity/alpha for new drawings (0.0 to 1.0) */
     data class SetOpacity(val opacity: Float) : Intent()
 
@@ -156,6 +169,18 @@ sealed class Intent {
 
     /** Replace the stroke width of every selected element. Snapshots history. */
     data class SetSelectedStrokeWidth(val width: Float) : Intent()
+
+    /**
+     * Set the corner radius of every selected RECTANGLE / TRIANGLE shape.
+     * Snapshots history. Other shape types in the selection are left alone.
+     */
+    data class SetSelectedCornerRadius(val radius: Float) : Intent()
+
+    /**
+     * Set the stroke pattern of every selected [Element.Shape]. Snapshots
+     * history. Freehand paths in the selection are left alone.
+     */
+    data class SetSelectedStrokeStyle(val style: StrokeStyle) : Intent()
 
     /** Move selected elements to the top of the z-order. Snapshots history. */
     data object BringSelectionToFront : Intent()

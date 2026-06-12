@@ -86,6 +86,8 @@ data class State(
     val tempPanActive: Boolean = false,
     val strokeColor: Color = Color.Red,
     val strokeWidth: Float = 10f,
+    val currentItemCornerRadius: Float = 0f,
+    val currentItemStrokeStyle: StrokeStyle = StrokeStyle.SOLID,
     val opacity: Float = 1f,
     val bgColor: Color = Color.Black,
     val bgPattern: BackgroundPattern? = null,

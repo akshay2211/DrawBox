@@ -174,6 +174,21 @@ class DrawBoxController(
     /** Change the stroke width for new drawings */
     fun setStrokeWidth(width: Float) = onIntent(Intent.SetStrokeWidth(width))
 
+    /** Default corner radius applied to new RECTANGLE / TRIANGLE shapes. */
+    fun setCornerRadius(radius: Float) = onIntent(Intent.SetCornerRadius(radius))
+
+    /** Update the corner radius of every selected RECTANGLE / TRIANGLE shape. */
+    fun setSelectionCornerRadius(radius: Float) =
+        onIntent(Intent.SetSelectedCornerRadius(radius))
+
+    /** Default stroke pattern applied to new shapes. */
+    fun setStrokeStyle(style: io.ak1.drawbox.domain.model.StrokeStyle) =
+        onIntent(Intent.SetStrokeStyle(style))
+
+    /** Update the stroke pattern of every selected shape. */
+    fun setSelectionStrokeStyle(style: io.ak1.drawbox.domain.model.StrokeStyle) =
+        onIntent(Intent.SetSelectedStrokeStyle(style))
+
     /** Change the opacity for new drawings (0.0 to 1.0) */
     fun setOpacity(opacity: Float) = onIntent(Intent.SetOpacity(opacity))
 

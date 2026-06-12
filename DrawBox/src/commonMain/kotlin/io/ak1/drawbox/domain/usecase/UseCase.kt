@@ -6,6 +6,7 @@ import androidx.compose.ui.graphics.Color
 import io.ak1.drawbox.domain.model.Element
 import io.ak1.drawbox.domain.model.ResizeHandle
 import io.ak1.drawbox.domain.model.ShapeType
+import io.ak1.drawbox.domain.model.StrokeStyle
 import io.ak1.drawbox.domain.model.bounds
 import io.ak1.drawbox.domain.model.resizeBounds
 import io.ak1.drawbox.domain.model.topmostHit
@@ -32,12 +33,19 @@ class UseCase {
     }
 
     // Path operations
-    fun insertNewPath(offset: Offset, color: Color, width: Float, alpha: Float): Element.Path {
+    fun insertNewPath(
+        offset: Offset,
+        color: Color,
+        width: Float,
+        alpha: Float,
+        strokeStyle: StrokeStyle = StrokeStyle.SOLID,
+    ): Element.Path {
         return Element.Path(
             points = listOf(offset),
             strokeColor = color,
             strokeWidth = width,
             alpha = alpha,
+            strokeStyle = strokeStyle,
         )
     }
 
@@ -54,12 +62,21 @@ class UseCase {
     }
 
     // Shape operations
-    fun insertNewShape(shapeType: ShapeType, offset: Offset, color: Color, width: Float): Element.Shape {
+    fun insertNewShape(
+        shapeType: ShapeType,
+        offset: Offset,
+        color: Color,
+        width: Float,
+        cornerRadius: Float = 0f,
+        strokeStyle: StrokeStyle = StrokeStyle.SOLID,
+    ): Element.Shape {
         return Element.Shape(
             shapeType = shapeType,
             points = listOf(offset),
             strokeColor = color,
             strokeWidth = width,
+            cornerRadius = cornerRadius,
+            strokeStyle = strokeStyle,
         )
     }
 
@@ -191,4 +208,36 @@ class UseCase {
             is Element.Shape -> el.copy(strokeWidth = width)
         }
     }
+
+    /**
+     * Set the corner radius on selected RECTANGLE / TRIANGLE shapes. Other
+     * element types in the selection are left untouched.
+     */
+    fun setSelectedCornerRadius(
+        elements: List<Element>,
+        ids: Set<String>,
+        radius: Float,
+    ): List<Element> = elements.map { el ->
+        if (el.id !in ids) return@map el
+        if (el is Element.Shape && el.shapeType.supportsCornerRadius()) {
+            el.copy(cornerRadius = radius)
+        } else el
+    }
+
+    /** Set the stroke pattern on every selected element (shape OR freehand path). */
+    fun setSelectedStrokeStyle(
+        elements: List<Element>,
+        ids: Set<String>,
+        style: StrokeStyle,
+    ): List<Element> = elements.map { el ->
+        if (el.id !in ids) return@map el
+        when (el) {
+            is Element.Shape -> el.copy(strokeStyle = style)
+            is Element.Path -> el.copy(strokeStyle = style)
+        }
+    }
 }
+
+/** Shape types whose visual outline can be rounded at the corners. */
+fun ShapeType.supportsCornerRadius(): Boolean =
+    this == ShapeType.RECTANGLE || this == ShapeType.TRIANGLE

@@ -40,6 +40,7 @@ class Reducer(
                 state.strokeColor,
                 state.strokeWidth,
                 state.opacity,
+                state.currentItemStrokeStyle,
             )
             state.snapshot().copy(
                 elements = useCase.addElement(newPath, state.elements),
@@ -54,6 +55,8 @@ class Reducer(
                 intent.offset,
                 state.strokeColor,
                 state.strokeWidth,
+                state.currentItemCornerRadius,
+                state.currentItemStrokeStyle,
             )
             state.snapshot().copy(
                 elements = useCase.addElement(newShape, state.elements),
@@ -64,6 +67,8 @@ class Reducer(
         )
         is Intent.SetStrokeColor -> state.copy(strokeColor = intent.color)
         is Intent.SetStrokeWidth -> state.copy(strokeWidth = intent.width)
+        is Intent.SetCornerRadius -> state.copy(currentItemCornerRadius = intent.radius)
+        is Intent.SetStrokeStyle -> state.copy(currentItemStrokeStyle = intent.style)
         is Intent.SetOpacity -> state.copy(opacity = intent.opacity)
         is Intent.SetBgColor -> state.copy(bgColor = intent.bgColor)
         is Intent.SetBackgroundPattern -> state.copy(bgPattern = intent.pattern)
@@ -118,6 +123,22 @@ class Reducer(
             else state.snapshot().copy(
                 elements = useCase.setSelectedStrokeWidth(
                     state.elements, state.selectedIds, intent.width,
+                ),
+            )
+        }
+        is Intent.SetSelectedCornerRadius -> {
+            if (state.selectedIds.isEmpty()) state
+            else state.snapshot().copy(
+                elements = useCase.setSelectedCornerRadius(
+                    state.elements, state.selectedIds, intent.radius,
+                ),
+            )
+        }
+        is Intent.SetSelectedStrokeStyle -> {
+            if (state.selectedIds.isEmpty()) state
+            else state.snapshot().copy(
+                elements = useCase.setSelectedStrokeStyle(
+                    state.elements, state.selectedIds, intent.style,
                 ),
             )
         }

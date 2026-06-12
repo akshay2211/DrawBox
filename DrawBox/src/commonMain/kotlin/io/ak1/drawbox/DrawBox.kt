@@ -30,6 +30,7 @@ import androidx.compose.ui.input.pointer.isCtrlPressed
 import androidx.compose.ui.input.pointer.isShiftPressed
 import androidx.compose.ui.input.pointer.isTertiaryPressed
 import androidx.compose.ui.input.pointer.pointerHoverIcon
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
@@ -69,6 +70,7 @@ import io.ak1.drawbox.domain.model.Mode
 import io.ak1.drawbox.domain.model.ResizeHandle
 import io.ak1.drawbox.domain.model.ShapeType
 import io.ak1.drawbox.domain.model.State
+import io.ak1.drawbox.domain.model.StrokeStyle
 import io.ak1.drawbox.domain.model.Viewport
 import io.ak1.drawbox.domain.model.angleFromCenter
 import io.ak1.drawbox.domain.model.bounds
@@ -837,8 +839,11 @@ private fun DrawScope.renderElementContent(element: Element) {
                 alpha = element.alpha,
                 style = Stroke(
                     width = element.strokeWidth,
+                    // Round caps always for paths — keeps pencil-like ends for
+                    // solid strokes and makes individual dots visible for dotted.
                     cap = StrokeCap.Round,
                     join = StrokeJoin.Round,
+                    pathEffect = element.strokeStyle.toPathEffect(element.strokeWidth),
                 ),
             )
         }
@@ -885,12 +890,23 @@ private fun DrawScope.drawShape(shape: Element.Shape) {
 
     when (shape.shapeType) {
         ShapeType.RECTANGLE -> {
-            drawRect(
-                color = shape.fillColor ?: shape.strokeColor,
-                topLeft = topLeft,
-                size = Size(width, height),
-                style = if (shape.fillColor != null) Fill else Stroke(shape.strokeWidth)
-            )
+            val r = shape.cornerRadius.coerceAtMost(minOf(width, height) * 0.5f)
+            if (r > 0f) {
+                drawRoundRect(
+                    color = shape.fillColor ?: shape.strokeColor,
+                    topLeft = topLeft,
+                    size = Size(width, height),
+                    cornerRadius = CornerRadius(r, r),
+                    style = shape.drawStyle(),
+                )
+            } else {
+                drawRect(
+                    color = shape.fillColor ?: shape.strokeColor,
+                    topLeft = topLeft,
+                    size = Size(width, height),
+                    style = shape.drawStyle(),
+                )
+            }
         }
         ShapeType.CIRCLE -> {
             val center = start + Offset(
@@ -903,24 +919,52 @@ private fun DrawScope.drawShape(shape: Element.Shape) {
                 color = shape.fillColor ?: shape.strokeColor,
                 radius = radius,
                 center = center,
-                style = if (shape.fillColor != null) Fill else Stroke(shape.strokeWidth)
+                style = shape.drawStyle(),
             )
         }
         ShapeType.TRIANGLE -> {
             drawTriangle(topLeft, width, height, shape)
         }
         ShapeType.ARROW -> {
-            drawArrowShape(start, end, shape.strokeColor, shape.strokeWidth)
+            drawArrowShape(start, end, shape.strokeColor, shape.strokeWidth, shape.strokeStyle)
         }
         ShapeType.LINE -> {
             drawLine(
                 color = shape.strokeColor,
                 start = start,
                 end = end,
-                strokeWidth = shape.strokeWidth
+                strokeWidth = shape.strokeWidth,
+                cap = strokeCapFor(shape.strokeStyle),
+                pathEffect = shape.strokeStyle.toPathEffect(shape.strokeWidth),
             )
         }
     }
+}
+
+/** Stroke/fill style for an [Element.Shape] respecting its [StrokeStyle]. */
+private fun Element.Shape.drawStyle(): androidx.compose.ui.graphics.drawscope.DrawStyle =
+    if (fillColor != null) Fill else Stroke(
+        width = strokeWidth,
+        cap = strokeCapFor(strokeStyle),
+        join = StrokeJoin.Round,
+        pathEffect = strokeStyle.toPathEffect(strokeWidth),
+    )
+
+private fun strokeCapFor(style: StrokeStyle): StrokeCap = when (style) {
+    // Round caps + tiny dashes render as visible dots; for dashed and solid,
+    // butt caps give a crisp edge so dashes don't blur into one another.
+    StrokeStyle.DOTTED -> StrokeCap.Round
+    else -> StrokeCap.Butt
+}
+
+private fun StrokeStyle.toPathEffect(strokeWidth: Float): PathEffect? = when (this) {
+    StrokeStyle.SOLID -> null
+    StrokeStyle.DASHED -> PathEffect.dashPathEffect(
+        floatArrayOf(strokeWidth * 4f, strokeWidth * 2f),
+    )
+    StrokeStyle.DOTTED -> PathEffect.dashPathEffect(
+        floatArrayOf(strokeWidth * 0.5f, strokeWidth * 2f),
+    )
 }
 
 /**
@@ -945,17 +989,72 @@ private fun DrawScope.drawTriangle(
     height: Float,
     shape: Element.Shape,
 ) {
-    val path = Path().apply {
-        moveTo(topLeft.x + width / 2, topLeft.y)
-        lineTo(topLeft.x + width, topLeft.y + height)
-        lineTo(topLeft.x, topLeft.y + height)
-        close()
+    val apex = Offset(topLeft.x + width / 2, topLeft.y)
+    val br = Offset(topLeft.x + width, topLeft.y + height)
+    val bl = Offset(topLeft.x, topLeft.y + height)
+    val path = if (shape.cornerRadius > 0f) {
+        roundedTrianglePath(apex, br, bl, shape.cornerRadius)
+    } else {
+        Path().apply {
+            moveTo(apex.x, apex.y)
+            lineTo(br.x, br.y)
+            lineTo(bl.x, bl.y)
+            close()
+        }
     }
     drawPath(
         path,
         color = shape.fillColor ?: shape.strokeColor,
-        style = if (shape.fillColor != null) Fill else Stroke(shape.strokeWidth)
+        style = shape.drawStyle(),
     )
+}
+
+/**
+ * Build a triangle path with rounded corners by replacing each sharp vertex
+ * with a quadratic-bezier arc. The radius is clamped to half the shortest edge
+ * so adjacent tangent points never cross.
+ */
+private fun roundedTrianglePath(v0: Offset, v1: Offset, v2: Offset, radius: Float): Path {
+    val verts = listOf(v0, v1, v2)
+    val edges = listOf(
+        distance(v0, v1),
+        distance(v1, v2),
+        distance(v2, v0),
+    )
+    val r = radius.coerceAtMost(edges.min() * 0.5f)
+    if (r <= 0f) {
+        return Path().apply {
+            moveTo(v0.x, v0.y); lineTo(v1.x, v1.y); lineTo(v2.x, v2.y); close()
+        }
+    }
+    // For each vertex i: t1 lies on edge (i-1 → i) near i; t2 lies on edge
+    // (i → i+1) near i. The quadratic from t1 to t2 with the vertex as the
+    // control point approximates a circular arc.
+    val t1 = Array(3) { Offset.Zero }
+    val t2 = Array(3) { Offset.Zero }
+    for (i in 0..2) {
+        val prev = verts[(i + 2) % 3]
+        val curr = verts[i]
+        val next = verts[(i + 1) % 3]
+        val toPrev = normalizeOffset(prev - curr)
+        val toNext = normalizeOffset(next - curr)
+        t1[i] = curr + toPrev * r
+        t2[i] = curr + toNext * r
+    }
+    return Path().apply {
+        moveTo(t2[0].x, t2[0].y)
+        for (i in 0..2) {
+            val ni = (i + 1) % 3
+            lineTo(t1[ni].x, t1[ni].y)
+            quadraticTo(verts[ni].x, verts[ni].y, t2[ni].x, t2[ni].y)
+        }
+        close()
+    }
+}
+
+private fun normalizeOffset(v: Offset): Offset {
+    val len = sqrt(v.x * v.x + v.y * v.y)
+    return if (len > 0f) Offset(v.x / len, v.y / len) else Offset.Zero
 }
 
 /**
@@ -991,6 +1090,7 @@ private fun DrawScope.drawArrowShape(
     end: Offset,
     color: Color,
     strokeWidth: Float,
+    strokeStyle: StrokeStyle,
 ) {
     val angle = atan2(end.y - start.y, end.x - start.x)
     val arrowSize = maxOf(30f, strokeWidth * 3f)
@@ -1012,7 +1112,9 @@ private fun DrawScope.drawArrowShape(
         color = color,
         start = start,
         end = lineEnd,
-        strokeWidth = strokeWidth
+        strokeWidth = strokeWidth,
+        cap = strokeCapFor(strokeStyle),
+        pathEffect = strokeStyle.toPathEffect(strokeWidth),
     )
 
     val arrowPoint1 = Offset(

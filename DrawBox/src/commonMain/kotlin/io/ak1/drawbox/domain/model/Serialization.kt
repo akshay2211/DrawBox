@@ -53,6 +53,14 @@ fun String.toShapeType(): ShapeType = when (this) {
     else -> ShapeType.RECTANGLE
 }
 
+fun StrokeStyle.toWireString(): String = name
+
+fun String?.toStrokeStyle(): StrokeStyle = when (this) {
+    "DASHED" -> StrokeStyle.DASHED
+    "DOTTED" -> StrokeStyle.DOTTED
+    else -> StrokeStyle.SOLID
+}
+
 data class ElementDto(
     val id: String,
     val type: String,
@@ -64,6 +72,8 @@ data class ElementDto(
     val shapeType: String? = null,
     val fillColor: String? = null,
     val rotation: Float? = null,
+    val cornerRadius: Float? = null,
+    val strokeStyle: String? = null,
 )
 
 fun Element.toDto(): ElementDto = when (this) {
@@ -76,6 +86,7 @@ fun Element.toDto(): ElementDto = when (this) {
         strokeWidth = strokeWidth,
         alpha = alpha,
         rotation = rotation.takeIf { it != 0f },
+        strokeStyle = strokeStyle.toWireString().takeIf { strokeStyle != StrokeStyle.SOLID },
     )
     is Element.Shape -> ElementDto(
         id = id,
@@ -87,6 +98,8 @@ fun Element.toDto(): ElementDto = when (this) {
         strokeWidth = strokeWidth,
         fillColor = fillColor?.toHexString(),
         rotation = rotation.takeIf { it != 0f },
+        cornerRadius = cornerRadius.takeIf { it != 0f },
+        strokeStyle = strokeStyle.toWireString().takeIf { strokeStyle != StrokeStyle.SOLID },
     )
 }
 
@@ -99,6 +112,7 @@ fun ElementDto.toElement(): Element = when (type) {
         alpha = alpha ?: 1f,
         zIndex = zIndex,
         rotation = rotation ?: 0f,
+        strokeStyle = strokeStyle.toStrokeStyle(),
     )
     "Shape" -> Element.Shape(
         id = id,
@@ -109,6 +123,8 @@ fun ElementDto.toElement(): Element = when (type) {
         strokeWidth = strokeWidth,
         zIndex = zIndex,
         rotation = rotation ?: 0f,
+        cornerRadius = cornerRadius ?: 0f,
+        strokeStyle = strokeStyle.toStrokeStyle(),
     )
     else -> Element.Path(
         id = id,
@@ -118,6 +134,7 @@ fun ElementDto.toElement(): Element = when (type) {
         alpha = alpha ?: 1f,
         zIndex = zIndex,
         rotation = rotation ?: 0f,
+        strokeStyle = strokeStyle.toStrokeStyle(),
     )
 }
 
@@ -148,6 +165,8 @@ data class SerializableElement(
     val shapeType: String? = null,
     val fillColor: String? = null,
     val rotation: Float? = null,
+    val cornerRadius: Float? = null,
+    val strokeStyle: String? = null,
 )
 
 @kotlinx.serialization.Serializable
@@ -175,6 +194,8 @@ object DrawingSerializer {
                     shapeType = element.shapeType,
                     fillColor = element.fillColor,
                     rotation = element.rotation,
+                    cornerRadius = element.cornerRadius,
+                    strokeStyle = element.strokeStyle,
                 )
             },
         )
@@ -197,6 +218,8 @@ object DrawingSerializer {
                     shapeType = element.shapeType,
                     fillColor = element.fillColor,
                     rotation = element.rotation,
+                    cornerRadius = element.cornerRadius,
+                    strokeStyle = element.strokeStyle,
                 )
             },
         )

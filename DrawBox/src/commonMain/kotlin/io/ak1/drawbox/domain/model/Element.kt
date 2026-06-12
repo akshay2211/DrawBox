@@ -59,6 +59,8 @@ sealed class Element {
         val alpha: Float,
         override val zIndex: Int = 0,
         override val rotation: Float = 0f,
+        /** Stroke pattern for the freehand path. SOLID keeps the natural pencil feel. */
+        val strokeStyle: StrokeStyle = StrokeStyle.SOLID,
     ) : Element()
 
     /**
@@ -90,6 +92,18 @@ sealed class Element {
         val strokeWidth: Float,
         override val zIndex: Int = 0,
         override val rotation: Float = 0f,
+        /**
+         * Corner radius in world pixels for [ShapeType.RECTANGLE] and
+         * [ShapeType.TRIANGLE]. Ignored for circle, line, arrow. 0 = sharp.
+         * Auto-clamped at render time so it never exceeds half the shortest
+         * adjacent edge.
+         */
+        val cornerRadius: Float = 0f,
+        /**
+         * Stroke pattern for non-filled rendering. Solid by default. For arrows
+         * the body line follows this style; the head stays solid for clarity.
+         */
+        val strokeStyle: StrokeStyle = StrokeStyle.SOLID,
     ) : Element()
 }
 
@@ -118,3 +132,11 @@ sealed class ShapeType {
     /** Straight line shape */
     data object LINE : ShapeType()
 }
+
+/**
+ * Stroke pattern applied when rendering a stroked (non-filled) [Element.Shape].
+ *
+ * Has no effect on filled shapes, and is intentionally not applied to
+ * [Element.Path] (freehand strokes stay continuous to preserve pencil feel).
+ */
+enum class StrokeStyle { SOLID, DASHED, DOTTED }

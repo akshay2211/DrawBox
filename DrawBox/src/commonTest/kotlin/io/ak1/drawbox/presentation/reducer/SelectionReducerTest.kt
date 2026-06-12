@@ -8,6 +8,7 @@ import io.ak1.drawbox.domain.model.Intent
 import io.ak1.drawbox.domain.model.Mode
 import io.ak1.drawbox.domain.model.ShapeType
 import io.ak1.drawbox.domain.model.State
+import io.ak1.drawbox.domain.model.StrokeStyle
 import io.ak1.drawbox.domain.usecase.UseCase
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -139,6 +140,105 @@ class SelectionReducerTest {
         val newA = out.elements.first { it.id == "a" }
         val newB = out.elements.first { it.id == "b" }
         assertTrue(newA.zIndex > newB.zIndex)
+    }
+
+    @Test
+    fun setCornerRadiusUpdatesDefaultOnly() {
+        val initial = State(currentItemCornerRadius = 0f)
+        val out = reducer.reduce(initial, Intent.SetCornerRadius(16f))
+        assertEquals(16f, out.currentItemCornerRadius)
+        // Default change must NOT enter undo history.
+        assertTrue(out.history.isEmpty())
+    }
+
+    @Test
+    fun insertNewShapeAppliesCurrentItemCornerRadius() {
+        val initial = State(
+            mode = Mode.RECTANGLE,
+            currentItemCornerRadius = 24f,
+        )
+        val out = reducer.reduce(initial, Intent.InsertNewShape(ShapeType.RECTANGLE, Offset.Zero))
+        val inserted = out.elements.first() as Element.Shape
+        assertEquals(24f, inserted.cornerRadius)
+    }
+
+    @Test
+    fun setSelectedCornerRadiusAppliesOnlyToRoundableShapes() {
+        val rect = rect("r", 0f, 0f, 100f, 100f)
+        val circle = Element.Shape(
+            id = "c",
+            shapeType = ShapeType.CIRCLE,
+            points = listOf(Offset(0f, 0f), Offset(80f, 0f)),
+            strokeColor = Color.Red,
+            fillColor = null,
+            strokeWidth = 4f,
+        )
+        val state = State(
+            elements = listOf(rect, circle),
+            mode = Mode.SELECT,
+            selectedIds = setOf("r", "c"),
+        )
+        val out = reducer.reduce(state, Intent.SetSelectedCornerRadius(12f))
+        val newRect = out.elements.first { it.id == "r" } as Element.Shape
+        val newCircle = out.elements.first { it.id == "c" } as Element.Shape
+        assertEquals(12f, newRect.cornerRadius)
+        // Circle is not roundable — must be left untouched.
+        assertEquals(0f, newCircle.cornerRadius)
+        // Snapshots history.
+        assertEquals(1, out.history.size)
+    }
+
+    @Test
+    fun setStrokeStyleUpdatesDefaultOnly() {
+        val initial = State()
+        val out = reducer.reduce(initial, Intent.SetStrokeStyle(StrokeStyle.DASHED))
+        assertEquals(StrokeStyle.DASHED, out.currentItemStrokeStyle)
+        assertTrue(out.history.isEmpty())
+    }
+
+    @Test
+    fun insertNewShapeAppliesCurrentItemStrokeStyle() {
+        val initial = State(
+            mode = Mode.CIRCLE,
+            currentItemStrokeStyle = StrokeStyle.DOTTED,
+        )
+        val out = reducer.reduce(initial, Intent.InsertNewShape(ShapeType.CIRCLE, Offset.Zero))
+        val inserted = out.elements.first() as Element.Shape
+        assertEquals(StrokeStyle.DOTTED, inserted.strokeStyle)
+    }
+
+    @Test
+    fun setSelectedStrokeStyleAppliesToShapesAndPaths() {
+        val r = rect("r", 0f, 0f, 100f, 100f)
+        val p = Element.Path(
+            id = "p",
+            points = listOf(Offset(0f, 0f)),
+            strokeColor = Color.Red,
+            strokeWidth = 4f,
+            alpha = 1f,
+        )
+        val state = State(
+            elements = listOf(r, p),
+            mode = Mode.SELECT,
+            selectedIds = setOf("r", "p"),
+        )
+        val out = reducer.reduce(state, Intent.SetSelectedStrokeStyle(StrokeStyle.DASHED))
+        val newRect = out.elements.first { it.id == "r" } as Element.Shape
+        val newPath = out.elements.first { it.id == "p" } as Element.Path
+        assertEquals(StrokeStyle.DASHED, newRect.strokeStyle)
+        assertEquals(StrokeStyle.DASHED, newPath.strokeStyle)
+        assertEquals(1, out.history.size)
+    }
+
+    @Test
+    fun insertNewPathAppliesCurrentItemStrokeStyle() {
+        val initial = State(
+            mode = Mode.PEN,
+            currentItemStrokeStyle = StrokeStyle.DOTTED,
+        )
+        val out = reducer.reduce(initial, Intent.InsertNewPath(Offset.Zero))
+        val inserted = out.elements.first() as Element.Path
+        assertEquals(StrokeStyle.DOTTED, inserted.strokeStyle)
     }
 
     @Test

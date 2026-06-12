@@ -20,18 +20,24 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.width
-import drawboxsample.shared.generated.resources.Res
-import drawboxsample.shared.generated.resources.bg_graph_paper
 import io.ak1.drawbox.DrawBox
+import io.ak1.drawbox.domain.model.Element
 import io.ak1.drawbox.domain.model.Event
+import io.ak1.drawbox.domain.model.Mode
+import io.ak1.drawbox.domain.model.ShapeType
+import io.ak1.drawbox.domain.model.StrokeStyle
 import io.ak1.drawbox.presentation.viewmodel.DrawBoxController
 import io.ak1.drawbox.presentation.viewmodel.rememberDrawBoxController
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.height
+import androidx.compose.ui.draw.clip
+import kotlin.math.abs
 import io.ak1.drawboxsample.save.rememberImageSaver
 import io.ak1.drawboxsample.ui.components.ControlsBar
 import io.ak1.drawboxsample.ui.icons.DrawBoxIcons
@@ -90,6 +96,63 @@ fun HomeScreen() {
     if (state.selectedIds.isNotEmpty()) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
             SelectionToolbar(viewModel = viewModel)
+        }
+    }
+
+    // Top-right tool overlays. Both appear conditionally and stack vertically.
+    val selectedRoundable = state.elements.filter {
+        it.id in state.selectedIds && it is Element.Shape &&
+            (it.shapeType == ShapeType.RECTANGLE || it.shapeType == ShapeType.TRIANGLE)
+    }
+    val selectedDrawables = state.elements.filter { it.id in state.selectedIds }
+    val isStrokeAuthoringMode = state.mode == Mode.PEN ||
+        state.mode == Mode.RECTANGLE || state.mode == Mode.CIRCLE ||
+        state.mode == Mode.TRIANGLE || state.mode == Mode.ARROW || state.mode == Mode.LINE
+    val showCornerToolbar = state.mode == Mode.RECTANGLE ||
+        state.mode == Mode.TRIANGLE ||
+        selectedRoundable.isNotEmpty()
+    val showStrokeStyleToolbar = isStrokeAuthoringMode || selectedDrawables.isNotEmpty()
+    val currentRadius = if (selectedRoundable.isNotEmpty()) {
+        (selectedRoundable.first() as Element.Shape).cornerRadius
+    } else {
+        state.currentItemCornerRadius
+    }
+    val currentStrokeStyle = when (val first = selectedDrawables.firstOrNull()) {
+        is Element.Shape -> first.strokeStyle
+        is Element.Path -> first.strokeStyle
+        else -> state.currentItemStrokeStyle
+    }
+    if (showCornerToolbar || showStrokeStyleToolbar) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            Column(
+                modifier = Modifier.align(Alignment.TopEnd).padding(12.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                if (showCornerToolbar) {
+                    CornerRadiusToolbar(
+                        current = currentRadius,
+                        onSelect = { r ->
+                            if (selectedRoundable.isNotEmpty()) {
+                                viewModel.setSelectionCornerRadius(r)
+                            } else {
+                                viewModel.setCornerRadius(r)
+                            }
+                        },
+                    )
+                }
+                if (showStrokeStyleToolbar) {
+                    StrokeStyleToolbar(
+                        current = currentStrokeStyle,
+                        onSelect = { style ->
+                            if (selectedDrawables.isNotEmpty()) {
+                                viewModel.setSelectionStrokeStyle(style)
+                            } else {
+                                viewModel.setStrokeStyle(style)
+                            }
+                        },
+                    )
+                }
+            }
         }
     }
 
@@ -206,6 +269,106 @@ private fun ZoomToolbar(
                 )
             }
         }
+    }
+}
+
+private const val RadiusSharp = 0f
+private const val RadiusSoft = 16f
+private const val RadiusRound = 40f
+
+@Composable
+private fun StrokeStyleToolbar(
+    current: StrokeStyle,
+    onSelect: (StrokeStyle) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Card(modifier = modifier, shape = RoundedCornerShape(20.dp)) {
+        Row(
+            modifier = Modifier.padding(4.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(2.dp),
+        ) {
+            StrokeOption("Solid", StrokeStyle.SOLID, current, onSelect)
+            StrokeOption("Dashed", StrokeStyle.DASHED, current, onSelect)
+            StrokeOption("Dotted", StrokeStyle.DOTTED, current, onSelect)
+        }
+    }
+}
+
+@Composable
+private fun StrokeOption(
+    label: String,
+    value: StrokeStyle,
+    current: StrokeStyle,
+    onSelect: (StrokeStyle) -> Unit,
+) {
+    val active = value == current
+    Box(
+        modifier = Modifier
+            .width(64.dp)
+            .height(32.dp)
+            .clip(RoundedCornerShape(8.dp))
+            .background(
+                if (active) MaterialTheme.colorScheme.primary
+                else androidx.compose.ui.graphics.Color.Transparent,
+            )
+            .clickable { onSelect(value) },
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            text = label,
+            fontSize = 12.sp,
+            color = if (active) MaterialTheme.colorScheme.onPrimary
+            else MaterialTheme.colorScheme.onSurface,
+        )
+    }
+}
+
+@Composable
+private fun CornerRadiusToolbar(
+    current: Float,
+    onSelect: (Float) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Card(modifier = modifier, shape = RoundedCornerShape(20.dp)) {
+        Row(
+            modifier = Modifier.padding(4.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(2.dp),
+        ) {
+            CornerOption("Sharp", RadiusSharp, current, onSelect)
+            CornerOption("Soft", RadiusSoft, current, onSelect)
+            CornerOption("Round", RadiusRound, current, onSelect)
+        }
+    }
+}
+
+@Composable
+private fun CornerOption(
+    label: String,
+    value: Float,
+    current: Float,
+    onSelect: (Float) -> Unit,
+) {
+    val active = abs(current - value) < 0.5f
+    Box(
+        modifier = Modifier
+            .width(64.dp)
+            .height(32.dp)
+            .clip(RoundedCornerShape(8.dp))
+            .background(
+                if (active) MaterialTheme.colorScheme.primary
+                else androidx.compose.ui.graphics.Color.Transparent,
+            )
+            .clickable { onSelect(value) },
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            text = label,
+            fontSize = 12.sp,
+            color = if (active) MaterialTheme.colorScheme.onPrimary
+            else MaterialTheme.colorScheme.onSurface,
+        )
     }
 }
 
