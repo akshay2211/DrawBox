@@ -163,6 +163,26 @@ sealed class Intent {
     /** Move selected elements to the bottom of the z-order. Snapshots history. */
     data object SendSelectionToBack : Intent()
 
+    // ==================== Camera / Viewport Operations ====================
+
+    /** Translate the camera by [delta] screen pixels. Not undoable (session state). */
+    data class PanBy(val delta: Offset) : Intent()
+
+    /**
+     * Multiplicatively zoom the camera by [factor] anchored at [focalScreen]
+     * (a point in screen pixels that stays put). Not undoable.
+     */
+    data class ZoomBy(val factor: Float, val focalScreen: Offset) : Intent()
+
+    /** Set absolute scale to [targetScale] anchored at [focalScreen]. Not undoable. */
+    data class ZoomTo(val targetScale: Float, val focalScreen: Offset) : Intent()
+
+    /** Reset the viewport to identity (offset = Zero, scale = 1). Not undoable. */
+    data object ResetCamera : Intent()
+
+    /** Toggle the transient pan-while-held flag (e.g. for space bar). Not undoable. */
+    data class SetTempPan(val active: Boolean) : Intent()
+
     // ==================== History Operations ====================
 
     /** Undo the last drawing action */

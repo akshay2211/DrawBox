@@ -2,6 +2,7 @@ package io.ak1.drawbox
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
@@ -15,6 +16,20 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onPreviewKeyEvent
+import androidx.compose.ui.input.key.type
+import androidx.compose.ui.input.pointer.PointerEventPass
+import androidx.compose.ui.input.pointer.PointerEventType
+import androidx.compose.ui.input.pointer.PointerIcon
+import androidx.compose.ui.input.pointer.isCtrlPressed
+import androidx.compose.ui.input.pointer.isShiftPressed
+import androidx.compose.ui.input.pointer.isTertiaryPressed
+import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
@@ -25,6 +40,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.ImageShader
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.ShaderBrush
@@ -53,9 +69,11 @@ import io.ak1.drawbox.domain.model.Mode
 import io.ak1.drawbox.domain.model.ResizeHandle
 import io.ak1.drawbox.domain.model.ShapeType
 import io.ak1.drawbox.domain.model.State
+import io.ak1.drawbox.domain.model.Viewport
 import io.ak1.drawbox.domain.model.angleFromCenter
 import io.ak1.drawbox.domain.model.bounds
 import io.ak1.drawbox.domain.model.distance
+import io.ak1.drawbox.domain.model.effectiveMode
 import io.ak1.drawbox.domain.model.hitTest
 import io.ak1.drawbox.domain.model.resizeBoundsForElement
 import io.ak1.drawbox.domain.model.rotateAround
@@ -127,6 +145,7 @@ fun DrawBox(
     state: State,
     onIntent: (Intent) -> Unit,
     modifier: Modifier = Modifier.fillMaxSize(),
+    showGrid: Boolean = true,
 ) {
     val graphicsLayer = rememberGraphicsLayer()
     val scope = rememberCoroutineScope()
@@ -163,29 +182,209 @@ fun DrawBox(
     val latestState by rememberUpdatedState(state)
     val latestOnIntent by rememberUpdatedState(onIntent)
 
+    // Keyboard focus for the space-bar temp-pan. On platforms without hardware
+    // keyboards (mobile) this is harmless dead weight.
+    val focusRequester = remember { FocusRequester() }
+    LaunchedEffect(Unit) {
+        runCatching { focusRequester.requestFocus() }
+    }
+
+    // Cursor: hand in PAN (incl. temp-pan via Space), crosshair for drawing
+    // modes, default otherwise. Picked up by Compose Desktop / Web / IDE
+    // preview; no-op on mobile.
+    val cursor = when (state.effectiveMode) {
+        Mode.PAN -> PointerIcon.Hand
+        Mode.SELECT -> PointerIcon.Default
+        else -> PointerIcon.Crosshair
+    }
+
     Box(
         modifier = modifier
-            // Layering: solid bgColor → tiled bgPattern (if any) → graphicsLayer of strokes/shapes.
+            .pointerHoverIcon(cursor)
+            // Keyboard: Space → SetTempPan(true/false). Routed before pointer
+            // handlers so it always wins focus.
+            .focusRequester(focusRequester)
+            .focusable()
+            .onPreviewKeyEvent { event ->
+                if (event.key == Key.Spacebar) {
+                    when (event.type) {
+                        KeyEventType.KeyDown -> {
+                            if (!latestState.tempPanActive) {
+                                latestOnIntent(Intent.SetTempPan(true))
+                            }
+                            true
+                        }
+                        KeyEventType.KeyUp -> {
+                            if (latestState.tempPanActive) {
+                                latestOnIntent(Intent.SetTempPan(false))
+                            }
+                            true
+                        }
+                        else -> false
+                    }
+                } else false
+            }
+            // Layering: solid bgColor → tiled bgPattern (panned with viewport) →
+            // grid (also session-only chrome) → graphicsLayer of strokes/shapes.
+            //
+            // Grid lives in .drawBehind so it is NOT recorded into graphicsLayer,
+            // which means saved bitmaps don't include it. SVG export iterates
+            // state.elements directly, so it's already grid-free.
             .background(state.bgColor)
             .drawBehind {
-                patternBrush?.let { drawRect(it) }
+                val vp = state.viewport
+                patternBrush?.let { brush ->
+                    withTransform({
+                        translate(vp.offset.x, vp.offset.y)
+                        scale(vp.scale, vp.scale, pivot = Offset.Zero)
+                    }) {
+                        // Cover the visible viewport in world coordinates.
+                        val worldTL = vp.screenToWorld(Offset.Zero)
+                        val worldBR = vp.screenToWorld(Offset(size.width, size.height))
+                        drawRect(
+                            brush = brush,
+                            topLeft = worldTL,
+                            size = Size(worldBR.x - worldTL.x, worldBR.y - worldTL.y),
+                        )
+                    }
+                }
+                if (showGrid) drawGrid(vp, state.bgColor)
             }
             .drawWithContent {
                 graphicsLayer.record { this@drawWithContent.drawContent() }
                 drawLayer(graphicsLayer)
             }
+            // Re-acquire keyboard focus on every press. Without this, clicking a
+            // Material button (mode menu, zoom toolbar, etc.) steals focus and
+            // Space/key handlers stop firing on the canvas until the user
+            // explicitly refocuses it.
+            .pointerInput(focusRequester) {
+                awaitPointerEventScope {
+                    while (true) {
+                        val event = awaitPointerEvent(PointerEventPass.Initial)
+                        if (event.type == PointerEventType.Press) {
+                            runCatching { focusRequester.requestFocus() }
+                        }
+                    }
+                }
+            }
+            // Middle-mouse-button drag → pan in any mode. Reliable desktop UX
+            // that doesn't depend on Compose Desktop's horizontal-scroll bridge
+            // (which is inconsistent on macOS trackpad / AWT MouseWheelEvent).
+            .pointerInput(Unit) {
+                awaitPointerEventScope {
+                    var panning = false
+                    var lastPos = Offset.Zero
+                    while (true) {
+                        val event = awaitPointerEvent()
+                        val pressed = event.buttons.isTertiaryPressed
+                        val pos = event.changes.firstOrNull()?.position ?: continue
+                        when {
+                            pressed && !panning -> {
+                                panning = true
+                                lastPos = pos
+                                event.changes.forEach { it.consume() }
+                            }
+                            pressed && panning -> {
+                                val delta = pos - lastPos
+                                if (delta.x != 0f || delta.y != 0f) {
+                                    latestOnIntent(Intent.PanBy(delta))
+                                    lastPos = pos
+                                }
+                                event.changes.forEach { it.consume() }
+                            }
+                            !pressed && panning -> {
+                                panning = false
+                            }
+                        }
+                    }
+                }
+            }
+            // Multi-touch: pinch-zoom (focal-preserving) + two-finger pan.
+            .pointerInput(Unit) {
+                awaitPointerEventScope {
+                    var prevDistance = 0f
+                    var prevCentroid = Offset.Zero
+                    var multi = false
+                    while (true) {
+                        val event = awaitPointerEvent()
+                        val pressed = event.changes.filter { it.pressed }
+                        if (pressed.size >= 2) {
+                            val p1 = pressed[0].position
+                            val p2 = pressed[1].position
+                            val d = (p1 - p2).getDistance()
+                            val centroid = Offset((p1.x + p2.x) * 0.5f, (p1.y + p2.y) * 0.5f)
+                            if (!multi) {
+                                multi = true
+                                prevDistance = d
+                                prevCentroid = centroid
+                                // Cancel any in-progress marquee on the other handler.
+                                if (latestState.marqueeRect != null) {
+                                    latestOnIntent(Intent.SetMarqueeRect(null))
+                                }
+                            } else {
+                                if (prevDistance > 1f && d > 1f) {
+                                    latestOnIntent(Intent.ZoomBy(d / prevDistance, centroid))
+                                }
+                                latestOnIntent(Intent.PanBy(centroid - prevCentroid))
+                                prevDistance = d
+                                prevCentroid = centroid
+                            }
+                            event.changes.forEach { it.consume() }
+                        } else if (multi) {
+                            multi = false
+                            event.changes.forEach { it.consume() }
+                        }
+                    }
+                }
+            }
+            // Scroll wheel + trackpad: Ctrl=zoom, Shift=force horizontal (for
+            // mice without a horizontal wheel), default=2D pan using whichever
+            // axes the device supplies. Trackpad two-finger scroll sends both
+            // delta.x and delta.y; classic mouse wheels send only delta.y.
+            .pointerInput(Unit) {
+                awaitPointerEventScope {
+                    while (true) {
+                        val event = awaitPointerEvent()
+                        if (event.type != PointerEventType.Scroll) continue
+                        val change = event.changes.firstOrNull() ?: continue
+                        val delta = change.scrollDelta
+                        when {
+                            event.keyboardModifiers.isCtrlPressed -> {
+                                if (delta.y != 0f) {
+                                    val factor = if (delta.y < 0) 1.1f else 1f / 1.1f
+                                    latestOnIntent(Intent.ZoomBy(factor, change.position))
+                                }
+                            }
+                            event.keyboardModifiers.isShiftPressed -> {
+                                // Map vertical wheel to horizontal pan for users
+                                // whose mouse has no horizontal axis.
+                                latestOnIntent(Intent.PanBy(Offset(-delta.y * 50f, 0f)))
+                            }
+                            else -> {
+                                latestOnIntent(Intent.PanBy(Offset(-delta.x * 50f, -delta.y * 50f)))
+                            }
+                        }
+                        change.consume()
+                    }
+                }
+            }
             .pointerInput(Unit) {
                 detectTapGestures(
-                    onTap = { offset ->
-                        when (latestState.mode) {
-                            Mode.SELECT -> latestOnIntent(Intent.SelectAt(offset, pickTolerancePx))
+                    onTap = { screenPos ->
+                        val s = latestState
+                        val world = s.viewport.screenToWorld(screenPos)
+                        val tol = pickTolerancePx / s.viewport.scale
+                        when (s.effectiveMode) {
+                            Mode.SELECT -> latestOnIntent(Intent.SelectAt(world, tol))
                             Mode.PEN -> {
-                                latestOnIntent(Intent.InsertNewPath(offset))
-                                latestOnIntent(Intent.UpdateLatestPath(offset))
+                                latestOnIntent(Intent.InsertNewPath(world))
+                                latestOnIntent(Intent.UpdateLatestPath(world))
                             }
-                            else -> modeShapeType(latestState.mode)?.let { st ->
-                                latestOnIntent(Intent.InsertNewShape(st, offset))
-                                latestOnIntent(Intent.UpdateLatestShape(offset))
+                            Mode.PAN -> {} // taps in pan mode are no-ops
+                            else -> modeShapeType(s.effectiveMode)?.let { st ->
+                                latestOnIntent(Intent.InsertNewShape(st, world))
+                                latestOnIntent(Intent.UpdateLatestShape(world))
                             }
                         }
                     },
@@ -193,24 +392,28 @@ fun DrawBox(
             }
             .pointerInput(Unit) {
                 var interaction: SelectionInteraction? = null
-                var lastPos = Offset.Zero
+                var lastWorld = Offset.Zero
 
                 detectDragGestures(
-                    onDragStart = { offset ->
-                        lastPos = offset
+                    onDragStart = { screenPos ->
                         val s = latestState
-                        when (s.mode) {
+                        val world = s.viewport.screenToWorld(screenPos)
+                        lastWorld = world
+                        when (s.effectiveMode) {
+                            Mode.PAN -> {
+                                interaction = SelectionInteraction.Pan
+                            }
                             Mode.SELECT -> {
                                 val classified = classifySelection(
                                     state = s,
-                                    pointer = offset,
-                                    handleHitPx = handleHitPx,
-                                    rotationOffsetPx = rotationOffsetPx,
-                                    pickTolerancePx = pickTolerancePx,
+                                    pointerWorld = world,
+                                    handleHitWorld = handleHitPx / s.viewport.scale,
+                                    rotationOffsetWorld = rotationOffsetPx / s.viewport.scale,
+                                    pickToleranceWorld = pickTolerancePx / s.viewport.scale,
                                 )
                                 interaction = when (classified) {
                                     is SelectionInteraction.SelectAndMove -> {
-                                        latestOnIntent(Intent.SelectAt(offset, pickTolerancePx))
+                                        latestOnIntent(Intent.SelectAt(world, pickTolerancePx / s.viewport.scale))
                                         latestOnIntent(Intent.BeginTransform)
                                         SelectionInteraction.Move
                                     }
@@ -221,14 +424,15 @@ fun DrawBox(
                                         classified
                                     }
                                     is SelectionInteraction.Marquee -> {
-                                        latestOnIntent(Intent.SetMarqueeRect(Rect(offset, offset)))
+                                        latestOnIntent(Intent.SetMarqueeRect(Rect(world, world)))
                                         classified
                                     }
+                                    SelectionInteraction.Pan -> classified
                                 }
                             }
-                            Mode.PEN -> latestOnIntent(Intent.InsertNewPath(offset))
-                            else -> modeShapeType(s.mode)?.let { st ->
-                                latestOnIntent(Intent.InsertNewShape(st, offset))
+                            Mode.PEN -> latestOnIntent(Intent.InsertNewPath(world))
+                            else -> modeShapeType(s.effectiveMode)?.let { st ->
+                                latestOnIntent(Intent.InsertNewShape(st, world))
                             }
                         }
                     },
@@ -251,52 +455,90 @@ fun DrawBox(
                         }
                         interaction = null
                     },
-                ) { change, _ ->
-                    val pos = change.position
-                    when (latestState.mode) {
+                ) { change, dragAmount ->
+                    val s = latestState
+                    val world = s.viewport.screenToWorld(change.position)
+                    when (s.effectiveMode) {
+                        Mode.PAN -> latestOnIntent(Intent.PanBy(dragAmount))
                         Mode.SELECT -> when (val i = interaction) {
                             is SelectionInteraction.Move -> {
-                                latestOnIntent(Intent.MoveSelected(pos - lastPos))
-                                lastPos = pos
+                                latestOnIntent(Intent.MoveSelected(world - lastWorld))
+                                lastWorld = world
                             }
                             is SelectionInteraction.Resize -> {
                                 val newBounds = resizeBoundsForElement(
-                                    i.originalElement, i.handle, pos,
+                                    i.originalElement, i.handle, world,
                                 )
                                 latestOnIntent(Intent.SetElementBounds(i.elementId, newBounds))
                             }
                             is SelectionInteraction.Rotate -> {
-                                val current = angleFromCenter(i.center, pos)
+                                val current = angleFromCenter(i.center, world)
                                 val delta = current - i.initialAngle
                                 latestOnIntent(Intent.SetElementRotation(
                                     i.elementId, i.originalRotation + delta,
                                 ))
                             }
                             is SelectionInteraction.Marquee -> {
-                                latestOnIntent(Intent.SetMarqueeRect(Rect(i.anchor, pos)))
+                                latestOnIntent(Intent.SetMarqueeRect(Rect(i.anchor, world)))
                             }
+                            SelectionInteraction.Pan -> latestOnIntent(Intent.PanBy(dragAmount))
                             else -> {}
                         }
-                        Mode.PEN -> latestOnIntent(Intent.UpdateLatestPath(pos))
-                        else -> if (modeShapeType(latestState.mode) != null) {
-                            latestOnIntent(Intent.UpdateLatestShape(pos))
+                        Mode.PEN -> latestOnIntent(Intent.UpdateLatestPath(world))
+                        else -> if (modeShapeType(s.effectiveMode) != null) {
+                            latestOnIntent(Intent.UpdateLatestShape(world))
                         }
                     }
                 }
             },
     ) {
         Canvas(modifier = Modifier.fillMaxSize()) {
-            state.elements
-                .sortedBy { it.zIndex }
-                .forEach { element ->
-                    renderElement(element)
-                }
-            drawSelectionChrome(
-                state = state,
-                handleSizePx = handleSizePx,
-                rotationOffsetPx = rotationOffsetPx,
-            )
+            // Grid is drawn in the parent's .drawBehind so it stays out of the
+            // graphicsLayer used for bitmap capture. Elements + chrome live in
+            // world space; the transform projects them onto the screen. Stroke
+            // widths inside this block are in world units, so chrome scales
+            // widths/sizes by 1/scale to stay constant pixel size.
+            val vp = state.viewport
+            withTransform({
+                translate(vp.offset.x, vp.offset.y)
+                scale(vp.scale, vp.scale, pivot = Offset.Zero)
+            }) {
+                state.elements
+                    .sortedBy { it.zIndex }
+                    .forEach { element ->
+                        renderElement(element)
+                    }
+                drawSelectionChrome(
+                    state = state,
+                    handleSizePx = handleSizePx,
+                    rotationOffsetPx = rotationOffsetPx,
+                    inverseScale = 1f / vp.scale,
+                )
+            }
         }
+    }
+}
+
+private val GridLightOnDark = Color(0x40FFFFFF)  // ~25% white over dark bgs
+private val GridDarkOnLight = Color(0x33000000)  // ~20% black over light bgs
+private const val GRID_BASE_STEP_WORLD = 50f
+
+private fun DrawScope.drawGrid(vp: Viewport, bgColor: Color) {
+    val step = GRID_BASE_STEP_WORLD * vp.scale
+    if (step < 6f) return // collapse to avoid moiré at extreme zoom-out
+    // Auto-contrast: light grid on dark bg, dark grid on light bg.
+    val color = if (bgColor.luminance() < 0.5f) GridLightOnDark else GridDarkOnLight
+    val offX = vp.offset.x.mod(step)
+    val offY = vp.offset.y.mod(step)
+    var x = offX
+    while (x < size.width) {
+        drawLine(color, Offset(x, 0f), Offset(x, size.height), strokeWidth = 1f)
+        x += step
+    }
+    var y = offY
+    while (y < size.height) {
+        drawLine(color, Offset(0f, y), Offset(size.width, y), strokeWidth = 1f)
+        y += step
     }
 }
 
@@ -306,15 +548,20 @@ private fun modeShapeType(mode: Mode): ShapeType? = when (mode) {
     Mode.TRIANGLE -> ShapeType.TRIANGLE
     Mode.ARROW -> ShapeType.ARROW
     Mode.LINE -> ShapeType.LINE
-    Mode.PEN, Mode.SELECT -> null
+    Mode.PEN, Mode.SELECT, Mode.PAN -> null
 }
 
 // ==================== Selection gesture support ====================
 
-/** Active interaction inferred from a drag-start in SELECT mode. */
+/**
+ * Active interaction inferred from a drag-start. SELECT-mode drags resolve to
+ * one of [Move] / [SelectAndMove] / [Resize] / [Rotate] / [Marquee]; PAN-mode
+ * drags resolve to [Pan]. Stored coordinates are all in world space.
+ */
 private sealed class SelectionInteraction {
     data object Move : SelectionInteraction()
     data object SelectAndMove : SelectionInteraction()
+    data object Pan : SelectionInteraction()
     data class Resize(
         val elementId: String,
         val handle: ResizeHandle,
@@ -331,27 +578,27 @@ private sealed class SelectionInteraction {
 
 private fun classifySelection(
     state: State,
-    pointer: Offset,
-    handleHitPx: Float,
-    rotationOffsetPx: Float,
-    pickTolerancePx: Float,
+    pointerWorld: Offset,
+    handleHitWorld: Float,
+    rotationOffsetWorld: Float,
+    pickToleranceWorld: Float,
 ): SelectionInteraction {
     // Single-selection: check rotation + resize handles first.
     if (state.selectedIds.size == 1) {
         val element = state.elements.firstOrNull { it.id in state.selectedIds }
         if (element != null) {
             val b = element.bounds()
-            val rotHandle = rotationHandleWorld(b, element.rotation, rotationOffsetPx)
-            if (distance(pointer, rotHandle) <= handleHitPx) {
+            val rotHandle = rotationHandleWorld(b, element.rotation, rotationOffsetWorld)
+            if (distance(pointerWorld, rotHandle) <= handleHitWorld) {
                 return SelectionInteraction.Rotate(
                     elementId = element.id,
                     center = b.center,
-                    initialAngle = angleFromCenter(b.center, pointer),
+                    initialAngle = angleFromCenter(b.center, pointerWorld),
                     originalRotation = element.rotation,
                 )
             }
             for ((h, p) in resizeHandlesWorld(b, element.rotation)) {
-                if (distance(pointer, p) <= handleHitPx) {
+                if (distance(pointerWorld, p) <= handleHitWorld) {
                     return SelectionInteraction.Resize(
                         elementId = element.id,
                         handle = h,
@@ -362,14 +609,14 @@ private fun classifySelection(
         }
     }
     // Drag inside already-selected → move existing selection.
-    if (state.elements.any { it.id in state.selectedIds && it.hitTest(pointer, pickTolerancePx) }) {
+    if (state.elements.any { it.id in state.selectedIds && it.hitTest(pointerWorld, pickToleranceWorld) }) {
         return SelectionInteraction.Move
     }
     // Drag on unselected element → select-then-move.
-    val any = topmostHit(state.elements, pointer, pickTolerancePx)
+    val any = topmostHit(state.elements, pointerWorld, pickToleranceWorld)
     if (any != null) return SelectionInteraction.SelectAndMove
     // Empty space → marquee.
-    return SelectionInteraction.Marquee(pointer)
+    return SelectionInteraction.Marquee(pointerWorld)
 }
 
 private fun resizeHandlesLocal(bounds: Rect): List<Pair<ResizeHandle, Offset>> = listOf(
@@ -413,17 +660,19 @@ private fun DrawScope.drawSelectionChrome(
     state: State,
     handleSizePx: Float,
     rotationOffsetPx: Float,
+    inverseScale: Float,
 ) {
+    val rotationOffsetWorld = rotationOffsetPx * inverseScale
     state.elements
         .asSequence()
         .filter { it.id in state.selectedIds }
         .forEach { el ->
             val b = el.bounds()
             if (el.rotation == 0f) {
-                drawSelectionForElement(b, handleSizePx, rotationOffsetPx)
+                drawSelectionForElement(b, handleSizePx, rotationOffsetWorld, inverseScale)
             } else {
                 withTransform({ rotate(el.rotation, pivot = b.center) }) {
-                    drawSelectionForElement(b, handleSizePx, rotationOffsetPx)
+                    drawSelectionForElement(b, handleSizePx, rotationOffsetWorld, inverseScale)
                 }
             }
         }
@@ -444,8 +693,10 @@ private fun DrawScope.drawSelectionChrome(
             topLeft = r.topLeft,
             size = Size(r.width, r.height),
             style = Stroke(
-                width = 1.5f,
-                pathEffect = PathEffect.dashPathEffect(floatArrayOf(8f, 6f)),
+                width = 1.5f * inverseScale,
+                pathEffect = PathEffect.dashPathEffect(
+                    floatArrayOf(8f * inverseScale, 6f * inverseScale),
+                ),
             ),
         )
     }
@@ -454,47 +705,50 @@ private fun DrawScope.drawSelectionChrome(
 private fun DrawScope.drawSelectionForElement(
     bounds: Rect,
     handleSizePx: Float,
-    rotationOffsetPx: Float,
+    rotationOffsetWorld: Float,
+    inverseScale: Float,
 ) {
     // Bounding box.
     drawRect(
         color = SelectionAccent,
         topLeft = bounds.topLeft,
         size = Size(bounds.width, bounds.height),
-        style = Stroke(width = 1.5f),
+        style = Stroke(width = 1.5f * inverseScale),
     )
     // Rotation handle: short line up + filled circle.
-    val rotHandle = rotationHandleLocal(bounds, rotationOffsetPx)
+    val rotHandle = rotationHandleLocal(bounds, rotationOffsetWorld)
+    val handleWorld = handleSizePx * inverseScale
+    val strokeWorld = 1.5f * inverseScale
     drawLine(
         color = SelectionAccent,
         start = Offset(bounds.center.x, bounds.top),
         end = rotHandle,
-        strokeWidth = 1.5f,
+        strokeWidth = strokeWorld,
     )
     drawCircle(
         color = Color.White,
-        radius = handleSizePx * 0.6f,
+        radius = handleWorld * 0.6f,
         center = rotHandle,
     )
     drawCircle(
         color = SelectionAccent,
-        radius = handleSizePx * 0.6f,
+        radius = handleWorld * 0.6f,
         center = rotHandle,
-        style = Stroke(1.5f),
+        style = Stroke(strokeWorld),
     )
     // Resize handles.
-    val half = handleSizePx * 0.5f
+    val half = handleWorld * 0.5f
     resizeHandlesLocal(bounds).forEach { (_, p) ->
         drawRect(
             color = Color.White,
             topLeft = Offset(p.x - half, p.y - half),
-            size = Size(handleSizePx, handleSizePx),
+            size = Size(handleWorld, handleWorld),
         )
         drawRect(
             color = SelectionAccent,
             topLeft = Offset(p.x - half, p.y - half),
-            size = Size(handleSizePx, handleSizePx),
-            style = Stroke(1.5f),
+            size = Size(handleWorld, handleWorld),
+            style = Stroke(strokeWorld),
         )
     }
 }

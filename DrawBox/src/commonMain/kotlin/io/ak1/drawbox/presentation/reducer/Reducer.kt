@@ -4,6 +4,7 @@ import io.ak1.drawbox.domain.model.HISTORY_CAP
 import io.ak1.drawbox.domain.model.Intent
 import io.ak1.drawbox.domain.model.Mode
 import io.ak1.drawbox.domain.model.State
+import io.ak1.drawbox.domain.model.Viewport
 import io.ak1.drawbox.domain.usecase.UseCase
 
 /**
@@ -132,6 +133,17 @@ class Reducer(
                 elements = useCase.sendToBack(state.elements, state.selectedIds),
             )
         }
+
+        // Camera / Viewport
+        is Intent.PanBy -> state.copy(viewport = state.viewport.panBy(intent.delta))
+        is Intent.ZoomBy -> state.copy(
+            viewport = state.viewport.zoomBy(intent.factor, intent.focalScreen),
+        )
+        is Intent.ZoomTo -> state.copy(
+            viewport = state.viewport.zoomTo(intent.targetScale, intent.focalScreen),
+        )
+        is Intent.ResetCamera -> state.copy(viewport = Viewport())
+        is Intent.SetTempPan -> state.copy(tempPanActive = intent.active)
 
         // History
         is Intent.Undo -> {

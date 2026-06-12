@@ -240,6 +240,21 @@ class DrawBoxController(
     /** Send selected elements to the bottom of the z-order. */
     fun sendSelectionToBack() = onIntent(Intent.SendSelectionToBack)
 
+    // ==================== Camera / Viewport Methods ====================
+
+    /** Translate the camera by [delta] screen pixels. */
+    fun panBy(delta: Offset) = onIntent(Intent.PanBy(delta))
+
+    /** Multiplicatively zoom anchored at [focalScreen]. */
+    fun zoomBy(factor: Float, focalScreen: Offset) = onIntent(Intent.ZoomBy(factor, focalScreen))
+
+    /** Set absolute scale anchored at [focalScreen]. */
+    fun zoomTo(targetScale: Float, focalScreen: Offset) =
+        onIntent(Intent.ZoomTo(targetScale, focalScreen))
+
+    /** Reset viewport to identity. */
+    fun resetCamera() = onIntent(Intent.ResetCamera)
+
     // ==================== Persistence Methods ====================
 
     /** Capture and save the current drawing as a bitmap */

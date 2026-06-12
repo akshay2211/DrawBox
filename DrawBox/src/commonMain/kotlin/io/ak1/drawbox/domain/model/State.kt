@@ -35,6 +35,8 @@ sealed class Mode {
     data object LINE : Mode()
     /** Selection mode - tap / drag to select, move, resize, rotate existing elements */
     data object SELECT : Mode()
+    /** Pan mode - drag pans the camera; useful for navigating the infinite canvas */
+    data object PAN : Mode()
 }
 
 /**
@@ -80,6 +82,8 @@ data class State(
     val future: List<List<Element>> = emptyList(),
     val selectedIds: Set<String> = emptySet(),
     val marqueeRect: Rect? = null,
+    val viewport: Viewport = Viewport(),
+    val tempPanActive: Boolean = false,
     val strokeColor: Color = Color.Red,
     val strokeWidth: Float = 10f,
     val opacity: Float = 1f,
@@ -89,6 +93,14 @@ data class State(
 ){
     internal var invokeBitmap :(() -> Unit) = {}
 }
+
+/**
+ * The mode currently driving user input. Equals [State.mode] unless the user
+ * is holding the space bar (or has otherwise activated a temporary pan), in
+ * which case it returns [Mode.PAN]. The original [State.mode] is preserved so
+ * release of the temp-pan modifier restores the previous tool.
+ */
+val State.effectiveMode: Mode get() = if (tempPanActive) Mode.PAN else mode
 
 /** Maximum number of snapshots kept in [State.history] and [State.future]. */
 internal const val HISTORY_CAP: Int = 100

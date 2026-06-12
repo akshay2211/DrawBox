@@ -103,6 +103,14 @@ fun ControlsBar(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
+                        // Pan mode
+                        MenuItem(
+                            DrawBoxIcons.Import, "Pan", if (currentMode == Mode.PAN) inactive else active
+                        ) {
+                            onModeSelected(Mode.PAN)
+                            modeMenuExpanded = false
+                        }
+
                         // Pen mode
                         MenuItem(
                             DrawBoxIcons.StrokeCurved, "Pen", if (currentMode == Mode.PEN) inactive else active
