@@ -164,6 +164,28 @@ sealed class Intent {
      */
     data class SetElementRotation(val id: String, val rotationDegrees: Float) : Intent()
 
+    /**
+     * Replace the points list of a single element. Used when dragging the
+     * endpoint of a LINE/ARROW. Does not snapshot history.
+     */
+    data class SetElementPoints(val id: String, val points: List<Offset>) : Intent()
+
+    /**
+     * Update the curve deflection of a LINE/ARROW. Does not snapshot history.
+     */
+    data class SetLineBend(val id: String, val bend: Offset) : Intent()
+
+    /**
+     * Recompute connector bindings for an ARROW based on where its endpoints
+     * currently sit. Called at drag-end after creating or moving the arrow.
+     *
+     * Does NOT snapshot history — every gesture that dispatches this already
+     * snapshotted at its start (InsertNewShape for a fresh arrow,
+     * BeginTransform for an endpoint drag), so this intent is the tail of an
+     * existing transaction and an extra snapshot would double-count the undo.
+     */
+    data class FinalizeArrowBindings(val id: String) : Intent()
+
     /** Replace the stroke color of every selected element. Snapshots history. */
     data class SetSelectedStrokeColor(val color: Color) : Intent()
 

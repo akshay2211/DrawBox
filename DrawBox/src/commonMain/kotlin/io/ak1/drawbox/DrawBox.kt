@@ -73,7 +73,9 @@ import io.ak1.drawbox.domain.model.State
 import io.ak1.drawbox.domain.model.StrokeStyle
 import io.ak1.drawbox.domain.model.Viewport
 import io.ak1.drawbox.domain.model.angleFromCenter
+import io.ak1.drawbox.domain.model.bezierMidpoint
 import io.ak1.drawbox.domain.model.bounds
+import io.ak1.drawbox.domain.model.controlPoint
 import io.ak1.drawbox.domain.model.distance
 import io.ak1.drawbox.domain.model.effectiveMode
 import io.ak1.drawbox.domain.model.hitTest
@@ -421,7 +423,9 @@ fun DrawBox(
                                     }
                                     is SelectionInteraction.Move,
                                     is SelectionInteraction.Resize,
-                                    is SelectionInteraction.Rotate -> {
+                                    is SelectionInteraction.Rotate,
+                                    is SelectionInteraction.LineEndpoint,
+                                    is SelectionInteraction.LineBend -> {
                                         latestOnIntent(Intent.BeginTransform)
                                         classified
                                     }
@@ -439,12 +443,27 @@ fun DrawBox(
                         }
                     },
                     onDragEnd = {
-                        if (latestState.mode == Mode.SELECT) {
-                            val rect = latestState.marqueeRect
+                        val s = latestState
+                        if (s.mode == Mode.SELECT) {
+                            val rect = s.marqueeRect
                             if (interaction is SelectionInteraction.Marquee && rect != null) {
                                 latestOnIntent(Intent.CommitMarquee(rect))
                             } else if (interaction is SelectionInteraction.Marquee) {
                                 latestOnIntent(Intent.SetMarqueeRect(null))
+                            }
+                            val maybeEndpoint = interaction as? SelectionInteraction.LineEndpoint
+                            if (maybeEndpoint != null) {
+                                val target = s.elements.firstOrNull { it.id == maybeEndpoint.elementId }
+                                if (target is Element.Shape && target.shapeType == ShapeType.ARROW) {
+                                    latestOnIntent(Intent.FinalizeArrowBindings(target.id))
+                                }
+                            }
+                        } else if (s.mode == Mode.ARROW) {
+                            // Just finished drawing an arrow — bind endpoints sitting
+                            // over a shape so the arrow becomes a connector.
+                            val justDrawn = s.elements.lastOrNull()
+                            if (justDrawn is Element.Shape && justDrawn.shapeType == ShapeType.ARROW) {
+                                latestOnIntent(Intent.FinalizeArrowBindings(justDrawn.id))
                             }
                         }
                         interaction = null
@@ -479,6 +498,33 @@ fun DrawBox(
                                 latestOnIntent(Intent.SetElementRotation(
                                     i.elementId, i.originalRotation + delta,
                                 ))
+                            }
+                            is SelectionInteraction.LineEndpoint -> {
+                                val target = s.elements.firstOrNull { it.id == i.elementId }
+                                if (target is Element.Shape && target.points.size >= 2) {
+                                    val newPoints = if (i.isStart) {
+                                        listOf(world, target.points.last())
+                                    } else {
+                                        listOf(target.points[0], world)
+                                    }
+                                    latestOnIntent(Intent.SetElementPoints(i.elementId, newPoints))
+                                }
+                            }
+                            is SelectionInteraction.LineBend -> {
+                                val target = s.elements.firstOrNull { it.id == i.elementId }
+                                if (target is Element.Shape && target.points.size >= 2) {
+                                    val start = target.points[0]
+                                    val end = target.points.last()
+                                    // bend such that bezierMidpoint = world:
+                                    //   bezierMidpoint = midpoint + bend/2 → bend = 2 * (world − midpoint)
+                                    val midX = (start.x + end.x) * 0.5f
+                                    val midY = (start.y + end.y) * 0.5f
+                                    val newBend = Offset(
+                                        2f * (world.x - midX),
+                                        2f * (world.y - midY),
+                                    )
+                                    latestOnIntent(Intent.SetLineBend(i.elementId, newBend))
+                                }
                             }
                             is SelectionInteraction.Marquee -> {
                                 latestOnIntent(Intent.SetMarqueeRect(Rect(i.anchor, world)))
@@ -557,8 +603,9 @@ private fun modeShapeType(mode: Mode): ShapeType? = when (mode) {
 
 /**
  * Active interaction inferred from a drag-start. SELECT-mode drags resolve to
- * one of [Move] / [SelectAndMove] / [Resize] / [Rotate] / [Marquee]; PAN-mode
- * drags resolve to [Pan]. Stored coordinates are all in world space.
+ * one of [Move] / [SelectAndMove] / [Resize] / [Rotate] / [LineEndpoint] /
+ * [LineBend] / [Marquee]; PAN-mode drags resolve to [Pan]. Stored coordinates
+ * are all in world space.
  */
 private sealed class SelectionInteraction {
     data object Move : SelectionInteraction()
@@ -575,8 +622,19 @@ private sealed class SelectionInteraction {
         val initialAngle: Float,
         val originalRotation: Float,
     ) : SelectionInteraction()
+    /** Dragging the start or end endpoint of a [ShapeType.LINE]/[ShapeType.ARROW]. */
+    data class LineEndpoint(
+        val elementId: String,
+        val isStart: Boolean,
+    ) : SelectionInteraction()
+    /** Dragging the bend handle (curve midpoint) of a [ShapeType.LINE]/[ShapeType.ARROW]. */
+    data class LineBend(
+        val elementId: String,
+    ) : SelectionInteraction()
     data class Marquee(val anchor: Offset) : SelectionInteraction()
 }
+
+private fun ShapeType.isLineLike(): Boolean = this == ShapeType.LINE || this == ShapeType.ARROW
 
 private fun classifySelection(
     state: State,
@@ -585,27 +643,45 @@ private fun classifySelection(
     rotationOffsetWorld: Float,
     pickToleranceWorld: Float,
 ): SelectionInteraction {
-    // Single-selection: check rotation + resize handles first.
+    // Single-selection: check shape-specific handles first.
     if (state.selectedIds.size == 1) {
         val element = state.elements.firstOrNull { it.id in state.selectedIds }
         if (element != null) {
-            val b = element.bounds()
-            val rotHandle = rotationHandleWorld(b, element.rotation, rotationOffsetWorld)
-            if (distance(pointerWorld, rotHandle) <= handleHitWorld) {
-                return SelectionInteraction.Rotate(
-                    elementId = element.id,
-                    center = b.center,
-                    initialAngle = angleFromCenter(b.center, pointerWorld),
-                    originalRotation = element.rotation,
-                )
-            }
-            for ((h, p) in resizeHandlesWorld(b, element.rotation)) {
-                if (distance(pointerWorld, p) <= handleHitWorld) {
-                    return SelectionInteraction.Resize(
+            // LINE / ARROW use a 3-dot chrome: start, end, bend midpoint.
+            if (element is Element.Shape && element.shapeType.isLineLike() &&
+                element.points.size >= 2
+            ) {
+                val start = element.points[0]
+                val end = element.points.last()
+                if (distance(pointerWorld, start) <= handleHitWorld) {
+                    return SelectionInteraction.LineEndpoint(element.id, isStart = true)
+                }
+                if (distance(pointerWorld, end) <= handleHitWorld) {
+                    return SelectionInteraction.LineEndpoint(element.id, isStart = false)
+                }
+                if (distance(pointerWorld, element.bezierMidpoint()) <= handleHitWorld) {
+                    return SelectionInteraction.LineBend(element.id)
+                }
+                // Fall through: drag on the line body = move existing selection.
+            } else {
+                val b = element.bounds()
+                val rotHandle = rotationHandleWorld(b, element.rotation, rotationOffsetWorld)
+                if (distance(pointerWorld, rotHandle) <= handleHitWorld) {
+                    return SelectionInteraction.Rotate(
                         elementId = element.id,
-                        handle = h,
-                        originalElement = element,
+                        center = b.center,
+                        initialAngle = angleFromCenter(b.center, pointerWorld),
+                        originalRotation = element.rotation,
                     )
+                }
+                for ((h, p) in resizeHandlesWorld(b, element.rotation)) {
+                    if (distance(pointerWorld, p) <= handleHitWorld) {
+                        return SelectionInteraction.Resize(
+                            elementId = element.id,
+                            handle = h,
+                            originalElement = element,
+                        )
+                    }
                 }
             }
         }
@@ -669,6 +745,11 @@ private fun DrawScope.drawSelectionChrome(
         .asSequence()
         .filter { it.id in state.selectedIds }
         .forEach { el ->
+            // LINE / ARROW get a minimal 3-dot chrome: start, end, and bend midpoint.
+            if (el is Element.Shape && el.shapeType.isLineLike() && el.points.size >= 2) {
+                drawLineSelectionChrome(el, handleSizePx, inverseScale)
+                return@forEach
+            }
             val b = el.bounds()
             if (el.rotation == 0f) {
                 drawSelectionForElement(b, handleSizePx, rotationOffsetWorld, inverseScale)
@@ -700,6 +781,27 @@ private fun DrawScope.drawSelectionChrome(
                     floatArrayOf(8f * inverseScale, 6f * inverseScale),
                 ),
             ),
+        )
+    }
+}
+
+private fun DrawScope.drawLineSelectionChrome(
+    shape: Element.Shape,
+    handleSizePx: Float,
+    inverseScale: Float,
+) {
+    val start = shape.points[0]
+    val end = shape.points.last()
+    val mid = shape.bezierMidpoint()
+    val dotRadius = handleSizePx * 0.55f * inverseScale
+    val strokeWorld = 1.5f * inverseScale
+    listOf(start, end, mid).forEach { p ->
+        drawCircle(color = Color.White, radius = dotRadius, center = p)
+        drawCircle(
+            color = SelectionAccent,
+            radius = dotRadius,
+            center = p,
+            style = Stroke(strokeWorld),
         )
     }
 }
@@ -926,17 +1028,35 @@ private fun DrawScope.drawShape(shape: Element.Shape) {
             drawTriangle(topLeft, width, height, shape)
         }
         ShapeType.ARROW -> {
-            drawArrowShape(start, end, shape.strokeColor, shape.strokeWidth, shape.strokeStyle)
+            drawArrowShape(shape)
         }
         ShapeType.LINE -> {
-            drawLine(
-                color = shape.strokeColor,
-                start = start,
-                end = end,
-                strokeWidth = shape.strokeWidth,
-                cap = strokeCapFor(shape.strokeStyle),
-                pathEffect = shape.strokeStyle.toPathEffect(shape.strokeWidth),
-            )
+            if (shape.bend == Offset.Zero) {
+                drawLine(
+                    color = shape.strokeColor,
+                    start = start,
+                    end = end,
+                    strokeWidth = shape.strokeWidth,
+                    cap = strokeCapFor(shape.strokeStyle),
+                    pathEffect = shape.strokeStyle.toPathEffect(shape.strokeWidth),
+                )
+            } else {
+                val control = shape.controlPoint()
+                val path = Path().apply {
+                    moveTo(start.x, start.y)
+                    quadraticTo(control.x, control.y, end.x, end.y)
+                }
+                drawPath(
+                    path,
+                    color = shape.strokeColor,
+                    style = Stroke(
+                        width = shape.strokeWidth,
+                        cap = strokeCapFor(shape.strokeStyle),
+                        join = StrokeJoin.Round,
+                        pathEffect = shape.strokeStyle.toPathEffect(shape.strokeWidth),
+                    ),
+                )
+            }
         }
     }
 }
@@ -1085,37 +1205,55 @@ private fun normalizeOffset(v: Offset): Offset {
  * @param color Color for line and arrowhead
  * @param strokeWidth Width of the line stroke (arrowhead scales with this)
  */
-private fun DrawScope.drawArrowShape(
-    start: Offset,
-    end: Offset,
-    color: Color,
-    strokeWidth: Float,
-    strokeStyle: StrokeStyle,
-) {
-    val angle = atan2(end.y - start.y, end.x - start.x)
+private fun DrawScope.drawArrowShape(shape: Element.Shape) {
+    val start = shape.points[0]
+    val end = shape.points.last()
+    val color = shape.strokeColor
+    val strokeWidth = shape.strokeWidth
     val arrowSize = maxOf(30f, strokeWidth * 3f)
     val arrowDepth = arrowSize * cos(PI / 6).toFloat()
 
-    val dx = end.x - start.x
-    val dy = end.y - start.y
-    val distance = sqrt(dx * dx + dy * dy)
-    val lineEnd = if (distance > 0) {
-        Offset(
+    val angle: Float
+    if (shape.bend == Offset.Zero) {
+        // Straight arrow — body is shortened so the head sits cleanly at the tip.
+        val dx = end.x - start.x
+        val dy = end.y - start.y
+        angle = atan2(dy, dx)
+        val distance = sqrt(dx * dx + dy * dy)
+        val lineEnd = if (distance > 0) Offset(
             end.x - (dx / distance) * arrowDepth,
-            end.y - (dy / distance) * arrowDepth
+            end.y - (dy / distance) * arrowDepth,
+        ) else end
+        drawLine(
+            color = color,
+            start = start,
+            end = lineEnd,
+            strokeWidth = strokeWidth,
+            cap = strokeCapFor(shape.strokeStyle),
+            pathEffect = shape.strokeStyle.toPathEffect(strokeWidth),
         )
     } else {
-        end
+        // Curved arrow — quadratic bezier; head direction comes from the tangent
+        // at t = 1, i.e. 2 * (end - control), simplified to (end - control).
+        val control = shape.controlPoint()
+        val tx = end.x - control.x
+        val ty = end.y - control.y
+        angle = atan2(ty, tx)
+        val path = Path().apply {
+            moveTo(start.x, start.y)
+            quadraticTo(control.x, control.y, end.x, end.y)
+        }
+        drawPath(
+            path,
+            color = color,
+            style = Stroke(
+                width = strokeWidth,
+                cap = strokeCapFor(shape.strokeStyle),
+                join = StrokeJoin.Round,
+                pathEffect = shape.strokeStyle.toPathEffect(strokeWidth),
+            ),
+        )
     }
-
-    drawLine(
-        color = color,
-        start = start,
-        end = lineEnd,
-        strokeWidth = strokeWidth,
-        cap = strokeCapFor(strokeStyle),
-        pathEffect = strokeStyle.toPathEffect(strokeWidth),
-    )
 
     val arrowPoint1 = Offset(
         end.x - arrowSize * cos(angle - PI / 6).toFloat(),

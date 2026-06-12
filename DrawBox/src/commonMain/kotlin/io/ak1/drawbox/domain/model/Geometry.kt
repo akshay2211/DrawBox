@@ -28,8 +28,137 @@ fun Element.bounds(): Rect = when (this) {
         // Circle points are diameter endpoints, so the circle extends past them.
         // The bbox is the square inscribing the circle.
         ShapeType.CIRCLE -> circleBounds(points)
-        else -> pointsBounds(points)
+        ShapeType.LINE, ShapeType.ARROW -> lineArrowBounds(this)
+        // Rectangles + triangles render from points[0] to points.last(); the
+        // intermediate points (if any) are dead weight from older code that
+        // appended on every drag tick. Match what the renderer actually draws.
+        else -> if (points.size >= 2) {
+            pointsBounds(listOf(points.first(), points.last()))
+        } else {
+            pointsBounds(points)
+        }
     }
+}
+
+private fun lineArrowBounds(shape: Element.Shape): Rect {
+    if (shape.points.size < 2) return pointsBounds(shape.points)
+    val start = shape.points[0]
+    val end = shape.points.last()
+    if (shape.bend == Offset.Zero) return pointsBounds(listOf(start, end))
+    // Quadratic bezier with control = midpoint + bend stays inside the convex
+    // hull of {start, end, control}, so its bbox = bbox of those three points.
+    val mid = Offset((start.x + end.x) * 0.5f, (start.y + end.y) * 0.5f)
+    val control = Offset(mid.x + shape.bend.x, mid.y + shape.bend.y)
+    return pointsBounds(listOf(start, end, control))
+}
+
+/** Quadratic-bezier control point for a curved [ShapeType.LINE] / [ShapeType.ARROW]. */
+fun Element.Shape.controlPoint(): Offset {
+    val start = points[0]
+    val end = points.last()
+    val mid = Offset((start.x + end.x) * 0.5f, (start.y + end.y) * 0.5f)
+    return Offset(mid.x + bend.x, mid.y + bend.y)
+}
+
+/** World-space point on the curve at t = 0.5 — the spot where the bend handle sits. */
+fun Element.Shape.bezierMidpoint(): Offset {
+    val start = points[0]
+    val end = points.last()
+    val mid = Offset((start.x + end.x) * 0.5f, (start.y + end.y) * 0.5f)
+    return Offset(mid.x + bend.x * 0.5f, mid.y + bend.y * 0.5f)
+}
+
+/**
+ * Point on this shape's outline closest to the ray from the shape's center
+ * toward [target]. Used by arrow connectors to terminate at the boundary
+ * instead of sinking into the shape.
+ *
+ * - Circle: exact analytic boundary at radius.
+ * - Triangle: ray intersected against the three actual edges; the slanted
+ *   sides return a point on the slant, not the AABB.
+ * - Rectangle / fallback: AABB boundary along the ray.
+ */
+fun Element.Shape.boundaryPointToward(target: Offset): Offset {
+    val b = bounds()
+    val center = b.center
+    return when (shapeType) {
+        ShapeType.CIRCLE -> circleBoundary(center, b.width * 0.5f, target)
+        ShapeType.TRIANGLE -> triangleBoundary(b, target)
+        else -> rectBoundary(b, target)
+    }
+}
+
+private fun circleBoundary(center: Offset, radius: Float, target: Offset): Offset {
+    val dx = target.x - center.x
+    val dy = target.y - center.y
+    val len = sqrt(dx * dx + dy * dy)
+    if (len < 0.5f) return Offset(center.x + radius, center.y)
+    return Offset(center.x + dx / len * radius, center.y + dy / len * radius)
+}
+
+private fun rectBoundary(bounds: Rect, target: Offset): Offset {
+    val center = bounds.center
+    val dx = target.x - center.x
+    val dy = target.y - center.y
+    if (dx == 0f && dy == 0f) return Offset(bounds.right, center.y)
+    // Largest t ≤ 1 with center + t*(dx, dy) still inside the box.
+    val tx = if (dx != 0f) {
+        val edge = if (dx > 0f) bounds.right else bounds.left
+        (edge - center.x) / dx
+    } else Float.MAX_VALUE
+    val ty = if (dy != 0f) {
+        val edge = if (dy > 0f) bounds.bottom else bounds.top
+        (edge - center.y) / dy
+    } else Float.MAX_VALUE
+    val t = min(tx, ty).coerceAtLeast(0f)
+    return Offset(center.x + t * dx, center.y + t * dy)
+}
+
+private fun triangleBoundary(bounds: Rect, target: Offset): Offset {
+    // Isosceles triangle drawn with apex at top-center; vertices match DrawBox's
+    // drawTriangle path. The centroid is height/6 below the AABB center.
+    val apex = Offset(bounds.center.x, bounds.top)
+    val br = Offset(bounds.right, bounds.bottom)
+    val bl = Offset(bounds.left, bounds.bottom)
+    val origin = Offset(bounds.center.x, (bounds.top + 2f * bounds.bottom) / 3f)
+    val dx = target.x - origin.x
+    val dy = target.y - origin.y
+    if (dx == 0f && dy == 0f) return apex
+    val edges = arrayOf(apex to br, br to bl, bl to apex)
+    var bestT = Float.MAX_VALUE
+    var hit = apex
+    for ((a, b) in edges) {
+        val t = raySegmentParam(origin, dx, dy, a, b) ?: continue
+        if (t > 0f && t < bestT) {
+            bestT = t
+            hit = Offset(origin.x + t * dx, origin.y + t * dy)
+        }
+    }
+    return hit
+}
+
+/**
+ * Solve `origin + t*(dx, dy) = segA + s*(segB - segA)` for `t`. Returns `t` if
+ * `s ∈ [0, 1]` and `t > 0`, else null. Used for triangle boundary intersection.
+ */
+private fun raySegmentParam(
+    origin: Offset,
+    dx: Float,
+    dy: Float,
+    segA: Offset,
+    segB: Offset,
+): Float? {
+    val sx = segB.x - segA.x
+    val sy = segB.y - segA.y
+    val denom = dx * sy - dy * sx
+    if (kotlin.math.abs(denom) < 1e-6f) return null
+    val ox = segA.x - origin.x
+    val oy = segA.y - origin.y
+    val t = (ox * sy - oy * sx) / denom
+    val s = (ox * dy - oy * dx) / denom
+    if (t <= 0f) return null
+    if (s !in 0f..1f) return null
+    return t
 }
 
 private fun circleBounds(points: List<Offset>): Rect {
@@ -134,9 +263,34 @@ private fun hitTestShape(
             }
         }
         ShapeType.LINE, ShapeType.ARROW -> {
-            distanceToSegment(p, start, end) <= hitRadius
+            if (shape.bend == Offset.Zero) {
+                distanceToSegment(p, start, end) <= hitRadius
+            } else {
+                val control = shape.controlPoint()
+                distanceToQuadraticBezier(p, start, control, end) <= hitRadius
+            }
         }
     }
+}
+
+private fun distanceToQuadraticBezier(p: Offset, p0: Offset, p1: Offset, p2: Offset): Float {
+    // Sample the curve at N points and approximate by closest sample distance.
+    // 24 samples is plenty for sub-pixel hit-tests at typical view scales.
+    val steps = 24
+    var best = Float.MAX_VALUE
+    var i = 0
+    while (i <= steps) {
+        val t = i.toFloat() / steps
+        val u = 1f - t
+        val x = u * u * p0.x + 2f * u * t * p1.x + t * t * p2.x
+        val y = u * u * p0.y + 2f * u * t * p1.y + t * t * p2.y
+        val dx = p.x - x
+        val dy = p.y - y
+        val d2 = dx * dx + dy * dy
+        if (d2 < best) best = d2
+        i++
+    }
+    return sqrt(best)
 }
 
 /** Topmost element under `point`, picked by descending zIndex. */

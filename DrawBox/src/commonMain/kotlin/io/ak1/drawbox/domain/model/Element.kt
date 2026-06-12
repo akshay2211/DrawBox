@@ -104,6 +104,25 @@ sealed class Element {
          * the body line follows this style; the head stays solid for clarity.
          */
         val strokeStyle: StrokeStyle = StrokeStyle.SOLID,
+        /**
+         * Offset of the curve's mid-point from the straight-line midpoint of
+         * `points[0]` → `points.last()`. Only meaningful for [ShapeType.LINE]
+         * and [ShapeType.ARROW]; ignored otherwise. `Offset.Zero` (default) =
+         * straight. Non-zero = the line/arrow renders as a quadratic bezier
+         * arcing through `midpoint + bend`.
+         */
+        val bend: Offset = Offset.Zero,
+        /**
+         * ID of the element this arrow's start endpoint is bound to. When set
+         * and the bound element moves/resizes/rotates, the arrow's start point
+         * follows. Only honored for [ShapeType.ARROW].
+         */
+        val startBinding: String? = null,
+        /**
+         * ID of the element this arrow's end endpoint is bound to. Behaves like
+         * [startBinding] for the end point. Only honored for [ShapeType.ARROW].
+         */
+        val endBinding: String? = null,
     ) : Element()
 }
 

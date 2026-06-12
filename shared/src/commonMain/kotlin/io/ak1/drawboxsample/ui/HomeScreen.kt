@@ -31,6 +31,9 @@ import io.ak1.drawbox.domain.model.Event
 import io.ak1.drawbox.domain.model.Mode
 import io.ak1.drawbox.domain.model.ShapeType
 import io.ak1.drawbox.domain.model.StrokeStyle
+import io.ak1.drawbox.domain.model.bezierMidpoint
+import io.ak1.drawbox.domain.model.bounds
+import io.ak1.drawbox.domain.model.controlPoint
 import io.ak1.drawbox.presentation.viewmodel.DrawBoxController
 import io.ak1.drawbox.presentation.viewmodel.rememberDrawBoxController
 import androidx.compose.foundation.background
@@ -82,6 +85,37 @@ fun HomeScreen() {
                 else -> {}
             }
         }
+    }
+
+    // Dump the selected element(s) every time the selection changes so the
+    // bbox the chrome draws can be compared to the actual element data.
+    LaunchedEffect(state.selectedIds, state.elements) {
+        if (state.selectedIds.isEmpty()) return@LaunchedEffect
+        state.elements
+            .filter { it.id in state.selectedIds }
+            .forEach { el ->
+                val b = el.bounds()
+                println(
+                    "[SELECTED] id=${el.id} type=${el::class.simpleName}" +
+                        (if (el is Element.Shape) " shapeType=${el.shapeType}" else "") +
+                        " rotation=${el.rotation}" +
+                        " bounds=(L=${b.left}, T=${b.top}, R=${b.right}, B=${b.bottom}, w=${b.width}, h=${b.height})",
+                )
+                println("  points=${el.pointsDump()}")
+                if (el is Element.Shape) {
+                    println(
+                        "  strokeStyle=${el.strokeStyle} strokeWidth=${el.strokeWidth}" +
+                            " cornerRadius=${el.cornerRadius} fillColor=${el.fillColor}",
+                    )
+                    if (el.shapeType == ShapeType.LINE || el.shapeType == ShapeType.ARROW) {
+                        println(
+                            "  bend=${el.bend} controlPoint=${el.controlPoint()}" +
+                                " bezierMidpoint=${el.bezierMidpoint()}" +
+                                " startBinding=${el.startBinding} endBinding=${el.endBinding}",
+                        )
+                    }
+                }
+            }
     }
 
 
@@ -275,6 +309,17 @@ private fun ZoomToolbar(
 private const val RadiusSharp = 0f
 private const val RadiusSoft = 16f
 private const val RadiusRound = 40f
+
+private fun Element.pointsDump(): String = when (this) {
+    is Element.Shape -> points.joinToString(prefix = "[", postfix = "]") {
+        "(${it.x}, ${it.y})"
+    }
+    is Element.Path -> {
+        val head = points.take(3).joinToString { "(${it.x}, ${it.y})" }
+        val tail = points.takeLast(2).joinToString { "(${it.x}, ${it.y})" }
+        "Path n=${points.size} head=[$head] tail=[$tail]"
+    }
+}
 
 @Composable
 private fun StrokeStyleToolbar(

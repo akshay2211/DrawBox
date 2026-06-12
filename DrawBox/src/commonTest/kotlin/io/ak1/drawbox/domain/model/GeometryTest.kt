@@ -252,6 +252,54 @@ class GeometryTest {
     }
 
     @Test
+    fun rectangleBoundsIgnoresStrayMiddlePoints() {
+        // Mimics a legacy shape that recorded the cursor's whole drag path:
+        // (134, 284) → (562, 1302) detour → (362, 1406) end. Renderer only uses
+        // first + last, so bounds must too — width 228, not 428.
+        val rect = Element.Shape(
+            shapeType = ShapeType.RECTANGLE,
+            points = listOf(
+                Offset(134f, 284f),
+                Offset(562f, 1302f),
+                Offset(362f, 1406f),
+            ),
+            strokeColor = Color.Red,
+            strokeWidth = 4f,
+        )
+        val b = rect.bounds()
+        assertEquals(134f, b.left)
+        assertEquals(284f, b.top)
+        assertEquals(362f, b.right)
+        assertEquals(1406f, b.bottom)
+    }
+
+    @Test
+    fun triangleBoundaryHitsSlantNotAabbCorner() {
+        // Triangle inscribed in (0,0)-(100,100). Apex (50,0), bottom corners
+        // (100,100) and (0,100). The right slant runs from (50,0) to (100,100).
+        // A target up-and-right of the centroid should exit on the slant, not
+        // the AABB's empty top-right corner.
+        val triangle = Element.Shape(
+            shapeType = ShapeType.TRIANGLE,
+            points = listOf(Offset(0f, 0f), Offset(100f, 100f)),
+            strokeColor = Color.Red,
+            strokeWidth = 4f,
+        )
+        // Target far to the upper-right. The boundary point must lie ON the
+        // right slant — its y must equal x along the line apex→bottom-right,
+        // parameterised as y = 2*(x - 50) for x ∈ [50, 100]. We just assert
+        // the point sits inside (or on) the triangle bbox AND satisfies the
+        // slant equation to within rounding.
+        val hit = triangle.boundaryPointToward(Offset(500f, -200f))
+        assertTrue(hit.x in 50f..100f, "exit x=${hit.x} not on right half")
+        assertTrue(hit.y in 0f..100f, "exit y=${hit.y} not in triangle vertical range")
+        // y = 2 * (x - 50)
+        val expectedY = 2f * (hit.x - 50f)
+        assertTrue(kotlin.math.abs(hit.y - expectedY) < 0.5f,
+            "exit (${hit.x}, ${hit.y}) not on slant (expected y≈$expectedY)")
+    }
+
+    @Test
     fun resizeBoundsKeepsOppositeCornerFixedUnderRotation() {
         // 90° rotation of a 100×100 unit at the origin. The TopLeft corner
         // in world space lands at (100, 0) — that point must not move when we

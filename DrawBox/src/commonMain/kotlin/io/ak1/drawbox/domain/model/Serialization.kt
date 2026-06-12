@@ -74,6 +74,9 @@ data class ElementDto(
     val rotation: Float? = null,
     val cornerRadius: Float? = null,
     val strokeStyle: String? = null,
+    val bend: String? = null,
+    val startBinding: String? = null,
+    val endBinding: String? = null,
 )
 
 fun Element.toDto(): ElementDto = when (this) {
@@ -100,6 +103,9 @@ fun Element.toDto(): ElementDto = when (this) {
         rotation = rotation.takeIf { it != 0f },
         cornerRadius = cornerRadius.takeIf { it != 0f },
         strokeStyle = strokeStyle.toWireString().takeIf { strokeStyle != StrokeStyle.SOLID },
+        bend = bend.toJsonString().takeIf { bend != Offset.Zero },
+        startBinding = startBinding,
+        endBinding = endBinding,
     )
 }
 
@@ -125,6 +131,9 @@ fun ElementDto.toElement(): Element = when (type) {
         rotation = rotation ?: 0f,
         cornerRadius = cornerRadius ?: 0f,
         strokeStyle = strokeStyle.toStrokeStyle(),
+        bend = bend?.toOffset() ?: Offset.Zero,
+        startBinding = startBinding,
+        endBinding = endBinding,
     )
     else -> Element.Path(
         id = id,
@@ -167,6 +176,9 @@ data class SerializableElement(
     val rotation: Float? = null,
     val cornerRadius: Float? = null,
     val strokeStyle: String? = null,
+    val bend: String? = null,
+    val startBinding: String? = null,
+    val endBinding: String? = null,
 )
 
 @kotlinx.serialization.Serializable
@@ -196,6 +208,9 @@ object DrawingSerializer {
                     rotation = element.rotation,
                     cornerRadius = element.cornerRadius,
                     strokeStyle = element.strokeStyle,
+                    bend = element.bend,
+                    startBinding = element.startBinding,
+                    endBinding = element.endBinding,
                 )
             },
         )
@@ -220,6 +235,9 @@ object DrawingSerializer {
                     rotation = element.rotation,
                     cornerRadius = element.cornerRadius,
                     strokeStyle = element.strokeStyle,
+                    bend = element.bend,
+                    startBinding = element.startBinding,
+                    endBinding = element.endBinding,
                 )
             },
         )

@@ -242,6 +242,155 @@ class SelectionReducerTest {
     }
 
     @Test
+    fun updateLatestShapeKeepsExactlyTwoPoints() {
+        val s0 = State(mode = Mode.RECTANGLE)
+        val s1 = reducer.reduce(s0, Intent.InsertNewShape(ShapeType.RECTANGLE, Offset(10f, 10f)))
+        val s2 = reducer.reduce(s1, Intent.UpdateLatestShape(Offset(20f, 20f)))
+        val s3 = reducer.reduce(s2, Intent.UpdateLatestShape(Offset(900f, 5f)))
+        val s4 = reducer.reduce(s3, Intent.UpdateLatestShape(Offset(40f, 80f)))
+        val shape = s4.elements.last() as Element.Shape
+        // Exactly two points: original start + current cursor end. Drag-through
+        // detours like (900, 5) must NOT leak into points or bounds.
+        assertEquals(2, shape.points.size)
+        assertEquals(Offset(10f, 10f), shape.points[0])
+        assertEquals(Offset(40f, 80f), shape.points[1])
+    }
+
+    @Test
+    fun setLineBendUpdatesBendOnLineLikeShape() {
+        val line = Element.Shape(
+            id = "ln",
+            shapeType = ShapeType.LINE,
+            points = listOf(Offset(0f, 0f), Offset(100f, 0f)),
+            strokeColor = Color.Red,
+            strokeWidth = 4f,
+        )
+        val state = State(elements = listOf(line))
+        val out = reducer.reduce(state, Intent.SetLineBend("ln", Offset(0f, 30f)))
+        val updated = out.elements.first() as Element.Shape
+        assertEquals(Offset(0f, 30f), updated.bend)
+    }
+
+    @Test
+    fun setElementPointsReplacesPoints() {
+        val line = Element.Shape(
+            id = "ln",
+            shapeType = ShapeType.LINE,
+            points = listOf(Offset(0f, 0f), Offset(100f, 0f)),
+            strokeColor = Color.Red,
+            strokeWidth = 4f,
+        )
+        val state = State(elements = listOf(line))
+        val out = reducer.reduce(
+            state,
+            Intent.SetElementPoints("ln", listOf(Offset(10f, 10f), Offset(200f, 200f))),
+        )
+        val updated = out.elements.first() as Element.Shape
+        assertEquals(Offset(10f, 10f), updated.points[0])
+        assertEquals(Offset(200f, 200f), updated.points[1])
+    }
+
+    @Test
+    fun finalizeArrowBindingsBindsAndSnapsEndpointsToBoundary() {
+        val box1 = rect("a", 0f, 0f, 100f, 100f)   // center (50, 50)
+        val box2 = rect("b", 200f, 200f, 300f, 300f) // center (250, 250)
+        val arrow = Element.Shape(
+            id = "arr",
+            shapeType = ShapeType.ARROW,
+            points = listOf(Offset(50f, 50f), Offset(250f, 250f)),
+            strokeColor = Color.Red,
+            strokeWidth = 4f,
+        )
+        val state = State(elements = listOf(box1, box2, arrow))
+        val out = reducer.reduce(state, Intent.FinalizeArrowBindings("arr"))
+        val updated = out.elements.first { it.id == "arr" } as Element.Shape
+        assertEquals("a", updated.startBinding)
+        assertEquals("b", updated.endBinding)
+        // Start endpoint must be on box1's boundary (right edge x = 100, since
+        // box2's center is to the bottom-right and box1 is axis-aligned square).
+        assertEquals(100f, updated.points[0].x)
+        // End endpoint must be on box2's boundary (left edge x = 200).
+        assertEquals(200f, updated.points[1].x)
+        // First-time dual connection seeds a non-zero perpendicular bend.
+        assertTrue(updated.bend != Offset.Zero, "expected auto-curve on fresh connection")
+    }
+
+    @Test
+    fun finalizeArrowBindsOnNearMissAndSnapsToBoundary() {
+        // User drops the arrow end ~12 world-px outside the right edge of a
+        // rectangle. That's inside the binding tolerance, so the arrow should
+        // bind AND propagateBindings should pull the endpoint to the boundary.
+        val box = rect("a", 0f, 0f, 100f, 100f)
+        val arrow = Element.Shape(
+            id = "arr",
+            shapeType = ShapeType.ARROW,
+            // Start far to the right; end is JUST outside the box's right edge.
+            points = listOf(Offset(400f, 50f), Offset(112f, 50f)),
+            strokeColor = Color.Red,
+            strokeWidth = 4f,
+        )
+        val state = State(elements = listOf(box, arrow))
+        val out = reducer.reduce(state, Intent.FinalizeArrowBindings("arr"))
+        val updated = out.elements.first { it.id == "arr" } as Element.Shape
+        assertEquals("a", updated.endBinding, "near-miss must bind to the box")
+        // Endpoint must snap to the box's right edge (x = 100), not stay at the
+        // 112 drop point.
+        assertEquals(100f, updated.points[1].x)
+    }
+
+    @Test
+    fun movingBoundShapeUpdatesArrowEndpointToBoundary() {
+        val box = rect("b", 0f, 0f, 100f, 100f)
+        val arrow = Element.Shape(
+            id = "arr",
+            shapeType = ShapeType.ARROW,
+            // Far end is dead horizontal-right of the box's center, so the ray
+            // exits the right edge cleanly at y = 50.
+            points = listOf(Offset(50f, 50f), Offset(500f, 50f)),
+            strokeColor = Color.Red,
+            strokeWidth = 4f,
+            startBinding = "b",
+        )
+        val state = State(
+            elements = listOf(box, arrow),
+            mode = Mode.SELECT,
+            selectedIds = setOf("b"),
+        )
+        val out = reducer.reduce(state, Intent.MoveSelected(Offset(100f, 0f)))
+        val updatedArrow = out.elements.first { it.id == "arr" } as Element.Shape
+        // Box moved +100 on x → new bounds (100, 0)-(200, 100), center (150, 50).
+        // Far endpoint is at (500, 50): horizontal ray → exit on right edge.
+        assertEquals(Offset(200f, 50f), updatedArrow.points[0])
+        // The unbound end shouldn't have moved.
+        assertEquals(Offset(500f, 50f), updatedArrow.points[1])
+    }
+
+    @Test
+    fun drawingAConnectorArrowProducesOneUndoEntry() {
+        // Reproduce the "draw arrow + finalize bindings" gesture:
+        //   1. InsertNewShape (snapshots the empty state)
+        //   2. UpdateLatestShape (no snapshot)
+        //   3. FinalizeArrowBindings (must NOT snapshot — same transaction)
+        // Result: exactly one history entry; one undo removes the whole arrow.
+        val box1 = rect("a", 0f, 0f, 100f, 100f)
+        val box2 = rect("b", 200f, 200f, 300f, 300f)
+        val start = State(
+            elements = listOf(box1, box2),
+            mode = Mode.ARROW,
+        )
+        val afterInsert = reducer.reduce(start, Intent.InsertNewShape(ShapeType.ARROW, Offset(50f, 50f)))
+        val afterUpdate = reducer.reduce(afterInsert, Intent.UpdateLatestShape(Offset(250f, 250f)))
+        val arrowId = afterUpdate.elements.last().id
+        val afterFinalize = reducer.reduce(afterUpdate, Intent.FinalizeArrowBindings(arrowId))
+
+        assertEquals(1, afterFinalize.history.size, "draw-and-finalize must use exactly one snapshot")
+        // One Undo removes the entire arrow.
+        val undone = reducer.reduce(afterFinalize, Intent.Undo)
+        assertEquals(2, undone.elements.size)
+        assertTrue(undone.elements.none { it.id == arrowId })
+    }
+
+    @Test
     fun redoReappliesUndoneEdit() {
         val a = rect("a", 0f, 0f, 100f, 100f)
         val initial = State(elements = listOf(a), mode = Mode.SELECT, selectedIds = setOf("a"))

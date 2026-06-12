@@ -102,13 +102,35 @@ class Reducer(
         }
         is Intent.BeginTransform -> state.snapshot()
         is Intent.MoveSelected -> state.copy(
-            elements = useCase.translateSelected(state.elements, state.selectedIds, intent.delta),
+            elements = useCase.propagateBindings(
+                useCase.translateSelected(state.elements, state.selectedIds, intent.delta),
+            ),
         )
         is Intent.SetElementBounds -> state.copy(
-            elements = useCase.setElementBounds(state.elements, intent.id, intent.bounds),
+            elements = useCase.propagateBindings(
+                useCase.setElementBounds(state.elements, intent.id, intent.bounds),
+            ),
         )
         is Intent.SetElementRotation -> state.copy(
-            elements = useCase.setElementRotation(state.elements, intent.id, intent.rotationDegrees),
+            elements = useCase.propagateBindings(
+                useCase.setElementRotation(state.elements, intent.id, intent.rotationDegrees),
+            ),
+        )
+        is Intent.SetElementPoints -> state.copy(
+            elements = useCase.setElementPoints(state.elements, intent.id, intent.points),
+        )
+        is Intent.SetLineBend -> state.copy(
+            elements = useCase.setLineBend(state.elements, intent.id, intent.bend),
+        )
+        is Intent.FinalizeArrowBindings -> state.copy(
+            // Don't snapshot here — this intent is always dispatched at the END
+            // of a gesture whose START already snapshotted (InsertNewShape for
+            // a freshly drawn arrow, BeginTransform for an endpoint drag). A
+            // second snapshot here would split a single user action across two
+            // undo entries.
+            elements = useCase.propagateBindings(
+                useCase.finalizeArrowBindings(state.elements, intent.id),
+            ),
         )
         is Intent.SetSelectedStrokeColor -> {
             if (state.selectedIds.isEmpty()) state
