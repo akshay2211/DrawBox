@@ -9,7 +9,7 @@
 [![Google Dev Library](https://img.shields.io/badge/Google%20Dev%20Library-DrawBox-brightgreen.svg?style=flat-square)](https://devlibrary.withgoogle.com/products/android/repos/akshay2211-DrawBox)
 [![Klibs](https://img.shields.io/badge/KLibs-DrawBox-purple.svg?style=flat-square)](https://klibs.io/project/akshay2211/DrawBox)
 
-DrawBox is a powerful, cross-platform drawing library built with Kotlin Multiplatform (KMP) and Jetpack Compose. Create beautiful drawings with an intuitive canvas experience across Android, iOS, Web, and Desktop.
+DrawBox is a Kotlin Multiplatform drawing SDK for Compose Multiplatform. It helps developers embed editable drawing, annotation, diagramming, and export capabilities across Android, iOS, Web, and Desktop from one shared Kotlin codebase.
 
 ## Try it Live
 
@@ -20,7 +20,7 @@ Run the sample right in your browser — no install required:
 [![Try it Live](https://img.shields.io/badge/Try%20it%20Live-WASM%20Sample-orange.svg?style=for-the-badge&logo=webassembly)](https://ak1.io/DrawBox/sample/)
 
 ## Features
-* **Multiplatform Support**: Native support for Android, iOS, Web (WASM), and JVM platforms
+* **SDK-first Multiplatform Support**: Native support for Android, iOS, Web (WASM), and JVM platforms
 * **Multiple Drawing Modes**: Freehand pen, rectangles, circles, triangles, arrows, and lines
 * **Rich Customization**: 
   - Customizable stroke size and color
@@ -33,7 +33,7 @@ Run the sample right in your browser — no install required:
   - Bitmap export for raster images
 * **Reset and Clear** canvas functionality
 * **Modern Architecture**: MVI pattern with proper state management
-* **Easy Integration**: Simple composable API with comprehensive documentation
+* **Embeddable SDK API**: Simple composable API with comprehensive documentation
 
 ## Demo
 <img src="media/media.gif"/>
@@ -174,4 +174,3 @@ This project was created by [Akshay Sharma](https://akshay2211.github.io/).
 > If you appreciate my work, consider buying me a cup of :coffee: to keep me recharged :metal: by [PayPal](https://www.paypal.me/akshay2211)
 
 > I love using my work and I'm available for contract work. Freelancing helps to maintain and keep [my open source projects](https://github.com/akshay2211/) up to date!
-

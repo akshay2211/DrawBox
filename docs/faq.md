@@ -3,7 +3,7 @@
 ## General
 
 ### What is DrawBox?
-DrawBox is a powerful, Kotlin Multiplatform drawing library that allows you to add drawing capabilities to applications on Android, iOS, Desktop (JVM), and Web (WebAssembly) platforms. It provides a canvas with multiple drawing modes, customization options, and export capabilities.
+DrawBox is a Kotlin Multiplatform drawing SDK that lets developers embed editable drawing, annotation, diagramming, and export capabilities in Compose Multiplatform applications on Android, iOS, Desktop (JVM), and Web (WebAssembly).
 
 ### How is DrawBox different from other drawing libraries?
 - ✅ **Kotlin Multiplatform** - Single codebase for all platforms
@@ -16,8 +16,8 @@ DrawBox is a powerful, Kotlin Multiplatform drawing library that allows you to a
 ### Is DrawBox free?
 Yes! DrawBox is open-source under the **Apache License 2.0**. You can use it freely in commercial and personal projects.
 
-### Can I use DrawBox in a production app?
-Absolutely! DrawBox is actively maintained and used in production applications. It's published on Maven Central and follows semantic versioning.
+### Can I use DrawBox in a production Compose Multiplatform app?
+Absolutely. DrawBox is an embeddable SDK published on Maven Central and designed for production applications that need drawing or annotation capabilities.
 
 ## Installation & Setup
 
@@ -134,7 +134,7 @@ controller.importPath(json)
 
 ## Performance & Optimization
 
-### The app is slow when there are many strokes. How do I improve performance?
+### My screen is slow when there are many strokes. How do I improve performance?
 - **Reduce stroke count**: Clear old drawings with `controller.reset()`
 - **Simplify shapes**: Use fewer control points in paths
 - **Optimize colors**: Avoid unnecessary color changes

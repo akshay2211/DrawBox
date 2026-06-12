@@ -1,6 +1,6 @@
 # Quick Start Guide
 
-Get a fully functional drawing app running in **5 minutes**!
+Embed a fully functional drawing surface in **5 minutes**.
 
 ## Prerequisites
 - ✅ [DrawBox installed](installation.md)
@@ -59,7 +59,7 @@ class MainActivity : ComponentActivity() {
 }
 ```
 
-That's it! 🎉 You now have a fully functional drawing canvas!
+That's it. You now have an embedded drawing canvas backed by the DrawBox SDK.
 
 ## Step 3: Add Controls (2 minutes)
 

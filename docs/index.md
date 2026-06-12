@@ -1,8 +1,8 @@
-# DrawBox - Kotlin Multiplatform Drawing Library
+# DrawBox - Kotlin Multiplatform Drawing SDK
 
 ## Overview
 
-**DrawBox** is a powerful, lightweight drawing library built with **Kotlin Multiplatform (KMP)** and **Jetpack Compose**. It enables developers to add intuitive drawing capabilities to applications across **Android**, **iOS**, **Desktop (JVM)**, and **Web (WebAssembly)** from a single, shared codebase.
+**DrawBox** is a lightweight drawing SDK built with **Kotlin Multiplatform (KMP)** and **Jetpack Compose**. It enables developers to embed editable drawing, annotation, diagramming, and export capabilities into Compose Multiplatform applications across **Android**, **iOS**, **Desktop (JVM)**, and **Web (WebAssembly)** from a single, shared codebase.
 
 Featured in **Android Weekly**, **Android Arsenal**, **Kotlin Weekly**, and **Google Dev Library**.
 
@@ -27,7 +27,7 @@ Featured in **Android Weekly**, **Android Arsenal**, **Kotlin Weekly**, and **Go
 - 📄 **SVG Export** - Export drawings as scalable vector graphics
 - 🖼️ **PNG Export** - Raster image export with bitmap support
 - 📦 **JSON Serialization** - Save/load drawing state for persistence
-- 🔌 **Easy Integration** - Simple Compose API with minimal setup
+- 🔌 **Embeddable SDK API** - Simple Compose API with minimal setup
 
 ## Why DrawBox?
 
@@ -37,7 +37,7 @@ Build once, deploy everywhere. Write your drawing logic once in Kotlin and run i
 ### Modern Architecture
 Uses the **MVI (Model-View-Intent)** pattern with immutable state management, making your code predictable, testable, and maintainable.
 
-### Production-Ready
+### Production-Ready SDK
 - Published on Maven Central
 - Actively maintained and battle-tested
 - Comprehensive documentation and examples
@@ -150,4 +150,4 @@ DrawBox is licensed under the **Apache License 2.0**. See [LICENSE](license.md) 
 3. **[Explore the API](api-reference/index.md)** to unlock all capabilities
 4. **[Join the community](contributing.md)** and contribute improvements
 
-**Ready to add drawing capabilities to your app?** Let's get started! 🎨
+**Ready to embed drawing capabilities in your Compose Multiplatform project?** Let's get started.

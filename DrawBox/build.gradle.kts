@@ -82,9 +82,9 @@ mavenPublishing {
     pom {
         name.set("DrawBox")
         description.set(
-            "Kotlin Multiplatform drawing library with vector graphics support. " +
-            "Create beautiful drawings with pen, shapes, colors, undo/redo, and export to SVG/PNG. " +
-            "Runs on Android, iOS, Web (WASM), and JVM with a single shared codebase."
+            "Kotlin Multiplatform drawing SDK with vector graphics support. " +
+            "Embed editable drawing, annotation, diagramming, undo/redo, and SVG/PNG export. " +
+            "Runs on Android, iOS, Web (WASM), and JVM from a single shared codebase."
         )
         inceptionYear.set("2021")
         url.set("https://github.com/akshay2211/DrawBox")

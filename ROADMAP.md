@@ -6,9 +6,9 @@ The roadmap is a living document. Dates are targets, not commitments — major s
 
 ## Vision
 
-DrawBox aims to be **the canonical drawing primitive for Compose Multiplatform** — a small, focused, accessible, and well-benchmarked canvas layer that any annotation, whiteboard, diagramming, or design tool can build on, across Android, iOS, Web (Wasm), and Desktop.
+DrawBox aims to be **the canonical drawing SDK for Compose Multiplatform** — a small, focused, accessible, and well-benchmarked canvas layer that any annotation, whiteboard, diagramming, or design tool can embed across Android, iOS, Web (Wasm), and Desktop.
 
-We prioritize **primitives over products**: a strong foundation other tools depend on, rather than a feature-rich app.
+We prioritize **SDK primitives over end-user products**: a strong foundation other tools depend on, rather than a feature-rich drawing application.
 
 ## Status
 
@@ -28,7 +28,7 @@ Goal: ship 2.0.0 with a stable public API and a documented migration path from 1
 
 ## Next — Accessibility & performance (Q4 2026)
 
-Goal: make DrawBox the first KMP drawing library with serious accessibility and measurable cross-platform performance.
+Goal: make DrawBox the first KMP drawing SDK with serious accessibility and measurable cross-platform performance.
 
 - **Accessibility pass**
   - Semantic descriptions for the canvas, tool controls, and exported drawings
@@ -52,7 +52,7 @@ Goal: let third parties extend DrawBox without forking it.
 
 Goal: unlock real-time and domain-specific use cases.
 
-- CRDT-based collaborative drawing primitive
+- CRDT-based collaborative drawing SDK primitive
 - PDF annotation surface
 - Reference integrations with adjacent Compose libraries (e.g. rich text, slides)
 
@@ -77,7 +77,7 @@ Work that runs in parallel across all phases:
 
 To keep the library small and focused, the following are explicitly *not* on the roadmap:
 
-- A full vector editor UI — DrawBox stays a primitive, not a product
+- A full vector editor UI — DrawBox stays an embeddable SDK, not an end-user product
 - Server-side rendering of drawings
 - Native rendering backends other than Compose
 

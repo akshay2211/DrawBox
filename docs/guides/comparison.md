@@ -29,7 +29,7 @@ This guide compares DrawBox with other drawing and canvas solutions to help you 
 - Adds dependency (small, ~100KB)
 - Slight abstraction overhead
 
-**Best For:** Apps needing cross-platform drawing without maintaining multiple codebases
+**Best For:** Compose Multiplatform projects needing embedded drawing without maintaining multiple platform-specific canvas engines
 
 ---
 
@@ -60,7 +60,7 @@ This guide compares DrawBox with other drawing and canvas solutions to help you 
 - Less control for highly specialized use cases
 - Fewer rendering customizations
 
-**Best For:** Most applications. Use Skia only if you need extreme performance or specialized rendering.
+**Best For:** Most embedded drawing and annotation use cases. Use Skia only if you need extreme performance or specialized rendering.
 
 ---
 
@@ -89,7 +89,7 @@ This guide compares DrawBox with other drawing and canvas solutions to help you 
 **Cons:**
 - Less flexibility for unique requirements
 
-**Best For:** Any commercial or serious project. 10+ hours saved per developer.
+**Best For:** Commercial SDK consumers that need drawing features without owning the canvas engine.
 
 ---
 
@@ -115,7 +115,7 @@ This guide compares DrawBox with other drawing and canvas solutions to help you 
 **Cons:**
 - Less web-specialized features than web-only libraries
 
-**Best For:** Cross-platform applications requiring the same drawing experience everywhere
+**Best For:** Cross-platform products requiring the same embedded drawing experience everywhere
 
 ---
 
@@ -129,17 +129,17 @@ This guide compares DrawBox with other drawing and canvas solutions to help you 
 
 **Cons:**
 - Expensive licensing
-- Not embeddable in apps
+- Not embeddable as a lightweight SDK
 - Designed for professionals, not end-users
 
 ### DrawBox
 **Pros:**
 - Free, open-source
-- Embeddable in any app
-- Perfect for user-facing drawing features
+- Embeddable in Compose Multiplatform projects
+- Designed for user-facing drawing features inside host applications
 - Lightweight
 
-**Best For:** In-app drawing features, consumer applications
+**Best For:** Embedded drawing features in consumer, productivity, education, and business products
 
 ---
 
@@ -165,12 +165,12 @@ This guide compares DrawBox with other drawing and canvas solutions to help you 
 ## When to Use DrawBox
 
 ### ✅ Perfect For:
-- Cross-platform apps (Android, iOS, Web, Desktop)
-- Apps that need drawing features quickly
+- Cross-platform Compose Multiplatform projects (Android, iOS, Web, Desktop)
+- Products that need drawing features quickly
 - Annotation and markup tools
-- Whiteboard applications
-- Digital art apps
-- Educational applications
+- Whiteboard surfaces
+- Digital art surfaces
+- Educational products
 - Productivity tools
 
 ### ⚠️ Consider Alternatives If:

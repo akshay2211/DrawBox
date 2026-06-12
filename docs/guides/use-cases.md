@@ -1,6 +1,6 @@
-# Use Cases & Applications
+# Use Cases For SDK Consumers
 
-DrawBox can be used in a wide variety of applications across different domains. Here are common use cases where DrawBox excels:
+DrawBox can be embedded into a wide variety of Compose Multiplatform products. Here are common SDK use cases where DrawBox excels:
 
 ## Productivity & Annotation Tools
 
@@ -11,7 +11,7 @@ Perfect for creating markup tools where users can annotate screenshots, diagrams
 - Shapes for framing important regions
 - Color coding for different types of annotations
 
-**Example**: Screenshot annotation app, feedback tools, design review platforms
+**Example**: screenshot annotation tools, feedback workflows, design review platforms
 
 ### Document Markup
 Enable users to annotate PDFs and documents with:
@@ -22,8 +22,8 @@ Enable users to annotate PDFs and documents with:
 
 ## Creative & Design Applications
 
-### Digital Drawing Apps
-Full-featured drawing applications with:
+### Digital Drawing Surfaces
+Embeddable drawing surfaces with:
 - Multiple brush modes (pen, shapes, lines, arrows)
 - Color palette management
 - Undo/redo history
@@ -49,7 +49,7 @@ Real-time collaborative drawing with:
 ## Educational Applications
 
 ### Interactive Learning Tools
-Enhance educational apps with drawing capabilities:
+Enhance educational products with drawing capabilities:
 - Math problem visualization
 - Geometry and shape exploration
 - Handwriting practice
@@ -64,7 +64,7 @@ Add drawing features for student interaction:
 ## Business & Enterprise
 
 ### Form & Document Applications
-Add drawing capabilities to business apps:
+Add drawing capabilities to business workflows:
 - Signature capture (using pen mode)
 - Form annotation and approval
 - Technical drawing for service requests
@@ -79,7 +79,7 @@ Use as a canvas layer for:
 
 ## Social & Communication
 
-### Messaging & Collaboration Apps
+### Messaging & Collaboration Products
 Enable users to express themselves visually:
 - Drawing in chat messages
 - Sketching ideas in real-time

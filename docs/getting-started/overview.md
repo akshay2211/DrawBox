@@ -2,13 +2,13 @@
 
 ## What is DrawBox?
 
-DrawBox is a **Kotlin Multiplatform** drawing library that brings powerful drawing capabilities to your applications across Android, iOS, Desktop, and Web platforms.
+DrawBox is a **Kotlin Multiplatform drawing SDK** that brings embeddable drawing, annotation, diagramming, and export capabilities to Compose Multiplatform applications across Android, iOS, Desktop, and Web.
 
 ## Key Highlights
 
 - 🎨 **Multiple Drawing Modes** - Pen, Rectangle, Circle, Triangle, Arrow, Line
 - 📱 **Cross-Platform** - Single codebase for all platforms
-- 🎯 **Easy Integration** - Simple Compose API
+- 🎯 **SDK Integration** - Simple embeddable Compose API
 - 💾 **Export Options** - SVG, PNG, and JSON formats
 - ↩️ **Full Undo/Redo** - Unlimited history
 - 🏗️ **MVI Architecture** - Predictable state management
