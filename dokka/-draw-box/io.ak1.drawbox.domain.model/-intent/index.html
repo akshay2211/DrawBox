@@ -107,7 +107,7 @@
   <div class="breadcrumbs"><a href="../../../index.html">DrawBox</a><span class="delimiter">/</span><a href="../index.html">io.ak1.drawbox.domain.model</a><span class="delimiter">/</span><span class="current">Intent</span></div>
   <div class="cover ">
     <h1 class="cover"><span><span>Intent</span></span></h1>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":DrawBox/commonMain"><div class="symbol monospace"><span class="token keyword">sealed </span><span class="token keyword">class </span><a href="index.html">Intent</a></div><p class="paragraph">Represents a user action or system event that should change the drawing state.</p><p class="paragraph">Intent is the input to the MVI (Model-View-Intent) pattern. All state changes flow through this sealed class:</p><div class="sample-container"><pre><code class="block lang-kotlin" theme="idea">User Action → Intent → Reducer → New State → UI Update</code></pre><span class="copy-tooltip"><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div><span class="copy-icon"></span></span></div><p class="paragraph">Intent instances are immutable data classes that capture the parameters of what the user wants to do. The <a href="../../io.ak1.drawbox.presentation.reducer/-reducer/index.html">io.ak1.drawbox.presentation.reducer.Reducer</a> interprets these intents and produces new state.</p><h4 class="tableheader">See also</h4><div class="table"><div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../io.ak1.drawbox.presentation.reducer/-reducer/reduce.html"><span>Reducer.</span><wbr></wbr><span>reduce</span></a></div></span></div><div><div class="title"><p class="paragraph">for how intents are processed</p></div></div></div></div><div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../-state/index.html"><span><span>State</span></span></a></div></span></div><div><div class="title"><p class="paragraph">for the resulting state after intent handling</p></div></div></div></div></div><h4 class="tableheader">Inheritors</h4><div class="table"><div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-add-element/index.html">AddElement</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-update-element/index.html">UpdateElement</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-delete-element/index.html">DeleteElement</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-insert-new-path/index.html">InsertNewPath</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-update-latest-path/index.html">UpdateLatestPath</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-insert-new-shape/index.html">InsertNewShape</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-update-latest-shape/index.html">UpdateLatestShape</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-set-stroke-color/index.html">SetStrokeColor</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-set-stroke-width/index.html">SetStrokeWidth</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-set-opacity/index.html">SetOpacity</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-set-bg-color/index.html">SetBgColor</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-set-background-pattern/index.html">SetBackgroundPattern</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-set-mode/index.html">SetMode</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-undo/index.html">Undo</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-redo/index.html">Redo</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-reset/index.html">Reset</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-save-bitmap/index.html">SaveBitmap</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-load-drawing/index.html">LoadDrawing</a></div></span></div><div></div></div></div></div></div></div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":DrawBox/commonMain"><div class="symbol monospace"><span class="token keyword">sealed </span><span class="token keyword">class </span><a href="index.html">Intent</a></div><p class="paragraph">Represents a user action or system event that should change the drawing state.</p><p class="paragraph">Intent is the input to the MVI (Model-View-Intent) pattern. All state changes flow through this sealed class:</p><div class="sample-container"><pre><code class="block lang-kotlin" theme="idea">User Action → Intent → Reducer → New State → UI Update</code></pre><span class="copy-tooltip"><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div><span class="copy-icon"></span></span></div><p class="paragraph">Intent instances are immutable data classes that capture the parameters of what the user wants to do. The <a href="../../io.ak1.drawbox.presentation.reducer/-reducer/index.html">io.ak1.drawbox.presentation.reducer.Reducer</a> interprets these intents and produces new state.</p><h4 class="tableheader">See also</h4><div class="table"><div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../io.ak1.drawbox.presentation.reducer/-reducer/reduce.html"><span>Reducer.</span><wbr></wbr><span>reduce</span></a></div></span></div><div><div class="title"><p class="paragraph">for how intents are processed</p></div></div></div></div><div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../-state/index.html"><span><span>State</span></span></a></div></span></div><div><div class="title"><p class="paragraph">for the resulting state after intent handling</p></div></div></div></div></div><h4 class="tableheader">Inheritors</h4><div class="table"><div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-add-element/index.html">AddElement</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-update-element/index.html">UpdateElement</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-delete-element/index.html">DeleteElement</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-insert-new-path/index.html">InsertNewPath</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-update-latest-path/index.html">UpdateLatestPath</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-insert-new-shape/index.html">InsertNewShape</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-update-latest-shape/index.html">UpdateLatestShape</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-set-stroke-color/index.html">SetStrokeColor</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-set-stroke-width/index.html">SetStrokeWidth</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-set-corner-radius/index.html">SetCornerRadius</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-set-stroke-style/index.html">SetStrokeStyle</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-set-opacity/index.html">SetOpacity</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-set-bg-color/index.html">SetBgColor</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-set-background-pattern/index.html">SetBackgroundPattern</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-set-mode/index.html">SetMode</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-select-at/index.html">SelectAt</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-set-marquee-rect/index.html">SetMarqueeRect</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-commit-marquee/index.html">CommitMarquee</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-clear-selection/index.html">ClearSelection</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-delete-selected/index.html">DeleteSelected</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-begin-transform/index.html">BeginTransform</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-move-selected/index.html">MoveSelected</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-set-element-bounds/index.html">SetElementBounds</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-set-element-rotation/index.html">SetElementRotation</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-set-element-points/index.html">SetElementPoints</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-set-line-bend/index.html">SetLineBend</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-finalize-arrow-bindings/index.html">FinalizeArrowBindings</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-set-selected-stroke-color/index.html">SetSelectedStrokeColor</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-set-selected-stroke-width/index.html">SetSelectedStrokeWidth</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-set-selected-corner-radius/index.html">SetSelectedCornerRadius</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-set-selected-stroke-style/index.html">SetSelectedStrokeStyle</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-bring-selection-to-front/index.html">BringSelectionToFront</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-send-selection-to-back/index.html">SendSelectionToBack</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-pan-by/index.html">PanBy</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-zoom-by/index.html">ZoomBy</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-zoom-to/index.html">ZoomTo</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-reset-camera/index.html">ResetCamera</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-set-temp-pan/index.html">SetTempPan</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-undo/index.html">Undo</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-redo/index.html">Redo</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-reset/index.html">Reset</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-save-bitmap/index.html">SaveBitmap</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-load-drawing/index.html">LoadDrawing</a></div></span></div><div></div></div></div></div></div></div>
   </div>
   <div class="tabbedcontent">
     <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
@@ -129,6 +129,66 @@
               </div>
             </div>
           </div>
+<a data-name="-1398991178%2FClasslikes%2F-355813056" anchor-label="BeginTransform" id="-1398991178%2FClasslikes%2F-355813056" data-filterable-set=":DrawBox/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-begin-transform/index.html"><span>Begin</span><wbr></wbr><span><span>Transform</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1398991178%2FClasslikes%2F-355813056"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":DrawBox/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">object </span><a href="-begin-transform/index.html">BeginTransform</a> : <a href="index.html">Intent</a></div><div class="brief "><p class="paragraph">Push the current elements onto the undo history. Use at the start of a gesture that mutates the selection across many tiny updates (drag move, resize, rotate) so a single undo reverts the whole gesture.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="519724245%2FClasslikes%2F-355813056" anchor-label="BringSelectionToFront" id="519724245%2FClasslikes%2F-355813056" data-filterable-set=":DrawBox/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-bring-selection-to-front/index.html"><span>Bring</span><wbr></wbr><span>Selection</span><wbr></wbr><span>To</span><wbr></wbr><span><span>Front</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="519724245%2FClasslikes%2F-355813056"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":DrawBox/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">object </span><a href="-bring-selection-to-front/index.html">BringSelectionToFront</a> : <a href="index.html">Intent</a></div><div class="brief "><p class="paragraph">Move selected elements to the top of the z-order. Snapshots history.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1448937786%2FClasslikes%2F-355813056" anchor-label="ClearSelection" id="1448937786%2FClasslikes%2F-355813056" data-filterable-set=":DrawBox/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-clear-selection/index.html"><span>Clear</span><wbr></wbr><span><span>Selection</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1448937786%2FClasslikes%2F-355813056"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":DrawBox/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">object </span><a href="-clear-selection/index.html">ClearSelection</a> : <a href="index.html">Intent</a></div><div class="brief "><p class="paragraph">Clear the current selection.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1727478974%2FClasslikes%2F-355813056" anchor-label="CommitMarquee" id="1727478974%2FClasslikes%2F-355813056" data-filterable-set=":DrawBox/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-commit-marquee/index.html"><span>Commit</span><wbr></wbr><span><span>Marquee</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1727478974%2FClasslikes%2F-355813056"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":DrawBox/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-commit-marquee/index.html">CommitMarquee</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>rect<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/geometry/Rect.html">Rect</a></span></span><span class="token punctuation">)</span> : <a href="index.html">Intent</a></div><div class="brief "><p class="paragraph">Finalize a marquee selection: select every element whose bounding box intersects <span data-unresolved-link="io.ak1.drawbox.domain.model/Intent.CommitMarquee//#androidx.compose.ui.geometry.Rect/PointingToCallableParameters(0)/">rect</span>. Also clears <a href="../-state/marquee-rect.html">State.marqueeRect</a>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
 <a data-name="-1569776744%2FClasslikes%2F-355813056" anchor-label="DeleteElement" id="-1569776744%2FClasslikes%2F-355813056" data-filterable-set=":DrawBox/commonMain"></a>
           <div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain">
             <div class="main-subrow keyValue ">
@@ -140,6 +200,36 @@
               <div>
                 <div class="title">
                   <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":DrawBox/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-delete-element/index.html">DeleteElement</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>elementId<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span> : <a href="index.html">Intent</a></div><div class="brief "><p class="paragraph">Delete an element from the canvas</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="920372083%2FClasslikes%2F-355813056" anchor-label="DeleteSelected" id="920372083%2FClasslikes%2F-355813056" data-filterable-set=":DrawBox/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-delete-selected/index.html"><span>Delete</span><wbr></wbr><span><span>Selected</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="920372083%2FClasslikes%2F-355813056"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":DrawBox/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">object </span><a href="-delete-selected/index.html">DeleteSelected</a> : <a href="index.html">Intent</a></div><div class="brief "><p class="paragraph">Delete every element in <a href="../-state/selected-ids.html">State.selectedIds</a>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="335011120%2FClasslikes%2F-355813056" anchor-label="FinalizeArrowBindings" id="335011120%2FClasslikes%2F-355813056" data-filterable-set=":DrawBox/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-finalize-arrow-bindings/index.html"><span>Finalize</span><wbr></wbr><span>Arrow</span><wbr></wbr><span><span>Bindings</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="335011120%2FClasslikes%2F-355813056"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":DrawBox/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-finalize-arrow-bindings/index.html">FinalizeArrowBindings</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>id<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span> : <a href="index.html">Intent</a></div><div class="brief "><p class="paragraph">Recompute connector bindings for an ARROW based on where its endpoints currently sit. Called at drag-end after creating or moving the arrow.</p></div></div></div>
                 </div>
               </div>
             </div>
@@ -189,6 +279,36 @@
               </div>
             </div>
           </div>
+<a data-name="-753941491%2FClasslikes%2F-355813056" anchor-label="MoveSelected" id="-753941491%2FClasslikes%2F-355813056" data-filterable-set=":DrawBox/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-move-selected/index.html"><span>Move</span><wbr></wbr><span><span>Selected</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-753941491%2FClasslikes%2F-355813056"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":DrawBox/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-move-selected/index.html">MoveSelected</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>delta<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/geometry/Offset.html">Offset</a></span></span><span class="token punctuation">)</span> : <a href="index.html">Intent</a></div><div class="brief "><p class="paragraph">Translate every selected element by <span data-unresolved-link="io.ak1.drawbox.domain.model/Intent.MoveSelected//#androidx.compose.ui.geometry.Offset/PointingToCallableParameters(0)/">delta</span>. Does not snapshot history.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1443720715%2FClasslikes%2F-355813056" anchor-label="PanBy" id="-1443720715%2FClasslikes%2F-355813056" data-filterable-set=":DrawBox/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-pan-by/index.html"><span>Pan</span><wbr></wbr><span><span>By</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1443720715%2FClasslikes%2F-355813056"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":DrawBox/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-pan-by/index.html">PanBy</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>delta<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/geometry/Offset.html">Offset</a></span></span><span class="token punctuation">)</span> : <a href="index.html">Intent</a></div><div class="brief "><p class="paragraph">Translate the camera by <span data-unresolved-link="io.ak1.drawbox.domain.model/Intent.PanBy//#androidx.compose.ui.geometry.Offset/PointingToCallableParameters(0)/">delta</span> screen pixels. Not undoable (session state).</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
 <a data-name="-421394469%2FClasslikes%2F-355813056" anchor-label="Redo" id="-421394469%2FClasslikes%2F-355813056" data-filterable-set=":DrawBox/commonMain"></a>
           <div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain">
             <div class="main-subrow keyValue ">
@@ -219,6 +339,21 @@
               </div>
             </div>
           </div>
+<a data-name="-499842955%2FClasslikes%2F-355813056" anchor-label="ResetCamera" id="-499842955%2FClasslikes%2F-355813056" data-filterable-set=":DrawBox/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-reset-camera/index.html"><span>Reset</span><wbr></wbr><span><span>Camera</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-499842955%2FClasslikes%2F-355813056"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":DrawBox/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">object </span><a href="-reset-camera/index.html">ResetCamera</a> : <a href="index.html">Intent</a></div><div class="brief "><p class="paragraph">Reset the viewport to identity (offset = Zero, scale = 1). Not undoable.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
 <a data-name="-839617907%2FClasslikes%2F-355813056" anchor-label="SaveBitmap" id="-839617907%2FClasslikes%2F-355813056" data-filterable-set=":DrawBox/commonMain"></a>
           <div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain">
             <div class="main-subrow keyValue ">
@@ -230,6 +365,36 @@
               <div>
                 <div class="title">
                   <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":DrawBox/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-save-bitmap/index.html">SaveBitmap</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>bitmap<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/graphics/ImageBitmap.html">ImageBitmap</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>throwable<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-throwable/index.html">Throwable</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span> : <a href="index.html">Intent</a></div><div class="brief "><p class="paragraph">Save the current drawing as a bitmap.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-167244630%2FClasslikes%2F-355813056" anchor-label="SelectAt" id="-167244630%2FClasslikes%2F-355813056" data-filterable-set=":DrawBox/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-select-at/index.html"><span>Select</span><wbr></wbr><span><span>At</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-167244630%2FClasslikes%2F-355813056"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":DrawBox/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-select-at/index.html">SelectAt</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>offset<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/geometry/Offset.html">Offset</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>tolerance<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a><span class="token operator"> = </span><span class="token constant">8.0f</span></span></span><span class="token punctuation">)</span> : <a href="index.html">Intent</a></div><div class="brief "><p class="paragraph">Pick the topmost element at <span data-unresolved-link="io.ak1.drawbox.domain.model/Intent.SelectAt//#androidx.compose.ui.geometry.Offset#kotlin.Float/PointingToCallableParameters(0)/">offset</span> and make it the sole selection. If no element is hit, clears selection. Tolerance is in canvas pixels.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-961491965%2FClasslikes%2F-355813056" anchor-label="SendSelectionToBack" id="-961491965%2FClasslikes%2F-355813056" data-filterable-set=":DrawBox/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-send-selection-to-back/index.html"><span>Send</span><wbr></wbr><span>Selection</span><wbr></wbr><span>To</span><wbr></wbr><span><span>Back</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-961491965%2FClasslikes%2F-355813056"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":DrawBox/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">object </span><a href="-send-selection-to-back/index.html">SendSelectionToBack</a> : <a href="index.html">Intent</a></div><div class="brief "><p class="paragraph">Move selected elements to the bottom of the z-order. Snapshots history.</p></div></div></div>
                 </div>
               </div>
             </div>
@@ -264,6 +429,96 @@
               </div>
             </div>
           </div>
+<a data-name="773546656%2FClasslikes%2F-355813056" anchor-label="SetCornerRadius" id="773546656%2FClasslikes%2F-355813056" data-filterable-set=":DrawBox/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-set-corner-radius/index.html"><span>Set</span><wbr></wbr><span>Corner</span><wbr></wbr><span><span>Radius</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="773546656%2FClasslikes%2F-355813056"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":DrawBox/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-set-corner-radius/index.html">SetCornerRadius</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>radius<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a></span></span><span class="token punctuation">)</span> : <a href="index.html">Intent</a></div><div class="brief "><p class="paragraph">Default corner radius applied to new RECTANGLE / TRIANGLE shapes. Has no effect on shapes that ignore it (circle, line, arrow) and on shapes already on the canvas.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1722188650%2FClasslikes%2F-355813056" anchor-label="SetElementBounds" id="1722188650%2FClasslikes%2F-355813056" data-filterable-set=":DrawBox/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-set-element-bounds/index.html"><span>Set</span><wbr></wbr><span>Element</span><wbr></wbr><span><span>Bounds</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1722188650%2FClasslikes%2F-355813056"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":DrawBox/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-set-element-bounds/index.html">SetElementBounds</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>id<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>bounds<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/geometry/Rect.html">Rect</a></span></span><span class="token punctuation">)</span> : <a href="index.html">Intent</a></div><div class="brief "><p class="paragraph">Set the absolute bounding box of a single element. Used during resize. Does not snapshot history (caller should dispatch <a href="-begin-transform/index.html">BeginTransform</a> first).</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="817089788%2FClasslikes%2F-355813056" anchor-label="SetElementPoints" id="817089788%2FClasslikes%2F-355813056" data-filterable-set=":DrawBox/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-set-element-points/index.html"><span>Set</span><wbr></wbr><span>Element</span><wbr></wbr><span><span>Points</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="817089788%2FClasslikes%2F-355813056"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":DrawBox/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-set-element-points/index.html">SetElementPoints</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>id<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>points<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/geometry/Offset.html">Offset</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span> : <a href="index.html">Intent</a></div><div class="brief "><p class="paragraph">Replace the points list of a single element. Used when dragging the endpoint of a LINE/ARROW. Does not snapshot history.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1166388415%2FClasslikes%2F-355813056" anchor-label="SetElementRotation" id="-1166388415%2FClasslikes%2F-355813056" data-filterable-set=":DrawBox/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-set-element-rotation/index.html"><span>Set</span><wbr></wbr><span>Element</span><wbr></wbr><span><span>Rotation</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1166388415%2FClasslikes%2F-355813056"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":DrawBox/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-set-element-rotation/index.html">SetElementRotation</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>id<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>rotationDegrees<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a></span></span><span class="token punctuation">)</span> : <a href="index.html">Intent</a></div><div class="brief "><p class="paragraph">Set the absolute rotation in degrees of a single element. Used during rotate. Does not snapshot history.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="622364762%2FClasslikes%2F-355813056" anchor-label="SetLineBend" id="622364762%2FClasslikes%2F-355813056" data-filterable-set=":DrawBox/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-set-line-bend/index.html"><span>Set</span><wbr></wbr><span>Line</span><wbr></wbr><span><span>Bend</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="622364762%2FClasslikes%2F-355813056"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":DrawBox/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-set-line-bend/index.html">SetLineBend</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>id<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>bend<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/geometry/Offset.html">Offset</a></span></span><span class="token punctuation">)</span> : <a href="index.html">Intent</a></div><div class="brief "><p class="paragraph">Update the curve deflection of a LINE/ARROW. Does not snapshot history.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1374269643%2FClasslikes%2F-355813056" anchor-label="SetMarqueeRect" id="-1374269643%2FClasslikes%2F-355813056" data-filterable-set=":DrawBox/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-set-marquee-rect/index.html"><span>Set</span><wbr></wbr><span>Marquee</span><wbr></wbr><span><span>Rect</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1374269643%2FClasslikes%2F-355813056"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":DrawBox/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-set-marquee-rect/index.html">SetMarqueeRect</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>rect<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/geometry/Rect.html">Rect</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span> : <a href="index.html">Intent</a></div><div class="brief "><p class="paragraph">Replace the current marquee rectangle (or clear with null). Not undoable.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
 <a data-name="901739972%2FClasslikes%2F-355813056" anchor-label="SetMode" id="901739972%2FClasslikes%2F-355813056" data-filterable-set=":DrawBox/commonMain"></a>
           <div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain">
             <div class="main-subrow keyValue ">
@@ -294,6 +549,66 @@
               </div>
             </div>
           </div>
+<a data-name="-190914875%2FClasslikes%2F-355813056" anchor-label="SetSelectedCornerRadius" id="-190914875%2FClasslikes%2F-355813056" data-filterable-set=":DrawBox/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-set-selected-corner-radius/index.html"><span>Set</span><wbr></wbr><span>Selected</span><wbr></wbr><span>Corner</span><wbr></wbr><span><span>Radius</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-190914875%2FClasslikes%2F-355813056"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":DrawBox/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-set-selected-corner-radius/index.html">SetSelectedCornerRadius</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>radius<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a></span></span><span class="token punctuation">)</span> : <a href="index.html">Intent</a></div><div class="brief "><p class="paragraph">Set the corner radius of every selected RECTANGLE / TRIANGLE shape. Snapshots history. Other shape types in the selection are left alone.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-440451285%2FClasslikes%2F-355813056" anchor-label="SetSelectedStrokeColor" id="-440451285%2FClasslikes%2F-355813056" data-filterable-set=":DrawBox/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-set-selected-stroke-color/index.html"><span>Set</span><wbr></wbr><span>Selected</span><wbr></wbr><span>Stroke</span><wbr></wbr><span><span>Color</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-440451285%2FClasslikes%2F-355813056"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":DrawBox/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-set-selected-stroke-color/index.html">SetSelectedStrokeColor</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>color<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/graphics/Color.html">Color</a></span></span><span class="token punctuation">)</span> : <a href="index.html">Intent</a></div><div class="brief "><p class="paragraph">Replace the stroke color of every selected element. Snapshots history.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="901407901%2FClasslikes%2F-355813056" anchor-label="SetSelectedStrokeStyle" id="901407901%2FClasslikes%2F-355813056" data-filterable-set=":DrawBox/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-set-selected-stroke-style/index.html"><span>Set</span><wbr></wbr><span>Selected</span><wbr></wbr><span>Stroke</span><wbr></wbr><span><span>Style</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="901407901%2FClasslikes%2F-355813056"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":DrawBox/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-set-selected-stroke-style/index.html">SetSelectedStrokeStyle</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>style<span class="token operator">: </span><a href="../-stroke-style/index.html">StrokeStyle</a></span></span><span class="token punctuation">)</span> : <a href="index.html">Intent</a></div><div class="brief "><p class="paragraph">Set the stroke pattern of every selected <a href="../-element/-shape/index.html">Element.Shape</a>. Snapshots history. Freehand paths in the selection are left alone.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2131941848%2FClasslikes%2F-355813056" anchor-label="SetSelectedStrokeWidth" id="-2131941848%2FClasslikes%2F-355813056" data-filterable-set=":DrawBox/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-set-selected-stroke-width/index.html"><span>Set</span><wbr></wbr><span>Selected</span><wbr></wbr><span>Stroke</span><wbr></wbr><span><span>Width</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2131941848%2FClasslikes%2F-355813056"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":DrawBox/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-set-selected-stroke-width/index.html">SetSelectedStrokeWidth</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>width<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a></span></span><span class="token punctuation">)</span> : <a href="index.html">Intent</a></div><div class="brief "><p class="paragraph">Replace the stroke width of every selected element. Snapshots history.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
 <a data-name="-1794812944%2FClasslikes%2F-355813056" anchor-label="SetStrokeColor" id="-1794812944%2FClasslikes%2F-355813056" data-filterable-set=":DrawBox/commonMain"></a>
           <div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain">
             <div class="main-subrow keyValue ">
@@ -309,6 +624,21 @@
               </div>
             </div>
           </div>
+<a data-name="-452953758%2FClasslikes%2F-355813056" anchor-label="SetStrokeStyle" id="-452953758%2FClasslikes%2F-355813056" data-filterable-set=":DrawBox/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-set-stroke-style/index.html"><span>Set</span><wbr></wbr><span>Stroke</span><wbr></wbr><span><span>Style</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-452953758%2FClasslikes%2F-355813056"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":DrawBox/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-set-stroke-style/index.html">SetStrokeStyle</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>style<span class="token operator">: </span><a href="../-stroke-style/index.html">StrokeStyle</a></span></span><span class="token punctuation">)</span> : <a href="index.html">Intent</a></div><div class="brief "><p class="paragraph">Default stroke pattern applied to new shapes. Has no effect on existing shapes on the canvas; use <a href="-set-selected-stroke-style/index.html">SetSelectedStrokeStyle</a> to retro-edit those.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
 <a data-name="808663789%2FClasslikes%2F-355813056" anchor-label="SetStrokeWidth" id="808663789%2FClasslikes%2F-355813056" data-filterable-set=":DrawBox/commonMain"></a>
           <div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain">
             <div class="main-subrow keyValue ">
@@ -320,6 +650,21 @@
               <div>
                 <div class="title">
                   <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":DrawBox/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-set-stroke-width/index.html">SetStrokeWidth</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>width<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a></span></span><span class="token punctuation">)</span> : <a href="index.html">Intent</a></div><div class="brief "><p class="paragraph">Change the stroke width for new drawings</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1451897198%2FClasslikes%2F-355813056" anchor-label="SetTempPan" id="-1451897198%2FClasslikes%2F-355813056" data-filterable-set=":DrawBox/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-set-temp-pan/index.html"><span>Set</span><wbr></wbr><span>Temp</span><wbr></wbr><span><span>Pan</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1451897198%2FClasslikes%2F-355813056"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":DrawBox/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-set-temp-pan/index.html">SetTempPan</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>active<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></span></span><span class="token punctuation">)</span> : <a href="index.html">Intent</a></div><div class="brief "><p class="paragraph">Toggle the transient pan-while-held flag (e.g. for space bar). Not undoable.</p></div></div></div>
                 </div>
               </div>
             </div>
@@ -380,6 +725,36 @@
               <div>
                 <div class="title">
                   <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":DrawBox/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-update-latest-shape/index.html">UpdateLatestShape</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>newPoint<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/geometry/Offset.html">Offset</a></span></span><span class="token punctuation">)</span> : <a href="index.html">Intent</a></div><div class="brief "><p class="paragraph">Update the current shape's dimensions by providing the end point.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1054041649%2FClasslikes%2F-355813056" anchor-label="ZoomBy" id="-1054041649%2FClasslikes%2F-355813056" data-filterable-set=":DrawBox/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-zoom-by/index.html"><span>Zoom</span><wbr></wbr><span><span>By</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1054041649%2FClasslikes%2F-355813056"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":DrawBox/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-zoom-by/index.html">ZoomBy</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>factor<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>focalScreen<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/geometry/Offset.html">Offset</a></span></span><span class="token punctuation">)</span> : <a href="index.html">Intent</a></div><div class="brief "><p class="paragraph">Multiplicatively zoom the camera by <span data-unresolved-link="io.ak1.drawbox.domain.model/Intent.ZoomBy//#kotlin.Float#androidx.compose.ui.geometry.Offset/PointingToCallableParameters(0)/">factor</span> anchored at <span data-unresolved-link="io.ak1.drawbox.domain.model/Intent.ZoomBy//#kotlin.Float#androidx.compose.ui.geometry.Offset/PointingToCallableParameters(1)/">focalScreen</span> (a point in screen pixels that stays put). Not undoable.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1235056597%2FClasslikes%2F-355813056" anchor-label="ZoomTo" id="-1235056597%2FClasslikes%2F-355813056" data-filterable-set=":DrawBox/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-zoom-to/index.html"><span>Zoom</span><wbr></wbr><span><span>To</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1235056597%2FClasslikes%2F-355813056"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":DrawBox/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-zoom-to/index.html">ZoomTo</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>targetScale<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>focalScreen<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/geometry/Offset.html">Offset</a></span></span><span class="token punctuation">)</span> : <a href="index.html">Intent</a></div><div class="brief "><p class="paragraph">Set absolute scale to <span data-unresolved-link="io.ak1.drawbox.domain.model/Intent.ZoomTo//#kotlin.Float#androidx.compose.ui.geometry.Offset/PointingToCallableParameters(0)/">targetScale</span> anchored at <span data-unresolved-link="io.ak1.drawbox.domain.model/Intent.ZoomTo//#kotlin.Float#androidx.compose.ui.geometry.Offset/PointingToCallableParameters(1)/">focalScreen</span>. Not undoable.</p></div></div></div>
                 </div>
               </div>
             </div>

@@ -107,24 +107,24 @@
   <div class="breadcrumbs"><a href="../../../../index.html">DrawBox</a><span class="delimiter">/</span><a href="../../index.html">io.ak1.drawbox.domain.model</a><span class="delimiter">/</span><a href="../index.html">Element</a><span class="delimiter">/</span><span class="current">Path</span></div>
   <div class="cover ">
     <h1 class="cover"><span><span>Path</span></span></h1>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":DrawBox/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="index.html">Path</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>id<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator"> = </span>Uuid.random().toString()<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>type<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator"> = </span><span class="token string">&quot;Path&quot;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>points<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/geometry/Offset.html">Offset</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>strokeColor<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/graphics/Color.html">Color</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>strokeWidth<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>alpha<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>zIndex<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token operator"> = </span><span class="token constant">0</span></span></span><span class="token punctuation">)</span> : <a href="../index.html">Element</a></div><p class="paragraph">Represents a freehand drawn path created in PEN mode.</p><p class="paragraph">A path is a series of connected points drawn by the user. It's rendered as a continuous curve with the specified stroke properties.</p><h4 class="tableheader">See also</h4><div class="table"><div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/graphics/drawscope/DrawScope.html#drawpath"><span>DrawScope.</span><wbr></wbr><span>drawPath</span></a></div></span></div><div><div class="title"><p class="paragraph">with Stroke style</p></div></div></div></div></div></div></div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":DrawBox/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="index.html">Path</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>id<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator"> = </span>Uuid.random().toString()<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>type<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator"> = </span><span class="token string">&quot;Path&quot;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>points<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/geometry/Offset.html">Offset</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>strokeColor<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/graphics/Color.html">Color</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>strokeWidth<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>alpha<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>zIndex<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token operator"> = </span><span class="token constant">0</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>rotation<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a><span class="token operator"> = </span><span class="token constant">0.0f</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>strokeStyle<span class="token operator">: </span><a href="../../-stroke-style/index.html">StrokeStyle</a><span class="token operator"> = </span>StrokeStyle.SOLID</span></span><span class="token punctuation">)</span> : <a href="../index.html">Element</a></div><p class="paragraph">Represents a freehand drawn path created in PEN mode.</p><p class="paragraph">A path is a series of connected points drawn by the user. It's rendered as a continuous curve with the specified stroke properties.</p><h4 class="tableheader">See also</h4><div class="table"><div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/graphics/drawscope/DrawScope.html#drawpath"><span>DrawScope.</span><wbr></wbr><span>drawPath</span></a></div></span></div><div><div class="title"><p class="paragraph">with Stroke style</p></div></div></div></div></div></div></div>
   </div>
   <div class="tabbedcontent">
     <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button><button class="section-tab" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION,EXTENSION_PROPERTY,EXTENSION_FUNCTION">Members &amp; Extensions</button></div>
     <div class="tabs-section-body">
       <div data-togglable="CONSTRUCTOR">
         <h2 class="tableheader">Constructors</h2>
-        <div class="table"><a data-name="-1783269303%2FConstructors%2F-355813056" anchor-label="Path" id="-1783269303%2FConstructors%2F-355813056" data-filterable-set=":DrawBox/commonMain"></a>
+        <div class="table"><a data-name="960006378%2FConstructors%2F-355813056" anchor-label="Path" id="960006378%2FConstructors%2F-355813056" data-filterable-set=":DrawBox/commonMain"></a>
           <div class="table-row table-row_content" data-togglable="CONSTRUCTOR" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="-path.html"><span><span>Path</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1783269303%2FConstructors%2F-355813056"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="960006378%2FConstructors%2F-355813056"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":DrawBox/commonMain"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">id<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator"> = </span>Uuid.random().toString()<span class="token punctuation">, </span></span><span class="parameter ">type<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator"> = </span><span class="token string">&quot;Path&quot;</span><span class="token punctuation">, </span></span><span class="parameter ">points<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/geometry/Offset.html">Offset</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">strokeColor<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/graphics/Color.html">Color</a><span class="token punctuation">, </span></span><span class="parameter ">strokeWidth<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a><span class="token punctuation">, </span></span><span class="parameter ">alpha<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a><span class="token punctuation">, </span></span><span class="parameter ">zIndex<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token operator"> = </span><span class="token constant">0</span></span></span><span class="token punctuation">)</span></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":DrawBox/commonMain"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">id<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator"> = </span>Uuid.random().toString()<span class="token punctuation">, </span></span><span class="parameter ">type<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator"> = </span><span class="token string">&quot;Path&quot;</span><span class="token punctuation">, </span></span><span class="parameter ">points<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/geometry/Offset.html">Offset</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">strokeColor<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/graphics/Color.html">Color</a><span class="token punctuation">, </span></span><span class="parameter ">strokeWidth<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a><span class="token punctuation">, </span></span><span class="parameter ">alpha<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a><span class="token punctuation">, </span></span><span class="parameter ">zIndex<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token operator"> = </span><span class="token constant">0</span><span class="token punctuation">, </span></span><span class="parameter ">rotation<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a><span class="token operator"> = </span><span class="token constant">0.0f</span><span class="token punctuation">, </span></span><span class="parameter ">strokeStyle<span class="token operator">: </span><a href="../../-stroke-style/index.html">StrokeStyle</a><span class="token operator"> = </span>StrokeStyle.SOLID</span></span><span class="token punctuation">)</span></div></div></div>
                 </div>
               </div>
             </div>
@@ -178,6 +178,21 @@
               </div>
             </div>
           </div>
+<a data-name="890304321%2FProperties%2F-355813056" anchor-label="rotation" id="890304321%2FProperties%2F-355813056" data-filterable-set=":DrawBox/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="rotation.html"><span><span>rotation</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="890304321%2FProperties%2F-355813056"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":DrawBox/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">val </span><a href="rotation.html">rotation</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a></div><div class="brief "><p class="paragraph">Rotation in degrees, applied around the element's axis-aligned bounding box center at render time. Points stored on the element are in the unrotated (logical) coordinate space.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
 <a data-name="-815361648%2FProperties%2F-355813056" anchor-label="strokeColor" id="-815361648%2FProperties%2F-355813056" data-filterable-set=":DrawBox/commonMain"></a>
           <div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain">
             <div class="main-subrow keyValue ">
@@ -189,6 +204,21 @@
               <div>
                 <div class="title">
                   <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":DrawBox/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="stroke-color.html">strokeColor</a><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/graphics/Color.html">Color</a></div><div class="brief "><p class="paragraph">Color of the path stroke</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="526497538%2FProperties%2F-355813056" anchor-label="strokeStyle" id="526497538%2FProperties%2F-355813056" data-filterable-set=":DrawBox/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="stroke-style.html"><span>stroke</span><wbr></wbr><span><span>Style</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="526497538%2FProperties%2F-355813056"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":DrawBox/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="stroke-style.html">strokeStyle</a><span class="token operator">: </span><a href="../../-stroke-style/index.html">StrokeStyle</a></div><div class="brief "><p class="paragraph">Stroke pattern for the freehand path. SOLID keeps the natural pencil feel.</p></div></div></div>
                 </div>
               </div>
             </div>
@@ -242,7 +272,37 @@
       </div>
       <div data-togglable="EXTENSION_FUNCTION">
         <h2 class="tableheader">Functions</h2>
-        <div class="table"><a data-name="-317987503%2FFunctions%2F-355813056" anchor-label="toDto" id="-317987503%2FFunctions%2F-355813056" data-filterable-set=":DrawBox/commonMain"></a>
+        <div class="table"><a data-name="-678409044%2FFunctions%2F-355813056" anchor-label="bounds" id="-678409044%2FFunctions%2F-355813056" data-filterable-set=":DrawBox/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../bounds.html"><span><span>bounds</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-678409044%2FFunctions%2F-355813056"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":DrawBox/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="../index.html">Element</a><span class="token punctuation">.</span><a href="../../bounds.html"><span class="token function">bounds</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/geometry/Rect.html">Rect</a></div><div class="brief "><p class="paragraph">Axis-aligned bounding box of the element in unrotated logical space.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-501472810%2FFunctions%2F-355813056" anchor-label="hitTest" id="-501472810%2FFunctions%2F-355813056" data-filterable-set=":DrawBox/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../hit-test.html"><span>hit</span><wbr></wbr><span><span>Test</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-501472810%2FFunctions%2F-355813056"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":DrawBox/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="../index.html">Element</a><span class="token punctuation">.</span><a href="../../hit-test.html"><span class="token function">hitTest</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">point<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/geometry/Offset.html">Offset</a><span class="token punctuation">, </span></span><span class="parameter ">tolerance<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a><span class="token operator"> = </span><span class="token constant">8.0f</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">Hit test against a world-space point. Inverse-rotates the point into the element's logical space, then applies a per-type test that accounts for stroke width and the provided pick tolerance.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-317987503%2FFunctions%2F-355813056" anchor-label="toDto" id="-317987503%2FFunctions%2F-355813056" data-filterable-set=":DrawBox/commonMain"></a>
           <div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
@@ -253,6 +313,51 @@
               <div>
                 <div class="title">
                   <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":DrawBox/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="../index.html">Element</a><span class="token punctuation">.</span><a href="../../to-dto.html"><span class="token function">toDto</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../-element-dto/index.html">ElementDto</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1590040849%2FFunctions%2F-355813056" anchor-label="translate" id="1590040849%2FFunctions%2F-355813056" data-filterable-set=":DrawBox/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../translate.html"><span><span>translate</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1590040849%2FFunctions%2F-355813056"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":DrawBox/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="../index.html">Element</a><span class="token punctuation">.</span><a href="../../translate.html"><span class="token function">translate</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">delta<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/geometry/Offset.html">Offset</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../index.html">Element</a></div><div class="brief "><p class="paragraph">Translate all points by <code class="lang-kotlin">delta</code>. Rotation unchanged.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-269641879%2FFunctions%2F-355813056" anchor-label="withBounds" id="-269641879%2FFunctions%2F-355813056" data-filterable-set=":DrawBox/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../with-bounds.html"><span>with</span><wbr></wbr><span><span>Bounds</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-269641879%2FFunctions%2F-355813056"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":DrawBox/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="../index.html">Element</a><span class="token punctuation">.</span><a href="../../with-bounds.html"><span class="token function">withBounds</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">newBounds<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/geometry/Rect.html">Rect</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../index.html">Element</a></div><div class="brief "><p class="paragraph">Scale points so the bounding box matches <code class="lang-kotlin">newBounds</code>. For two-point shapes this snaps start/end to the new bbox corners (preserving orientation of the original drag direction). For freedraw paths every point is scaled linearly. Rotation unchanged.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-16061140%2FFunctions%2F-355813056" anchor-label="withRotation" id="-16061140%2FFunctions%2F-355813056" data-filterable-set=":DrawBox/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../with-rotation.html"><span>with</span><wbr></wbr><span><span>Rotation</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-16061140%2FFunctions%2F-355813056"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":DrawBox/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="../index.html">Element</a><span class="token punctuation">.</span><a href="../../with-rotation.html"><span class="token function">withRotation</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">degrees<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../index.html">Element</a></div><div class="brief "><p class="paragraph">Absolute rotation in degrees.</p></div></div></div>
                 </div>
               </div>
             </div>
