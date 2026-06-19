@@ -1,78 +1,54 @@
+@file:OptIn(ExperimentalMaterial3ExpressiveApi::class)
+
 package io.ak1.drawboxsample.ui.components
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.SelectAll
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.FloatingToolbarDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import io.ak1.drawbox.domain.model.Mode
-import io.ak1.drawbox.presentation.viewmodel.DrawBoxController
 import io.ak1.drawboxsample.ui.icons.DrawBoxIcons
-import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 
 /**
- * Controls bar with dropdown menus for drawing controls and mode selection.
+ * Bottom-center floating tool bar. Five slots, left → right:
  *
- * Features:
- * - Tools menu: Save, Undo, Redo, Reset
- * - Mode menu: Select drawing mode (Pen, Rectangle, Circle, Triangle, Arrow, Line)
- * - Color controls: Stroke color and background color
- * - Size slider: Adjust stroke width
+ *   [Undo] [Redo] [Select] [Mode▾] [Size▾]
+ *
+ * Color picking lives in the contextual top-right [ShapeConfigToolbar] for the
+ * active drawing mode or selection. File / canvas actions and the theme toggle
+ * live in the top-right [TopRightControls] cluster and the [SettingsDrawer].
  */
 @Composable
 fun ControlsBar(
-    viewModel: DrawBoxController,
     canUndo: Boolean,
     canRedo: Boolean,
-    currentColor: Color,
-    currentBgColor: Color,
     currentMode: Mode,
     currentStrokeWidth: Float,
-    onColorClick: () -> Unit,
-    onBgColorClick: () -> Unit,
-    onSizeClick: () -> Unit,
+    onUndo: () -> Unit,
+    onRedo: () -> Unit,
     onModeSelected: (Mode) -> Unit,
     onSizeSelected: (Float) -> Unit,
-    onImportJson: () -> Unit,
+    expanded: Boolean = true,
 ) {
     val active = MaterialTheme.colorScheme.primary
-    val inactive = MaterialTheme.colorScheme.surfaceVariant
+    val inactive = MaterialTheme.colorScheme.onSurfaceVariant
+    val disabled = MaterialTheme.colorScheme.outlineVariant
 
-    var modeMenuExpanded by remember { mutableStateOf(false) }
-    var sizeMenuExpanded by remember { mutableStateOf(false) }
-    var settingsMenuExpanded by remember { mutableStateOf(false) }
-
-    // Helper function to get icon for current mode
     val currentModeIcon = when (currentMode) {
+        Mode.PAN -> DrawBoxIcons.Import
         Mode.PEN -> DrawBoxIcons.StrokeCurved
         Mode.RECTANGLE -> DrawBoxIcons.Rectangle
         Mode.CIRCLE -> DrawBoxIcons.Circle
@@ -82,290 +58,131 @@ fun ControlsBar(
         else -> DrawBoxIcons.StrokeCurved
     }
 
-    val clickable = if (modeMenuExpanded || sizeMenuExpanded) Modifier.clickable(
-        indication = null,
-        interactionSource = remember { MutableInteractionSource() },
-        onClick = {
-            modeMenuExpanded = false
-            sizeMenuExpanded = false
-        }) else Modifier
+    val modeChildren = listOf(
+        ModeChild("mode-pan", DrawBoxIcons.Import, "Pan", Mode.PAN),
+        ModeChild("mode-pen", DrawBoxIcons.StrokeCurved, "Pen", Mode.PEN),
+        ModeChild("mode-line", DrawBoxIcons.Line, "Line", Mode.LINE),
+        ModeChild("mode-rect", DrawBoxIcons.Rectangle, "Rectangle", Mode.RECTANGLE),
+        ModeChild("mode-circle", DrawBoxIcons.Circle, "Circle", Mode.CIRCLE),
+        ModeChild("mode-arrow", DrawBoxIcons.Arrow, "Arrow", Mode.ARROW),
+        ModeChild("mode-triangle", DrawBoxIcons.Triangle, "Triangle", Mode.TRIANGLE),
+    )
 
-    Box(Modifier.fillMaxSize().then(clickable)) {
-        Column(Modifier.fillMaxWidth().align(Alignment.BottomCenter)) {
+    val sizeOptions = listOf(5f, 10f, 15f, 20f)
 
-            AnimatedVisibility(modeMenuExpanded, Modifier.fillMaxWidth()) {
-                Card(
-                    Modifier.padding(8.dp).requiredWidth(350.dp).align(Alignment.CenterHorizontally),
-                    shape = RoundedCornerShape(28.dp)
-                ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth().padding(4.dp),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        // Pan mode
-                        MenuItem(
-                            DrawBoxIcons.Import, "Pan", if (currentMode == Mode.PAN) inactive else active
-                        ) {
-                            onModeSelected(Mode.PAN)
-                            modeMenuExpanded = false
-                        }
-
-                        // Pen mode
-                        MenuItem(
-                            DrawBoxIcons.StrokeCurved, "Pen", if (currentMode == Mode.PEN) inactive else active
-                        ) {
-                            onModeSelected(Mode.PEN)
-                            modeMenuExpanded = false
-                        }
-
-                        // Line mode
-                        MenuItem(
-                            DrawBoxIcons.Line, "Line", if (currentMode == Mode.LINE) inactive else active
-                        ) {
-                            onModeSelected(Mode.LINE)
-                            modeMenuExpanded = false
-                        }
-
-                        // Rectangle mode
-                        MenuItem(
-                            DrawBoxIcons.Rectangle, "Rectangle", if (currentMode == Mode.RECTANGLE) inactive else active
-                        ) {
-                            onModeSelected(Mode.RECTANGLE)
-                            modeMenuExpanded = false
-                        }
-
-                        // Circle mode
-                        MenuItem(
-                            DrawBoxIcons.Circle, "Circle", if (currentMode == Mode.CIRCLE) inactive else active
-                        ) {
-                            onModeSelected(Mode.CIRCLE)
-                            modeMenuExpanded = false
-                        }
-
-                        // Arrow mode
-                        MenuItem(
-                            DrawBoxIcons.Arrow, "Arrow", if (currentMode == Mode.ARROW) inactive else active
-                        ) {
-                            onModeSelected(Mode.ARROW)
-                            modeMenuExpanded = false
-                        }
-
-                        // Triangle mode
-                        MenuItem(
-                            DrawBoxIcons.Triangle, "Triangle", if (currentMode == Mode.TRIANGLE) inactive else active
-                        ) {
-                            onModeSelected(Mode.TRIANGLE)
-                            modeMenuExpanded = false
-                        }
-                    }
-                }
-            }
-
-            AnimatedVisibility(sizeMenuExpanded, Modifier.fillMaxWidth()) {
-                Card(
-                    Modifier.padding(8.dp).requiredWidth(300.dp).align(Alignment.CenterHorizontally),
-                    shape = RoundedCornerShape(28.dp)
-                ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth().padding(4.dp),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        val sizes = listOf(
-                            Pair(5f, "size_1"),
-                            Pair(10f, "size_2"),
-                            Pair(15f, "size_3"),
-                            Pair(20f, "size_4"),
+    val items = listOf(
+        FloatingMenuItem(
+            id = "undo",
+            icon = {
+                Icon(
+                    painter = painterResource(DrawBoxIcons.Undo),
+                    contentDescription = "Undo",
+                    tint = if (canUndo) active else disabled,
+                )
+            },
+            onClick = { if (canUndo) onUndo() },
+        ),
+        FloatingMenuItem(
+            id = "redo",
+            icon = {
+                Icon(
+                    painter = painterResource(DrawBoxIcons.Redo),
+                    contentDescription = "Redo",
+                    tint = if (canRedo) active else disabled,
+                )
+            },
+            onClick = { if (canRedo) onRedo() },
+        ),
+        FloatingMenuItem(
+            id = "select",
+            icon = {
+                Icon(
+                    imageVector = Icons.Filled.SelectAll,
+                    contentDescription = "Select",
+                    tint = if (currentMode == Mode.SELECT) active else inactive,
+                )
+            },
+            onClick = { onModeSelected(Mode.SELECT) },
+        ),
+        FloatingMenuItem(
+            id = "mode",
+            icon = {
+                Icon(
+                    painter = painterResource(currentModeIcon),
+                    contentDescription = "Drawing mode",
+                    tint = active,
+                )
+            },
+            children = modeChildren.map { child ->
+                FloatingMenuItem(
+                    id = child.id,
+                    icon = {
+                        Icon(
+                            painter = painterResource(child.icon),
+                            contentDescription = child.label,
+                            tint = if (currentMode == child.mode) active else inactive,
                         )
+                    },
+                    onClick = { onModeSelected(child.mode) },
+                )
+            },
+        ),
+        FloatingMenuItem(
+            id = "size",
+            icon = {
+                Icon(
+                    painter = painterResource(DrawBoxIcons.Ruler),
+                    contentDescription = "Stroke size",
+                    tint = active,
+                )
+            },
+            children = sizeOptions.map { value ->
+                FloatingMenuItem(
+                    id = "size-${value.toInt()}",
+                    icon = {
+                        SizeDot(
+                            size = value,
+                            isSelected = (currentStrokeWidth - value).toInt() == 0,
+                            color = active,
+                        )
+                    },
+                    onClick = { onSizeSelected(value) },
+                )
+            },
+        ),
+    )
 
-                        sizes.forEach { (sizeValue, label) ->
-                            SizeMenuItem(
-                                sizeValue = sizeValue,
-                                label = label,
-                                isSelected = (currentStrokeWidth - sizeValue).toInt() == 0,
-                                color = if ((currentStrokeWidth - sizeValue).toInt() == 0) inactive else active
-                            ) {
-                                onSizeSelected(sizeValue)
-                                sizeMenuExpanded = false
-                            }
-                        }
-                    }
-                }
-            }
-
-            Card(
-                Modifier.padding(8.dp).requiredWidth(350.dp).align(Alignment.CenterHorizontally),
-                shape = RoundedCornerShape(28.dp)
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth().padding(4.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-
-                    // Undo button
-                    MenuItem(
-                        DrawBoxIcons.Undo, "Undo", if (canUndo) active else inactive
-                    ) {
-                        if (canUndo) viewModel.undo()
-                    }
-
-                    // Redo button
-                    MenuItem(
-                        DrawBoxIcons.Redo, "Redo", if (canRedo) active else inactive
-                    ) {
-                        if (canRedo) viewModel.redo()
-                    }
-
-                    // Select mode
-                    MenuItem(
-                        DrawBoxIcons.Settings, "Select", if (currentMode == Mode.SELECT) inactive else active
-                    ) {
-                        onModeSelected(Mode.SELECT)
-                        modeMenuExpanded = false
-                    }
-
-
-                    // Reset button
-                    MenuItem(
-                        DrawBoxIcons.Refresh,
-                        "Reset",
-                        if (canRedo || canUndo) active else inactive,
-                    ) {
-                        viewModel.reset()
-                    }
-
-                    // Drawing Mode button
-                    MenuItem(
-                        currentModeIcon,
-                        "Drawing Mode",
-                        active,
-                    ) {
-                        modeMenuExpanded = !modeMenuExpanded
-                    }
-
-                    // Stroke color button
-                    MenuItem(
-                        DrawBoxIcons.Palette, "Colors", currentColor, modifier = Modifier.weight(1f)
-                    ) { onColorClick() }
-
-                    // Stroke size button
-                    MenuItem(
-                        DrawBoxIcons.Ruler, "Size", active, modifier = Modifier.weight(1f)
-                    ) { sizeMenuExpanded = !sizeMenuExpanded }
-                }
-            }
-        }
-
-        SettingsMenu(
-            viewModel = viewModel,
-            menuExpanded = settingsMenuExpanded,
-            onImportJson = onImportJson,
-            onMenuClick = { settingsMenuExpanded = it },
-        )
-    }
-
-
-}
-
-
-@Composable
-private fun RowScope.MenuItem(
-    drawable: DrawableResource,
-    desc: String,
-    tint: Color,
-    border: Boolean = false,
-    modifier: Modifier = Modifier.weight(1f),
-    onClick: () -> Unit,
-) {
-    val iconModifier = Modifier.size(20.dp)
-    IconButton(onClick = onClick, modifier = modifier.size(36.dp)) {
-        Icon(
-            painter = painterResource(drawable),
-            contentDescription = desc,
-            tint = tint,
-            modifier = if (border) iconModifier.border(0.5.dp, MaterialTheme.colorScheme.onBackground, CircleShape)
-            else iconModifier,
+    Box(modifier = Modifier.fillMaxSize()) {
+        ExpandableFloatingToolbar(
+            items = items,
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 24.dp),
+            expanded = expanded,
+            horizontalColors = FloatingToolbarDefaults.standardFloatingToolbarColors(),
+            verticalColors = FloatingToolbarDefaults.standardFloatingToolbarColors(),
+            verticalMenuSpacing = 12.dp,
         )
     }
 }
 
+private data class ModeChild(
+    val id: String,
+    val icon: org.jetbrains.compose.resources.DrawableResource,
+    val label: String,
+    val mode: Mode,
+)
+
 @Composable
-private fun RowScope.SizeMenuItem(
-    sizeValue: Float,
-    label: String,
-    isSelected: Boolean,
-    color: Color,
-    onClick: () -> Unit,
-) {
+private fun SizeDot(size: Float, isSelected: Boolean, color: androidx.compose.ui.graphics.Color) {
     Box(
-        modifier = Modifier.weight(1f).size(40.dp).clickable(onClick = onClick), contentAlignment = Alignment.Center
+        modifier = Modifier.size(28.dp),
+        contentAlignment = Alignment.Center,
     ) {
         Box(
-            modifier = Modifier.size((sizeValue).dp).let {
-                    if (isSelected) it.border(2.dp, color, CircleShape)
-                    else it.border(1.dp, color, CircleShape)
-                }, contentAlignment = Alignment.Center
-        ) {
-            Box(
-                modifier = Modifier.size((sizeValue * 0.6f).dp).border(1.dp, color, CircleShape)
-            )
-        }
-    }
-}
-
-@Composable
-fun BoxScope.SettingsMenu(
-    viewModel: DrawBoxController,
-    menuExpanded: Boolean,
-    onImportJson: () -> Unit,
-    onMenuClick: (Boolean) -> Unit,
-) {
-    Box(modifier = Modifier.align(Alignment.TopEnd).padding(8.dp)) {
-        IconButton(
-            onClick = { onMenuClick.invoke(!menuExpanded) }) {
-            Icon(
-                painter = painterResource(DrawBoxIcons.Settings),
-                contentDescription = "Menu",
-                tint = MaterialTheme.colorScheme.onBackground,
-            )
-        }
-
-        DropdownMenu(
-            expanded = menuExpanded, onDismissRequest = { onMenuClick.invoke(false) }) {
-            DropdownMenuItem(
-
-                text = { Text("Download SVG") },
-                leadingIcon = { Icon(painterResource(DrawBoxIcons.FileSvg), "SVG download") },
-                onClick = {
-                    viewModel.exportSvg()
-                    onMenuClick.invoke(false)
-                })
-
-            DropdownMenuItem(
-                text = { Text("Download PNG") },
-                leadingIcon = { Icon(painterResource(DrawBoxIcons.FilePng), "PNG download") },
-                onClick = {
-                    viewModel.saveBitmap()
-                    onMenuClick.invoke(false)
-                })
-
-            DropdownMenuItem(
-                text = { Text("Export JSON") },
-                leadingIcon = { Icon(painterResource(DrawBoxIcons.Export), "Json Export") },
-                onClick = {
-                    viewModel.exportJson()
-                    onMenuClick.invoke(false)
-                })
-
-            DropdownMenuItem(
-                text = { Text("Import JSON") },
-                leadingIcon = { Icon(painterResource(DrawBoxIcons.Import), "Json Import") },
-                onClick = {
-                    onImportJson()
-                    onMenuClick.invoke(false)
-                })
-        }
+            modifier = Modifier
+                .size(size.dp)
+                .border(if (isSelected) 2.dp else 1.dp, color, CircleShape),
+        )
     }
 }
