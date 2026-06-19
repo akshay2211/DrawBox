@@ -1,5 +1,5 @@
-site_name: DrawBox - Kotlin Multiplatform Drawing Library
-site_description: DrawBox is a powerful, open-source Kotlin Multiplatform drawing library. Create vector drawings with multiple tools including pen, shapes, colors, and more. Available on Android, iOS, Desktop, and Web with SVG and PNG export.
+site_name: DrawBox - Kotlin Multiplatform Drawing SDK
+site_description: DrawBox is an open-source Kotlin Multiplatform drawing SDK for Compose Multiplatform. Embed editable drawing, annotation, diagramming, and export capabilities across Android, iOS, Desktop, and Web.
 site_url: https://akshay2211.github.io/DrawBox/
 repo_url: https://github.com/akshay2211/DrawBox
 repo_name: DrawBox

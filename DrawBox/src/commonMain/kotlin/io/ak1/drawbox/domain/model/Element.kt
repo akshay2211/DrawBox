@@ -27,6 +27,16 @@ sealed class Element {
     abstract val type: String
 
     /**
+     * Rotation in degrees, applied around the element's axis-aligned bounding box
+     * center at render time. Points stored on the element are in the unrotated
+     * (logical) coordinate space.
+     *
+     * Default 0f preserves back-compat with drawings created before rotation
+     * existed.
+     */
+    abstract val rotation: Float
+
+    /**
      * Represents a freehand drawn path created in PEN mode.
      *
      * A path is a series of connected points drawn by the user. It's rendered
@@ -48,6 +58,9 @@ sealed class Element {
         val strokeWidth: Float,
         val alpha: Float,
         override val zIndex: Int = 0,
+        override val rotation: Float = 0f,
+        /** Stroke pattern for the freehand path. SOLID keeps the natural pencil feel. */
+        val strokeStyle: StrokeStyle = StrokeStyle.SOLID,
     ) : Element()
 
     /**
@@ -78,6 +91,38 @@ sealed class Element {
         val fillColor: Color? = null,
         val strokeWidth: Float,
         override val zIndex: Int = 0,
+        override val rotation: Float = 0f,
+        /**
+         * Corner radius in world pixels for [ShapeType.RECTANGLE] and
+         * [ShapeType.TRIANGLE]. Ignored for circle, line, arrow. 0 = sharp.
+         * Auto-clamped at render time so it never exceeds half the shortest
+         * adjacent edge.
+         */
+        val cornerRadius: Float = 0f,
+        /**
+         * Stroke pattern for non-filled rendering. Solid by default. For arrows
+         * the body line follows this style; the head stays solid for clarity.
+         */
+        val strokeStyle: StrokeStyle = StrokeStyle.SOLID,
+        /**
+         * Offset of the curve's mid-point from the straight-line midpoint of
+         * `points[0]` → `points.last()`. Only meaningful for [ShapeType.LINE]
+         * and [ShapeType.ARROW]; ignored otherwise. `Offset.Zero` (default) =
+         * straight. Non-zero = the line/arrow renders as a quadratic bezier
+         * arcing through `midpoint + bend`.
+         */
+        val bend: Offset = Offset.Zero,
+        /**
+         * ID of the element this arrow's start endpoint is bound to. When set
+         * and the bound element moves/resizes/rotates, the arrow's start point
+         * follows. Only honored for [ShapeType.ARROW].
+         */
+        val startBinding: String? = null,
+        /**
+         * ID of the element this arrow's end endpoint is bound to. Behaves like
+         * [startBinding] for the end point. Only honored for [ShapeType.ARROW].
+         */
+        val endBinding: String? = null,
     ) : Element()
 }
 
@@ -106,3 +151,11 @@ sealed class ShapeType {
     /** Straight line shape */
     data object LINE : ShapeType()
 }
+
+/**
+ * Stroke pattern applied when rendering a stroked (non-filled) [Element.Shape].
+ *
+ * Has no effect on filled shapes, and is intentionally not applied to
+ * [Element.Path] (freehand strokes stay continuous to preserve pencil feel).
+ */
+enum class StrokeStyle { SOLID, DASHED, DOTTED }

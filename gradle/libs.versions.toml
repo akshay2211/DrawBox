@@ -1,27 +1,30 @@
 [versions]
-agp = "9.0.1"
+agp = "9.2.1"
 android-compileSdk = "37"
-android-minSdk = "23"
+android-minSdk = "24"
 android-targetSdk = "36"
 androidx-activity = "1.13.0"
 androidx-lifecycle = "2.11.0-beta01"
-composeMultiplatform = "1.11.0"
-kotlin = "2.3.21"
+composeMultiplatform = "1.11.1"
+kotlin = "2.4.0"
 kotlinx-coroutines = "1.11.0"
 lifecycleViewmodelCompose = "2.10.0"
 material3 = "1.11.0-alpha07"
 kotlinStdlib = "2.3.21"
 kotlinTest = "2.3.21"
+materialIconsCore = "1.7.3"
+materialIconsExtended = "1.7.3"
 runner = "1.7.0"
 core = "1.7.0"
 junit = "1.3.0"
 vanniktech-maven-publish = "0.36.0"
-spotless = "8.5.1"
+spotless = "8.6.0"
 dokka = "2.2.0"
 kotlinx-serialization = "1.11.0"
 navigation3 = "1.1.1"
 compose-multiplatform-adaptive = "1.3.0-beta01"
 compose-multiplatform-lifecycle = "2.10.0"
+rang-vikalp = "1.0.0-beta1"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity" }
@@ -34,6 +37,7 @@ compose-ui = { module = "org.jetbrains.compose.ui:ui", version.ref = "composeMul
 compose-components-resources = { module = "org.jetbrains.compose.components:components-resources", version.ref = "composeMultiplatform" }
 compose-uiToolingPreview = { module = "org.jetbrains.compose.ui:ui-tooling-preview", version.ref = "composeMultiplatform" }
 compose-uiTooling = { module = "org.jetbrains.compose.ui:ui-tooling", version.ref = "composeMultiplatform" }
+jetbrains-material-icons-extended = { module = "org.jetbrains.compose.material:material-icons-extended", version.ref = "materialIconsExtended" }
 kotlinx-coroutinesSwing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines" }
 kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlinStdlib" }
 kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlinTest" }
@@ -41,9 +45,11 @@ androidx-runner = { group = "androidx.test", name = "runner", version.ref = "run
 androidx-core = { group = "androidx.test", name = "core", version.ref = "core" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junit" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
+material-icons-core = { module = "org.jetbrains.compose.material:material-icons-core", version.ref = "materialIconsCore" }
 navigation3-ui = { module = "org.jetbrains.androidx.navigation3:navigation3-ui", version.ref = "navigation3" }
 material3-adaptive-navigation3 = { module = "org.jetbrains.compose.material3.adaptive:adaptive-navigation3", version.ref = "compose-multiplatform-adaptive" }
 lifecycle-viewmodel-navigation3 = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-navigation3", version.ref = "compose-multiplatform-lifecycle" }
+rang-vikalp = { module = "io.ak1:rang-vikalp", version.ref = "rang-vikalp" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

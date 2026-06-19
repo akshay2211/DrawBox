@@ -26,7 +26,7 @@ kotlin {
         browser()
     }
 
-    androidLibrary {
+    android {
         namespace = "io.ak1.drawboxsample.shared"
         compileSdk = libs.versions.android.compileSdk.get().toInt()
         minSdk = libs.versions.android.minSdk.get().toInt()
@@ -45,6 +45,8 @@ kotlin {
             implementation(libs.compose.runtime)
             implementation(libs.compose.foundation)
             implementation(libs.compose.material3)
+            implementation(libs.material.icons.core)
+            implementation(libs.jetbrains.material.icons.extended)
             implementation(libs.compose.ui)
             implementation(libs.compose.components.resources)
             implementation(libs.compose.uiToolingPreview)
@@ -53,6 +55,7 @@ kotlin {
             implementation(libs.navigation3.ui)
             implementation(libs.material3.adaptive.navigation3)
             implementation(libs.lifecycle.viewmodel.navigation3)
+            implementation(libs.rang.vikalp)
         }
     }
 }

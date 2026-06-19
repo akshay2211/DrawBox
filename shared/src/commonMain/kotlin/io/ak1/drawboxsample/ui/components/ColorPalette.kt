@@ -1,53 +1,44 @@
 package io.ak1.drawboxsample.ui.components
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import io.ak1.rangvikalp.RangVikalp
+import io.ak1.rangvikalp.defaultRangVikalpColors
+import io.ak1.rangvikalp.rememberRangVikalpState
 
-private val palette = listOf(
-    Color(0xFFE53935),
-    Color(0xFFFB8C00),
-    Color(0xFFFDD835),
-    Color(0xFF43A047),
-    Color(0xFF1E88E5),
-    Color(0xFF8E24AA),
-    Color(0xFF000000),
-    Color(0xFFFFFFFF),
-)
-
+/**
+ * Themed color picker dialog backed by RangVikalp (io.ak1:rang-vikalp).
+ * Shows the full tabbed picker (Preset + Custom) inside a Material3 dialog.
+ */
 @Composable
-fun ColorPalette(
-    visible: Boolean,
-    selectedColor: Color,
+fun ColorPickerDialog(
+    initialColor: Color,
+    onDismiss: () -> Unit,
     onColorSelected: (Color) -> Unit,
 ) {
-    AnimatedVisibility(visible) {
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(12.dp),
-            horizontalArrangement = Arrangement.SpaceAround,
-        ) {
-            palette.forEach { color ->
-                val borderWidth = if (color == selectedColor) 2.dp else 0.5.dp
-                val borderColor = if (color == selectedColor) MaterialTheme.colorScheme.onBackground
-                else MaterialTheme.colorScheme.surfaceVariant
-                Row(
-                    modifier = Modifier.size(32.dp).clip(CircleShape).background(color)
-                        .border(borderWidth, borderColor, CircleShape).clickable { onColorSelected(color) },
-                ) {}
+    val state = rememberRangVikalpState(initial = initialColor)
+    val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
+
+    Dialog(
+        onDismissRequest = onDismiss, content = {
+            Column(
+                modifier = Modifier.size(220.dp, 390.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                RangVikalp(
+                    state = state,
+                    colors = defaultRangVikalpColors(dark = isDark),
+                    onColorChange = { onColorSelected(it) },
+                )
             }
-        }
-    }
+        })
 }
+
+private fun Color.luminance(): Float = 0.2126f * red + 0.7152f * green + 0.0722f * blue

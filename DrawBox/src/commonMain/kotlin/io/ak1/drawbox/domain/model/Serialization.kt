@@ -53,6 +53,14 @@ fun String.toShapeType(): ShapeType = when (this) {
     else -> ShapeType.RECTANGLE
 }
 
+fun StrokeStyle.toWireString(): String = name
+
+fun String?.toStrokeStyle(): StrokeStyle = when (this) {
+    "DASHED" -> StrokeStyle.DASHED
+    "DOTTED" -> StrokeStyle.DOTTED
+    else -> StrokeStyle.SOLID
+}
+
 data class ElementDto(
     val id: String,
     val type: String,
@@ -63,6 +71,12 @@ data class ElementDto(
     val alpha: Float? = null,
     val shapeType: String? = null,
     val fillColor: String? = null,
+    val rotation: Float? = null,
+    val cornerRadius: Float? = null,
+    val strokeStyle: String? = null,
+    val bend: String? = null,
+    val startBinding: String? = null,
+    val endBinding: String? = null,
 )
 
 fun Element.toDto(): ElementDto = when (this) {
@@ -74,6 +88,8 @@ fun Element.toDto(): ElementDto = when (this) {
         strokeColor = strokeColor.toHexString(),
         strokeWidth = strokeWidth,
         alpha = alpha,
+        rotation = rotation.takeIf { it != 0f },
+        strokeStyle = strokeStyle.toWireString().takeIf { strokeStyle != StrokeStyle.SOLID },
     )
     is Element.Shape -> ElementDto(
         id = id,
@@ -84,6 +100,12 @@ fun Element.toDto(): ElementDto = when (this) {
         strokeColor = strokeColor.toHexString(),
         strokeWidth = strokeWidth,
         fillColor = fillColor?.toHexString(),
+        rotation = rotation.takeIf { it != 0f },
+        cornerRadius = cornerRadius.takeIf { it != 0f },
+        strokeStyle = strokeStyle.toWireString().takeIf { strokeStyle != StrokeStyle.SOLID },
+        bend = bend.toJsonString().takeIf { bend != Offset.Zero },
+        startBinding = startBinding,
+        endBinding = endBinding,
     )
 }
 
@@ -95,6 +117,8 @@ fun ElementDto.toElement(): Element = when (type) {
         strokeWidth = strokeWidth,
         alpha = alpha ?: 1f,
         zIndex = zIndex,
+        rotation = rotation ?: 0f,
+        strokeStyle = strokeStyle.toStrokeStyle(),
     )
     "Shape" -> Element.Shape(
         id = id,
@@ -104,6 +128,12 @@ fun ElementDto.toElement(): Element = when (type) {
         fillColor = fillColor?.toColor(),
         strokeWidth = strokeWidth,
         zIndex = zIndex,
+        rotation = rotation ?: 0f,
+        cornerRadius = cornerRadius ?: 0f,
+        strokeStyle = strokeStyle.toStrokeStyle(),
+        bend = bend?.toOffset() ?: Offset.Zero,
+        startBinding = startBinding,
+        endBinding = endBinding,
     )
     else -> Element.Path(
         id = id,
@@ -112,6 +142,8 @@ fun ElementDto.toElement(): Element = when (type) {
         strokeWidth = strokeWidth,
         alpha = alpha ?: 1f,
         zIndex = zIndex,
+        rotation = rotation ?: 0f,
+        strokeStyle = strokeStyle.toStrokeStyle(),
     )
 }
 
@@ -141,6 +173,12 @@ data class SerializableElement(
     val alpha: Float? = null,
     val shapeType: String? = null,
     val fillColor: String? = null,
+    val rotation: Float? = null,
+    val cornerRadius: Float? = null,
+    val strokeStyle: String? = null,
+    val bend: String? = null,
+    val startBinding: String? = null,
+    val endBinding: String? = null,
 )
 
 @kotlinx.serialization.Serializable
@@ -167,6 +205,12 @@ object DrawingSerializer {
                     alpha = element.alpha,
                     shapeType = element.shapeType,
                     fillColor = element.fillColor,
+                    rotation = element.rotation,
+                    cornerRadius = element.cornerRadius,
+                    strokeStyle = element.strokeStyle,
+                    bend = element.bend,
+                    startBinding = element.startBinding,
+                    endBinding = element.endBinding,
                 )
             },
         )
@@ -188,6 +232,12 @@ object DrawingSerializer {
                     alpha = element.alpha,
                     shapeType = element.shapeType,
                     fillColor = element.fillColor,
+                    rotation = element.rotation,
+                    cornerRadius = element.cornerRadius,
+                    strokeStyle = element.strokeStyle,
+                    bend = element.bend,
+                    startBinding = element.startBinding,
+                    endBinding = element.endBinding,
                 )
             },
         )

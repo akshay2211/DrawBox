@@ -35,7 +35,8 @@ class DrawingReducerTest {
 
         assertEquals(1, newState.elements.size)
         assertTrue(newState.elements[0] is Element.Path)
-        assertTrue(newState.undoStack.isEmpty())
+        assertEquals(1, newState.history.size)
+        assertTrue(newState.future.isEmpty())
     }
 
     @Test
@@ -65,37 +66,47 @@ class DrawingReducerTest {
     @Test
     fun testUndoIntent() {
         val path = createTestPath()
-        val initialState = State(elements = listOf(path))
+        val initialState = State(
+            elements = listOf(path),
+            history = listOf(emptyList()),
+        )
         val intent = Intent.Undo
 
         val newState = reducer.reduce(initialState, intent)
 
         assertTrue(newState.elements.isEmpty())
-        assertEquals(1, newState.undoStack.size)
+        assertTrue(newState.history.isEmpty())
+        assertEquals(1, newState.future.size)
     }
 
     @Test
     fun testRedoIntent() {
         val path = createTestPath()
-        val initialState = State(undoStack = listOf(path))
+        val initialState = State(future = listOf(listOf(path)))
         val intent = Intent.Redo
 
         val newState = reducer.reduce(initialState, intent)
 
         assertEquals(1, newState.elements.size)
-        assertTrue(newState.undoStack.isEmpty())
+        assertTrue(newState.future.isEmpty())
+        assertEquals(1, newState.history.size)
     }
 
     @Test
     fun testResetIntent() {
         val path = createTestPath()
-        val initialState = State(elements = listOf(path), undoStack = listOf(path))
+        val initialState = State(
+            elements = listOf(path),
+            history = listOf(emptyList()),
+            future = listOf(listOf(path)),
+        )
         val intent = Intent.Reset
 
         val newState = reducer.reduce(initialState, intent)
 
         assertTrue(newState.elements.isEmpty())
-        assertTrue(newState.undoStack.isEmpty())
+        assertTrue(newState.history.isEmpty())
+        assertTrue(newState.future.isEmpty())
     }
 
     @Test
@@ -150,15 +161,19 @@ class DrawingReducerTest {
     }
 
     @Test
-    fun testAddElementClearsUndoStack() {
+    fun testAddElementClearsFuture() {
         val path = createTestPath()
         val undoPath = createTestPath().copy(id = "undo")
-        val initialState = State(elements = listOf(path), undoStack = listOf(undoPath))
+        val initialState = State(
+            elements = listOf(path),
+            future = listOf(listOf(undoPath)),
+        )
         val newPath = createTestPath().copy(id = "new")
         val intent = Intent.AddElement(newPath)
 
         val newState = reducer.reduce(initialState, intent)
 
-        assertTrue(newState.undoStack.isEmpty())
+        assertTrue(newState.future.isEmpty())
+        assertEquals(1, newState.history.size)
     }
 }
