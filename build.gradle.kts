@@ -11,6 +11,7 @@ plugins {
     alias(libs.plugins.spotless) apply false
     alias(libs.plugins.dokka) apply false
     alias(libs.plugins.vanniktech.maven.publish) apply false
+    alias(libs.plugins.roborazzi) apply false
 }
 
 tasks.register("updateVersion") {

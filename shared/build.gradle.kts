@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.androidMultiplatformLibrary)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.roborazzi)
 }
 
 kotlin {
@@ -39,6 +40,11 @@ kotlin {
     sourceSets {
         androidMain.dependencies {
             implementation(libs.compose.uiToolingPreview)
+        }
+        jvmTest.dependencies {
+            implementation(libs.kotlin.test)
+            implementation(libs.roborazzi.compose.desktop)
+            implementation(libs.compose.ui.test.junit4.desktop)
         }
         commonMain.dependencies {
             implementation(projects.drawBox)

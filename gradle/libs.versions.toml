@@ -25,6 +25,7 @@ navigation3 = "1.1.1"
 compose-multiplatform-adaptive = "1.3.0-beta01"
 compose-multiplatform-lifecycle = "2.10.0"
 rang-vikalp = "1.0.0-beta1"
+roborazzi = "1.64.0"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity" }
@@ -50,6 +51,9 @@ navigation3-ui = { module = "org.jetbrains.androidx.navigation3:navigation3-ui",
 material3-adaptive-navigation3 = { module = "org.jetbrains.compose.material3.adaptive:adaptive-navigation3", version.ref = "compose-multiplatform-adaptive" }
 lifecycle-viewmodel-navigation3 = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-navigation3", version.ref = "compose-multiplatform-lifecycle" }
 rang-vikalp = { module = "io.ak1:rang-vikalp", version.ref = "rang-vikalp" }
+roborazzi = { module = "io.github.takahirom.roborazzi:roborazzi", version.ref = "roborazzi" }
+roborazzi-compose-desktop = { module = "io.github.takahirom.roborazzi:roborazzi-compose-desktop", version.ref = "roborazzi" }
+compose-ui-test-junit4-desktop = { module = "org.jetbrains.compose.ui:ui-test-junit4-desktop", version.ref = "composeMultiplatform" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
@@ -63,3 +67,4 @@ androidLint = { id = "com.android.lint", version.ref = "agp" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 vanniktech-maven-publish = { id = "com.vanniktech.maven.publish", version.ref = "vanniktech-maven-publish" }
+roborazzi = { id = "io.github.takahirom.roborazzi", version.ref = "roborazzi" }
