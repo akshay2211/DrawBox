@@ -13,6 +13,11 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.layout.requiredWidth
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.ui.draw.shadow
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDropDown
@@ -83,8 +88,8 @@ fun ExpandableFloatingToolbar(
     submenuPosition: SubmenuPosition = SubmenuPosition.Above,
     horizontalColors: FloatingToolbarColors = FloatingToolbarDefaults.standardFloatingToolbarColors(),
     verticalColors: FloatingToolbarColors = FloatingToolbarDefaults.standardFloatingToolbarColors(),
-    horizontalContentPadding: PaddingValues = FloatingToolbarDefaults.ContentPadding,
-    verticalContentPadding: PaddingValues = FloatingToolbarDefaults.ContentPadding,
+    horizontalContentPadding: PaddingValues = PaddingValues(2.dp),
+    verticalContentPadding: PaddingValues = PaddingValues(2.dp),
     verticalMenuSpacing: Dp = 8.dp,
     dismissOnChildClick: Boolean = true,
     controlledActiveId: String? = null,
@@ -144,14 +149,19 @@ fun ExpandableFloatingToolbar(
                     .padding(
                         top = if (submenuPosition == SubmenuPosition.Below) verticalMenuSpacing else 0.dp,
                         bottom = if (submenuPosition == SubmenuPosition.Above) verticalMenuSpacing else 0.dp,
-                    ),
+                    )
+                    .shadow(elevation = 3.dp, shape = CircleShape, clip = false)
+                    .requiredWidth(40.dp),
                 content = {
                     current.children.forEach { child ->
-                        IconButton(onClick = {
-                            child.onClick?.invoke()
-                            onChildClick?.invoke(current, child)
-                            if (dismissOnChildClick) setActive(null)
-                        }) {
+                        IconButton(
+                            onClick = {
+                                child.onClick?.invoke()
+                                onChildClick?.invoke(current, child)
+                                if (dismissOnChildClick) setActive(null)
+                            },
+                            modifier = Modifier.size(36.dp),
+                        ) {
                             child.icon()
                         }
                     }
@@ -165,10 +175,13 @@ fun ExpandableFloatingToolbar(
             expanded = expanded,
             colors = horizontalColors,
             contentPadding = horizontalContentPadding,
-            modifier = Modifier.onGloballyPositioned { coords ->
-                val pos = coords.positionInRoot()
-                horizontalCenterPx = pos.x + coords.size.width / 2f
-            },
+            modifier = Modifier
+                .shadow(elevation = 3.dp, shape = CircleShape, clip = false)
+                .requiredHeight(40.dp)
+                .onGloballyPositioned { coords ->
+                    val pos = coords.positionInRoot()
+                    horizontalCenterPx = pos.x + coords.size.width / 2f
+                },
             content = {
                 items.forEach { item ->
                     Box(
@@ -187,6 +200,7 @@ fun ExpandableFloatingToolbar(
                                     setActive(if (activeId == item.id) null else item.id)
                                 }
                             },
+                            modifier = Modifier.size(36.dp),
                         ) {
                             item.icon()
                         }

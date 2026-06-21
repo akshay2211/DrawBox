@@ -4,9 +4,15 @@ package io.ak1.drawboxsample.ui.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.ui.draw.shadow
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BrightnessAuto
 import androidx.compose.material.icons.filled.DarkMode
@@ -51,7 +57,10 @@ fun TopRightControls(
     HorizontalFloatingToolbar(
         expanded = expanded,
         colors = FloatingToolbarDefaults.standardFloatingToolbarColors(),
-        modifier = modifier,
+        contentPadding = PaddingValues(2.dp),
+        modifier = modifier
+            .shadow(elevation = 3.dp, shape = CircleShape, clip = false)
+            .requiredHeight(40.dp),
         content = {
             if (isNarrow) {
                 ZoomCluster(
@@ -61,12 +70,18 @@ fun TopRightControls(
                     onZoomReset = onZoomReset,
                 )
                 VerticalDivider(
-                    modifier = Modifier.height(20.dp).padding(horizontal = 4.dp),
+                    modifier = Modifier
+                        .align(Alignment.CenterVertically)
+                        .height(20.dp)
+                        .padding(horizontal = 4.dp),
                     color = MaterialTheme.colorScheme.outlineVariant,
                 )
             }
             ThemeToggleButton(themeMode = themeMode, onCycle = { onThemeModeChange(themeMode.next()) })
-            IconButton(onClick = onSettingsClick) {
+            IconButton(
+                onClick = onSettingsClick,
+                modifier = Modifier.size(36.dp),
+            ) {
                 Icon(Icons.Filled.Settings, contentDescription = "Settings")
             }
         },
@@ -88,7 +103,10 @@ fun ZoomToolbar(
     HorizontalFloatingToolbar(
         expanded = expanded,
         colors = FloatingToolbarDefaults.standardFloatingToolbarColors(),
-        modifier = modifier,
+        contentPadding = PaddingValues(2.dp),
+        modifier = modifier
+            .shadow(elevation = 3.dp, shape = CircleShape, clip = false)
+            .requiredHeight(40.dp),
         content = {
             ZoomCluster(
                 scalePercent = scalePercent,
@@ -101,20 +119,24 @@ fun ZoomToolbar(
 }
 
 @Composable
-private fun ZoomCluster(
+private fun RowScope.ZoomCluster(
     scalePercent: Int,
     onZoomIn: () -> Unit,
     onZoomOut: () -> Unit,
     onZoomReset: () -> Unit,
 ) {
-    IconButton(onClick = onZoomOut) {
+    IconButton(
+        onClick = onZoomOut,
+        modifier = Modifier.size(36.dp),
+    ) {
         Text("−", fontSize = 18.sp, color = MaterialTheme.colorScheme.onSurface)
     }
     Box(
         modifier = Modifier
-            .width(56.dp)
+            .align(Alignment.CenterVertically)
+            .width(48.dp)
             .clickable(onClick = onZoomReset)
-            .padding(vertical = 8.dp),
+            .padding(vertical = 4.dp),
         contentAlignment = Alignment.Center,
     ) {
         Text(
@@ -123,7 +145,10 @@ private fun ZoomCluster(
             color = MaterialTheme.colorScheme.onSurface,
         )
     }
-    IconButton(onClick = onZoomIn) {
+    IconButton(
+        onClick = onZoomIn,
+        modifier = Modifier.size(36.dp),
+    ) {
         Text("+", fontSize = 18.sp, color = MaterialTheme.colorScheme.onSurface)
     }
 }
@@ -138,7 +163,10 @@ private fun ThemeToggleButton(
         ThemeMode.LIGHT -> Icons.Filled.LightMode to "Theme: Light"
         ThemeMode.DARK -> Icons.Filled.DarkMode to "Theme: Dark"
     }
-    IconButton(onClick = onCycle) {
+    IconButton(
+        onClick = onCycle,
+        modifier = Modifier.size(36.dp),
+    ) {
         Icon(imageVector = vector, contentDescription = label)
     }
 }

@@ -25,6 +25,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
@@ -39,6 +40,8 @@ private const val RadiusSharp = 0f
 private const val RadiusSoft = 16f
 private const val RadiusRound = 40f
 
+private val StrokeWidthOptions = listOf(5f, 10f, 15f, 20f)
+
 /**
  * Top-right contextual pill built on [ExpandableFloatingToolbar]. Mirrors the
  * bottom NavBar pattern: each slot is a single icon, and slots that have
@@ -46,14 +49,15 @@ private const val RadiusRound = 40f
  *
  * Slot layout (only those relevant to the current state render):
  *
- *   [●] [▭] [▢] | [↑F] [↓B] [🗑] [×]
- *    │   │   │     └────── selection actions (when something is selected)
- *    │   │   └── corner radius (RECT/TRIANGLE mode or selected roundable)
+ *   [●] [▭] [○] [▢] | [↑F] [↓B] [🗑] [×]
+ *    │   │   │   │     └────── selection actions (when something is selected)
+ *    │   │   │   └── corner radius (RECT/TRIANGLE mode or selected roundable)
+ *    │   │   └── stroke width (any shape mode or selection)
  *    │   └── stroke style (any shape mode or selection)
  *    └── color swatch (always)
  *
- * The stroke / corner icons show the *current* value; the popout sub-bar lets
- * the user pick a different option.
+ * The stroke / width / corner icons show the *current* value; the popout
+ * sub-bar lets the user pick a different option.
  */
 @Composable
 fun ContextBar(
@@ -62,10 +66,12 @@ fun ContextBar(
     showCornerRadius: Boolean,
     currentColor: Color,
     currentStrokeStyle: StrokeStyle,
+    currentStrokeWidth: Float,
     currentCornerRadius: Float,
     expanded: Boolean,
     onColorChange: (Color) -> Unit,
     onStrokeStyleChange: (StrokeStyle) -> Unit,
+    onStrokeWidthChange: (Float) -> Unit,
     onCornerRadiusChange: (Float) -> Unit,
     onBringToFront: () -> Unit,
     onSendToBack: () -> Unit,
@@ -113,6 +119,25 @@ fun ContextBar(
                                 )
                             },
                             onClick = { onStrokeStyleChange(style) },
+                        )
+                    },
+                ),
+            )
+            add(
+                FloatingMenuItem(
+                    id = "width",
+                    icon = { SizeDot(size = currentStrokeWidth, isSelected = true, color = active) },
+                    children = StrokeWidthOptions.map { value ->
+                        FloatingMenuItem(
+                            id = "width-${value.toInt()}",
+                            icon = {
+                                SizeDot(
+                                    size = value,
+                                    isSelected = (currentStrokeWidth - value).toInt() == 0,
+                                    color = if ((currentStrokeWidth - value).toInt() == 0) active else inactive,
+                                )
+                            },
+                            onClick = { onStrokeWidthChange(value) },
                         )
                     },
                 ),
@@ -233,6 +258,20 @@ private fun StrokeStyleIcon(style: StrokeStyle, color: Color) {
             strokeWidth = 2.5f,
             cap = StrokeCap.Round,
             pathEffect = effect,
+        )
+    }
+}
+
+@Composable
+private fun SizeDot(size: Float, isSelected: Boolean, color: Color) {
+    Box(
+        modifier = Modifier.size(28.dp),
+        contentAlignment = Alignment.Center,
+    ) {
+        Box(
+            modifier = Modifier
+                .size(size.dp)
+                .border(if (isSelected) 2.dp else 1.dp, color, CircleShape),
         )
     }
 }

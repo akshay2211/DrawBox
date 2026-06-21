@@ -5,7 +5,7 @@ package io.ak1.drawboxsample.ui
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeContentPadding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -122,6 +122,11 @@ fun HomeScreen(
         is Element.Path -> first.strokeColor
         else -> state.strokeColor
     }
+    val currentStrokeWidth = when (val first = selectedDrawables.firstOrNull()) {
+        is Element.Shape -> first.strokeWidth
+        is Element.Path -> first.strokeWidth
+        else -> state.strokeWidth
+    }
 
     // Drawer + bg-pattern state.
     var drawerOpen by remember { mutableStateOf(false) }
@@ -165,7 +170,7 @@ fun HomeScreen(
                 },
             showGrid = showGrid.value,
         )
-        BoxWithConstraints(modifier = Modifier.fillMaxSize().safeContentPadding()) {
+        BoxWithConstraints(modifier = Modifier.fillMaxSize().systemBarsPadding()) {
             val isNarrow = maxWidth < 600.dp
 
 
@@ -178,6 +183,7 @@ fun HomeScreen(
                     showCornerRadius = showCornerRadius,
                     currentColor = currentShapeColor,
                     currentStrokeStyle = currentStrokeStyle,
+                    currentStrokeWidth = currentStrokeWidth,
                     currentCornerRadius = currentRadius,
                     expanded = barsExpanded,
                     onColorChange = { color ->
@@ -187,6 +193,10 @@ fun HomeScreen(
                     onStrokeStyleChange = { style ->
                         if (hasSelection) viewModel.setSelectionStrokeStyle(style)
                         else viewModel.setStrokeStyle(style)
+                    },
+                    onStrokeWidthChange = { w ->
+                        if (hasSelection) viewModel.setSelectionStrokeWidth(w)
+                        else viewModel.setStrokeWidth(w)
                     },
                     onCornerRadiusChange = { r ->
                         if (selectedRoundable.isNotEmpty()) viewModel.setSelectionCornerRadius(r)
@@ -221,7 +231,7 @@ fun HomeScreen(
                     onZoomIn = { viewModel.zoomBy(1.25f, ScreenCenter) },
                     onZoomOut = { viewModel.zoomBy(0.8f, ScreenCenter) },
                     onZoomReset = { viewModel.resetCamera() },
-                    modifier = Modifier.align(Alignment.BottomStart).padding(start = 16.dp, bottom = 96.dp),
+                    modifier = Modifier.align(Alignment.BottomStart).padding(start = 16.dp, bottom = 24.dp),
                     expanded = barsExpanded,
                 )
             }
@@ -231,11 +241,9 @@ fun HomeScreen(
                 canUndo = canUndo,
                 canRedo = canRedo,
                 currentMode = state.mode,
-                currentStrokeWidth = state.strokeWidth,
                 onUndo = { viewModel.undo() },
                 onRedo = { viewModel.redo() },
                 onModeSelected = { viewModel.setMode(it) },
-                onSizeSelected = { viewModel.setStrokeWidth(it) },
                 expanded = barsExpanded,
             )
 

@@ -2,12 +2,9 @@
 
 package io.ak1.drawboxsample.ui.components
 
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.SelectAll
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -23,24 +20,23 @@ import io.ak1.drawboxsample.ui.icons.DrawBoxIcons
 import org.jetbrains.compose.resources.painterResource
 
 /**
- * Bottom-center floating tool bar. Five slots, left → right:
+ * Bottom-center floating tool bar. Four slots, left → right:
  *
- *   [Undo] [Redo] [Select] [Mode▾] [Size▾]
+ *   [Undo] [Redo] [Select] [Mode▾]
  *
- * Color picking lives in the contextual top-right [ShapeConfigToolbar] for the
- * active drawing mode or selection. File / canvas actions and the theme toggle
- * live in the top-right [TopRightControls] cluster and the [SettingsDrawer].
+ * Color / stroke width / stroke style / corner radius live in the contextual
+ * top-right [ContextBar] for the active drawing mode or selection. File /
+ * canvas actions and the theme toggle live in the top-right [TopRightControls]
+ * cluster and the [SettingsDrawer].
  */
 @Composable
 fun ControlsBar(
     canUndo: Boolean,
     canRedo: Boolean,
     currentMode: Mode,
-    currentStrokeWidth: Float,
     onUndo: () -> Unit,
     onRedo: () -> Unit,
     onModeSelected: (Mode) -> Unit,
-    onSizeSelected: (Float) -> Unit,
     expanded: Boolean = true,
 ) {
     val active = MaterialTheme.colorScheme.primary
@@ -67,8 +63,6 @@ fun ControlsBar(
         ModeChild("mode-arrow", DrawBoxIcons.Arrow, "Arrow", Mode.ARROW),
         ModeChild("mode-triangle", DrawBoxIcons.Triangle, "Triangle", Mode.TRIANGLE),
     )
-
-    val sizeOptions = listOf(5f, 10f, 15f, 20f)
 
     val items = listOf(
         FloatingMenuItem(
@@ -127,29 +121,6 @@ fun ControlsBar(
                 )
             },
         ),
-        FloatingMenuItem(
-            id = "size",
-            icon = {
-                Icon(
-                    painter = painterResource(DrawBoxIcons.Ruler),
-                    contentDescription = "Stroke size",
-                    tint = active,
-                )
-            },
-            children = sizeOptions.map { value ->
-                FloatingMenuItem(
-                    id = "size-${value.toInt()}",
-                    icon = {
-                        SizeDot(
-                            size = value,
-                            isSelected = (currentStrokeWidth - value).toInt() == 0,
-                            color = active,
-                        )
-                    },
-                    onClick = { onSizeSelected(value) },
-                )
-            },
-        ),
     )
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -172,17 +143,3 @@ private data class ModeChild(
     val label: String,
     val mode: Mode,
 )
-
-@Composable
-private fun SizeDot(size: Float, isSelected: Boolean, color: androidx.compose.ui.graphics.Color) {
-    Box(
-        modifier = Modifier.size(28.dp),
-        contentAlignment = Alignment.Center,
-    ) {
-        Box(
-            modifier = Modifier
-                .size(size.dp)
-                .border(if (isSelected) 2.dp else 1.dp, color, CircleShape),
-        )
-    }
-}
