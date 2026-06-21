@@ -11,10 +11,13 @@ import io.ak1.drawbox.domain.model.boundaryPointToward
 import io.ak1.drawbox.domain.model.bounds
 import io.ak1.drawbox.domain.model.resizeBounds
 import io.ak1.drawbox.domain.model.topmostHit
+import io.ak1.drawbox.domain.model.touched
 import io.ak1.drawbox.domain.model.translate
 import io.ak1.drawbox.domain.model.withBounds
 import io.ak1.drawbox.domain.model.withRotation
 import kotlin.math.sqrt
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 class UseCase {
     // Element operations
@@ -35,6 +38,7 @@ class UseCase {
     }
 
     // Path operations
+    @OptIn(ExperimentalTime::class)
     fun insertNewPath(
         offset: Offset,
         color: Color,
@@ -42,12 +46,15 @@ class UseCase {
         alpha: Float,
         strokeStyle: StrokeStyle = StrokeStyle.SOLID,
     ): Element.Path {
+        val now = Clock.System.now().toEpochMilliseconds()
         return Element.Path(
             points = listOf(offset),
             strokeColor = color,
             strokeWidth = width,
             alpha = alpha,
             strokeStyle = strokeStyle,
+            createdAt = now,
+            modifiedAt = now,
         )
     }
 
@@ -57,13 +64,14 @@ class UseCase {
         val lastElement = currentElements.last()
         return if (lastElement is Element.Path) {
             val updatedPoints = lastElement.points + newPoint
-            currentElements.dropLast(1) + lastElement.copy(points = updatedPoints)
+            currentElements.dropLast(1) + lastElement.copy(points = updatedPoints).touched()
         } else {
             currentElements
         }
     }
 
     // Shape operations
+    @OptIn(ExperimentalTime::class)
     fun insertNewShape(
         shapeType: ShapeType,
         offset: Offset,
@@ -72,6 +80,7 @@ class UseCase {
         cornerRadius: Float = 0f,
         strokeStyle: StrokeStyle = StrokeStyle.SOLID,
     ): Element.Shape {
+        val now = Clock.System.now().toEpochMilliseconds()
         return Element.Shape(
             shapeType = shapeType,
             points = listOf(offset),
@@ -79,6 +88,8 @@ class UseCase {
             strokeWidth = width,
             cornerRadius = cornerRadius,
             strokeStyle = strokeStyle,
+            createdAt = now,
+            modifiedAt = now,
         )
     }
 
@@ -93,7 +104,7 @@ class UseCase {
             // shape and ballooning serialized JSON. Replace the second slot.
             val start = lastElement.points.firstOrNull() ?: newPoint
             val updatedPoints = listOf(start, newPoint)
-            currentElements.dropLast(1) + lastElement.copy(points = updatedPoints)
+            currentElements.dropLast(1) + lastElement.copy(points = updatedPoints).touched()
         } else {
             currentElements
         }
@@ -169,8 +180,8 @@ class UseCase {
         var next = maxZ + 1
         return elements.map { el ->
             if (el.id in ids) when (el) {
-                is Element.Path -> el.copy(zIndex = next++)
-                is Element.Shape -> el.copy(zIndex = next++)
+                is Element.Path -> el.copy(zIndex = next++).touched()
+                is Element.Shape -> el.copy(zIndex = next++).touched()
             } else el
         }
     }
@@ -186,8 +197,8 @@ class UseCase {
         return elements.map { el ->
             val newZ = assignments[el.id]
             if (newZ != null) when (el) {
-                is Element.Path -> el.copy(zIndex = newZ)
-                is Element.Shape -> el.copy(zIndex = newZ)
+                is Element.Path -> el.copy(zIndex = newZ).touched()
+                is Element.Shape -> el.copy(zIndex = newZ).touched()
             } else el
         }
     }
@@ -199,8 +210,8 @@ class UseCase {
         color: Color,
     ): List<Element> = elements.map { el ->
         if (el.id !in ids) el else when (el) {
-            is Element.Path -> el.copy(strokeColor = color)
-            is Element.Shape -> el.copy(strokeColor = color)
+            is Element.Path -> el.copy(strokeColor = color).touched()
+            is Element.Shape -> el.copy(strokeColor = color).touched()
         }
     }
 
@@ -211,8 +222,8 @@ class UseCase {
         width: Float,
     ): List<Element> = elements.map { el ->
         if (el.id !in ids) el else when (el) {
-            is Element.Path -> el.copy(strokeWidth = width)
-            is Element.Shape -> el.copy(strokeWidth = width)
+            is Element.Path -> el.copy(strokeWidth = width).touched()
+            is Element.Shape -> el.copy(strokeWidth = width).touched()
         }
     }
 
@@ -227,7 +238,7 @@ class UseCase {
     ): List<Element> = elements.map { el ->
         if (el.id !in ids) return@map el
         if (el is Element.Shape && el.shapeType.supportsCornerRadius()) {
-            el.copy(cornerRadius = radius)
+            el.copy(cornerRadius = radius).touched()
         } else el
     }
 
@@ -239,8 +250,8 @@ class UseCase {
     ): List<Element> = elements.map { el ->
         if (el.id !in ids) return@map el
         when (el) {
-            is Element.Shape -> el.copy(strokeStyle = style)
-            is Element.Path -> el.copy(strokeStyle = style)
+            is Element.Shape -> el.copy(strokeStyle = style).touched()
+            is Element.Path -> el.copy(strokeStyle = style).touched()
         }
     }
 
@@ -253,8 +264,8 @@ class UseCase {
         newPoints: List<Offset>,
     ): List<Element> = elements.map { el ->
         if (el.id != id) el else when (el) {
-            is Element.Path -> el.copy(points = newPoints)
-            is Element.Shape -> el.copy(points = newPoints)
+            is Element.Path -> el.copy(points = newPoints).touched()
+            is Element.Shape -> el.copy(points = newPoints).touched()
         }
     }
 
@@ -265,7 +276,7 @@ class UseCase {
         bend: Offset,
     ): List<Element> = elements.map { el ->
         if (el.id == id && el is Element.Shape && el.shapeType.isLineLike()) {
-            el.copy(bend = bend)
+            el.copy(bend = bend).touched()
         } else el
     }
 
@@ -321,7 +332,7 @@ class UseCase {
                 startBinding = startId,
                 endBinding = endId,
                 bend = seededBend,
-            )
+            ).touched()
         }
     }
 
@@ -348,11 +359,17 @@ class UseCase {
             val startRef = startTarget?.bounds()?.center ?: el.points[0]
             val newStart = startTarget?.boundaryPointToward(endRef) ?: el.points[0]
             val newEnd = endTarget?.boundaryPointToward(startRef) ?: el.points.last()
-            el.copy(
+            val newStartBinding = if (startTarget == null) null else el.startBinding
+            val newEndBinding = if (endTarget == null) null else el.endBinding
+            // Skip touching the arrow when nothing actually changed — propagateBindings
+            // runs after every mutation and most calls are no-ops for any given arrow.
+            val unchanged = newStart == el.points[0] && newEnd == el.points.last() &&
+                newStartBinding == el.startBinding && newEndBinding == el.endBinding
+            if (unchanged) el else el.copy(
                 points = listOf(newStart, newEnd),
-                startBinding = if (startTarget == null) null else el.startBinding,
-                endBinding = if (endTarget == null) null else el.endBinding,
-            )
+                startBinding = newStartBinding,
+                endBinding = newEndBinding,
+            ).touched()
         }
     }
 }

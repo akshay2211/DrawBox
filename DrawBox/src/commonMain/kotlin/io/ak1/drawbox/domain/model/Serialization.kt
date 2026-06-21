@@ -77,6 +77,8 @@ data class ElementDto(
     val bend: String? = null,
     val startBinding: String? = null,
     val endBinding: String? = null,
+    val createdAt: Long? = null,
+    val modifiedAt: Long? = null,
 )
 
 fun Element.toDto(): ElementDto = when (this) {
@@ -90,6 +92,8 @@ fun Element.toDto(): ElementDto = when (this) {
         alpha = alpha,
         rotation = rotation.takeIf { it != 0f },
         strokeStyle = strokeStyle.toWireString().takeIf { strokeStyle != StrokeStyle.SOLID },
+        createdAt = createdAt.takeIf { it != 0L },
+        modifiedAt = modifiedAt.takeIf { it != 0L },
     )
     is Element.Shape -> ElementDto(
         id = id,
@@ -106,6 +110,8 @@ fun Element.toDto(): ElementDto = when (this) {
         bend = bend.toJsonString().takeIf { bend != Offset.Zero },
         startBinding = startBinding,
         endBinding = endBinding,
+        createdAt = createdAt.takeIf { it != 0L },
+        modifiedAt = modifiedAt.takeIf { it != 0L },
     )
 }
 
@@ -119,6 +125,8 @@ fun ElementDto.toElement(): Element = when (type) {
         zIndex = zIndex,
         rotation = rotation ?: 0f,
         strokeStyle = strokeStyle.toStrokeStyle(),
+        createdAt = createdAt ?: 0L,
+        modifiedAt = modifiedAt ?: createdAt ?: 0L,
     )
     "Shape" -> Element.Shape(
         id = id,
@@ -134,6 +142,8 @@ fun ElementDto.toElement(): Element = when (type) {
         bend = bend?.toOffset() ?: Offset.Zero,
         startBinding = startBinding,
         endBinding = endBinding,
+        createdAt = createdAt ?: 0L,
+        modifiedAt = modifiedAt ?: createdAt ?: 0L,
     )
     else -> Element.Path(
         id = id,
@@ -144,6 +154,8 @@ fun ElementDto.toElement(): Element = when (type) {
         zIndex = zIndex,
         rotation = rotation ?: 0f,
         strokeStyle = strokeStyle.toStrokeStyle(),
+        createdAt = createdAt ?: 0L,
+        modifiedAt = modifiedAt ?: createdAt ?: 0L,
     )
 }
 
@@ -179,6 +191,8 @@ data class SerializableElement(
     val bend: String? = null,
     val startBinding: String? = null,
     val endBinding: String? = null,
+    val createdAt: Long? = null,
+    val modifiedAt: Long? = null,
 )
 
 @kotlinx.serialization.Serializable
@@ -211,6 +225,8 @@ object DrawingSerializer {
                     bend = element.bend,
                     startBinding = element.startBinding,
                     endBinding = element.endBinding,
+                    createdAt = element.createdAt,
+                    modifiedAt = element.modifiedAt,
                 )
             },
         )
@@ -238,6 +254,8 @@ object DrawingSerializer {
                     bend = element.bend,
                     startBinding = element.startBinding,
                     endBinding = element.endBinding,
+                    createdAt = element.createdAt,
+                    modifiedAt = element.modifiedAt,
                 )
             },
         )

@@ -34,6 +34,8 @@ import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.unit.dp
 import io.ak1.drawbox.domain.model.StrokeStyle
+import io.ak1.drawboxsample.ui.icons.DrawBoxIcons
+import org.jetbrains.compose.resources.painterResource
 import kotlin.math.abs
 
 private const val RadiusSharp = 0f
@@ -268,27 +270,30 @@ private fun SizeDot(size: Float, isSelected: Boolean, color: Color) {
         modifier = Modifier.size(28.dp),
         contentAlignment = Alignment.Center,
     ) {
+        val m = Modifier
+            .size(size.dp)
         Box(
-            modifier = Modifier
-                .size(size.dp)
-                .border(if (isSelected) 2.dp else 1.dp, color, CircleShape),
+            modifier = if (isSelected) m.size(size.dp).background(color, CircleShape) else m.border(1.dp, color, CircleShape)
+
         )
     }
 }
 
 @Composable
 private fun CornerRadiusIcon(radius: Float, color: Color) {
-    val cornerDp = when {
-        radius < 1f -> 0.dp
-        radius < 24f -> 4.dp
-        else -> 9.dp
+    val cornerIcon = when {
+        radius < 1f -> DrawBoxIcons.BorderSquare
+        radius < 24f -> DrawBoxIcons.BorderRounded
+        else -> DrawBoxIcons.BorderPill
     }
-    Box(
+
+    Icon(painterResource(cornerIcon), contentDescription = "Rounded Corner Shape", tint = color)
+  /*  Box(
         modifier = Modifier
             .size(18.dp)
             .clip(RoundedCornerShape(cornerDp))
             .border(2.dp, color, RoundedCornerShape(cornerDp)),
     ) {
         Box(modifier = Modifier.fillMaxSize())
-    }
+    }*/
 }

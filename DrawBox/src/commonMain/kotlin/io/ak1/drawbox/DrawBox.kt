@@ -175,10 +175,10 @@ fun DrawBox(
         state.bgPattern?.toTiledBrush(density, layoutDirection)
     }
 
-    val handleHitPx = with(density) { 14.dp.toPx() }
+    val handleHitPx = with(density) { 16.dp.toPx() }
     val rotationOffsetPx = with(density) { 28.dp.toPx() }
     val handleSizePx = with(density) { 8.dp.toPx() }
-    val pickTolerancePx = with(density) { 8.dp.toPx() }
+    val pickTolerancePx = with(density) { 12.dp.toPx() }
 
     // The pointerInput coroutines are long-lived; reading state/onIntent through
     // rememberUpdatedState lets gesture callbacks see the current value without
@@ -466,6 +466,7 @@ fun DrawBox(
                                 latestOnIntent(Intent.FinalizeArrowBindings(justDrawn.id))
                             }
                         }
+                        latestOnIntent(Intent.EndTransform)
                         interaction = null
                     },
                     onDragCancel = {
@@ -474,6 +475,7 @@ fun DrawBox(
                         ) {
                             latestOnIntent(Intent.SetMarqueeRect(null))
                         }
+                        latestOnIntent(Intent.EndTransform)
                         interaction = null
                     },
                 ) { change, dragAmount ->
@@ -563,6 +565,33 @@ fun DrawBox(
                     inverseScale = 1f / vp.scale,
                 )
             }
+        }
+    }
+}
+
+/**
+ * Render-only preview of a set of [Element]s. No gestures, no chrome, no grid.
+ * Useful for replay scrubbing, thumbnails, and read-only embeds.
+ *
+ * Elements are drawn in [Element.zIndex] order, projected through [viewport]
+ * the same way [DrawBox] does for its main canvas.
+ */
+@Composable
+fun DrawingPreview(
+    elements: List<Element>,
+    bgColor: Color,
+    modifier: Modifier = Modifier.fillMaxSize(),
+    viewport: Viewport = Viewport(),
+) {
+    Canvas(modifier = modifier) {
+        drawRect(color = bgColor)
+        withTransform({
+            translate(viewport.offset.x, viewport.offset.y)
+            scale(viewport.scale, viewport.scale, pivot = Offset.Zero)
+        }) {
+            elements
+                .sortedBy { it.zIndex }
+                .forEach { renderElement(it) }
         }
     }
 }

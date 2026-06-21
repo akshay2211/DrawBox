@@ -16,8 +16,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -30,6 +32,7 @@ import androidx.compose.material.icons.filled.DeleteSweep
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.GridOn
 import androidx.compose.material.icons.filled.Pattern
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Upload
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -84,6 +87,7 @@ fun SettingsDrawer(
     onDownloadPng: () -> Unit,
     onExportJson: () -> Unit,
     onImportJson: () -> Unit,
+    onReplay: () -> Unit,
     onPickBgColor: () -> Unit,
     onBgPatternSelected: (BgPatternPreset?) -> Unit,
     onToggleGrid: (Boolean) -> Unit,
@@ -95,7 +99,8 @@ fun SettingsDrawer(
             enter = fadeIn(),
             exit = fadeOut(),
             modifier = Modifier.fillMaxSize(),
-        ) {
+        )
+        {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -129,8 +134,7 @@ fun SettingsDrawer(
             ) {
                 Column(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .padding(vertical = 16.dp)
+                        .fillMaxSize().systemBarsPadding()
                         .verticalScroll(rememberScrollState()),
                 ) {
                     DrawerHeader(onDismiss = onDismiss)
@@ -157,6 +161,13 @@ fun SettingsDrawer(
                         icon = Icons.Filled.Upload,
                         label = "Import JSON",
                         onClick = onImportJson,
+                    )
+
+                    SectionLabel("Playback")
+                    DrawerRow(
+                        icon = Icons.Filled.PlayArrow,
+                        label = "Replay drawing",
+                        onClick = onReplay,
                     )
 
                     SectionLabel("Canvas")

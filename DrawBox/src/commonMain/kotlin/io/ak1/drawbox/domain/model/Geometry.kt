@@ -302,8 +302,8 @@ fun topmostHit(elements: List<Element>, point: Offset, tolerance: Float = 8f): E
 
 /** Translate all points by `delta`. Rotation unchanged. */
 fun Element.translate(delta: Offset): Element = when (this) {
-    is Element.Path -> copy(points = points.map { it + delta })
-    is Element.Shape -> copy(points = points.map { it + delta })
+    is Element.Path -> copy(points = points.map { it + delta }).touched()
+    is Element.Shape -> copy(points = points.map { it + delta }).touched()
 }
 
 /**
@@ -317,13 +317,13 @@ fun Element.withBounds(newBounds: Rect): Element {
     return when (this) {
         is Element.Path -> {
             val mapped = scalePoints(points, bounds(), safeBounds)
-            copy(points = mapped)
+            copy(points = mapped).touched()
         }
         is Element.Shape -> when (shapeType) {
-            ShapeType.CIRCLE -> resizeCircle(this, safeBounds)
+            ShapeType.CIRCLE -> resizeCircle(this, safeBounds).touched()
             else -> {
                 if (points.size < 2) {
-                    copy(points = listOf(safeBounds.topLeft, safeBounds.bottomRight))
+                    copy(points = listOf(safeBounds.topLeft, safeBounds.bottomRight)).touched()
                 } else {
                     val old = bounds()
                     val start = points[0]
@@ -332,7 +332,7 @@ fun Element.withBounds(newBounds: Rect): Element {
                     // each point originally landed on.
                     val newStart = mapCorner(start, old, safeBounds)
                     val newEnd = mapCorner(end, old, safeBounds)
-                    copy(points = listOf(newStart, newEnd))
+                    copy(points = listOf(newStart, newEnd)).touched()
                 }
             }
         }
@@ -375,8 +375,8 @@ private fun scalePoints(points: List<Offset>, from: Rect, to: Rect): List<Offset
 
 /** Absolute rotation in degrees. */
 fun Element.withRotation(degrees: Float): Element = when (this) {
-    is Element.Path -> copy(rotation = degrees)
-    is Element.Shape -> copy(rotation = degrees)
+    is Element.Path -> copy(rotation = degrees).touched()
+    is Element.Shape -> copy(rotation = degrees).touched()
 }
 
 /**

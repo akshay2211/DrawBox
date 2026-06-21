@@ -101,6 +101,7 @@ class Reducer(
             )
         }
         is Intent.BeginTransform -> state.snapshot()
+        is Intent.EndTransform -> state
         is Intent.MoveSelected -> state.copy(
             elements = useCase.propagateBindings(
                 useCase.translateSelected(state.elements, state.selectedIds, intent.delta),

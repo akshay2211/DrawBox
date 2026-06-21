@@ -7,6 +7,7 @@ import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -17,7 +18,9 @@ import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDropDown
@@ -32,6 +35,7 @@ import androidx.compose.material3.FloatingToolbarDefaults
 import androidx.compose.material3.HorizontalFloatingToolbar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -55,12 +59,21 @@ import androidx.compose.ui.unit.dp
  * One slot in [ExpandableFloatingToolbar]. Top-level items become the buttons
  * in the horizontal bar; nested [children] (if any) become the vertical sub-bar
  * shown above (or below — see [SubmenuPosition]) the item when it is active.
+ *
+ * @property isActive when true, the slot renders with a tonal accent
+ *   background. For items that have *both* children and a non-null
+ *   [onClick], being active also flips click semantics: clicking opens the
+ *   submenu instead of firing [onClick]. Inactive items with the same shape
+ *   fire [onClick] (e.g., "select this tool") without opening the submenu.
+ *   Items with children but no [onClick] (the legacy ContextBar pattern)
+ *   ignore [isActive] for click behavior and always open the submenu on tap.
  */
 data class FloatingMenuItem(
     val id: String,
-    val icon: @Composable () -> Unit,
+    val icon: @Composable (isActive: Boolean) -> Unit,
     val children: List<FloatingMenuItem> = emptyList(),
     val onClick: (() -> Unit)? = null,
+    val isActive: Boolean = false,
 )
 
 /**
@@ -154,15 +167,19 @@ fun ExpandableFloatingToolbar(
                     .requiredWidth(40.dp),
                 content = {
                     current.children.forEach { child ->
+                        val childBg = if (child.isActive)
+                            MaterialTheme.colorScheme.primaryContainer else Color.Transparent
                         IconButton(
                             onClick = {
                                 child.onClick?.invoke()
                                 onChildClick?.invoke(current, child)
                                 if (dismissOnChildClick) setActive(null)
                             },
-                            modifier = Modifier.size(36.dp),
+                            modifier = Modifier
+                                .size(36.dp)
+                                .clip(CircleShape)
                         ) {
-                            child.icon()
+                            child.icon(child.isActive)
                         }
                     }
                 },
@@ -192,17 +209,27 @@ fun ExpandableFloatingToolbar(
                     ) {
                         IconButton(
                             onClick = {
-                                item.onClick?.invoke()
+                                val hasChildren = item.children.isNotEmpty()
+                                val click = item.onClick
+                                // Open submenu when:
+                                //  - the item has children AND is already active (second tap on
+                                //    a selected tool opens its sub-options), OR
+                                //  - the item has children but no onClick (legacy items whose
+                                //    only purpose is to host a submenu, e.g., ContextBar slots).
+                                val openSubmenu = hasChildren && (item.isActive || click == null)
+                                if (!openSubmenu && click != null) click()
                                 onItemClick?.invoke(item)
-                                if (item.children.isEmpty()) {
-                                    setActive(null)
-                                } else {
+                                if (openSubmenu) {
                                     setActive(if (activeId == item.id) null else item.id)
+                                } else {
+                                    setActive(null)
                                 }
                             },
-                            modifier = Modifier.size(36.dp),
+                            modifier = Modifier
+                                .size(36.dp)
+                                .clip(CircleShape)
                         ) {
-                            item.icon()
+                            item.icon(item.isActive)
                         }
                     }
                 }
@@ -225,6 +252,9 @@ fun ExpandableFloatingToolbar(
 }
 
 @Composable
+fun Boolean.getActiveColor():Color = if (this) MaterialTheme.colorScheme.primary else LocalContentColor.current
+
+@Composable
 fun ExpandableFloatingToolbarDemo(modifier: Modifier = Modifier) {
     var lastPicked by remember { mutableStateOf<String?>(null) }
 
@@ -232,39 +262,39 @@ fun ExpandableFloatingToolbarDemo(modifier: Modifier = Modifier) {
         listOf(
             FloatingMenuItem(
                 id = "edit",
-                icon = { Icon(Icons.Filled.Edit, contentDescription = "Edit") },
+                icon = {  isActive -> Icon(Icons.Filled.Edit, contentDescription = "Edit", tint = isActive.getActiveColor() ) },
                 children = listOf(
-                    FloatingMenuItem("edit-add", { Icon(Icons.Filled.Add, "Add") }),
-                    FloatingMenuItem("edit-person", { Icon(Icons.Filled.Person, "Person") }),
-                    FloatingMenuItem("edit-fav", { Icon(Icons.Filled.Favorite, "Favorite") }),
+                    FloatingMenuItem("edit-add", { isActive ->Icon(Icons.Filled.Add, "Add", tint = isActive.getActiveColor()) }),
+                    FloatingMenuItem("edit-person", { isActive ->Icon(Icons.Filled.Person, "Person", tint = isActive.getActiveColor()) }),
+                    FloatingMenuItem("edit-fav", { isActive ->Icon(Icons.Filled.Favorite, "Favorite", tint = isActive.getActiveColor()) }),
                 ),
             ),
             FloatingMenuItem(
                 id = "more",
-                icon = { Icon(Icons.Filled.MoreVert, contentDescription = "More") },
+                icon = { isActive ->Icon(Icons.Filled.MoreVert, contentDescription = "More", tint = isActive.getActiveColor()) },
                 children = listOf(
-                    FloatingMenuItem("more-i", { Icon(Icons.Filled.Add, "i") }),
-                    FloatingMenuItem("more-j", { Icon(Icons.Filled.Person, "j") }),
-                    FloatingMenuItem("more-k", { Icon(Icons.Filled.Favorite, "k") }),
-                    FloatingMenuItem("more-l", { Icon(Icons.Filled.ArrowDropDown, "l") }),
+                    FloatingMenuItem("more-i", {isActive -> Icon(Icons.Filled.Add, "i", tint = isActive.getActiveColor()) }),
+                    FloatingMenuItem("more-j", { isActive ->Icon(Icons.Filled.Person, "j", tint = isActive.getActiveColor()) }),
+                    FloatingMenuItem("more-k", { isActive ->Icon(Icons.Filled.Favorite, "k", tint = isActive.getActiveColor()) }),
+                    FloatingMenuItem("more-l", { isActive ->Icon(Icons.Filled.ArrowDropDown, "l", tint = isActive.getActiveColor()) }),
                 ),
             ),
             FloatingMenuItem(
                 id = "fav",
-                icon = { Icon(Icons.Filled.Favorite, contentDescription = "Favorite") },
+                icon = {isActive -> Icon(Icons.Filled.Favorite, contentDescription = "Favorite", tint = isActive.getActiveColor()) },
                 children = listOf(
-                    FloatingMenuItem("fav-x", { Icon(Icons.Filled.Add, "x") }),
-                    FloatingMenuItem("fav-y", { Icon(Icons.Filled.Person, "y") }),
+                    FloatingMenuItem("fav-x", {isActive -> Icon(Icons.Filled.Add, "x", tint = isActive.getActiveColor()) }),
+                    FloatingMenuItem("fav-y", {isActive -> Icon(Icons.Filled.Person, "y", tint = isActive.getActiveColor()) }),
                 ),
             ),
             FloatingMenuItem(
                 id = "leaf",
-                icon = { Icon(Icons.Filled.Add, contentDescription = "Add") },
+                icon = {isActive -> Icon(Icons.Filled.Add, contentDescription = "Add", tint = isActive.getActiveColor()) },
                 onClick = { lastPicked = "leaf (no sub-menu)" },
             ),
             FloatingMenuItem(
                 id = "leaf",
-                icon = { Icon(Icons.Filled.HomeMini, contentDescription = "Add") },
+                icon = {isActive -> Icon(Icons.Filled.HomeMini, contentDescription = "Add", tint = isActive.getActiveColor()) },
                 onClick = null,
             ),
         )
