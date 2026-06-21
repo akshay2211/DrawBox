@@ -37,6 +37,22 @@ sealed class Element {
     abstract val rotation: Float
 
     /**
+     * Epoch milliseconds at which this element was first created. Used for
+     * ordered replay (and later as a tie-break source for collab clocks). 0L
+     * means "unknown" — element predates the timestamp field; consumers that
+     * sort by createdAt should treat 0 as "earliest".
+     */
+    abstract val createdAt: Long
+
+    /**
+     * Epoch milliseconds at which any property of this element last changed.
+     * On creation, equals [createdAt]. Bumped via [touched] on every
+     * mutation path so sync layers can resolve concurrent edits with LWW
+     * semantics.
+     */
+    abstract val modifiedAt: Long
+
+    /**
      * Represents a freehand drawn path created in PEN mode.
      *
      * A path is a series of connected points drawn by the user. It's rendered
@@ -61,6 +77,8 @@ sealed class Element {
         override val rotation: Float = 0f,
         /** Stroke pattern for the freehand path. SOLID keeps the natural pencil feel. */
         val strokeStyle: StrokeStyle = StrokeStyle.SOLID,
+        override val createdAt: Long = 0L,
+        override val modifiedAt: Long = 0L,
     ) : Element()
 
     /**
@@ -123,8 +141,21 @@ sealed class Element {
          * [startBinding] for the end point. Only honored for [ShapeType.ARROW].
          */
         val endBinding: String? = null,
+        override val createdAt: Long = 0L,
+        override val modifiedAt: Long = 0L,
     ) : Element()
 }
+
+/**
+ * Stamp [Element.modifiedAt] with [now] (defaults to current epoch ms).
+ * Call this on every mutation site so sync layers see a fresh LWW timestamp.
+ */
+@OptIn(kotlin.time.ExperimentalTime::class)
+fun Element.touched(now: Long = kotlin.time.Clock.System.now().toEpochMilliseconds()): Element =
+    when (this) {
+        is Element.Path -> copy(modifiedAt = now)
+        is Element.Shape -> copy(modifiedAt = now)
+    }
 
 /**
  * Defines how [Element.Shape] is rendered on the canvas.

@@ -5,24 +5,33 @@ package io.ak1.drawboxsample.ui.components
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.SelectAll
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FloatingToolbarDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import io.ak1.drawbox.domain.model.Mode
 import io.ak1.drawboxsample.ui.icons.DrawBoxIcons
 import org.jetbrains.compose.resources.painterResource
 
 /**
- * Bottom-center floating tool bar. Four slots, left → right:
+ * Bottom-center floating tool bar. Six slots, left → right:
  *
- *   [Undo] [Redo] [Select] [Mode▾]
+ *   [Undo] [Redo] [Select] [Pan] [Pen] [Shape▾]
+ *
+ * Pen (freehand) and Pan get their own slots so the dropdown is purely shape
+ * tools. The currently active tool — whether Select, Pan, Pen, or a shape —
+ * is tinted with the primary color so the user can tell at a glance which
+ * mode they're in.
  *
  * Color / stroke width / stroke style / corner radius live in the contextual
  * top-right [ContextBar] for the active drawing mode or selection. File /
@@ -40,29 +49,35 @@ fun ControlsBar(
     expanded: Boolean = true,
 ) {
     val active = MaterialTheme.colorScheme.primary
+    val tertiary = MaterialTheme.colorScheme.tertiary
     val inactive = MaterialTheme.colorScheme.onSurfaceVariant
     val disabled = MaterialTheme.colorScheme.outlineVariant
 
-    val currentModeIcon = when (currentMode) {
-        Mode.PAN -> DrawBoxIcons.Import
-        Mode.PEN -> DrawBoxIcons.StrokeCurved
-        Mode.RECTANGLE -> DrawBoxIcons.Rectangle
-        Mode.CIRCLE -> DrawBoxIcons.Circle
-        Mode.TRIANGLE -> DrawBoxIcons.Triangle
-        Mode.ARROW -> DrawBoxIcons.Arrow
-        Mode.LINE -> DrawBoxIcons.Line
-        else -> DrawBoxIcons.StrokeCurved
-    }
-
-    val modeChildren = listOf(
-        ModeChild("mode-pan", DrawBoxIcons.Import, "Pan", Mode.PAN),
-        ModeChild("mode-pen", DrawBoxIcons.StrokeCurved, "Pen", Mode.PEN),
+    val shapeChildren = listOf(
         ModeChild("mode-line", DrawBoxIcons.Line, "Line", Mode.LINE),
         ModeChild("mode-rect", DrawBoxIcons.Rectangle, "Rectangle", Mode.RECTANGLE),
         ModeChild("mode-circle", DrawBoxIcons.Circle, "Circle", Mode.CIRCLE),
         ModeChild("mode-arrow", DrawBoxIcons.Arrow, "Arrow", Mode.ARROW),
         ModeChild("mode-triangle", DrawBoxIcons.Triangle, "Triangle", Mode.TRIANGLE),
     )
+
+    val isShapeMode = shapeChildren.any { it.mode == currentMode }
+    // Remember the most recently active shape mode so the Shape slot can both
+    // (a) show that shape's icon as its trigger, and (b) re-select it on tap
+    // when the user is currently in a non-shape mode. Defaults to Rectangle
+    // until the user picks something.
+    var lastShape by remember { mutableStateOf(Mode.RECTANGLE as Mode) }
+    LaunchedEffect(currentMode) {
+        if (shapeChildren.any { it.mode == currentMode }) lastShape = currentMode
+    }
+    val shapeDropdownIcon = when (lastShape) {
+        Mode.LINE -> DrawBoxIcons.Line
+        Mode.RECTANGLE -> DrawBoxIcons.Rectangle
+        Mode.CIRCLE -> DrawBoxIcons.Circle
+        Mode.ARROW -> DrawBoxIcons.Arrow
+        Mode.TRIANGLE -> DrawBoxIcons.Triangle
+        else -> DrawBoxIcons.Rectangle
+    }
 
     val items = listOf(
         FloatingMenuItem(
@@ -89,27 +104,55 @@ fun ControlsBar(
         ),
         FloatingMenuItem(
             id = "select",
+            isActive = currentMode == Mode.SELECT,
             icon = {
                 Icon(
-                    imageVector = Icons.Filled.SelectAll,
+                    painter = painterResource(DrawBoxIcons.Pointer),
                     contentDescription = "Select",
-                    tint = if (currentMode == Mode.SELECT) active else inactive,
+                    tint = if (currentMode == Mode.SELECT) tertiary else inactive,
                 )
             },
             onClick = { onModeSelected(Mode.SELECT) },
         ),
         FloatingMenuItem(
-            id = "mode",
+            id = "pan",
+            isActive = currentMode == Mode.PAN,
             icon = {
                 Icon(
-                    painter = painterResource(currentModeIcon),
-                    contentDescription = "Drawing mode",
-                    tint = active,
+                    painter = painterResource(DrawBoxIcons.Hand),
+                    contentDescription = "Pan",
+                    tint = if (currentMode == Mode.PAN) tertiary else inactive,
                 )
             },
-            children = modeChildren.map { child ->
+            onClick = { onModeSelected(Mode.PAN) },
+        ),
+        FloatingMenuItem(
+            id = "pen",
+            isActive = currentMode == Mode.PEN,
+            icon = {
+                Icon(
+                    painter = painterResource(DrawBoxIcons.StrokeCurved),
+                    contentDescription = "Pen",
+                    tint = if (currentMode == Mode.PEN) tertiary else inactive,
+                )
+            },
+            onClick = { onModeSelected(Mode.PEN) },
+        ),
+        FloatingMenuItem(
+            id = "shape",
+            isActive = isShapeMode,
+            icon = {
+                Icon(
+                    painter = painterResource(shapeDropdownIcon),
+                    contentDescription = "Shape",
+                    tint = if (isShapeMode) tertiary else inactive,
+                )
+            },
+            onClick = { onModeSelected(lastShape) },
+            children = shapeChildren.map { child ->
                 FloatingMenuItem(
                     id = child.id,
+                    isActive = currentMode == child.mode,
                     icon = {
                         Icon(
                             painter = painterResource(child.icon),

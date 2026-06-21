@@ -3,10 +3,14 @@ package io.ak1.drawboxsample.save
 import android.content.ContentValues
 import android.content.Context
 import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.ImageBitmap
@@ -19,10 +23,18 @@ import kotlinx.coroutines.launch
 @Composable
 actual fun rememberImageSaver(): ImageSaver {
     val context = LocalContext.current
-    return remember(context) { AndroidImageSaver(context.applicationContext) }
+    val saver = remember(context) { AndroidImageSaver(context.applicationContext) }
+    val launcher = rememberLauncherForActivityResult(
+        ActivityResultContracts.OpenDocument(),
+    ) { uri -> saver.onJsonPicked(uri) }
+    saver.jsonPicker = launcher
+    return saver
 }
 
 private class AndroidImageSaver(private val context: Context) : ImageSaver {
+    var jsonPicker: ActivityResultLauncher<Array<String>>? = null
+    private var pendingJsonCallback: ((String) -> Unit)? = null
+
     override fun savePng(bitmap: ImageBitmap) {
         GlobalScope.launch(Dispatchers.IO) {
             try {
@@ -79,7 +91,33 @@ private class AndroidImageSaver(private val context: Context) : ImageSaver {
     }
 
     override fun loadJson(onLoaded: (String) -> Unit) {
-        showToast("Import JSON is not supported from the Android sample yet")
+        val launcher = jsonPicker
+        if (launcher == null) {
+            showToast("Import not ready yet")
+            return
+        }
+        pendingJsonCallback = onLoaded
+        launcher.launch(arrayOf("application/json", "text/plain", "*/*"))
+    }
+
+    fun onJsonPicked(uri: Uri?) {
+        val callback = pendingJsonCallback
+        pendingJsonCallback = null
+        if (uri == null || callback == null) return
+        GlobalScope.launch(Dispatchers.IO) {
+            val content = try {
+                context.contentResolver.openInputStream(uri)?.use {
+                    it.readBytes().decodeToString()
+                }
+            } catch (e: Throwable) {
+                android.util.Log.e("ImageSaver", "Error reading JSON", e)
+                showToast("Error reading JSON: ${e.message}")
+                null
+            }
+            if (content != null) {
+                GlobalScope.launch(Dispatchers.Main) { callback(content) }
+            }
+        }
     }
 
     private fun saveTextFile(content: String, extension: String, mimeType: String) {

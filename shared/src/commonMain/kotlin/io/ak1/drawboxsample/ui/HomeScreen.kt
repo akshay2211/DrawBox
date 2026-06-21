@@ -29,6 +29,7 @@ import io.ak1.drawbox.domain.model.Element
 import io.ak1.drawbox.domain.model.Event
 import io.ak1.drawbox.domain.model.Mode
 import io.ak1.drawbox.domain.model.ShapeType
+import io.ak1.drawbox.domain.model.State
 import io.ak1.drawbox.domain.model.bezierMidpoint
 import io.ak1.drawbox.domain.model.bounds
 import io.ak1.drawbox.domain.model.controlPoint
@@ -53,8 +54,11 @@ fun HomeScreen(
     val showGrid = remember { mutableStateOf(true) }
     val imageSaver = rememberImageSaver()
     val themedBg = MaterialTheme.colorScheme.background
+    val themedBrush = MaterialTheme.colorScheme.primary
 
-    val viewModel = rememberDrawBoxController()
+    val viewModel = rememberDrawBoxController(
+        initialState = State(strokeColor = themedBrush),
+    )
     val state by viewModel.state.collectAsState()
     val canUndo by viewModel.canUndo.collectAsState()
     val canRedo by viewModel.canRedo.collectAsState()
@@ -130,6 +134,7 @@ fun HomeScreen(
 
     // Drawer + bg-pattern state.
     var drawerOpen by remember { mutableStateOf(false) }
+    var replayOpen by remember { mutableStateOf(false) }
     var currentBgPattern by remember { mutableStateOf<BgPatternPreset?>(null) }
     var colorPickerForBg by remember { mutableStateOf(false) }
 
@@ -279,11 +284,23 @@ fun HomeScreen(
                 imageSaver.loadJson { json -> viewModel.importPath(json) }
                 drawerOpen = false
             },
+            onReplay = {
+                drawerOpen = false
+                replayOpen = true
+            },
             onPickBgColor = { colorPickerForBg = true },
             onBgPatternSelected = { currentBgPattern = it },
             onToggleGrid = { showGrid.value = it },
             onClearCanvas = { viewModel.reset(); drawerOpen = false },
         )
+
+        if (replayOpen) {
+            ReplayScreen(
+                elements = state.elements,
+                bgColor = state.bgColor,
+                onClose = { replayOpen = false },
+            )
+        }
     }
 }
 

@@ -149,6 +149,19 @@ sealed class Intent {
      */
     data object BeginTransform : Intent()
 
+    /**
+     * Marks the end of a drag-driven mutation. State is already up to date by
+     * this point; the reducer treats this as a no-op. Provided as a *hint* for
+     * transaction-aware observers (sync layers, autosave debouncers,
+     * analytics): a coherent gesture just ended, commit/flush now.
+     *
+     * **Best-effort.** May be missed on app crash, force-quit, OS interrupt,
+     * or unusual gesture-detector teardown. Observers must NOT rely on this
+     * for correctness — treat it as an optimization signal layered on top of
+     * timeout/idle-based commit policies.
+     */
+    data object EndTransform : Intent()
+
     /** Translate every selected element by [delta]. Does not snapshot history. */
     data class MoveSelected(val delta: Offset) : Intent()
 

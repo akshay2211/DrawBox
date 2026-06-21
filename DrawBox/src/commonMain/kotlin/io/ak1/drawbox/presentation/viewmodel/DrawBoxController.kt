@@ -72,9 +72,10 @@ import io.ak1.drawbox.domain.model.DrawingSerializer
  */
 class DrawBoxController(
     private val reducer: Reducer,
+    initialState: State = State(),
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow(State())
+    private val _state = MutableStateFlow(initialState)
     /**
      * Current drawing state as a reactive flow.
      * Collect this in your UI to receive state updates:
@@ -356,14 +357,16 @@ class DrawBoxController(
  *
  * @param useCase Optional custom use case instance. If not provided, a default
  *                is created. Override for custom business logic or persistence.
+ * @param initialState State used when the controller is first created.
  * @return Remembered [DrawBoxController] instance
  */
 @Composable
 fun rememberDrawBoxController(
     useCase: UseCase = UseCase(),
+    initialState: State = State(),
 ): DrawBoxController {
     // Important: Provide initializer for KMP - type reflection unavailable on non-JVM platforms
     return viewModel {
-        DrawBoxController(/*useCase, */Reducer(useCase))
+        DrawBoxController(/*useCase, */Reducer(useCase), initialState)
     }
 }
