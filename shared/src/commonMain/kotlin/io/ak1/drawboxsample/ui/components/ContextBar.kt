@@ -101,7 +101,7 @@ fun ContextBar(
         add(
             FloatingMenuItem(
                 id = "color",
-                icon = { ColorSwatchIcon(color = currentColor) },
+                icon = { _ -> ColorSwatchIcon(color = currentColor) },
                 onClick = { showColorDialog = true },
             ),
         )
@@ -110,14 +110,15 @@ fun ContextBar(
             add(
                 FloatingMenuItem(
                     id = "stroke",
-                    icon = { StrokeStyleIcon(style = currentStrokeStyle, color = active) },
+                    icon = { _ -> StrokeStyleIcon(style = currentStrokeStyle, color = active) },
                     children = StrokeStyle.entries.map { style ->
                         FloatingMenuItem(
                             id = "stroke-${style.name.lowercase()}",
-                            icon = {
+                            isActive = style == currentStrokeStyle,
+                            icon = { isActive ->
                                 StrokeStyleIcon(
                                     style = style,
-                                    color = if (style == currentStrokeStyle) active else inactive,
+                                    color = isActive.getActiveColor(),
                                 )
                             },
                             onClick = { onStrokeStyleChange(style) },
@@ -128,15 +129,17 @@ fun ContextBar(
             add(
                 FloatingMenuItem(
                     id = "width",
-                    icon = { SizeDot(size = currentStrokeWidth, isSelected = true, color = active) },
+                    icon = { _ -> SizeDot(size = currentStrokeWidth, isSelected = true, color = active) },
                     children = StrokeWidthOptions.map { value ->
+                        val matches = (currentStrokeWidth - value).toInt() == 0
                         FloatingMenuItem(
                             id = "width-${value.toInt()}",
-                            icon = {
+                            isActive = matches,
+                            icon = { isActive ->
                                 SizeDot(
                                     size = value,
-                                    isSelected = (currentStrokeWidth - value).toInt() == 0,
-                                    color = if ((currentStrokeWidth - value).toInt() == 0) active else inactive,
+                                    isSelected = isActive,
+                                    color = isActive.getActiveColor(),
                                 )
                             },
                             onClick = { onStrokeWidthChange(value) },
@@ -150,13 +153,13 @@ fun ContextBar(
             add(
                 FloatingMenuItem(
                     id = "corner",
-                    icon = {
+                    icon = { _ ->
                         CornerRadiusIcon(radius = currentCornerRadius, color = active)
                     },
                     children = listOf(
-                        cornerChild("corner-sharp", RadiusSharp, currentCornerRadius, active, inactive, onCornerRadiusChange),
-                        cornerChild("corner-soft", RadiusSoft, currentCornerRadius, active, inactive, onCornerRadiusChange),
-                        cornerChild("corner-round", RadiusRound, currentCornerRadius, active, inactive, onCornerRadiusChange),
+                        cornerChild("corner-sharp", RadiusSharp, currentCornerRadius, onCornerRadiusChange),
+                        cornerChild("corner-soft", RadiusSoft, currentCornerRadius, onCornerRadiusChange),
+                        cornerChild("corner-round", RadiusRound, currentCornerRadius, onCornerRadiusChange),
                     ),
                 ),
             )
@@ -166,8 +169,12 @@ fun ContextBar(
             add(
                 FloatingMenuItem(
                     id = "front",
-                    icon = {
-                        Icon(Icons.Filled.FlipToFront, contentDescription = "Bring to front")
+                    icon = { isActive ->
+                        Icon(
+                            Icons.Filled.FlipToFront,
+                            contentDescription = "Bring to front",
+                            tint = isActive.getActiveColor(),
+                        )
                     },
                     onClick = onBringToFront,
                 ),
@@ -175,8 +182,12 @@ fun ContextBar(
             add(
                 FloatingMenuItem(
                     id = "back",
-                    icon = {
-                        Icon(Icons.Filled.FlipToBack, contentDescription = "Send to back")
+                    icon = { isActive ->
+                        Icon(
+                            Icons.Filled.FlipToBack,
+                            contentDescription = "Send to back",
+                            tint = isActive.getActiveColor(),
+                        )
                     },
                     onClick = onSendToBack,
                 ),
@@ -184,7 +195,7 @@ fun ContextBar(
             add(
                 FloatingMenuItem(
                     id = "delete",
-                    icon = {
+                    icon = { _ ->
                         Icon(
                             Icons.Filled.Delete,
                             contentDescription = "Delete selection",
@@ -197,8 +208,12 @@ fun ContextBar(
             add(
                 FloatingMenuItem(
                     id = "clear",
-                    icon = {
-                        Icon(Icons.Filled.Close, contentDescription = "Clear selection")
+                    icon = { isActive ->
+                        Icon(
+                            Icons.Filled.Close,
+                            contentDescription = "Clear selection",
+                            tint = isActive.getActiveColor(),
+                        )
                     },
                     onClick = onClear,
                 ),
@@ -221,14 +236,13 @@ private fun cornerChild(
     id: String,
     value: Float,
     current: Float,
-    active: Color,
-    inactive: Color,
     onSelect: (Float) -> Unit,
 ): FloatingMenuItem {
     val isCurrent = abs(current - value) < 0.5f
     return FloatingMenuItem(
         id = id,
-        icon = { CornerRadiusIcon(radius = value, color = if (isCurrent) active else inactive) },
+        isActive = isCurrent,
+        icon = { isActive -> CornerRadiusIcon(radius = value, color = isActive.getActiveColor()) },
         onClick = { onSelect(value) },
     )
 }

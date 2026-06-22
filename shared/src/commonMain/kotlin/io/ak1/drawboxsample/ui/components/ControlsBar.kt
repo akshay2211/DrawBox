@@ -82,7 +82,7 @@ fun ControlsBar(
     val items = listOf(
         FloatingMenuItem(
             id = "undo",
-            icon = {
+            icon = { _ ->
                 Icon(
                     painter = painterResource(DrawBoxIcons.Undo),
                     contentDescription = "Undo",
@@ -93,7 +93,7 @@ fun ControlsBar(
         ),
         FloatingMenuItem(
             id = "redo",
-            icon = {
+            icon = { _ ->
                 Icon(
                     painter = painterResource(DrawBoxIcons.Redo),
                     contentDescription = "Redo",
@@ -102,14 +102,15 @@ fun ControlsBar(
             },
             onClick = { if (canRedo) onRedo() },
         ),
+        separator("sep-history"),
         FloatingMenuItem(
             id = "select",
             isActive = currentMode == Mode.SELECT,
-            icon = {
+            icon = { isActive ->
                 Icon(
                     painter = painterResource(DrawBoxIcons.Pointer),
                     contentDescription = "Select",
-                    tint = if (currentMode == Mode.SELECT) tertiary else inactive,
+                    tint = isActive.getActiveColor(),
                 )
             },
             onClick = { onModeSelected(Mode.SELECT) },
@@ -117,11 +118,11 @@ fun ControlsBar(
         FloatingMenuItem(
             id = "pan",
             isActive = currentMode == Mode.PAN,
-            icon = {
+            icon = { isActive ->
                 Icon(
                     painter = painterResource(DrawBoxIcons.Hand),
                     contentDescription = "Pan",
-                    tint = if (currentMode == Mode.PAN) tertiary else inactive,
+                    tint = isActive.getActiveColor(),
                 )
             },
             onClick = { onModeSelected(Mode.PAN) },
@@ -129,23 +130,24 @@ fun ControlsBar(
         FloatingMenuItem(
             id = "pen",
             isActive = currentMode == Mode.PEN,
-            icon = {
+            icon = { isActive ->
                 Icon(
                     painter = painterResource(DrawBoxIcons.StrokeCurved),
                     contentDescription = "Pen",
-                    tint = if (currentMode == Mode.PEN) tertiary else inactive,
+                    tint = isActive.getActiveColor(),
                 )
             },
             onClick = { onModeSelected(Mode.PEN) },
         ),
+        separator("sep-tools"),
         FloatingMenuItem(
             id = "shape",
             isActive = isShapeMode,
-            icon = {
+            icon = { isActive ->
                 Icon(
                     painter = painterResource(shapeDropdownIcon),
                     contentDescription = "Shape",
-                    tint = if (isShapeMode) tertiary else inactive,
+                    tint = isActive.getActiveColor(),
                 )
             },
             onClick = { onModeSelected(lastShape) },
@@ -153,11 +155,11 @@ fun ControlsBar(
                 FloatingMenuItem(
                     id = child.id,
                     isActive = currentMode == child.mode,
-                    icon = {
+                    icon = { isActive ->
                         Icon(
                             painter = painterResource(child.icon),
                             contentDescription = child.label,
-                            tint = if (currentMode == child.mode) active else inactive,
+                            tint = isActive.getActiveColor(),
                         )
                     },
                     onClick = { onModeSelected(child.mode) },

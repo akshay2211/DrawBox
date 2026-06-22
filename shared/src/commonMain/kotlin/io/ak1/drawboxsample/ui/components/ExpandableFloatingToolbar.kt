@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
@@ -39,6 +40,7 @@ import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.material3.VerticalFloatingToolbar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -70,11 +72,20 @@ import androidx.compose.ui.unit.dp
  */
 data class FloatingMenuItem(
     val id: String,
-    val icon: @Composable (isActive: Boolean) -> Unit,
+    val icon: @Composable (isActive: Boolean) -> Unit = { _ -> },
     val children: List<FloatingMenuItem> = emptyList(),
     val onClick: (() -> Unit)? = null,
     val isActive: Boolean = false,
+    /**
+     * Renders as a thin vertical divider instead of a button. Non-clickable;
+     * [icon], [children], [onClick], and [isActive] are ignored. Use to group
+     * related items in the bar.
+     */
+    val isSeparator: Boolean = false,
 )
+
+/** Convenience factory for a non-clickable visual separator slot. */
+fun separator(id: String): FloatingMenuItem = FloatingMenuItem(id = id, isSeparator = true)
 
 /**
  * Direction the vertical submenu pops in. [Above] suits bottom-anchored bars
@@ -201,6 +212,16 @@ fun ExpandableFloatingToolbar(
                 },
             content = {
                 items.forEach { item ->
+                    if (item.isSeparator) {
+                        VerticalDivider(
+                            modifier = Modifier
+                                .align(Alignment.CenterVertically)
+                                .height(20.dp)
+                                .padding(horizontal = 4.dp),
+                            color = MaterialTheme.colorScheme.outlineVariant,
+                        )
+                        return@forEach
+                    }
                     Box(
                         modifier = Modifier.onGloballyPositioned { coords ->
                             val pos = coords.positionInRoot()
