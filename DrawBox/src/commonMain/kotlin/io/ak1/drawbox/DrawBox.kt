@@ -10,9 +10,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.drawWithContent
@@ -151,17 +153,47 @@ fun DrawBox(
     modifier: Modifier = Modifier.fillMaxSize(),
     showGrid: Boolean = true,
 ) {
-    val graphicsLayer = rememberGraphicsLayer()
+    // Two-layer split:
+    //   - finalizedLayer: cached display list of "static" elements (everything not
+    //     currently being mutated). Re-recorded only when the static set OR the
+    //     viewport changes — so a 500-element scene replays for free during an
+    //     active drag, since nothing changes outside the one element being drawn.
+    //   - captureLayer: one-shot recording used only when bitmap export is
+    //     requested. Records the full scene at world-space, dispatches the
+    //     resulting ImageBitmap, then sits idle. Keeps the per-frame fast path
+    //     free of capture concerns.
+    val finalizedLayer = rememberGraphicsLayer()
+    val captureLayer = rememberGraphicsLayer()
     val scope = rememberCoroutineScope()
-    LaunchedEffect(state.hashCode()){
+    // Survives recompositions; rebuilt only when an Element.Path's points list
+    // reference actually changes, so finalized strokes don't allocate a new
+    // Path every frame during pan/zoom or active drag.
+    val pathCache = remember { PathCache() }
+
+    // Drag-in-progress signal lifted out of the gesture coroutine so the render
+    // path can tell when an element is being actively mutated (drawn, moved,
+    // resized, rotated, line-edited). Marquee and pan drags do NOT flip this,
+    // since they don't change any element's geometry.
+    var dragInProgress by remember { mutableStateOf(false) }
+
+    // Snapshot of (viewport, static element refs) at the last finalizedLayer
+    // record. We use REFERENCE equality on element entries — the reducer always
+    // produces new instances via `copy(...)` on mutation, so any change to a
+    // static element is detected without scanning fields.
+    var lastRecordedVp by remember { mutableStateOf<Viewport?>(null) }
+    var lastRecordedStaticRefs by remember { mutableStateOf<List<Element>>(emptyList()) }
+
+    // Bitmap capture is request/serve: the controller's invokeBitmap call sets
+    // this; the next draw pass records the full scene into captureLayer and
+    // dispatches Intent.SaveBitmap. Avoids re-recording every frame "just in
+    // case" capture is invoked.
+    var capturePending by remember { mutableStateOf(false) }
+
+    LaunchedEffect(state.hashCode()) {
         state.invokeBitmap = {
-            scope.launch {
-                try {
-                    onIntent(Intent.SaveBitmap(graphicsLayer.toImageBitmap(), null))
-                } catch (e: Throwable) {
-                    onIntent(Intent.SaveBitmap(null, e))
-                }
-            }
+            // invokeBitmap may be called off-main; bounce through scope so the
+            // State write happens on the Compose-friendly dispatcher.
+            scope.launch { capturePending = true }
         }
     }
 
@@ -253,10 +285,6 @@ fun DrawBox(
                     }
                 }
                 if (showGrid) drawGrid(vp, state.bgColor)
-            }
-            .drawWithContent {
-                graphicsLayer.record { this@drawWithContent.drawContent() }
-                drawLayer(graphicsLayer)
             }
             // Re-acquire keyboard focus on every press. Without this, clicking a
             // Material button (mode menu, zoom toolbar, etc.) steals focus and
@@ -419,6 +447,7 @@ fun DrawBox(
                                     is SelectionInteraction.SelectAndMove -> {
                                         latestOnIntent(Intent.SelectAt(world, pickTolerancePx / s.viewport.scale))
                                         latestOnIntent(Intent.BeginTransform)
+                                        dragInProgress = true
                                         SelectionInteraction.Move
                                     }
                                     is SelectionInteraction.Move,
@@ -427,18 +456,26 @@ fun DrawBox(
                                     is SelectionInteraction.LineEndpoint,
                                     is SelectionInteraction.LineBend -> {
                                         latestOnIntent(Intent.BeginTransform)
+                                        dragInProgress = true
                                         classified
                                     }
                                     is SelectionInteraction.Marquee -> {
+                                        // Marquee doesn't mutate any element —
+                                        // keep dragInProgress=false so the cached
+                                        // layer keeps replaying for free.
                                         latestOnIntent(Intent.SetMarqueeRect(Rect(world, world)))
                                         classified
                                     }
                                     SelectionInteraction.Pan -> classified
                                 }
                             }
-                            Mode.PEN -> latestOnIntent(Intent.InsertNewPath(world))
+                            Mode.PEN -> {
+                                latestOnIntent(Intent.InsertNewPath(world))
+                                dragInProgress = true
+                            }
                             else -> modeShapeType(s.effectiveMode)?.let { st ->
                                 latestOnIntent(Intent.InsertNewShape(st, world))
+                                dragInProgress = true
                             }
                         }
                     },
@@ -468,6 +505,7 @@ fun DrawBox(
                         }
                         latestOnIntent(Intent.EndTransform)
                         interaction = null
+                        dragInProgress = false
                     },
                     onDragCancel = {
                         if (latestState.mode == Mode.SELECT &&
@@ -477,6 +515,7 @@ fun DrawBox(
                         }
                         latestOnIntent(Intent.EndTransform)
                         interaction = null
+                        dragInProgress = false
                     },
                 ) { change, dragAmount ->
                     val s = latestState
@@ -543,27 +582,104 @@ fun DrawBox(
             },
     ) {
         Canvas(modifier = Modifier.fillMaxSize()) {
-            // Grid is drawn in the parent's .drawBehind so it stays out of the
-            // graphicsLayer used for bitmap capture. Elements + chrome live in
-            // world space; the transform projects them onto the screen. Stroke
-            // widths inside this block are in world units, so chrome scales
-            // widths/sizes by 1/scale to stay constant pixel size.
+            // Grid stays in the parent's .drawBehind so it never enters
+            // finalizedLayer — that keeps it out of bitmap export and out of the
+            // cached rendering, while still painting on every frame.
             val vp = state.viewport
+            val orderedElements = state.elements.sortedByZIndexIfNeeded()
+
+            // Active id set: which elements does the current gesture mutate?
+            // - PEN / shape modes: the just-inserted element (always elements.last())
+            // - SELECT (Move/Resize/Rotate/LineEndpoint/LineBend): state.selectedIds
+            // - Marquee / Pan / no drag: empty
+            val activeIds: Set<String> = if (!dragInProgress) {
+                emptySet()
+            } else {
+                when (state.effectiveMode) {
+                    Mode.SELECT -> state.selectedIds
+                    Mode.PAN -> emptySet()
+                    Mode.PEN, Mode.RECTANGLE, Mode.CIRCLE, Mode.TRIANGLE, Mode.ARROW, Mode.LINE -> {
+                        val lastId = orderedElements.lastOrNull()?.id
+                        if (lastId == null) emptySet() else setOf(lastId)
+                    }
+                }
+            }
+
+            // Freshness check on the cached layer. Walks orderedElements once,
+            // comparing non-active entries against lastRecordedStaticRefs by
+            // reference (allocation-free).
+            val cacheFresh = lastRecordedVp == vp &&
+                staticRefsMatch(orderedElements, activeIds, lastRecordedStaticRefs)
+
+            if (!cacheFresh) {
+                // Re-record at screen-space (transform baked in). This means
+                // pan/zoom invalidates the cache — explicitly accepted trade-off:
+                // the win is during active drawing, where the viewport is stable
+                // but elements churn. Pan/zoom optimization is a follow-up.
+                finalizedLayer.record {
+                    withTransform({
+                        translate(vp.offset.x, vp.offset.y)
+                        scale(vp.scale, vp.scale, pivot = Offset.Zero)
+                    }) {
+                        orderedElements.forEach { el ->
+                            if (el.id !in activeIds) renderElement(el, pathCache)
+                        }
+                    }
+                }
+                lastRecordedVp = vp
+                lastRecordedStaticRefs = orderedElements.filter { it.id !in activeIds }
+            }
+
+            // Play the cached static layer. No transform — it was baked in at
+            // record time and the layer replays in screen-space.
+            drawLayer(finalizedLayer)
+
+            // Draw the active element(s) + selection chrome live, through the
+            // same world→screen transform.
             withTransform({
                 translate(vp.offset.x, vp.offset.y)
                 scale(vp.scale, vp.scale, pivot = Offset.Zero)
             }) {
-                state.elements
-                    .sortedBy { it.zIndex }
-                    .forEach { element ->
-                        renderElement(element)
+                if (activeIds.isNotEmpty()) {
+                    orderedElements.forEach { el ->
+                        if (el.id in activeIds) renderElement(el, pathCache)
                     }
+                }
                 drawSelectionChrome(
                     state = state,
                     handleSizePx = handleSizePx,
                     rotationOffsetPx = rotationOffsetPx,
                     inverseScale = 1f / vp.scale,
                 )
+            }
+
+            // On-demand bitmap capture: record the full scene into captureLayer,
+            // then dispatch SaveBitmap. The captureLayer is otherwise untouched,
+            // so the per-frame fast path stays clean of capture concerns.
+            if (capturePending) {
+                captureLayer.record {
+                    withTransform({
+                        translate(vp.offset.x, vp.offset.y)
+                        scale(vp.scale, vp.scale, pivot = Offset.Zero)
+                    }) {
+                        orderedElements.forEach { renderElement(it, pathCache) }
+                    }
+                }
+                capturePending = false
+                scope.launch {
+                    try {
+                        onIntent(Intent.SaveBitmap(captureLayer.toImageBitmap(), null))
+                    } catch (e: Throwable) {
+                        onIntent(Intent.SaveBitmap(null, e))
+                    }
+                }
+            }
+
+            // Reclaim PathCache entries for deleted elements. Cheap (HashMap
+            // key-retain over the live id set); only worth doing when something
+            // was actually removed.
+            if (pathCache.size() > state.elements.size) {
+                pathCache.retainOnly(state.elements.mapTo(HashSet(state.elements.size)) { it.id })
             }
         }
     }
@@ -951,21 +1067,22 @@ private fun Painter.rasterize(
  *
  * @see drawShape for shape-specific rendering
  */
-private fun DrawScope.renderElement(element: Element) {
+private fun DrawScope.renderElement(element: Element, pathCache: PathCache? = null) {
     if (element.rotation == 0f) {
-        renderElementContent(element)
+        renderElementContent(element, pathCache)
     } else {
         withTransform({ rotate(element.rotation, pivot = element.bounds().center) }) {
-            renderElementContent(element)
+            renderElementContent(element, pathCache)
         }
     }
 }
 
-private fun DrawScope.renderElementContent(element: Element) {
+private fun DrawScope.renderElementContent(element: Element, pathCache: PathCache?) {
     when (element) {
         is Element.Path -> {
+            val path = pathCache?.pathFor(element.id, element.points) ?: createPath(element.points)
             drawPath(
-                createPath(element.points),
+                path,
                 color = element.strokeColor,
                 alpha = element.alpha,
                 style = Stroke(

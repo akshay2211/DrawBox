@@ -63,6 +63,15 @@ class UseCase {
 
         val lastElement = currentElements.last()
         return if (lastElement is Element.Path) {
+            // Decimate sub-pixel samples: a pen drag at 60 Hz easily produces points
+            // with sub-world-pixel spacing. The visual difference is invisible but
+            // every extra point grows the Path we rebuild during the active stroke.
+            val lastPoint = lastElement.points.lastOrNull()
+            if (lastPoint != null) {
+                val dx = newPoint.x - lastPoint.x
+                val dy = newPoint.y - lastPoint.y
+                if (dx * dx + dy * dy < MIN_PEN_POINT_DIST_SQ) return currentElements
+            }
             val updatedPoints = lastElement.points + newPoint
             currentElements.dropLast(1) + lastElement.copy(points = updatedPoints).touched()
         } else {
@@ -373,6 +382,13 @@ class UseCase {
         }
     }
 }
+
+/**
+ * Minimum world-space distance² between consecutive freehand pen samples.
+ * Samples closer than 1 world pixel are dropped — they bloat the active stroke
+ * and don't change what the user sees. Squared so we can compare without sqrt.
+ */
+private const val MIN_PEN_POINT_DIST_SQ: Float = 1f
 
 /**
  * Slop, in world pixels, applied to a bindable shape's AABB when deciding
