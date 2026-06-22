@@ -11,6 +11,8 @@
 
 DrawBox is a Kotlin Multiplatform drawing SDK for Compose Multiplatform. It helps developers embed editable drawing, annotation, diagramming, and export capabilities across Android, iOS, Web, and Desktop from one shared Kotlin codebase.
 
+> **Maintainer response policy:** issues and pull requests receive a first response within 7 days. Security reports go through [SECURITY.md](SECURITY.md).
+
 ## Try it Live
 
 Run the sample right in your browser — no install required:
@@ -141,6 +143,8 @@ dependencies {
 </dependency>
 ```
 
+> Full version history and the `1.x → 2.x` migration guide live in [CHANGELOG.md](CHANGELOG.md).
+
 ## What's New in 2.0.0
 
 ### Kotlin Multiplatform Migration
@@ -164,6 +168,9 @@ dependencies {
 
 ## Thanks to
 [RangVikalp](https://github.com/akshay2211/rang-vikalp) for the beautiful color picker used in DrawBox
+
+## Security
+Please report vulnerabilities privately. See [SECURITY.md](SECURITY.md) for the supported versions, reporting channel, and disclosure policy.
 
 ## License
 Licensed under the Apache License, Version 2.0, [click here for the full license](/LICENSE).
