@@ -165,6 +165,35 @@ class Reducer(
                 ),
             )
         }
+        // Eraser
+        is Intent.BeginErase -> {
+            // Defensive reset: a previous session that was cancelled mid-sweep
+            // without an EndErase would leave the dirty flag stuck.
+            if (state.erasingSessionDirty) state.copy(erasingSessionDirty = false)
+            else state
+        }
+        is Intent.EraseAt -> {
+            // Snapshot lazily on the FIRST removal of the current session — a
+            // tap or drag through empty space pushes nothing to history. The
+            // eraseAt helper returns the same list instance when no element is
+            // hit, so we can detect a miss by reference and short-circuit.
+            val next = useCase.eraseAt(state.elements, intent.point, intent.radius)
+            if (next === state.elements) state
+            else {
+                val base = if (!state.erasingSessionDirty) state.snapshot() else state
+                base.copy(
+                    elements = next,
+                    erasingSessionDirty = true,
+                    selectedIds = state.selectedIds.intersect(next.map { it.id }.toSet()),
+                )
+            }
+        }
+        is Intent.EndErase -> {
+            if (state.erasingSessionDirty) state.copy(erasingSessionDirty = false)
+            else state
+        }
+        is Intent.SetEraserSize -> state.copy(eraserSize = intent.size)
+
         is Intent.BringSelectionToFront -> {
             if (state.selectedIds.isEmpty()) state
             else state.snapshot().copy(

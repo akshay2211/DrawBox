@@ -6,6 +6,7 @@ import io.ak1.drawbox.domain.model.Element
 import io.ak1.drawbox.domain.model.ShapeType
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
 class UseCaseTest {
@@ -115,6 +116,60 @@ class UseCaseTest {
         assertEquals(ShapeType.RECTANGLE, result.shapeType)
         assertEquals(offset, result.points[0])
         assertEquals(color, result.strokeColor)
+    }
+
+    @Test
+    fun testEraseAtRemovesPathInRadius() {
+        val path = Element.Path(
+            points = listOf(Offset(0f, 0f), Offset(100f, 0f)),
+            strokeColor = Color.Red,
+            strokeWidth = 4f,
+            alpha = 1f,
+        )
+        val elements = useCase.addElement(path, emptyList())
+
+        val result = useCase.eraseAt(elements, Offset(50f, 0f), radius = 5f)
+
+        assertEquals(0, result.size)
+    }
+
+    @Test
+    fun testEraseAtMissReturnsSameInstance() {
+        val path = Element.Path(
+            points = listOf(Offset(0f, 0f), Offset(100f, 0f)),
+            strokeColor = Color.Red,
+            strokeWidth = 1f,
+            alpha = 1f,
+        )
+        val elements = useCase.addElement(path, emptyList())
+
+        // Far away from the path: nothing hit. Reducer relies on this
+        // identity contract to skip no-op state copies.
+        val result = useCase.eraseAt(elements, Offset(500f, 500f), radius = 5f)
+
+        assertSame(elements, result)
+    }
+
+    @Test
+    fun testEraseAtPreservesUnhitElements() {
+        val hit = Element.Path(
+            points = listOf(Offset(0f, 0f), Offset(50f, 0f)),
+            strokeColor = Color.Red,
+            strokeWidth = 2f,
+            alpha = 1f,
+        )
+        val miss = Element.Path(
+            points = listOf(Offset(0f, 200f), Offset(50f, 200f)),
+            strokeColor = Color.Blue,
+            strokeWidth = 2f,
+            alpha = 1f,
+        )
+        val elements = useCase.addElement(miss, useCase.addElement(hit, emptyList()))
+
+        val result = useCase.eraseAt(elements, Offset(25f, 0f), radius = 5f)
+
+        assertEquals(1, result.size)
+        assertEquals(miss.id, result[0].id)
     }
 
 }

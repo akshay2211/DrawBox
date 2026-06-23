@@ -250,6 +250,23 @@ class DrawBoxController(
     /** Re-stroke every selected element. */
     fun setSelectionStrokeWidth(width: Float) = onIntent(Intent.SetSelectedStrokeWidth(width))
 
+    /**
+     * Erase every element whose body intersects a disk of [radius] world pixels
+     * around [point]. Snapshots history at most once and only if an element is
+     * actually removed, so calls that hit nothing leave the undo stack
+     * untouched. Useful for programmatic eraser passes; for user-driven
+     * erasing the gesture layer in [io.ak1.drawbox.DrawBox] already drives
+     * this via [Intent.EraseAt] in [Mode.ERASER].
+     */
+    fun eraseAt(point: Offset, radius: Float) {
+        onIntent(Intent.BeginErase)
+        onIntent(Intent.EraseAt(point, radius))
+        onIntent(Intent.EndErase)
+    }
+
+    /** Change the world-space radius used by [Mode.ERASER]. */
+    fun setEraserSize(size: Float) = onIntent(Intent.SetEraserSize(size))
+
     /** Bring selected elements to the top of the z-order. */
     fun bringSelectionToFront() = onIntent(Intent.BringSelectionToFront)
 

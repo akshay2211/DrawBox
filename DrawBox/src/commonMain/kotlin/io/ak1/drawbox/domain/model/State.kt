@@ -16,6 +16,8 @@ import androidx.compose.ui.graphics.Color
  * - [LINE]: Creates [Element.Shape] with [ShapeType.LINE]
  * - [SELECT]: Selects existing elements. Tap to select, drag to move, drag a handle
  *   to resize or rotate, drag on empty space to marquee-select multiple elements.
+ * - [ERASER]: Tap or drag to delete elements whose body intersects the eraser
+ *   radius. Whole-element (object) eraser — strokes/shapes are removed atomically.
  *
  * The mode is read from [State.mode] and passed to [DrawBox], which uses it to
  * determine how to interpret user gestures.
@@ -37,6 +39,12 @@ sealed class Mode {
     data object SELECT : Mode()
     /** Pan mode - drag pans the camera; useful for navigating the infinite canvas */
     data object PAN : Mode()
+    /**
+     * Object eraser — tap or drag to delete any element whose body intersects
+     * the eraser radius. Whole-element (not pixel-level): a single hit removes
+     * the entire stroke or shape. Undoable as one gesture.
+     */
+    data object ERASER : Mode()
 }
 
 /**
@@ -92,6 +100,20 @@ data class State(
     val bgColor: Color = Color.Black,
     val bgPattern: BackgroundPattern? = null,
     val mode: Mode = Mode.PEN,
+    /**
+     * World-space radius used by [Mode.ERASER] for hit-testing. Pressure-aware
+     * platforms can modulate this at the gesture layer without persisting the
+     * modulated value here.
+     */
+    val eraserSize: Float = 20f,
+    /**
+     * Within a single erase gesture: has any tick actually removed an element
+     * yet? Used to guarantee at most one history snapshot per gesture, taken
+     * lazily on the first hit. A tap or drag that never intersects an element
+     * therefore consumes no undo slot. Cleared by [Intent.BeginErase] and
+     * [Intent.EndErase]; not persisted.
+     */
+    val erasingSessionDirty: Boolean = false,
 ){
     internal var invokeBitmap :(() -> Unit) = {}
 }

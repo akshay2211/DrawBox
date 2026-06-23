@@ -226,13 +226,20 @@ fun DrawBox(
     }
 
     // Cursor: hand in PAN (incl. temp-pan via Space), crosshair for drawing
-    // modes, default otherwise. Picked up by Compose Desktop / Web / IDE
-    // preview; no-op on mobile.
+    // modes, default otherwise. The eraser draws its own circular overlay so
+    // the system cursor is hidden (Default) under it to avoid double-cursoring.
+    // Picked up by Compose Desktop / Web / IDE preview; no-op on mobile.
     val cursor = when (state.effectiveMode) {
         Mode.PAN -> PointerIcon.Hand
         Mode.SELECT -> PointerIcon.Default
+        Mode.ERASER -> PointerIcon.Default
         else -> PointerIcon.Crosshair
     }
+
+    // Live pointer position in WORLD coords for the eraser cursor overlay.
+    // Null when the cursor is outside the canvas or no hover events are
+    // arriving (mobile/touch). The overlay collapses gracefully in that case.
+    var eraserPointerWorld by remember { mutableStateOf<Offset?>(null) }
 
     Box(
         modifier = modifier
@@ -296,6 +303,32 @@ fun DrawBox(
                         val event = awaitPointerEvent(PointerEventPass.Initial)
                         if (event.type == PointerEventType.Press) {
                             runCatching { focusRequester.requestFocus() }
+                        }
+                    }
+                }
+            }
+            // Eraser hover tracking: keep the world-space cursor position fresh
+            // for the eraser overlay circle. Runs as long as the composable is
+            // mounted; the overlay only consumes the value when mode == ERASER.
+            // Touch platforms emit no hover events; the overlay collapses
+            // gracefully in that case.
+            .pointerInput(Unit) {
+                awaitPointerEventScope {
+                    while (true) {
+                        val event = awaitPointerEvent()
+                        when (event.type) {
+                            PointerEventType.Move,
+                            PointerEventType.Enter,
+                            PointerEventType.Press,
+                            -> {
+                                val pos = event.changes.firstOrNull()?.position
+                                eraserPointerWorld = pos?.let {
+                                    latestState.viewport.screenToWorld(it)
+                                }
+                            }
+                            PointerEventType.Exit -> {
+                                eraserPointerWorld = null
+                            }
                         }
                     }
                 }
@@ -414,6 +447,15 @@ fun DrawBox(
                                 latestOnIntent(Intent.UpdateLatestPath(world))
                             }
                             Mode.PAN -> {} // taps in pan mode are no-ops
+                            Mode.ERASER -> {
+                                // Single tap = atomic erase session. BeginErase
+                                // clears the dirty flag; EraseAt snapshots only
+                                // if it actually removes something. A tap on
+                                // empty space therefore consumes no undo slot.
+                                latestOnIntent(Intent.BeginErase)
+                                latestOnIntent(Intent.EraseAt(world, s.eraserSize / s.viewport.scale))
+                                latestOnIntent(Intent.EndErase)
+                            }
                             else -> modeShapeType(s.effectiveMode)?.let { st ->
                                 latestOnIntent(Intent.InsertNewShape(st, world))
                                 latestOnIntent(Intent.UpdateLatestShape(world))
@@ -473,6 +515,15 @@ fun DrawBox(
                                 latestOnIntent(Intent.InsertNewPath(world))
                                 dragInProgress = true
                             }
+                            Mode.ERASER -> {
+                                // Open the erase gesture: BeginErase clears the
+                                // dirty flag so EraseAt can snapshot lazily on
+                                // the first actual hit. A drag that never
+                                // intersects an element pushes nothing to undo.
+                                latestOnIntent(Intent.BeginErase)
+                                latestOnIntent(Intent.EraseAt(world, s.eraserSize / s.viewport.scale))
+                                dragInProgress = true
+                            }
                             else -> modeShapeType(s.effectiveMode)?.let { st ->
                                 latestOnIntent(Intent.InsertNewShape(st, world))
                                 dragInProgress = true
@@ -502,6 +553,8 @@ fun DrawBox(
                             if (justDrawn is Element.Shape && justDrawn.shapeType == ShapeType.ARROW) {
                                 latestOnIntent(Intent.FinalizeArrowBindings(justDrawn.id))
                             }
+                        } else if (s.mode == Mode.ERASER) {
+                            latestOnIntent(Intent.EndErase)
                         }
                         latestOnIntent(Intent.EndTransform)
                         interaction = null
@@ -512,6 +565,9 @@ fun DrawBox(
                             interaction is SelectionInteraction.Marquee
                         ) {
                             latestOnIntent(Intent.SetMarqueeRect(null))
+                        }
+                        if (latestState.mode == Mode.ERASER) {
+                            latestOnIntent(Intent.EndErase)
                         }
                         latestOnIntent(Intent.EndTransform)
                         interaction = null
@@ -574,6 +630,9 @@ fun DrawBox(
                             else -> {}
                         }
                         Mode.PEN -> latestOnIntent(Intent.UpdateLatestPath(world))
+                        Mode.ERASER -> latestOnIntent(
+                            Intent.EraseAt(world, s.eraserSize / s.viewport.scale),
+                        )
                         else -> if (modeShapeType(s.effectiveMode) != null) {
                             latestOnIntent(Intent.UpdateLatestShape(world))
                         }
@@ -598,6 +657,11 @@ fun DrawBox(
                 when (state.effectiveMode) {
                     Mode.SELECT -> state.selectedIds
                     Mode.PAN -> emptySet()
+                    // The eraser removes elements from the static set on each
+                    // tick. Surviving elements are unchanged, so leave activeIds
+                    // empty and let staticRefsMatch handle the cache rebuild
+                    // when the element list shrinks.
+                    Mode.ERASER -> emptySet()
                     Mode.PEN, Mode.RECTANGLE, Mode.CIRCLE, Mode.TRIANGLE, Mode.ARROW, Mode.LINE -> {
                         val lastId = orderedElements.lastOrNull()?.id
                         if (lastId == null) emptySet() else setOf(lastId)
@@ -651,6 +715,27 @@ fun DrawBox(
                     rotationOffsetPx = rotationOffsetPx,
                     inverseScale = 1f / vp.scale,
                 )
+                // Eraser cursor overlay: outline circle at the world-space
+                // pointer with the configured eraser radius. Drawn inside the
+                // world transform so the radius matches the actual hit area at
+                // any zoom level. Skipped on touch (no hover events → null pos)
+                // and outside ERASER mode.
+                if (state.effectiveMode == Mode.ERASER) {
+                    eraserPointerWorld?.let { center ->
+                        val r = state.eraserSize
+                        val ringColor = if (state.bgColor.luminance() < 0.5f) {
+                            Color.White
+                        } else {
+                            Color.Black
+                        }
+                        drawCircle(
+                            color = ringColor,
+                            radius = r,
+                            center = center,
+                            style = Stroke(width = 1.5f / vp.scale),
+                        )
+                    }
+                }
             }
 
             // On-demand bitmap capture: record the full scene into captureLayer,
@@ -741,7 +826,7 @@ private fun modeShapeType(mode: Mode): ShapeType? = when (mode) {
     Mode.TRIANGLE -> ShapeType.TRIANGLE
     Mode.ARROW -> ShapeType.ARROW
     Mode.LINE -> ShapeType.LINE
-    Mode.PEN, Mode.SELECT, Mode.PAN -> null
+    Mode.PEN, Mode.SELECT, Mode.PAN, Mode.ERASER -> null
 }
 
 // ==================== Selection gesture support ====================

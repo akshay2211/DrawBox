@@ -176,4 +176,63 @@ class DrawingReducerTest {
         assertTrue(newState.future.isEmpty())
         assertEquals(1, newState.history.size)
     }
+
+    // ===== Eraser =====
+
+    private fun erasablePath(): Element.Path = Element.Path(
+        points = listOf(Offset(0f, 0f), Offset(100f, 0f)),
+        strokeColor = Color.Red,
+        strokeWidth = 4f,
+        alpha = 1f,
+    )
+
+    @Test
+    fun testEraseAtOnEmptySpaceLeavesHistoryAlone() {
+        val path = erasablePath()
+        val initial = State(elements = listOf(path))
+
+        var s = reducer.reduce(initial, Intent.BeginErase)
+        // Tap far away from the path: no element is hit.
+        s = reducer.reduce(s, Intent.EraseAt(Offset(500f, 500f), radius = 5f))
+        s = reducer.reduce(s, Intent.EndErase)
+
+        assertEquals(1, s.elements.size)
+        assertTrue(s.history.isEmpty(), "no element hit → no history entry")
+        assertTrue(!s.erasingSessionDirty, "session should be closed cleanly")
+    }
+
+    @Test
+    fun testEraseAtFirstHitSnapshotsHistoryOnce() {
+        val a = erasablePath().copy(id = "a")
+        val b = erasablePath().copy(
+            id = "b",
+            points = listOf(Offset(0f, 200f), Offset(100f, 200f)),
+        )
+        val initial = State(elements = listOf(a, b))
+
+        var s = reducer.reduce(initial, Intent.BeginErase)
+        // Three EraseAt ticks within one gesture, each landing on a different
+        // element after a miss. Only the first hit should snapshot.
+        s = reducer.reduce(s, Intent.EraseAt(Offset(500f, 500f), 5f))   // miss
+        s = reducer.reduce(s, Intent.EraseAt(Offset(50f, 0f), 5f))      // hit a
+        s = reducer.reduce(s, Intent.EraseAt(Offset(50f, 200f), 5f))    // hit b
+        s = reducer.reduce(s, Intent.EndErase)
+
+        assertEquals(0, s.elements.size)
+        assertEquals(1, s.history.size, "single snapshot covers the whole sweep")
+        // Undoing the gesture restores both elements as one operation.
+        val undone = reducer.reduce(s, Intent.Undo)
+        assertEquals(2, undone.elements.size)
+    }
+
+    @Test
+    fun testEraseAtSetsSessionDirtyOnlyAfterHit() {
+        val initial = State(elements = listOf(erasablePath()))
+        val opened = reducer.reduce(initial, Intent.BeginErase)
+        val missed = reducer.reduce(opened, Intent.EraseAt(Offset(500f, 500f), 5f))
+        assertTrue(!missed.erasingSessionDirty)
+
+        val hit = reducer.reduce(missed, Intent.EraseAt(Offset(50f, 0f), 5f))
+        assertTrue(hit.erasingSessionDirty)
+    }
 }
