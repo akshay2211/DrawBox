@@ -9,6 +9,7 @@ import io.ak1.drawbox.domain.model.ShapeType
 import io.ak1.drawbox.domain.model.StrokeStyle
 import io.ak1.drawbox.domain.model.boundaryPointToward
 import io.ak1.drawbox.domain.model.bounds
+import io.ak1.drawbox.domain.model.hitTest
 import io.ak1.drawbox.domain.model.resizeBounds
 import io.ak1.drawbox.domain.model.topmostHit
 import io.ak1.drawbox.domain.model.touched
@@ -181,6 +182,23 @@ class UseCase {
     /** Delete every element whose id is in `ids`. */
     fun deleteSelected(elements: List<Element>, ids: Set<String>): List<Element> =
         elements.filter { it.id !in ids }
+
+    /**
+     * Remove every element whose body is within `radius` of `point`. Reuses the
+     * same [hitTest] used by selection, with the eraser disk radius substituted
+     * for the pick tolerance — which means stroke width is already accounted
+     * for. Returns the original list instance when nothing was hit so callers
+     * can skip useless state churn.
+     */
+    fun eraseAt(
+        elements: List<Element>,
+        point: Offset,
+        radius: Float,
+    ): List<Element> {
+        if (elements.isEmpty()) return elements
+        val survivors = elements.filterNot { it.hitTest(point, radius) }
+        return if (survivors.size == elements.size) elements else survivors
+    }
 
     /** Promote selected elements to the top of the z-order. */
     fun bringToFront(elements: List<Element>, ids: Set<String>): List<Element> {

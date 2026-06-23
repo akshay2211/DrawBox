@@ -217,6 +217,38 @@ sealed class Intent {
      */
     data class SetSelectedStrokeStyle(val style: StrokeStyle) : Intent()
 
+    // ==================== Eraser Operations ====================
+
+    /**
+     * Open an erase session. Resets [State.erasingSessionDirty] so the next
+     * [EraseAt] that actually removes an element will snapshot history once.
+     * A session that never lands on an element snapshots nothing — taps and
+     * drags through empty space consume no undo slot.
+     *
+     * Not undoable, not history-relevant on its own.
+     */
+    data object BeginErase : Intent()
+
+    /**
+     * Delete every element whose body intersects a disk of [radius] around
+     * [point] (world space). Snapshots history lazily on the first hit within
+     * the current erase session (see [BeginErase]). Subsequent hits inside the
+     * same session mutate elements in place without snapshotting, so a single
+     * undo reverts the entire sweep. No-op when no element is hit — no
+     * snapshot is pushed and no [State] copy is emitted.
+     */
+    data class EraseAt(val point: Offset, val radius: Float) : Intent()
+
+    /**
+     * Close an erase session. Clears [State.erasingSessionDirty] so the next
+     * session starts fresh. Also serves as a transaction-end signal for sync /
+     * autosave observers (see [EndTransform]).
+     */
+    data object EndErase : Intent()
+
+    /** Change the world-space eraser radius used by [Mode.ERASER]. */
+    data class SetEraserSize(val size: Float) : Intent()
+
     /** Move selected elements to the top of the z-order. Snapshots history. */
     data object BringSelectionToFront : Intent()
 

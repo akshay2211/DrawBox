@@ -26,12 +26,17 @@ import org.jetbrains.compose.resources.painterResource
 /**
  * Bottom-center floating tool bar. Six slots, left → right:
  *
- *   [Undo] [Redo] [Select] [Pan] [Pen] [Shape▾]
+ *   [Undo] [Redo] [Select] [Eraser] [Pen] [Shape▾]
  *
- * Pen (freehand) and Pan get their own slots so the dropdown is purely shape
- * tools. The currently active tool — whether Select, Pan, Pen, or a shape —
- * is tinted with the primary color so the user can tell at a glance which
- * mode they're in.
+ * Pen (freehand) and Eraser get their own slots so the dropdown is purely
+ * shape tools. The currently active tool — whether Select, Eraser, Pen, or a
+ * shape — is tinted with the primary color so the user can tell at a glance
+ * which mode they're in.
+ *
+ * Pan is intentionally absent from the toolbar: panning is still always
+ * available via Space-bar (hold to temp-pan), middle-mouse drag, two-finger
+ * touch, and the scroll wheel. Removing it from the bar reclaims the slot for
+ * the eraser, which is a far more common drawing-tool action.
  *
  * Color / stroke width / stroke style / corner radius live in the contextual
  * top-right [ContextBar] for the active drawing mode or selection. File /
@@ -116,16 +121,16 @@ fun ControlsBar(
             onClick = { onModeSelected(Mode.SELECT) },
         ),
         FloatingMenuItem(
-            id = "pan",
-            isActive = currentMode == Mode.PAN,
+            id = "eraser",
+            isActive = currentMode == Mode.ERASER,
             icon = { isActive ->
                 Icon(
-                    painter = painterResource(DrawBoxIcons.Hand),
-                    contentDescription = "Pan",
+                    painter = painterResource(DrawBoxIcons.Eraser),
+                    contentDescription = "Eraser",
                     tint = isActive.getActiveColor(),
                 )
             },
-            onClick = { onModeSelected(Mode.PAN) },
+            onClick = { onModeSelected(Mode.ERASER) },
         ),
         FloatingMenuItem(
             id = "pen",
