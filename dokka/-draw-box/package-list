@@ -129,6 +129,7 @@ $dokka.location:io.ak1.drawbox.domain.model/Event///PointingToDeclaration/-draw
 $dokka.location:io.ak1.drawbox.domain.model/Intent.AddElement///PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-intent/-add-element/index.html
 $dokka.location:io.ak1.drawbox.domain.model/Intent.AddElement/AddElement/#io.ak1.drawbox.domain.model.Element/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-intent/-add-element/-add-element.html
 $dokka.location:io.ak1.drawbox.domain.model/Intent.AddElement/element/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-intent/-add-element/element.html
+$dokka.location:io.ak1.drawbox.domain.model/Intent.BeginErase///PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-intent/-begin-erase/index.html
 $dokka.location:io.ak1.drawbox.domain.model/Intent.BeginTransform///PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-intent/-begin-transform/index.html
 $dokka.location:io.ak1.drawbox.domain.model/Intent.BringSelectionToFront///PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-intent/-bring-selection-to-front/index.html
 $dokka.location:io.ak1.drawbox.domain.model/Intent.ClearSelection///PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-intent/-clear-selection/index.html
@@ -139,7 +140,12 @@ $dokka.location:io.ak1.drawbox.domain.model/Intent.DeleteElement///PointingToDec
 $dokka.location:io.ak1.drawbox.domain.model/Intent.DeleteElement/DeleteElement/#kotlin.String/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-intent/-delete-element/-delete-element.html
 $dokka.location:io.ak1.drawbox.domain.model/Intent.DeleteElement/elementId/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-intent/-delete-element/element-id.html
 $dokka.location:io.ak1.drawbox.domain.model/Intent.DeleteSelected///PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-intent/-delete-selected/index.html
+$dokka.location:io.ak1.drawbox.domain.model/Intent.EndErase///PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-intent/-end-erase/index.html
 $dokka.location:io.ak1.drawbox.domain.model/Intent.EndTransform///PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-intent/-end-transform/index.html
+$dokka.location:io.ak1.drawbox.domain.model/Intent.EraseAt///PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-intent/-erase-at/index.html
+$dokka.location:io.ak1.drawbox.domain.model/Intent.EraseAt/EraseAt/#androidx.compose.ui.geometry.Offset#kotlin.Float/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-intent/-erase-at/-erase-at.html
+$dokka.location:io.ak1.drawbox.domain.model/Intent.EraseAt/point/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-intent/-erase-at/point.html
+$dokka.location:io.ak1.drawbox.domain.model/Intent.EraseAt/radius/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-intent/-erase-at/radius.html
 $dokka.location:io.ak1.drawbox.domain.model/Intent.FinalizeArrowBindings///PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-intent/-finalize-arrow-bindings/index.html
 $dokka.location:io.ak1.drawbox.domain.model/Intent.FinalizeArrowBindings/FinalizeArrowBindings/#kotlin.String/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-intent/-finalize-arrow-bindings/-finalize-arrow-bindings.html
 $dokka.location:io.ak1.drawbox.domain.model/Intent.FinalizeArrowBindings/id/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-intent/-finalize-arrow-bindings/id.html
@@ -190,6 +196,9 @@ $dokka.location:io.ak1.drawbox.domain.model/Intent.SetElementRotation///Pointing
 $dokka.location:io.ak1.drawbox.domain.model/Intent.SetElementRotation/SetElementRotation/#kotlin.String#kotlin.Float/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-element-rotation/-set-element-rotation.html
 $dokka.location:io.ak1.drawbox.domain.model/Intent.SetElementRotation/id/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-element-rotation/id.html
 $dokka.location:io.ak1.drawbox.domain.model/Intent.SetElementRotation/rotationDegrees/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-element-rotation/rotation-degrees.html
+$dokka.location:io.ak1.drawbox.domain.model/Intent.SetEraserSize///PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-eraser-size/index.html
+$dokka.location:io.ak1.drawbox.domain.model/Intent.SetEraserSize/SetEraserSize/#kotlin.Float/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-eraser-size/-set-eraser-size.html
+$dokka.location:io.ak1.drawbox.domain.model/Intent.SetEraserSize/size/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-eraser-size/size.html
 $dokka.location:io.ak1.drawbox.domain.model/Intent.SetLineBend///PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-line-bend/index.html
 $dokka.location:io.ak1.drawbox.domain.model/Intent.SetLineBend/SetLineBend/#kotlin.String#androidx.compose.ui.geometry.Offset/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-line-bend/-set-line-bend.html
 $dokka.location:io.ak1.drawbox.domain.model/Intent.SetLineBend/bend/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-line-bend/bend.html
@@ -248,6 +257,7 @@ $dokka.location:io.ak1.drawbox.domain.model/Intent.ZoomTo/targetScale/#/Pointing
 $dokka.location:io.ak1.drawbox.domain.model/Intent///PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-intent/index.html
 $dokka.location:io.ak1.drawbox.domain.model/Mode.ARROW///PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-mode/-a-r-r-o-w/index.html
 $dokka.location:io.ak1.drawbox.domain.model/Mode.CIRCLE///PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-mode/-c-i-r-c-l-e/index.html
+$dokka.location:io.ak1.drawbox.domain.model/Mode.ERASER///PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-mode/-e-r-a-s-e-r/index.html
 $dokka.location:io.ak1.drawbox.domain.model/Mode.LINE///PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-mode/-l-i-n-e/index.html
 $dokka.location:io.ak1.drawbox.domain.model/Mode.PAN///PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-mode/-p-a-n/index.html
 $dokka.location:io.ak1.drawbox.domain.model/Mode.PEN///PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-mode/-p-e-n/index.html
@@ -301,12 +311,14 @@ $dokka.location:io.ak1.drawbox.domain.model/ShapeType.RECTANGLE///PointingToDecl
 $dokka.location:io.ak1.drawbox.domain.model/ShapeType.TRIANGLE///PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-shape-type/-t-r-i-a-n-g-l-e/index.html
 $dokka.location:io.ak1.drawbox.domain.model/ShapeType///PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-shape-type/index.html
 $dokka.location:io.ak1.drawbox.domain.model/State///PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-state/index.html
-$dokka.location:io.ak1.drawbox.domain.model/State/State/#kotlin.collections.List[io.ak1.drawbox.domain.model.Element]#kotlin.collections.List[kotlin.collections.List[io.ak1.drawbox.domain.model.Element]]#kotlin.collections.List[kotlin.collections.List[io.ak1.drawbox.domain.model.Element]]#kotlin.collections.Set[kotlin.String]#androidx.compose.ui.geometry.Rect?#io.ak1.drawbox.domain.model.Viewport#kotlin.Boolean#androidx.compose.ui.graphics.Color#kotlin.Float#kotlin.Float#io.ak1.drawbox.domain.model.StrokeStyle#kotlin.Float#androidx.compose.ui.graphics.Color#io.ak1.drawbox.domain.model.BackgroundPattern?#io.ak1.drawbox.domain.model.Mode/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-state/-state.html
+$dokka.location:io.ak1.drawbox.domain.model/State/State/#kotlin.collections.List[io.ak1.drawbox.domain.model.Element]#kotlin.collections.List[kotlin.collections.List[io.ak1.drawbox.domain.model.Element]]#kotlin.collections.List[kotlin.collections.List[io.ak1.drawbox.domain.model.Element]]#kotlin.collections.Set[kotlin.String]#androidx.compose.ui.geometry.Rect?#io.ak1.drawbox.domain.model.Viewport#kotlin.Boolean#androidx.compose.ui.graphics.Color#kotlin.Float#kotlin.Float#io.ak1.drawbox.domain.model.StrokeStyle#kotlin.Float#androidx.compose.ui.graphics.Color#io.ak1.drawbox.domain.model.BackgroundPattern?#io.ak1.drawbox.domain.model.Mode#kotlin.Float#kotlin.Boolean/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-state/-state.html
 $dokka.location:io.ak1.drawbox.domain.model/State/bgColor/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-state/bg-color.html
 $dokka.location:io.ak1.drawbox.domain.model/State/bgPattern/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-state/bg-pattern.html
 $dokka.location:io.ak1.drawbox.domain.model/State/currentItemCornerRadius/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-state/current-item-corner-radius.html
 $dokka.location:io.ak1.drawbox.domain.model/State/currentItemStrokeStyle/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-state/current-item-stroke-style.html
 $dokka.location:io.ak1.drawbox.domain.model/State/elements/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-state/elements.html
+$dokka.location:io.ak1.drawbox.domain.model/State/eraserSize/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-state/eraser-size.html
+$dokka.location:io.ak1.drawbox.domain.model/State/erasingSessionDirty/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-state/erasing-session-dirty.html
 $dokka.location:io.ak1.drawbox.domain.model/State/future/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-state/future.html
 $dokka.location:io.ak1.drawbox.domain.model/State/history/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-state/history.html
 $dokka.location:io.ak1.drawbox.domain.model/State/marqueeRect/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-state/marquee-rect.html
@@ -347,6 +359,7 @@ $dokka.location:io.ak1.drawbox.domain.usecase/UseCase/addElement/#io.ak1.drawbox
 $dokka.location:io.ak1.drawbox.domain.usecase/UseCase/bringToFront/#kotlin.collections.List[io.ak1.drawbox.domain.model.Element]#kotlin.collections.Set[kotlin.String]/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.usecase/-use-case/bring-to-front.html
 $dokka.location:io.ak1.drawbox.domain.usecase/UseCase/deleteElement/#kotlin.String#kotlin.collections.List[io.ak1.drawbox.domain.model.Element]/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.usecase/-use-case/delete-element.html
 $dokka.location:io.ak1.drawbox.domain.usecase/UseCase/deleteSelected/#kotlin.collections.List[io.ak1.drawbox.domain.model.Element]#kotlin.collections.Set[kotlin.String]/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.usecase/-use-case/delete-selected.html
+$dokka.location:io.ak1.drawbox.domain.usecase/UseCase/eraseAt/#kotlin.collections.List[io.ak1.drawbox.domain.model.Element]#androidx.compose.ui.geometry.Offset#kotlin.Float/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.usecase/-use-case/erase-at.html
 $dokka.location:io.ak1.drawbox.domain.usecase/UseCase/finalizeArrowBindings/#kotlin.collections.List[io.ak1.drawbox.domain.model.Element]#kotlin.String/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.usecase/-use-case/finalize-arrow-bindings.html
 $dokka.location:io.ak1.drawbox.domain.usecase/UseCase/hitTopmost/#kotlin.collections.List[io.ak1.drawbox.domain.model.Element]#androidx.compose.ui.geometry.Offset#kotlin.Float/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.usecase/-use-case/hit-topmost.html
 $dokka.location:io.ak1.drawbox.domain.usecase/UseCase/insertNewPath/#androidx.compose.ui.geometry.Offset#androidx.compose.ui.graphics.Color#kotlin.Float#kotlin.Float#io.ak1.drawbox.domain.model.StrokeStyle/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.usecase/-use-case/insert-new-path.html
@@ -380,6 +393,7 @@ $dokka.location:io.ak1.drawbox.presentation.viewmodel/DrawBoxController/canRedo/
 $dokka.location:io.ak1.drawbox.presentation.viewmodel/DrawBoxController/canUndo/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/can-undo.html
 $dokka.location:io.ak1.drawbox.presentation.viewmodel/DrawBoxController/clearSelection/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/clear-selection.html
 $dokka.location:io.ak1.drawbox.presentation.viewmodel/DrawBoxController/deleteSelected/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/delete-selected.html
+$dokka.location:io.ak1.drawbox.presentation.viewmodel/DrawBoxController/eraseAt/#androidx.compose.ui.geometry.Offset#kotlin.Float/PointingToDeclaration/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/erase-at.html
 $dokka.location:io.ak1.drawbox.presentation.viewmodel/DrawBoxController/events/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/events.html
 $dokka.location:io.ak1.drawbox.presentation.viewmodel/DrawBoxController/exportJson/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/export-json.html
 $dokka.location:io.ak1.drawbox.presentation.viewmodel/DrawBoxController/exportSvg/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/export-svg.html
@@ -396,6 +410,7 @@ $dokka.location:io.ak1.drawbox.presentation.viewmodel/DrawBoxController/setBackg
 $dokka.location:io.ak1.drawbox.presentation.viewmodel/DrawBoxController/setBgColor/#androidx.compose.ui.graphics.Color/PointingToDeclaration/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/set-bg-color.html
 $dokka.location:io.ak1.drawbox.presentation.viewmodel/DrawBoxController/setColor/#androidx.compose.ui.graphics.Color/PointingToDeclaration/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/set-color.html
 $dokka.location:io.ak1.drawbox.presentation.viewmodel/DrawBoxController/setCornerRadius/#kotlin.Float/PointingToDeclaration/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/set-corner-radius.html
+$dokka.location:io.ak1.drawbox.presentation.viewmodel/DrawBoxController/setEraserSize/#kotlin.Float/PointingToDeclaration/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/set-eraser-size.html
 $dokka.location:io.ak1.drawbox.presentation.viewmodel/DrawBoxController/setMode/#io.ak1.drawbox.domain.model.Mode/PointingToDeclaration/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/set-mode.html
 $dokka.location:io.ak1.drawbox.presentation.viewmodel/DrawBoxController/setOpacity/#kotlin.Float/PointingToDeclaration/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/set-opacity.html
 $dokka.location:io.ak1.drawbox.presentation.viewmodel/DrawBoxController/setSelectionColor/#androidx.compose.ui.graphics.Color/PointingToDeclaration/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/set-selection-color.html
