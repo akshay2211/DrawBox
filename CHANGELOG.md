@@ -8,13 +8,45 @@ The `2.0.x` line is the Kotlin Multiplatform rewrite. The `1.x` line was an Andr
 
 ## [Unreleased]
 
+_Nothing yet._
+
+## [2.0.0] — 2026-06-24
+
+First stable release of the Kotlin Multiplatform line. Public API across
+`DrawBoxController`, `Mode`, `Intent`, `Event`, and `State` is now frozen
+under semver; incubating surfaces opt in via explicit annotations.
+
 ### Added
+- **Object eraser tool** (`Mode.ERASER`). Tap to remove the element under
+  the pointer; drag to sweep across multiple elements. Hit detection reuses
+  `Element.hitTest`, so stroke width is automatically respected.
+- **Lazy history snapshot for the eraser.** Taps and drags through empty
+  space consume no undo slot; the snapshot is taken once on the first
+  actual removal of a gesture, so a single undo reverts the whole sweep.
+- **World-space eraser cursor overlay** that scales with zoom, with
+  auto-contrast against light/dark backgrounds.
+- `DrawBoxController.eraseAt(point, radius)` and `setEraserSize(size)` for
+  programmatic erasing.
+- `BeginErase`, `EraseAt`, `EndErase`, `SetEraserSize` intents and the
+  `eraser` drawable resource.
+- **LWW timestamps on `Element`.** Every element now carries `createdAt`
+  and `modifiedAt` epoch-ms fields, bumped on every mutation via
+  `Element.touched()`. Foundational plumbing for the collab work on the
+  roadmap; consumers can ignore it.
 - Roborazzi-based snapshot testing harness for canvas rendering.
 
 ### Changed
+- **`Mode.PAN` removed from the bottom controls bar** and replaced with the
+  eraser slot. Pan navigation itself stays — Space-bar (hold for temp-pan),
+  middle-mouse drag, two-finger touch, and the scroll wheel all still pan.
 - UI/UX restructure of the sample application and control bar.
+- Toolbar visual polish and small interaction fixes.
+- Internal path-cache / static-layer optimizations to keep the render
+  cache fresh across erase ticks without thrash.
 
-> Items above are merged on `main` and will land in the next published alpha.
+### Fixed
+- Misc. bug fixes around element serialization and Android image saving
+  rolled in from the pre-stable cleanup.
 
 ## [2.0.0-alpha02]
 
@@ -87,7 +119,7 @@ DrawBox `2.0.x` is a Kotlin Multiplatform rewrite. The public API has changed; t
 implementation("io.ak1:drawbox:1.0.2")
 
 // 2.x (Android + iOS + JVM + WASM)
-implementation("io.ak1:drawbox:2.0.0-alpha02")
+implementation("io.ak1:drawbox:2.0.0")
 ```
 
 ### Composable entry point
@@ -163,9 +195,14 @@ controller.events.collect { event ->
 
 ### Stability
 
-`2.0.0-alpha02` is an alpha — the public API may still change before `2.0.0`. Pin to an exact version while integrating. Stable `2.0.0` will freeze the public API and add an experimental opt-in annotation for incubating surfaces.
+`2.0.0` is the stable Kotlin Multiplatform release. The public surfaces
+`DrawBoxController`, `Mode`, `Intent`, `Event`, and `State` are frozen
+under semver. Incubating surfaces (collab plumbing, advanced eraser
+modes, etc.) are gated behind opt-in annotations and may evolve in
+minor versions.
 
-[Unreleased]: https://github.com/akshay2211/DrawBox/compare/2.0.0-alpha02...HEAD
+[Unreleased]: https://github.com/akshay2211/DrawBox/compare/v2.0.0...HEAD
+[2.0.0]: https://github.com/akshay2211/DrawBox/compare/2.0.0-alpha02...v2.0.0
 [2.0.0-alpha02]: https://github.com/akshay2211/DrawBox/compare/2.0.0-alpha01...2.0.0-alpha02
 [2.0.0-alpha01]: https://github.com/akshay2211/DrawBox/releases/tag/2.0.0-alpha01
 [1.0.2]: https://github.com/akshay2211/DrawBox/releases/tag/1.0.2
