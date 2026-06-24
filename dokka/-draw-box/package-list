@@ -5,6 +5,7 @@ $dokka.location:io.ak1.drawbox.domain.model//angleFromCenter/#androidx.compose.u
 $dokka.location:io.ak1.drawbox.domain.model//bezierMidpoint/io.ak1.drawbox.domain.model.Element.Shape#/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/bezier-midpoint.html
 $dokka.location:io.ak1.drawbox.domain.model//boundaryPointToward/io.ak1.drawbox.domain.model.Element.Shape#androidx.compose.ui.geometry.Offset/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/boundary-point-toward.html
 $dokka.location:io.ak1.drawbox.domain.model//bounds/io.ak1.drawbox.domain.model.Element#/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/bounds.html
+$dokka.location:io.ak1.drawbox.domain.model//connectorAnchor/io.ak1.drawbox.domain.model.Element.Shape#androidx.compose.ui.geometry.Offset/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/connector-anchor.html
 $dokka.location:io.ak1.drawbox.domain.model//controlPoint/io.ak1.drawbox.domain.model.Element.Shape#/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/control-point.html
 $dokka.location:io.ak1.drawbox.domain.model//effectiveMode/io.ak1.drawbox.domain.model.State#/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/effective-mode.html
 $dokka.location:io.ak1.drawbox.domain.model//hitTest/io.ak1.drawbox.domain.model.Element#androidx.compose.ui.geometry.Offset#kotlin.Float/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/hit-test.html
