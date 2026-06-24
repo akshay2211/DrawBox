@@ -7,8 +7,8 @@ import io.ak1.drawbox.domain.model.Element
 import io.ak1.drawbox.domain.model.ResizeHandle
 import io.ak1.drawbox.domain.model.ShapeType
 import io.ak1.drawbox.domain.model.StrokeStyle
-import io.ak1.drawbox.domain.model.boundaryPointToward
 import io.ak1.drawbox.domain.model.bounds
+import io.ak1.drawbox.domain.model.connectorAnchor
 import io.ak1.drawbox.domain.model.hitTest
 import io.ak1.drawbox.domain.model.resizeBounds
 import io.ak1.drawbox.domain.model.topmostHit
@@ -348,8 +348,8 @@ class UseCase {
             // the boundary — the curve would bulge way past the visible line.
             val startShape = candidates.first { it.id == startId }
             val endShape = candidates.first { it.id == endId }
-            val startSnapped = startShape.boundaryPointToward(endShape.bounds().center)
-            val endSnapped = endShape.boundaryPointToward(startShape.bounds().center)
+            val startSnapped = startShape.connectorAnchor(endShape.bounds().center)
+            val endSnapped = endShape.connectorAnchor(startShape.bounds().center)
             defaultConnectorBend(startSnapped, endSnapped)
         } else target.bend
 
@@ -384,8 +384,8 @@ class UseCase {
             // reference point so the arrow visually starts/ends at the edge.
             val endRef = endTarget?.bounds()?.center ?: el.points.last()
             val startRef = startTarget?.bounds()?.center ?: el.points[0]
-            val newStart = startTarget?.boundaryPointToward(endRef) ?: el.points[0]
-            val newEnd = endTarget?.boundaryPointToward(startRef) ?: el.points.last()
+            val newStart = startTarget?.connectorAnchor(endRef) ?: el.points[0]
+            val newEnd = endTarget?.connectorAnchor(startRef) ?: el.points.last()
             val newStartBinding = if (startTarget == null) null else el.startBinding
             val newEndBinding = if (endTarget == null) null else el.endBinding
             // Skip touching the arrow when nothing actually changed — propagateBindings
