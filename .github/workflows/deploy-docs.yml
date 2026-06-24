@@ -3,6 +3,21 @@ name: Deploy Site
 on:
   push:
     branches: [main]
+    # Skip the docs/WASM redeploy when a push only touches files that don't
+    # affect the published site or the source: README, CHANGELOG, license,
+    # gitignore, media used only by GitHub-rendered README, etc.
+    # NOTE: changes under `docs/` and `mkdocs.yml` are intentionally NOT
+    # ignored — those are the docs-site sources and must trigger a rebuild.
+    paths-ignore:
+      - 'README.md'
+      - 'CHANGELOG.md'
+      - 'SECURITY.md'
+      - 'ROADMAP.md'
+      - 'CODE_OF_CONDUCT.md'
+      - 'LICENSE'
+      - '.gitignore'
+      - 'media/**'
+      - '.github/ISSUE_TEMPLATE/**'
 
 jobs:
   deploy:

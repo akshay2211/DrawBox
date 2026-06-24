@@ -13,7 +13,7 @@ plugins {
     alias(libs.plugins.vanniktech.maven.publish)
 }
 kotlin {
-    androidLibrary {
+    android {
         namespace = "io.ak1.drawbox"
         compileSdk =
             libs.versions.android.compileSdk

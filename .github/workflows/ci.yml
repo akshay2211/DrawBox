@@ -3,6 +3,18 @@ name: CI
 on:
   pull_request:
     branches: [main]
+    # Skip CI when a PR only touches documentation / media / repo metadata.
+    # Spotless, JVM tests, WASM compile, and iOS compile all only care about
+    # actual source code and build configuration. paths-ignore is matched
+    # against the entire PR diff — a PR that edits README AND a .kt file
+    # still runs CI, because the .kt file is not in this list.
+    paths-ignore:
+      - '**/*.md'
+      - 'docs/**'
+      - 'media/**'
+      - 'LICENSE'
+      - '.gitignore'
+      - '.github/ISSUE_TEMPLATE/**'
 
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
