@@ -24,3 +24,6 @@ local.properties
 /app/build/
 /androidApp/src/main/assets/composeResources/drawboxsample.shared.generated.resources/
 /site/
+/STRATEGY.md
+/PLAYBOOK.md
+/ARCHIVE_MODEL.md
