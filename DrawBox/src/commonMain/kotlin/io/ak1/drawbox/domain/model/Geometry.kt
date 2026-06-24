@@ -69,6 +69,92 @@ fun Element.Shape.bezierMidpoint(): Offset {
 }
 
 /**
+ * World-space attachment point for an arrow connector binding to this shape.
+ *
+ * Snaps to the **center of the side that faces [target]**, instead of letting
+ * the connector slide along the outline:
+ *
+ * - **Rectangle / square / fallback**: midpoint of whichever of the four
+ *   AABB edges faces [target].
+ * - **Triangle**: midpoint of whichever of the three edges (right slant,
+ *   bottom, left slant) the ray from the centroid toward [target] crosses.
+ * - **Circle**: tangent point on the circle in [target]'s direction. Circles
+ *   have no sides, so a smooth analytic point is the natural anchor.
+ *
+ * Rotation-aware. The shape's `rotation` is undone on [target], the anchor
+ * is computed in the unrotated frame, then rotated back to world. Scale is
+ * automatically handled because [bounds] reflects the post-scale points.
+ *
+ * Used by `propagateBindings` and `finalizeArrowBindings` so a bound arrow
+ * rides the bound shape's facing side through move / resize / rotate.
+ */
+fun Element.Shape.connectorAnchor(target: Offset): Offset {
+    val b = bounds()
+    val pivot = b.center
+    val localTarget = if (rotation == 0f) target
+                      else rotateAround(target, pivot, -rotation)
+    val localAnchor: Offset = when (shapeType) {
+        ShapeType.CIRCLE -> circleBoundary(pivot, b.width * 0.5f, localTarget)
+        ShapeType.TRIANGLE -> triangleSideMidpoint(b, localTarget)
+        else -> rectSideMidpoint(b, localTarget)
+    }
+    return if (rotation == 0f) localAnchor
+           else rotateAround(localAnchor, pivot, rotation)
+}
+
+/**
+ * Midpoint of whichever AABB side faces [target]. The "facing" axis is the
+ * one along which [target] escapes the box first — i.e. the larger of
+ * `|dx|/halfW` vs `|dy|/halfH`.
+ */
+private fun rectSideMidpoint(bounds: Rect, target: Offset): Offset {
+    val center = bounds.center
+    val halfW = bounds.width * 0.5f
+    val halfH = bounds.height * 0.5f
+    val dx = target.x - center.x
+    val dy = target.y - center.y
+    if (dx == 0f && dy == 0f) return Offset(bounds.right, center.y)
+    val fx = if (halfW > 0f) abs(dx) / halfW else Float.MAX_VALUE
+    val fy = if (halfH > 0f) abs(dy) / halfH else Float.MAX_VALUE
+    return if (fx >= fy) {
+        Offset(if (dx > 0f) bounds.right else bounds.left, center.y)
+    } else {
+        Offset(center.x, if (dy > 0f) bounds.bottom else bounds.top)
+    }
+}
+
+/**
+ * Midpoint of whichever triangle edge the ray from the centroid toward
+ * [target] crosses first. Uses the same edge order as [triangleBoundary]
+ * and shares [raySegmentParam] for the intersection math.
+ */
+private fun triangleSideMidpoint(bounds: Rect, target: Offset): Offset {
+    val apex = Offset(bounds.center.x, bounds.top)
+    val br = Offset(bounds.right, bounds.bottom)
+    val bl = Offset(bounds.left, bounds.bottom)
+    val origin = Offset(bounds.center.x, (bounds.top + 2f * bounds.bottom) / 3f)
+    val dx = target.x - origin.x
+    val dy = target.y - origin.y
+    if (dx == 0f && dy == 0f) {
+        return Offset((apex.x + br.x) * 0.5f, (apex.y + br.y) * 0.5f)
+    }
+    val edges = arrayOf(apex to br, br to bl, bl to apex)
+    var bestT = Float.MAX_VALUE
+    var hitEdge = edges[0]
+    for (edge in edges) {
+        val t = raySegmentParam(origin, dx, dy, edge.first, edge.second) ?: continue
+        if (t > 0f && t < bestT) {
+            bestT = t
+            hitEdge = edge
+        }
+    }
+    return Offset(
+        (hitEdge.first.x + hitEdge.second.x) * 0.5f,
+        (hitEdge.first.y + hitEdge.second.y) * 0.5f,
+    )
+}
+
+/**
  * Point on this shape's outline closest to the ray from the shape's center
  * toward [target]. Used by arrow connectors to terminate at the boundary
  * instead of sinking into the shape.
@@ -77,6 +163,9 @@ fun Element.Shape.bezierMidpoint(): Offset {
  * - Triangle: ray intersected against the three actual edges; the slanted
  *   sides return a point on the slant, not the AABB.
  * - Rectangle / fallback: AABB boundary along the ray.
+ *
+ * Note: this slides along the outline. For connector binding, prefer
+ * [connectorAnchor] which snaps to side midpoints and respects rotation.
  */
 fun Element.Shape.boundaryPointToward(target: Offset): Offset {
     val b = bounds()

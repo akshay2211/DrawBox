@@ -299,6 +299,128 @@ class GeometryTest {
             "exit (${hit.x}, ${hit.y}) not on slant (expected y≈$expectedY)")
     }
 
+    // ============ connectorAnchor ============
+
+    private fun assertOffsetEquals(
+        expected: Offset, actual: Offset, eps: Float = 0.5f,
+    ) {
+        assertTrue(abs(expected.x - actual.x) < eps,
+            "x ${actual.x} != ${expected.x}")
+        assertTrue(abs(expected.y - actual.y) < eps,
+            "y ${actual.y} != ${expected.y}")
+    }
+
+    @Test
+    fun connectorAnchorRectangleEastTargetSnapsToRightMidpoint() {
+        // Rect (0,0)-(100,60), center (50,30). Target far to the east.
+        val rect = rectShape(0f, 0f, 100f, 60f)
+        val anchor = rect.connectorAnchor(Offset(1000f, 30f))
+        assertOffsetEquals(Offset(100f, 30f), anchor)
+    }
+
+    @Test
+    fun connectorAnchorRectangleNorthTargetSnapsToTopMidpoint() {
+        val rect = rectShape(0f, 0f, 100f, 60f)
+        val anchor = rect.connectorAnchor(Offset(50f, -1000f))
+        assertOffsetEquals(Offset(50f, 0f), anchor)
+    }
+
+    @Test
+    fun connectorAnchorRectangleSouthwestTargetSnapsToBottomOrLeft() {
+        // 100×60 rect. Target at (-50, 100): dx=-100, dy=70.
+        // |dx|/50 = 2.0, |dy|/30 ≈ 2.33 → fy > fx → bottom side.
+        val rect = rectShape(0f, 0f, 100f, 60f)
+        val anchor = rect.connectorAnchor(Offset(-50f, 100f))
+        assertOffsetEquals(Offset(50f, 60f), anchor)
+    }
+
+    @Test
+    fun connectorAnchorTriangleEastTargetSnapsToRightSlantMidpoint() {
+        val triangle = Element.Shape(
+            shapeType = ShapeType.TRIANGLE,
+            points = listOf(Offset(0f, 0f), Offset(100f, 100f)),
+            strokeColor = Color.Red,
+            strokeWidth = 4f,
+        )
+        // Apex (50,0), br (100,100), bl (0,100). Right slant midpoint = (75, 50).
+        val anchor = triangle.connectorAnchor(Offset(500f, 50f))
+        assertOffsetEquals(Offset(75f, 50f), anchor)
+    }
+
+    @Test
+    fun connectorAnchorTriangleSouthTargetSnapsToBottomMidpoint() {
+        val triangle = Element.Shape(
+            shapeType = ShapeType.TRIANGLE,
+            points = listOf(Offset(0f, 0f), Offset(100f, 100f)),
+            strokeColor = Color.Red,
+            strokeWidth = 4f,
+        )
+        // Bottom edge midpoint = (50, 100).
+        val anchor = triangle.connectorAnchor(Offset(50f, 500f))
+        assertOffsetEquals(Offset(50f, 100f), anchor)
+    }
+
+    @Test
+    fun connectorAnchorCirclePreservesTangentBehavior() {
+        // Circle points are diameter endpoints. Use a horizontal diameter so
+        // radius is unambiguously 50 and bounds = (0,0)..(100,100).
+        val circle = Element.Shape(
+            shapeType = ShapeType.CIRCLE,
+            points = listOf(Offset(0f, 50f), Offset(100f, 50f)),
+            strokeColor = Color.Red,
+            strokeWidth = 4f,
+        )
+        // Target due east → tangent at (100, 50).
+        val anchor = circle.connectorAnchor(Offset(1000f, 50f))
+        assertOffsetEquals(Offset(100f, 50f), anchor)
+    }
+
+    @Test
+    fun connectorAnchorRotatedRectangleTracksTheRotatedFacingSide() {
+        // 100×60 rect rotated 90° CCW around its center (50, 30).
+        // In world coordinates the visual top-facing side after rotation is
+        // the local LEFT side; the world right-facing side is the local TOP.
+        val rect = Element.Shape(
+            shapeType = ShapeType.RECTANGLE,
+            points = listOf(Offset(0f, 0f), Offset(100f, 60f)),
+            strokeColor = Color.Red,
+            strokeWidth = 4f,
+            rotation = 90f,
+        )
+        // Target due east in world (relative to center (50, 30)).
+        val anchor = rect.connectorAnchor(Offset(500f, 30f))
+        // Local top-midpoint (50, 0) rotated 90° CCW around (50, 30):
+        //   delta from pivot = (0, -30) → rotated = (30, 0) → +pivot = (80, 30).
+        assertOffsetEquals(Offset(80f, 30f), anchor)
+    }
+
+    @Test
+    fun connectorAnchorRotatedRectangleNorthTargetMapsToLocalLeft() {
+        val rect = Element.Shape(
+            shapeType = ShapeType.RECTANGLE,
+            points = listOf(Offset(0f, 0f), Offset(100f, 60f)),
+            strokeColor = Color.Red,
+            strokeWidth = 4f,
+            rotation = 90f,
+        )
+        // Target due north in world (50, -1000). Pivot (50, 30).
+        // localTarget = rotate(target, pivot, -90°). delta (0, -1030).
+        //   With θ=-90°: (dx*c - dy*s, dx*s + dy*c) = (0 - 1030, 0 + 0)
+        //   → (-1030, 0). +pivot = (-980, 30). Local target is due WEST.
+        // Rect local left midpoint = (0, 30). After rotating back:
+        //   delta (-50, 0). θ=90°: (0 - 0, -50 + 0) = (0, -50). +pivot = (50, -20).
+        val anchor = rect.connectorAnchor(Offset(50f, -1000f))
+        assertOffsetEquals(Offset(50f, -20f), anchor)
+    }
+
+    @Test
+    fun connectorAnchorScalesWithRectangle() {
+        // Same rect resized larger — the anchor must scale with it.
+        val rect = rectShape(0f, 0f, 200f, 80f)
+        val anchor = rect.connectorAnchor(Offset(1000f, 40f))
+        assertOffsetEquals(Offset(200f, 40f), anchor)
+    }
+
     @Test
     fun resizeBoundsKeepsOppositeCornerFixedUnderRotation() {
         // 90° rotation of a 100×100 unit at the origin. The TopLeft corner
