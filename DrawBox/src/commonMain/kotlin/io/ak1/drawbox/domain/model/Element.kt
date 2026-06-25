@@ -66,11 +66,48 @@ sealed class Element {
      *
      * @see androidx.compose.ui.graphics.drawscope.DrawScope.drawPath with Stroke style
      */
+    /**
+     * One sample along a freehand pen stroke.
+     *
+     * The required fields ([position], [width]) are what the OSS renderer
+     * consumes. The optional fields are nullable so unit-pressure / mouse /
+     * touch strokes carry zero overhead and serialize cleanly:
+     *
+     * - [tilt] — pen altitude angle in degrees, `0.0` = perpendicular to the
+     *   screen, `90.0` = parallel. Reported by Apple Pencil and S Pen.
+     *   Consumed by tilt-aware brush renderers (Pro). OSS renders without it.
+     * - [azimuth] — pen rotation around its own axis in degrees, `0.0..360.0`.
+     *   Reported by Apple Pencil. Drives calligraphy-style brush orientation
+     *   in tilt-aware renderers. OSS renders without it.
+     *
+     * Velocity is intentionally NOT stored — it is derivable from position
+     * deltas between successive samples and [Element.modifiedAt]; storing it
+     * would duplicate data the renderer can compute on demand.
+     */
+    data class PathSample(
+        val position: Offset,
+        val width: Float,
+        val tilt: Float? = null,
+        val azimuth: Float? = null,
+    )
+
     data class Path(
         override val id: String = Uuid.random().toString(),
         override val type: String = "Path",
-        val points: List<Offset>,
+        /**
+         * Ordered samples along the stroke. Each sample carries both its
+         * world-space position and its width, so pressure-modulated strokes
+         * are represented natively without a parallel widths list. Uniform
+         * strokes simply set every sample's width to [strokeWidth].
+         */
+        val samples: List<PathSample>,
         val strokeColor: Color,
+        /**
+         * Default width applied to new samples appended during the active
+         * stroke. Existing samples carry their own width; setters that
+         * mutate width across the whole stroke (`SetSelectedStrokeWidth`)
+         * overwrite every sample's width to keep the stroke uniform.
+         */
         val strokeWidth: Float,
         val alpha: Float,
         override val zIndex: Int = 0,
@@ -145,6 +182,14 @@ sealed class Element {
         override val modifiedAt: Long = 0L,
     ) : Element()
 }
+
+/**
+ * The spatial positions of every sample in a freehand stroke, in order.
+ * Use this when the caller only cares about geometry (bounds, hit testing,
+ * path tessellation); reach for [Element.Path.samples] directly when widths
+ * are also needed.
+ */
+val Element.Path.positions: List<Offset> get() = samples.map { it.position }
 
 /**
  * Stamp [Element.modifiedAt] with [now] (defaults to current epoch ms).

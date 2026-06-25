@@ -49,8 +49,18 @@ sealed class Intent {
      *
      * This intent is dispatched continuously during drag operations in PEN mode.
      * It updates the latest path element with the new point.
+     *
+     * [pressure] is a unit-clamped multiplier applied to the active
+     * [State.strokeWidth] for *this sample only*. `1.0` is the no-signal /
+     * mouse / capacitive-touch default and produces uniform-width strokes
+     * (back-compat with pre-pressure builds). Values that differ from `1.0`
+     * promote the path's `pointWidths` from null to a per-sample list on the
+     * first non-unit reading.
      */
-    data class UpdateLatestPath(val newPoint: Offset) : Intent()
+    data class UpdateLatestPath(
+        val newPoint: Offset,
+        val pressure: Float = 1f,
+    ) : Intent()
 
     // ==================== Shape Operations ====================
 

@@ -18,7 +18,7 @@ class DrawingReducerTest {
 
     private fun createTestPath(): Element.Path {
         return Element.Path(
-            points = listOf(Offset(0f, 0f)),
+            samples = listOf(Element.PathSample(Offset(0f, 0f), 10f)),
             strokeColor = Color.Red,
             strokeWidth = 10f,
             alpha = 1f,
@@ -48,7 +48,7 @@ class DrawingReducerTest {
 
         val newState = reducer.reduce(initialState, intent)
 
-        assertEquals(2, (newState.elements[0] as Element.Path).points.size)
+        assertEquals(2, (newState.elements[0] as Element.Path).samples.size)
     }
 
     @Test
@@ -180,7 +180,10 @@ class DrawingReducerTest {
     // ===== Eraser =====
 
     private fun erasablePath(): Element.Path = Element.Path(
-        points = listOf(Offset(0f, 0f), Offset(100f, 0f)),
+        samples = listOf(
+            Element.PathSample(Offset(0f, 0f), 4f),
+            Element.PathSample(Offset(100f, 0f), 4f),
+        ),
         strokeColor = Color.Red,
         strokeWidth = 4f,
         alpha = 1f,
@@ -206,7 +209,10 @@ class DrawingReducerTest {
         val a = erasablePath().copy(id = "a")
         val b = erasablePath().copy(
             id = "b",
-            points = listOf(Offset(0f, 200f), Offset(100f, 200f)),
+            samples = listOf(
+                Element.PathSample(Offset(0f, 200f), 4f),
+                Element.PathSample(Offset(100f, 200f), 4f),
+            ),
         )
         val initial = State(elements = listOf(a, b))
 

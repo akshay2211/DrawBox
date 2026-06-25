@@ -47,7 +47,9 @@ class Reducer(
             )
         }
         is Intent.UpdateLatestPath -> state.copy(
-            elements = useCase.updateLatestPath(intent.newPoint, state.elements),
+            elements = useCase.updateLatestPath(
+                intent.newPoint, state.elements, intent.pressure,
+            ),
         )
         is Intent.InsertNewShape -> {
             val newShape = useCase.insertNewShape(

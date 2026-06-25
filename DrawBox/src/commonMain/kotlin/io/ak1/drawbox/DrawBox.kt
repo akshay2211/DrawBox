@@ -28,6 +28,8 @@ import androidx.compose.ui.input.key.type
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.PointerIcon
+import androidx.compose.ui.input.pointer.PointerInputChange
+import androidx.compose.ui.input.pointer.PointerType
 import androidx.compose.ui.input.pointer.isCtrlPressed
 import androidx.compose.ui.input.pointer.isShiftPressed
 import androidx.compose.ui.input.pointer.isTertiaryPressed
@@ -77,6 +79,7 @@ import io.ak1.drawbox.domain.model.Viewport
 import io.ak1.drawbox.domain.model.angleFromCenter
 import io.ak1.drawbox.domain.model.bezierMidpoint
 import io.ak1.drawbox.domain.model.bounds
+import io.ak1.drawbox.domain.model.positions
 import io.ak1.drawbox.domain.model.controlPoint
 import io.ak1.drawbox.domain.model.distance
 import io.ak1.drawbox.domain.model.effectiveMode
@@ -308,14 +311,16 @@ fun DrawBox(
                 }
             }
             // Eraser hover tracking: keep the world-space cursor position fresh
-            // for the eraser overlay circle. Runs as long as the composable is
-            // mounted; the overlay only consumes the value when mode == ERASER.
-            // Touch platforms emit no hover events; the overlay collapses
-            // gracefully in that case.
+            // for the eraser overlay circle. Only fires when ERASER is the
+            // active mode — otherwise every pointer Move during PEN drawing
+            // would force a recomposition and tank frame rate. Touch platforms
+            // emit no hover events; the overlay collapses gracefully in that
+            // case.
             .pointerInput(Unit) {
                 awaitPointerEventScope {
                     while (true) {
                         val event = awaitPointerEvent()
+                        if (latestState.effectiveMode != Mode.ERASER) continue
                         when (event.type) {
                             PointerEventType.Move,
                             PointerEventType.Enter,
@@ -629,10 +634,17 @@ fun DrawBox(
                             SelectionInteraction.Pan -> latestOnIntent(Intent.PanBy(dragAmount))
                             else -> {}
                         }
-                        Mode.PEN -> latestOnIntent(Intent.UpdateLatestPath(world))
-                        Mode.ERASER -> latestOnIntent(
-                            Intent.EraseAt(world, s.eraserSize / s.viewport.scale),
+                        Mode.PEN -> latestOnIntent(
+                            Intent.UpdateLatestPath(world, change.pressureMultiplier()),
                         )
+                        Mode.ERASER -> {
+                            // Pressure modulates eraser radius live: light press
+                            // shrinks, hard press grows. Floor at strokeWidth's
+                            // multiplier (0.2) so a barely-touching pen still
+                            // catches something.
+                            val r = s.eraserSize * change.pressureMultiplier() / s.viewport.scale
+                            latestOnIntent(Intent.EraseAt(world, r))
+                        }
                         else -> if (modeShapeType(s.effectiveMode) != null) {
                             latestOnIntent(Intent.UpdateLatestShape(world))
                         }
@@ -818,6 +830,25 @@ private fun DrawScope.drawGrid(vp: Viewport, bgColor: Color) {
         drawLine(color, Offset(0f, y), Offset(size.width, y), strokeWidth = 1f)
         y += step
     }
+}
+
+/**
+ * Unit-clamped pressure multiplier for the current pointer sample.
+ *
+ * Returns `1.0` (no-signal default — uniform stroke) when:
+ *   - The pointer is a mouse. Mouse pressure isn't meaningful for drawing;
+ *     pretending it is would scale every stroke by a stale, half-correct value.
+ *   - The reported pressure is `0.0`. Compose forwards `0.0` for events that
+ *     genuinely carry no pressure (e.g. some touch screens, hover events).
+ *
+ * Otherwise the reading is clamped to `[0.2, 1.0]` so a barely-touching pen
+ * still produces a visible stroke instead of a zero-width segment.
+ */
+private fun PointerInputChange.pressureMultiplier(): Float {
+    if (type == PointerType.Mouse) return 1f
+    val p = pressure
+    if (p == 0f || p.isNaN()) return 1f
+    return p.coerceIn(0.2f, 1f)
 }
 
 private fun modeShapeType(mode: Mode): ShapeType? = when (mode) {
@@ -1165,20 +1196,45 @@ private fun DrawScope.renderElement(element: Element, pathCache: PathCache? = nu
 private fun DrawScope.renderElementContent(element: Element, pathCache: PathCache?) {
     when (element) {
         is Element.Path -> {
-            val path = pathCache?.pathFor(element.id, element.points) ?: createPath(element.points)
-            drawPath(
-                path,
-                color = element.strokeColor,
-                alpha = element.alpha,
-                style = Stroke(
-                    width = element.strokeWidth,
-                    // Round caps always for paths — keeps pencil-like ends for
-                    // solid strokes and makes individual dots visible for dotted.
-                    cap = StrokeCap.Round,
-                    join = StrokeJoin.Round,
-                    pathEffect = element.strokeStyle.toPathEffect(element.strokeWidth),
-                ),
-            )
+            val samples = element.samples
+            // Uniform-width fast path when every sample carries the same width
+            // (mouse / capacitive touch / programmatic insertion). One drawPath
+            // call with cached geometry — keeps the existing perf characteristics
+            // and respects DASHED / DOTTED stroke styles.
+            val firstWidth = samples.firstOrNull()?.width ?: element.strokeWidth
+            val uniform = samples.all { it.width == firstWidth }
+            if (uniform || samples.size < 2) {
+                val positions = element.positions
+                val path = pathCache?.pathFor(element.id, positions)
+                    ?: createPath(positions)
+                drawPath(
+                    path,
+                    color = element.strokeColor,
+                    alpha = element.alpha,
+                    style = Stroke(
+                        // Round caps always for paths — keeps pencil-like ends for
+                        // solid strokes and makes individual dots visible for dotted.
+                        width = firstWidth,
+                        cap = StrokeCap.Round,
+                        join = StrokeJoin.Round,
+                        pathEffect = element.strokeStyle.toPathEffect(firstWidth),
+                    ),
+                )
+            } else {
+                // Variable-width path (pen pressure). Compose's Stroke path
+                // effects (DASHED / DOTTED) only apply to a single drawPath
+                // call with one stroke width, so they can't be reused as-is.
+                // Walk arc length and split the stroke into on / off intervals
+                // sized by the LOCAL sample width — that way a dashed stroke
+                // at light pressure has small dashes and at heavy pressure has
+                // large dashes, preserving both signals.
+                drawVariableWidthPath(
+                    samples = samples,
+                    color = element.strokeColor,
+                    alpha = element.alpha,
+                    style = element.strokeStyle,
+                )
+            }
         }
         is Element.Shape -> {
             drawShape(element)
@@ -1311,12 +1367,165 @@ private fun strokeCapFor(style: StrokeStyle): StrokeCap = when (style) {
 private fun StrokeStyle.toPathEffect(strokeWidth: Float): PathEffect? = when (this) {
     StrokeStyle.SOLID -> null
     StrokeStyle.DASHED -> PathEffect.dashPathEffect(
-        floatArrayOf(strokeWidth * 4f, strokeWidth * 2f),
+        floatArrayOf(strokeWidth * DASH_ON_MULTIPLIER, strokeWidth * DASH_OFF_MULTIPLIER),
     )
     StrokeStyle.DOTTED -> PathEffect.dashPathEffect(
-        floatArrayOf(strokeWidth * 0.5f, strokeWidth * 2f),
+        floatArrayOf(strokeWidth * DOT_ON_MULTIPLIER, strokeWidth * DOT_OFF_MULTIPLIER),
     )
 }
+
+// On / off interval lengths for dashed and dotted strokes, expressed as
+// multipliers of the local stroke width. Shared by the uniform-width path
+// effect and the variable-width arc-length walker so both renderers agree on
+// rhythm.
+private const val DASH_ON_MULTIPLIER: Float = 4f
+private const val DASH_OFF_MULTIPLIER: Float = 2f
+private const val DOT_ON_MULTIPLIER: Float = 0.5f
+private const val DOT_OFF_MULTIPLIER: Float = 2f
+
+/**
+ * Width-local on-interval length (in world pixels) for [style].
+ * `SOLID` returns positive infinity so the arc-length walker never flips off.
+ */
+private fun StrokeStyle.onLength(width: Float): Float = when (this) {
+    StrokeStyle.SOLID -> Float.POSITIVE_INFINITY
+    StrokeStyle.DASHED -> width * DASH_ON_MULTIPLIER
+    StrokeStyle.DOTTED -> width * DOT_ON_MULTIPLIER
+}
+
+/**
+ * Width-local off-interval length for [style]. `SOLID` returns zero — never
+ * consulted because [onLength] is infinite, but defined for symmetry.
+ */
+private fun StrokeStyle.offLength(width: Float): Float = when (this) {
+    StrokeStyle.SOLID -> 0f
+    StrokeStyle.DASHED -> width * DASH_OFF_MULTIPLIER
+    StrokeStyle.DOTTED -> width * DOT_OFF_MULTIPLIER
+}
+
+private fun lerp(a: Offset, b: Offset, t: Float): Offset =
+    Offset(a.x + (b.x - a.x) * t, a.y + (b.y - a.y) * t)
+
+private fun lerp(a: Float, b: Float, t: Float): Float = a + (b - a) * t
+
+/**
+ * Render a variable-width pen-pressure stroke that also respects [style].
+ *
+ * Walks the polyline in arc-length space, alternating between "on" (visible)
+ * and "off" (gap) intervals. The length of each interval is sized by the
+ * stroke width at the position where the interval STARTS — so dashes shrink
+ * with light pressure and grow with heavy pressure, matching the visual
+ * intuition that lighter strokes carry finer detail.
+ *
+ * Each on-interval is drawn as a `drawLine` between the interval endpoints
+ * with the average of the two endpoint widths and round caps, mirroring the
+ * solid variable-width pencil feel. Linear width interpolation between
+ * adjacent samples keeps thickness coherent across sample boundaries.
+ *
+ * For `SOLID` styles this collapses to a single linear sweep with no flips,
+ * matching the simpler segment-per-sample render.
+ *
+ * **Safety floors.** A naive implementation will hang on three real cases:
+ *   - A `remaining` value tiny relative to `segLen` underflows the
+ *     `remaining / segLen` division to `0`, leaving `t` not advancing.
+ *   - A sample width of `0` (degenerate input, NaN-propagation through
+ *     pressure math, or float underflow at extreme low pressure) makes
+ *     `onLength` / `offLength` both `0`, so the state machine flips
+ *     forever without consuming arc length.
+ *   - DOTTED at a 0.5px width can spawn ~200 segments per 100px of stroke
+ *     — fine for correctness, terrible for frame budget on an active drag.
+ *
+ * The fix enforces a minimum effective dash width and a minimum interval
+ * length, plus a per-segment iteration cap as a last-resort safeguard.
+ * These floors are conservatively small (≈ 0.5 px) so they don't change
+ * visible output for realistic strokes.
+ */
+private fun DrawScope.drawVariableWidthPath(
+    samples: List<Element.PathSample>,
+    color: Color,
+    alpha: Float,
+    style: StrokeStyle,
+) {
+    if (samples.size < 2) return
+
+    fun safeOn(w: Float): Float =
+        style.onLength(w.coerceAtLeast(MIN_DASH_WIDTH)).coerceAtLeast(MIN_INTERVAL_LENGTH)
+
+    fun safeOff(w: Float): Float =
+        style.offLength(w.coerceAtLeast(MIN_DASH_WIDTH)).coerceAtLeast(MIN_INTERVAL_LENGTH)
+
+    var inOn = true
+    var remaining = safeOn(samples[0].width)
+
+    for (i in 0 until samples.size - 1) {
+        val a = samples[i]
+        val b = samples[i + 1]
+        val dx = b.position.x - a.position.x
+        val dy = b.position.y - a.position.y
+        val segLen = sqrt(dx * dx + dy * dy)
+        if (segLen < 1e-6f || !segLen.isFinite()) continue
+
+        var t = 0f
+        var iters = 0
+        while (t < 1f && iters < MAX_DASH_ITERS_PER_SEGMENT) {
+            iters++
+            val parameterStep = (remaining / segLen).coerceAtMost(1f - t).coerceAtLeast(0f)
+            // Numerical underflow guard: if the requested step rounds to zero
+            // arc length, force this segment to complete in one shot instead
+            // of looping with no progress.
+            val span = if (parameterStep * segLen < MIN_INTERVAL_LENGTH * 0.5f) {
+                1f - t
+            } else {
+                parameterStep
+            }
+            val tNext = t + span
+            if (inOn && span > 0f) {
+                val startPos = lerp(a.position, b.position, t)
+                val endPos = lerp(a.position, b.position, tNext)
+                val startW = lerp(a.width, b.width, t)
+                val endW = lerp(a.width, b.width, tNext)
+                drawLine(
+                    color = color,
+                    start = startPos,
+                    end = endPos,
+                    strokeWidth = (startW + endW) * 0.5f,
+                    cap = StrokeCap.Round,
+                    alpha = alpha,
+                )
+            }
+            val consumed = span * segLen
+            remaining -= consumed
+            t = tNext
+            if (remaining <= 0f && style != StrokeStyle.SOLID) {
+                inOn = !inOn
+                val widthHere = lerp(a.width, b.width, t)
+                remaining = if (inOn) safeOn(widthHere) else safeOff(widthHere)
+            }
+        }
+    }
+}
+
+/**
+ * Minimum effective stroke width used inside the dash/dot walker. Prevents
+ * zero-length intervals when a sample reports width 0 (degenerate input,
+ * float underflow at extreme low pressure, NaN-propagation).
+ */
+private const val MIN_DASH_WIDTH: Float = 0.5f
+
+/**
+ * Minimum on/off interval length, in world pixels. Floors the walker's
+ * arc-length step so a tiny `remaining` value can never trap the loop in
+ * a zero-progress iteration.
+ */
+private const val MIN_INTERVAL_LENGTH: Float = 0.5f
+
+/**
+ * Per-segment iteration cap. A realistic worst case (5px segment,
+ * 0.5px dot period) is ~10 iterations. 1024 is a paranoid backstop that
+ * absolutely cannot be reached without a math bug — if it ever is, we
+ * give up gracefully on that segment instead of pinning the main thread.
+ */
+private const val MAX_DASH_ITERS_PER_SEGMENT: Int = 1024
 
 /**
  * Render an isosceles triangle shape.
