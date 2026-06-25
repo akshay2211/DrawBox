@@ -23,7 +23,7 @@ import kotlin.math.sqrt
 
 /** Axis-aligned bounding box of the element in unrotated logical space. */
 fun Element.bounds(): Rect = when (this) {
-    is Element.Path -> pointsBounds(points)
+    is Element.Path -> pointsBounds(positions)
     is Element.Shape -> when (shapeType) {
         // Circle points are diameter endpoints, so the circle extends past them.
         // The bbox is the square inscribing the circle.
@@ -293,12 +293,19 @@ fun Element.hitTest(point: Offset, tolerance: Float = 8f): Boolean {
 }
 
 private fun hitTestPath(path: Element.Path, p: Offset, tolerance: Float): Boolean {
-    val hitRadius = tolerance + path.strokeWidth * 0.5f
-    val pts = path.points
-    if (pts.isEmpty()) return false
-    if (pts.size == 1) return distance(pts[0], p) <= hitRadius
-    for (i in 0 until pts.size - 1) {
-        if (distanceToSegment(p, pts[i], pts[i + 1]) <= hitRadius) return true
+    val samples = path.samples
+    if (samples.isEmpty()) return false
+    if (samples.size == 1) {
+        return distance(samples[0].position, p) <= tolerance + samples[0].width * 0.5f
+    }
+    for (i in 0 until samples.size - 1) {
+        val a = samples[i]
+        val b = samples[i + 1]
+        // Per-segment hit radius widens with the local stroke (taking the
+        // average of the two endpoint widths), so variable-pressure strokes
+        // are pickable where they're visually thick.
+        val hitRadius = tolerance + ((a.width + b.width) * 0.5f) * 0.5f
+        if (distanceToSegment(p, a.position, b.position) <= hitRadius) return true
     }
     return false
 }
@@ -391,7 +398,9 @@ fun topmostHit(elements: List<Element>, point: Offset, tolerance: Float = 8f): E
 
 /** Translate all points by `delta`. Rotation unchanged. */
 fun Element.translate(delta: Offset): Element = when (this) {
-    is Element.Path -> copy(points = points.map { it + delta }).touched()
+    is Element.Path -> copy(
+        samples = samples.map { it.copy(position = it.position + delta) },
+    ).touched()
     is Element.Shape -> copy(points = points.map { it + delta }).touched()
 }
 
@@ -405,8 +414,12 @@ fun Element.withBounds(newBounds: Rect): Element {
     val safeBounds = newBounds.normalized().minSize(1f)
     return when (this) {
         is Element.Path -> {
-            val mapped = scalePoints(points, bounds(), safeBounds)
-            copy(points = mapped).touched()
+            // Scale spatial positions to the new bbox. Sample widths are NOT
+            // scaled — pen pressure is a property of how the user drew the
+            // stroke, not of the canvas zoom; preserving per-sample width
+            // keeps the visual character of the original stroke after resize.
+            val mapped = scalePoints(positions, bounds(), safeBounds)
+            copy(samples = samples.mapIndexed { i, s -> s.copy(position = mapped[i]) }).touched()
         }
         is Element.Shape -> when (shapeType) {
             ShapeType.CIRCLE -> resizeCircle(this, safeBounds).touched()

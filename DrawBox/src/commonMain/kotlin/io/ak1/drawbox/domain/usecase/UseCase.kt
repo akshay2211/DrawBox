@@ -46,10 +46,11 @@ class UseCase {
         width: Float,
         alpha: Float,
         strokeStyle: StrokeStyle = StrokeStyle.SOLID,
+        pressure: Float = 1f,
     ): Element.Path {
         val now = Clock.System.now().toEpochMilliseconds()
         return Element.Path(
-            points = listOf(offset),
+            samples = listOf(Element.PathSample(offset, width * pressure)),
             strokeColor = color,
             strokeWidth = width,
             alpha = alpha,
@@ -59,22 +60,44 @@ class UseCase {
         )
     }
 
-    fun updateLatestPath(newPoint: Offset, currentElements: List<Element>): List<Element> {
+    fun updateLatestPath(
+        newPoint: Offset,
+        currentElements: List<Element>,
+        pressure: Float = 1f,
+    ): List<Element> {
         if (currentElements.isEmpty()) return currentElements
 
         val lastElement = currentElements.last()
         return if (lastElement is Element.Path) {
             // Decimate sub-pixel samples: a pen drag at 60 Hz easily produces points
             // with sub-world-pixel spacing. The visual difference is invisible but
-            // every extra point grows the Path we rebuild during the active stroke.
-            val lastPoint = lastElement.points.lastOrNull()
-            if (lastPoint != null) {
-                val dx = newPoint.x - lastPoint.x
-                val dy = newPoint.y - lastPoint.y
+            // every extra sample grows the Path we rebuild during the active stroke.
+            val lastSample = lastElement.samples.lastOrNull()
+            if (lastSample != null) {
+                val dx = newPoint.x - lastSample.position.x
+                val dy = newPoint.y - lastSample.position.y
                 if (dx * dx + dy * dy < MIN_PEN_POINT_DIST_SQ) return currentElements
             }
-            val updatedPoints = lastElement.points + newPoint
-            currentElements.dropLast(1) + lastElement.copy(points = updatedPoints).touched()
+            val newWidth = lastElement.strokeWidth * pressure
+            val newSample = Element.PathSample(newPoint, newWidth)
+            // The seed sample (inserted by InsertNewPath on tap / drag-start) was
+            // created without a pressure reading — Compose's tap and drag-start
+            // callbacks don't expose pointer pressure, only position. That seed
+            // sits at full strokeWidth while the next sample arrives modulated
+            // by pen pressure, which renders as a visible "bigger dot" at the
+            // stroke origin. On the first update tick, retroactively conform the
+            // seed's width to this tick's pressure so the start cap matches the
+            // rest of the stroke.
+            val updatedSamples = if (lastElement.samples.size == 1 &&
+                lastElement.samples[0].width != newWidth
+            ) {
+                listOf(lastElement.samples[0].copy(width = newWidth), newSample)
+            } else {
+                lastElement.samples + newSample
+            }
+            currentElements.dropLast(1) + lastElement.copy(
+                samples = updatedSamples,
+            ).touched()
         } else {
             currentElements
         }
@@ -249,7 +272,14 @@ class UseCase {
         width: Float,
     ): List<Element> = elements.map { el ->
         if (el.id !in ids) el else when (el) {
-            is Element.Path -> el.copy(strokeWidth = width).touched()
+            // For Path: rewrite every sample's width to the new value so the
+            // stroke becomes uniform. The user-facing "set stroke width" intent
+            // is "make this stroke this thick everywhere," not "leave the
+            // pressure-driven shape but change the default for new samples."
+            is Element.Path -> el.copy(
+                strokeWidth = width,
+                samples = el.samples.map { it.copy(width = width) },
+            ).touched()
             is Element.Shape -> el.copy(strokeWidth = width).touched()
         }
     }
@@ -291,7 +321,16 @@ class UseCase {
         newPoints: List<Offset>,
     ): List<Element> = elements.map { el ->
         if (el.id != id) el else when (el) {
-            is Element.Path -> el.copy(points = newPoints).touched()
+            // setElementPoints today is only called by LINE/ARROW endpoint
+            // dragging, but the sealed `when` forces a Path branch. Preserve
+            // existing widths by index when the list length is unchanged; fall
+            // back to strokeWidth for any extra slots.
+            is Element.Path -> el.copy(
+                samples = newPoints.mapIndexed { i, p ->
+                    val w = el.samples.getOrNull(i)?.width ?: el.strokeWidth
+                    Element.PathSample(p, w)
+                },
+            ).touched()
             is Element.Shape -> el.copy(points = newPoints).touched()
         }
     }

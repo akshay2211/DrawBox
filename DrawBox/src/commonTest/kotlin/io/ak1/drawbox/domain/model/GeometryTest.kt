@@ -14,7 +14,7 @@ import kotlin.test.assertTrue
 class GeometryTest {
 
     private fun pathOf(vararg pts: Pair<Float, Float>): Element.Path = Element.Path(
-        points = pts.map { Offset(it.first, it.second) },
+        samples = pts.map { Element.PathSample(Offset(it.first, it.second), 4f) },
         strokeColor = Color.Red,
         strokeWidth = 4f,
         alpha = 1f,
@@ -123,8 +123,8 @@ class GeometryTest {
     fun translateMovesAllPoints() {
         val path = pathOf(0f to 0f, 10f to 20f)
         val moved = path.translate(Offset(5f, -5f)) as Element.Path
-        assertEquals(Offset(5f, -5f), moved.points[0])
-        assertEquals(Offset(15f, 15f), moved.points[1])
+        assertEquals(Offset(5f, -5f), moved.samples[0].position)
+        assertEquals(Offset(15f, 15f), moved.samples[1].position)
         assertEquals(0f, moved.rotation, "translate must not change rotation")
     }
 
@@ -132,8 +132,8 @@ class GeometryTest {
     fun withBoundsScalesPathPointsLinearly() {
         val path = pathOf(0f to 0f, 100f to 100f)
         val resized = path.withBounds(Rect(0f, 0f, 200f, 50f)) as Element.Path
-        assertEquals(Offset(0f, 0f), resized.points[0])
-        assertEquals(Offset(200f, 50f), resized.points[1])
+        assertEquals(Offset(0f, 0f), resized.samples[0].position)
+        assertEquals(Offset(200f, 50f), resized.samples[1].position)
     }
 
     @Test

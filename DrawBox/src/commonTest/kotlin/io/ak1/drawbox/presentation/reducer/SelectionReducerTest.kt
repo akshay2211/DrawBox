@@ -212,7 +212,7 @@ class SelectionReducerTest {
         val r = rect("r", 0f, 0f, 100f, 100f)
         val p = Element.Path(
             id = "p",
-            points = listOf(Offset(0f, 0f)),
+            samples = listOf(Element.PathSample(Offset(0f, 0f), 4f)),
             strokeColor = Color.Red,
             strokeWidth = 4f,
             alpha = 1f,

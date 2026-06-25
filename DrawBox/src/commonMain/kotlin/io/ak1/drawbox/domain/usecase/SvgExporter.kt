@@ -45,11 +45,11 @@ object SvgExporter {
         elements.forEach { element ->
             when (element) {
                 is Element.Path -> {
-                    element.points.forEach { point ->
-                        minX = kotlin.math.min(minX, point.x)
-                        minY = kotlin.math.min(minY, point.y)
-                        maxX = kotlin.math.max(maxX, point.x)
-                        maxY = kotlin.math.max(maxY, point.y)
+                    element.samples.forEach { sample ->
+                        minX = kotlin.math.min(minX, sample.position.x)
+                        minY = kotlin.math.min(minY, sample.position.y)
+                        maxX = kotlin.math.max(maxX, sample.position.x)
+                        maxY = kotlin.math.max(maxY, sample.position.y)
                     }
                 }
                 is Element.Shape -> {
@@ -85,13 +85,35 @@ object SvgExporter {
     }
 
     private fun pathToSvg(path: Element.Path): String {
-        if (path.points.isEmpty()) return ""
+        if (path.samples.isEmpty()) return ""
 
-        val pathData = buildSmoothPathData(path.points)
         val color = colorToHex(path.strokeColor)
         val opacity = path.alpha
+        val positions = path.samples.map { it.position }
 
-        return """<path d="$pathData" stroke="$color" stroke-width="${path.strokeWidth}" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="$opacity"/>"""
+        // Uniform-width fast path: single <path> with the existing smooth
+        // quadratic curve and one stroke-width.
+        val firstWidth = path.samples.first().width
+        val uniform = path.samples.all { it.width == firstWidth }
+        if (uniform) {
+            val pathData = buildSmoothPathData(positions)
+            return """<path d="$pathData" stroke="$color" stroke-width="$firstWidth" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="$opacity"/>"""
+        }
+
+        // Variable-width path (pen pressure). SVG `<path>` only carries one
+        // stroke-width per element, so emit one `<line>` per segment with the
+        // average of the two endpoint widths. Round caps merge the segments
+        // visually. Larger output, lossless visual.
+        val segments = StringBuilder()
+        for (i in 0 until path.samples.size - 1) {
+            val a = path.samples[i]
+            val b = path.samples[i + 1]
+            val w = (a.width + b.width) * 0.5f
+            segments.append(
+                """<line x1="${a.position.x}" y1="${a.position.y}" x2="${b.position.x}" y2="${b.position.y}" stroke="$color" stroke-width="$w" stroke-linecap="round" opacity="$opacity"/>""",
+            )
+        }
+        return """<g>$segments</g>"""
     }
 
     private fun buildSmoothPathData(points: List<Offset>): String {

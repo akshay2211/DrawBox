@@ -36,6 +36,53 @@ fun String.toOffset(): Offset {
     }
 }
 
+/**
+ * Encode a [Element.PathSample] as a comma-separated string. Chosen over a
+ * JSON-object form to keep PEN strokes (which can have thousands of samples)
+ * small on the wire.
+ *
+ * Length-adaptive: only emits fields that carry signal.
+ *   - 3 parts: "x,y,w"            — position + width only
+ *   - 4 parts: "x,y,w,t"          — adds tilt
+ *   - 5 parts: "x,y,w,t,a"        — adds tilt + azimuth
+ *
+ * When only azimuth is present (tilt null), tilt is emitted as the literal
+ * `_` so positional parsing stays unambiguous.
+ */
+fun Element.PathSample.toJsonString(): String {
+    val base = "${position.x},${position.y},${width}"
+    if (tilt == null && azimuth == null) return base
+    val t = tilt?.toString() ?: "_"
+    return if (azimuth == null) "$base,$t" else "$base,$t,${azimuth}"
+}
+
+fun String.toPathSample(fallbackWidth: Float): Element.PathSample {
+    val parts = this.split(",")
+    fun parseTilt(s: String): Float? = if (s == "_") null else s.toFloatOrNull()
+    return when (parts.size) {
+        5 -> Element.PathSample(
+            position = Offset(parts[0].toFloat(), parts[1].toFloat()),
+            width = parts[2].toFloat(),
+            tilt = parseTilt(parts[3]),
+            azimuth = parts[4].toFloatOrNull(),
+        )
+        4 -> Element.PathSample(
+            position = Offset(parts[0].toFloat(), parts[1].toFloat()),
+            width = parts[2].toFloat(),
+            tilt = parseTilt(parts[3]),
+        )
+        3 -> Element.PathSample(
+            position = Offset(parts[0].toFloat(), parts[1].toFloat()),
+            width = parts[2].toFloat(),
+        )
+        2 -> Element.PathSample(
+            position = Offset(parts[0].toFloat(), parts[1].toFloat()),
+            width = fallbackWidth,
+        )
+        else -> Element.PathSample(Offset.Zero, fallbackWidth)
+    }
+}
+
 fun ShapeType.toTypeString(): String = when (this) {
     ShapeType.RECTANGLE -> "RECTANGLE"
     ShapeType.CIRCLE -> "CIRCLE"
@@ -65,6 +112,10 @@ data class ElementDto(
     val id: String,
     val type: String,
     val zIndex: Int,
+    /**
+     * Shape position list, encoded as "x,y" strings. Empty for Path elements
+     * — paths use [samples] instead so per-sample widths are colocated.
+     */
     val points: List<String>,
     val strokeColor: String,
     val strokeWidth: Float,
@@ -79,6 +130,11 @@ data class ElementDto(
     val endBinding: String? = null,
     val createdAt: Long? = null,
     val modifiedAt: Long? = null,
+    /**
+     * Path sample list, encoded as "x,y,w" strings. One entry per stroke
+     * sample. Only set for `type = "Path"`; null on Shape DTOs.
+     */
+    val samples: List<String>? = null,
 )
 
 fun Element.toDto(): ElementDto = when (this) {
@@ -86,7 +142,8 @@ fun Element.toDto(): ElementDto = when (this) {
         id = id,
         type = "Path",
         zIndex = zIndex,
-        points = points.map { it.toJsonString() },
+        points = emptyList(),
+        samples = samples.map { it.toJsonString() },
         strokeColor = strokeColor.toHexString(),
         strokeWidth = strokeWidth,
         alpha = alpha,
@@ -118,7 +175,11 @@ fun Element.toDto(): ElementDto = when (this) {
 fun ElementDto.toElement(): Element = when (type) {
     "Path" -> Element.Path(
         id = id,
-        points = points.map { it.toOffset() },
+        // Prefer the new `samples` wire format; fall back to the legacy
+        // `points` field so old exports keep loading. Legacy points get a
+        // uniform width = strokeWidth.
+        samples = (samples?.map { it.toPathSample(fallbackWidth = strokeWidth) }
+            ?: points.map { Element.PathSample(it.toOffset(), strokeWidth) }),
         strokeColor = strokeColor.toColor(),
         strokeWidth = strokeWidth,
         alpha = alpha ?: 1f,
@@ -147,7 +208,8 @@ fun ElementDto.toElement(): Element = when (type) {
     )
     else -> Element.Path(
         id = id,
-        points = points.map { it.toOffset() },
+        samples = (samples?.map { it.toPathSample(fallbackWidth = strokeWidth) }
+            ?: points.map { Element.PathSample(it.toOffset(), strokeWidth) }),
         strokeColor = strokeColor.toColor(),
         strokeWidth = strokeWidth,
         alpha = alpha ?: 1f,
@@ -193,6 +255,7 @@ data class SerializableElement(
     val endBinding: String? = null,
     val createdAt: Long? = null,
     val modifiedAt: Long? = null,
+    val samples: List<String>? = null,
 )
 
 @kotlinx.serialization.Serializable
@@ -227,6 +290,7 @@ object DrawingSerializer {
                     endBinding = element.endBinding,
                     createdAt = element.createdAt,
                     modifiedAt = element.modifiedAt,
+                    samples = element.samples,
                 )
             },
         )
@@ -256,6 +320,7 @@ object DrawingSerializer {
                     endBinding = element.endBinding,
                     createdAt = element.createdAt,
                     modifiedAt = element.modifiedAt,
+                    samples = element.samples,
                 )
             },
         )
