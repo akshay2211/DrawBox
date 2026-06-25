@@ -2,6 +2,7 @@ package io.ak1.drawbox.domain.model
 
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 
@@ -61,6 +62,36 @@ sealed class Intent {
         val newPoint: Offset,
         val pressure: Float = 1f,
     ) : Intent()
+
+    // ==================== Image Operations ====================
+
+    /**
+     * Place an [Element.Image] at [position] in world space, sized from
+     * [intrinsicSize] so the placed bitmap preserves its source aspect ratio
+     * by default. Hosts that want different placement can dispatch
+     * [SetElementBounds] right after.
+     *
+     * Snapshots history once.
+     */
+    data class InsertImage(
+        val bytes: ByteArray,
+        val position: Offset,
+        val intrinsicSize: Size,
+    ) : Intent() {
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is InsertImage) return false
+            return position == other.position &&
+                intrinsicSize == other.intrinsicSize &&
+                bytes.contentEquals(other.bytes)
+        }
+        override fun hashCode(): Int {
+            var r = position.hashCode()
+            r = 31 * r + intrinsicSize.hashCode()
+            r = 31 * r + bytes.size
+            return r
+        }
+    }
 
     // ==================== Shape Operations ====================
 

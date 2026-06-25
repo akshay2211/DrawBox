@@ -2,6 +2,7 @@ package io.ak1.drawboxsample.save
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asSkiaBitmap
 import kotlin.js.JsAny
@@ -9,7 +10,9 @@ import kotlin.js.JsArray
 import kotlinx.browser.document
 import org.jetbrains.skia.EncodedImageFormat
 import org.jetbrains.skia.Image
+import org.khronos.webgl.ArrayBuffer
 import org.khronos.webgl.Uint8Array
+import org.khronos.webgl.get
 import org.khronos.webgl.set
 import org.w3c.dom.HTMLAnchorElement
 import org.w3c.dom.HTMLInputElement
@@ -79,6 +82,35 @@ private class WasmJsImageSaver : ImageSaver {
                     onLoaded(reader.result.toString())
                 }
                 reader.readAsText(file)
+            }
+        }
+        input.click()
+    }
+
+    override fun loadImage(onLoaded: (ByteArray, Size) -> Unit) {
+        val input = document.createElement("input") as HTMLInputElement
+        input.type = "file"
+        input.accept = "image/*"
+        input.onchange = { _: DomEvent ->
+            val file = input.files?.item(0)
+            if (file != null) {
+                val reader = FileReader()
+                reader.onload = { _: DomEvent ->
+                    val buffer = reader.result as? ArrayBuffer
+                    if (buffer != null) {
+                        val arr = Uint8Array(buffer)
+                        val bytes = ByteArray(arr.length) { i -> arr[i] }
+                        // Decode intrinsic size by handing the same bytes to
+                        // skia — identical to what the SDK does at render
+                        // time, just used here for placement math.
+                        val size = runCatching {
+                            val img = Image.makeFromEncoded(bytes)
+                            Size(img.width.toFloat(), img.height.toFloat())
+                        }.getOrElse { Size.Zero }
+                        onLoaded(bytes, size)
+                    }
+                }
+                reader.readAsArrayBuffer(file)
             }
         }
         input.click()

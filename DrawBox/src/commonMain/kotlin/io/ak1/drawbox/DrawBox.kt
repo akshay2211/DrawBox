@@ -39,6 +39,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.isSpecified
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Canvas
 import androidx.compose.ui.graphics.Color
@@ -172,6 +173,9 @@ fun DrawBox(
     // reference actually changes, so finalized strokes don't allocate a new
     // Path every frame during pan/zoom or active drag.
     val pathCache = remember { PathCache() }
+    // Same idea for images: decode once per (id, bytes ref), reuse the
+    // ImageBitmap across frames. Re-decoded only when bytes reference changes.
+    val imageCache = remember { ImageBitmapCache() }
 
     // Drag-in-progress signal lifted out of the gesture coroutine so the render
     // path can tell when an element is being actively mutated (drawn, moved,
@@ -698,7 +702,7 @@ fun DrawBox(
                         scale(vp.scale, vp.scale, pivot = Offset.Zero)
                     }) {
                         orderedElements.forEach { el ->
-                            if (el.id !in activeIds) renderElement(el, pathCache)
+                            if (el.id !in activeIds) renderElement(el, pathCache, imageCache)
                         }
                     }
                 }
@@ -718,7 +722,7 @@ fun DrawBox(
             }) {
                 if (activeIds.isNotEmpty()) {
                     orderedElements.forEach { el ->
-                        if (el.id in activeIds) renderElement(el, pathCache)
+                        if (el.id in activeIds) renderElement(el, pathCache, imageCache)
                     }
                 }
                 drawSelectionChrome(
@@ -759,7 +763,7 @@ fun DrawBox(
                         translate(vp.offset.x, vp.offset.y)
                         scale(vp.scale, vp.scale, pivot = Offset.Zero)
                     }) {
-                        orderedElements.forEach { renderElement(it, pathCache) }
+                        orderedElements.forEach { renderElement(it, pathCache, imageCache) }
                     }
                 }
                 capturePending = false
@@ -772,11 +776,13 @@ fun DrawBox(
                 }
             }
 
-            // Reclaim PathCache entries for deleted elements. Cheap (HashMap
-            // key-retain over the live id set); only worth doing when something
-            // was actually removed.
-            if (pathCache.size() > state.elements.size) {
-                pathCache.retainOnly(state.elements.mapTo(HashSet(state.elements.size)) { it.id })
+            // Reclaim PathCache + ImageBitmapCache entries for deleted elements.
+            // Cheap (HashMap key-retain over the live id set); only worth doing
+            // when the live set actually shrank.
+            if (pathCache.size() + imageCache.size() > state.elements.size) {
+                val liveIds = state.elements.mapTo(HashSet(state.elements.size)) { it.id }
+                pathCache.retainOnly(liveIds)
+                imageCache.retainOnly(liveIds)
             }
         }
     }
@@ -1183,17 +1189,25 @@ private fun Painter.rasterize(
  *
  * @see drawShape for shape-specific rendering
  */
-private fun DrawScope.renderElement(element: Element, pathCache: PathCache? = null) {
+private fun DrawScope.renderElement(
+    element: Element,
+    pathCache: PathCache? = null,
+    imageCache: ImageBitmapCache? = null,
+) {
     if (element.rotation == 0f) {
-        renderElementContent(element, pathCache)
+        renderElementContent(element, pathCache, imageCache)
     } else {
         withTransform({ rotate(element.rotation, pivot = element.bounds().center) }) {
-            renderElementContent(element, pathCache)
+            renderElementContent(element, pathCache, imageCache)
         }
     }
 }
 
-private fun DrawScope.renderElementContent(element: Element, pathCache: PathCache?) {
+private fun DrawScope.renderElementContent(
+    element: Element,
+    pathCache: PathCache?,
+    imageCache: ImageBitmapCache?,
+) {
     when (element) {
         is Element.Path -> {
             val samples = element.samples
@@ -1239,6 +1253,71 @@ private fun DrawScope.renderElementContent(element: Element, pathCache: PathCach
         is Element.Shape -> {
             drawShape(element)
         }
+        is Element.Image -> {
+            drawImageElement(element, imageCache)
+        }
+    }
+}
+
+/**
+ * Render an [Element.Image] inside its current AABB. Decoding is deferred to
+ * [ImageBitmapCache] so the per-frame work is just a translated + scaled
+ * `drawImage` call. When the cache misses (no [imageCache] supplied, or
+ * decode failed), we draw a neutral grey placeholder rectangle so the canvas
+ * still reflects the element's footprint and selection chrome remains usable.
+ */
+private fun DrawScope.drawImageElement(image: Element.Image, imageCache: ImageBitmapCache?) {
+    if (image.points.size < 2) return
+    val topLeft = image.points[0]
+    val bottomRight = image.points[1]
+    val targetW = bottomRight.x - topLeft.x
+    val targetH = bottomRight.y - topLeft.y
+    if (targetW <= 0f || targetH <= 0f) return
+
+    val bitmap = imageCache?.bitmapFor(image.id, image.bytes)
+        ?: decodeImageBitmap(image.bytes)
+    if (bitmap == null) {
+        // Visible placeholder so a corrupt / unsupported payload doesn't render
+        // as an invisible hole that's still selectable/movable.
+        drawRect(
+            color = Color(0xFFE0E0E0),
+            topLeft = topLeft,
+            size = Size(targetW, targetH),
+        )
+        drawRect(
+            color = Color(0xFFB0B0B0),
+            topLeft = topLeft,
+            size = Size(targetW, targetH),
+            style = Stroke(width = 1.5f),
+        )
+        return
+    }
+
+    val srcW = bitmap.width
+    val srcH = bitmap.height
+    if (srcW <= 0 || srcH <= 0) return
+
+    // Scale the source bitmap into the placed AABB. `withTransform` keeps the
+    // outer world transform intact while applying the per-image translate +
+    // scale, so element rotation (applied one level up in renderElement)
+    // composes correctly. The `IntOffset` / `IntSize` `drawImage` overload is
+    // used because its parameter names are stable across Compose versions —
+    // the `Offset`-based variant has shifted between `topLeftOffset` and
+    // `topLeft` over time.
+    withTransform({
+        translate(topLeft.x, topLeft.y)
+        scale(
+            scaleX = targetW / srcW,
+            scaleY = targetH / srcH,
+            pivot = Offset.Zero,
+        )
+    }) {
+        drawImage(
+            image = bitmap,
+            dstOffset = IntOffset.Zero,
+            dstSize = IntSize(srcW, srcH),
+            alpha = image.opacity,
+        )
     }
 }
 

@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.painter.Painter
@@ -222,6 +223,21 @@ class DrawBoxController(
 
     /** Switch to a different drawing mode */
     fun setMode(mode: Mode) = onIntent(Intent.SetMode(mode))
+
+    /**
+     * Place a bitmap on the canvas. [bytes] is the raw encoded image
+     * (PNG / JPEG / WebP — whatever the renderer's decoder accepts); the SDK
+     * owns decoding from there. [intrinsicSize] is the source image's pixel
+     * dimensions, used to preserve aspect ratio when sizing the placed
+     * element. [position] is the world-space anchor that lands at the center
+     * of the placed image — drop / paste at the cursor naturally puts the
+     * image under the cursor.
+     */
+    fun insertImage(
+        bytes: ByteArray,
+        intrinsicSize: Size,
+        position: Offset = Offset.Zero,
+    ) = onIntent(Intent.InsertImage(bytes, position, intrinsicSize))
 
     /** Undo the last drawing action */
     fun undo() = onIntent(Intent.Undo)

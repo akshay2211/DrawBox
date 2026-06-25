@@ -24,6 +24,7 @@ import kotlin.math.sqrt
 /** Axis-aligned bounding box of the element in unrotated logical space. */
 fun Element.bounds(): Rect = when (this) {
     is Element.Path -> pointsBounds(positions)
+    is Element.Image -> pointsBounds(points)
     is Element.Shape -> when (shapeType) {
         // Circle points are diameter endpoints, so the circle extends past them.
         // The bbox is the square inscribing the circle.
@@ -289,6 +290,7 @@ fun Element.hitTest(point: Offset, tolerance: Float = 8f): Boolean {
     return when (this) {
         is Element.Path -> hitTestPath(this, local, tolerance)
         is Element.Shape -> hitTestShape(this, local, b, tolerance)
+        is Element.Image -> b.inflate(tolerance).contains(local)
     }
 }
 
@@ -402,6 +404,7 @@ fun Element.translate(delta: Offset): Element = when (this) {
         samples = samples.map { it.copy(position = it.position + delta) },
     ).touched()
     is Element.Shape -> copy(points = points.map { it + delta }).touched()
+    is Element.Image -> copy(points = points.map { it + delta }).touched()
 }
 
 /**
@@ -421,6 +424,9 @@ fun Element.withBounds(newBounds: Rect): Element {
             val mapped = scalePoints(positions, bounds(), safeBounds)
             copy(samples = samples.mapIndexed { i, s -> s.copy(position = mapped[i]) }).touched()
         }
+        is Element.Image -> copy(
+            points = listOf(safeBounds.topLeft, safeBounds.bottomRight),
+        ).touched()
         is Element.Shape -> when (shapeType) {
             ShapeType.CIRCLE -> resizeCircle(this, safeBounds).touched()
             else -> {
@@ -479,6 +485,7 @@ private fun scalePoints(points: List<Offset>, from: Rect, to: Rect): List<Offset
 fun Element.withRotation(degrees: Float): Element = when (this) {
     is Element.Path -> copy(rotation = degrees).touched()
     is Element.Shape -> copy(rotation = degrees).touched()
+    is Element.Image -> copy(rotation = degrees).touched()
 }
 
 /**

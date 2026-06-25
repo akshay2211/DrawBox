@@ -284,6 +284,19 @@ fun HomeScreen(
                 imageSaver.loadJson { json -> viewModel.importPath(json) }
                 drawerOpen = false
             },
+            onInsertImage = {
+                drawerOpen = false
+                imageSaver.loadImage { bytes, intrinsicSize ->
+                    // Drop the image at the world-space center of the current
+                    // viewport so it lands somewhere visible regardless of pan
+                    // or zoom. The viewport screenToWorld() does the inverse
+                    // transform; we use the same ScreenCenter heuristic as the
+                    // zoom toolbar since we don't have the canvas dimensions
+                    // available here.
+                    val world = state.viewport.screenToWorld(ScreenCenter)
+                    viewModel.insertImage(bytes, intrinsicSize, world)
+                }
+            },
             onReplay = {
                 drawerOpen = false
                 replayOpen = true

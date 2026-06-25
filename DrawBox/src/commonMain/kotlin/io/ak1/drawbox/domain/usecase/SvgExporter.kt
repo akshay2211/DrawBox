@@ -1,9 +1,13 @@
+@file:OptIn(ExperimentalEncodingApi::class)
+
 package io.ak1.drawbox.domain.usecase
 
 import androidx.compose.ui.graphics.Color
 import io.ak1.drawbox.domain.model.Element
 import io.ak1.drawbox.domain.model.ShapeType
 import androidx.compose.ui.geometry.Offset
+import kotlin.io.encoding.Base64
+import kotlin.io.encoding.ExperimentalEncodingApi
 import kotlin.math.abs
 import kotlin.math.sqrt
 
@@ -30,6 +34,7 @@ object SvgExporter {
             when (element) {
                 is Element.Path -> svgElements.add(pathToSvg(element))
                 is Element.Shape -> svgElements.add(shapeToSvg(element))
+                is Element.Image -> svgElements.add(imageToSvg(element))
             }
         }
 
@@ -53,6 +58,14 @@ object SvgExporter {
                     }
                 }
                 is Element.Shape -> {
+                    element.points.forEach { point ->
+                        minX = kotlin.math.min(minX, point.x)
+                        minY = kotlin.math.min(minY, point.y)
+                        maxX = kotlin.math.max(maxX, point.x)
+                        maxY = kotlin.math.max(maxY, point.y)
+                    }
+                }
+                is Element.Image -> {
                     element.points.forEach { point ->
                         minX = kotlin.math.min(minX, point.x)
                         minY = kotlin.math.min(minY, point.y)
@@ -244,6 +257,57 @@ object SvgExporter {
         val headSvg = """<polygon points="$arrowHeadPoints" fill="$color"/>"""
 
         return "$lineSvg\n  $headSvg"
+    }
+
+    private fun imageToSvg(image: Element.Image): String {
+        if (image.points.size < 2) return ""
+        val topLeft = image.points[0]
+        val bottomRight = image.points[1]
+        val x = kotlin.math.min(topLeft.x, bottomRight.x)
+        val y = kotlin.math.min(topLeft.y, bottomRight.y)
+        val w = abs(bottomRight.x - topLeft.x)
+        val h = abs(bottomRight.y - topLeft.y)
+        // Best-effort MIME sniffing: peek at the file's magic bytes so the SVG
+        // data URI declares the right type. SVG viewers tolerate "image/png"
+        // for everything but Inkscape and Figma reject it for JPEG/WebP.
+        val mime = sniffMime(image.bytes)
+        val base64 = Base64.encode(image.bytes)
+        val opacityAttr = if (image.opacity != 1f) """ opacity="${image.opacity}"""" else ""
+        val transformAttr = if (image.rotation != 0f) {
+            val cx = x + w * 0.5f
+            val cy = y + h * 0.5f
+            """ transform="rotate(${image.rotation}, $cx, $cy)""""
+        } else ""
+        return """<image x="$x" y="$y" width="$w" height="$h" href="data:$mime;base64,$base64"$opacityAttr$transformAttr/>"""
+    }
+
+    /**
+     * Identify common image formats by their magic-byte signatures so SVG
+     * data URIs carry an accurate MIME type. Defaults to PNG when the bytes
+     * don't match a recognized signature — PNG is the most widely supported
+     * fallback and matches what BitmapFactory / skia emit by default for
+     * synthetic content.
+     */
+    private fun sniffMime(bytes: ByteArray): String {
+        if (bytes.size >= 8 &&
+            bytes[0] == 0x89.toByte() && bytes[1] == 0x50.toByte() &&
+            bytes[2] == 0x4E.toByte() && bytes[3] == 0x47.toByte()
+        ) return "image/png"
+        if (bytes.size >= 3 &&
+            bytes[0] == 0xFF.toByte() && bytes[1] == 0xD8.toByte() &&
+            bytes[2] == 0xFF.toByte()
+        ) return "image/jpeg"
+        if (bytes.size >= 4 &&
+            bytes[0] == 0x47.toByte() && bytes[1] == 0x49.toByte() &&
+            bytes[2] == 0x46.toByte() && bytes[3] == 0x38.toByte()
+        ) return "image/gif"
+        if (bytes.size >= 12 &&
+            bytes[0] == 0x52.toByte() && bytes[1] == 0x49.toByte() &&
+            bytes[2] == 0x46.toByte() && bytes[3] == 0x46.toByte() &&
+            bytes[8] == 0x57.toByte() && bytes[9] == 0x45.toByte() &&
+            bytes[10] == 0x42.toByte() && bytes[11] == 0x50.toByte()
+        ) return "image/webp"
+        return "image/png"
     }
 
     private fun lineToSvg(

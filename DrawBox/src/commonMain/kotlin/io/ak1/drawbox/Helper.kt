@@ -3,6 +3,7 @@ package io.ak1.drawbox
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.Path
 import io.ak1.drawbox.domain.model.Element
 
@@ -98,6 +99,43 @@ internal class PathCache {
      * Drop entries whose ids are no longer in [liveIds]. Cheap to call but not
      * free — only invoke when the live set actually shrank.
      */
+    fun retainOnly(liveIds: Set<String>) {
+        if (byId.isEmpty()) return
+        byId.keys.retainAll(liveIds)
+    }
+
+    fun size(): Int = byId.size
+}
+
+/**
+ * Per-canvas cache of decoded [ImageBitmap] objects for [Element.Image]
+ * elements. Decoding a typical 1 MB PNG takes several milliseconds and would
+ * otherwise run every frame an image is on screen.
+ *
+ * Cache hits require BOTH:
+ *  - same element id, AND
+ *  - the stored bytes reference equals the lookup bytes reference.
+ *
+ * The second check is what protects us when [Intent.UpdateElement] swaps the
+ * payload of an existing id — the new `ByteArray` is a different reference,
+ * so we miss and re-decode.
+ *
+ * Decoding is delegated to [decodeImageBitmap], an `expect`/`actual` that
+ * dispatches to the platform's native decoder. Returns `null` when the bytes
+ * fail to decode; callers should render a placeholder.
+ */
+internal class ImageBitmapCache {
+    private data class Entry(val bytesRef: ByteArray, val bitmap: ImageBitmap?)
+    private val byId = HashMap<String, Entry>()
+
+    fun bitmapFor(id: String, bytes: ByteArray): ImageBitmap? {
+        val existing = byId[id]
+        if (existing != null && existing.bytesRef === bytes) return existing.bitmap
+        val fresh = decodeImageBitmap(bytes)
+        byId[id] = Entry(bytes, fresh)
+        return fresh
+    }
+
     fun retainOnly(liveIds: Set<String>) {
         if (byId.isEmpty()) return
         byId.keys.retainAll(liveIds)

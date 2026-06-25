@@ -2,6 +2,7 @@ package io.ak1.drawbox.domain.usecase
 
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import io.ak1.drawbox.domain.model.Element
 import io.ak1.drawbox.domain.model.ResizeHandle
@@ -26,6 +27,7 @@ class UseCase {
         val newElement = when (element) {
             is Element.Path -> element.copy(zIndex = currentElements.size)
             is Element.Shape -> element.copy(zIndex = currentElements.size)
+            is Element.Image -> element.copy(zIndex = currentElements.size)
         }
         return currentElements + newElement
     }
@@ -121,6 +123,38 @@ class UseCase {
             strokeWidth = width,
             cornerRadius = cornerRadius,
             strokeStyle = strokeStyle,
+            createdAt = now,
+            modifiedAt = now,
+        )
+    }
+
+    // Image operations
+    @OptIn(ExperimentalTime::class)
+    fun insertImage(
+        bytes: ByteArray,
+        position: Offset,
+        intrinsicSize: Size,
+    ): Element.Image {
+        val now = Clock.System.now().toEpochMilliseconds()
+        // Fit the placed image into a sensible default extent: clamp the longer
+        // side to MAX_PLACED_EXTENT world pixels and preserve aspect ratio.
+        // Hosts that want the source size verbatim can resize via
+        // SetElementBounds immediately after dispatch.
+        val intrinsicW = intrinsicSize.width.coerceAtLeast(1f)
+        val intrinsicH = intrinsicSize.height.coerceAtLeast(1f)
+        val longer = maxOf(intrinsicW, intrinsicH)
+        val scale = if (longer > MAX_PLACED_EXTENT) MAX_PLACED_EXTENT / longer else 1f
+        val placedW = intrinsicW * scale
+        val placedH = intrinsicH * scale
+        // Anchor the AABB on [position]'s center so the drop point lands in the
+        // middle of the placed image — matches the user's mental model when
+        // dropping or pasting at the cursor.
+        val topLeft = Offset(position.x - placedW * 0.5f, position.y - placedH * 0.5f)
+        val bottomRight = Offset(topLeft.x + placedW, topLeft.y + placedH)
+        return Element.Image(
+            bytes = bytes,
+            intrinsicSize = intrinsicSize,
+            points = listOf(topLeft, bottomRight),
             createdAt = now,
             modifiedAt = now,
         )
@@ -232,6 +266,7 @@ class UseCase {
             if (el.id in ids) when (el) {
                 is Element.Path -> el.copy(zIndex = next++).touched()
                 is Element.Shape -> el.copy(zIndex = next++).touched()
+                is Element.Image -> el.copy(zIndex = next++).touched()
             } else el
         }
     }
@@ -249,6 +284,7 @@ class UseCase {
             if (newZ != null) when (el) {
                 is Element.Path -> el.copy(zIndex = newZ).touched()
                 is Element.Shape -> el.copy(zIndex = newZ).touched()
+                is Element.Image -> el.copy(zIndex = newZ).touched()
             } else el
         }
     }
@@ -262,6 +298,9 @@ class UseCase {
         if (el.id !in ids) el else when (el) {
             is Element.Path -> el.copy(strokeColor = color).touched()
             is Element.Shape -> el.copy(strokeColor = color).touched()
+            // Images have no stroke — recolor is a no-op rather than an error,
+            // so multi-selecting a mix of shapes and images still works.
+            is Element.Image -> el
         }
     }
 
@@ -281,6 +320,7 @@ class UseCase {
                 samples = el.samples.map { it.copy(width = width) },
             ).touched()
             is Element.Shape -> el.copy(strokeWidth = width).touched()
+            is Element.Image -> el
         }
     }
 
@@ -309,6 +349,7 @@ class UseCase {
         when (el) {
             is Element.Shape -> el.copy(strokeStyle = style).touched()
             is Element.Path -> el.copy(strokeStyle = style).touched()
+            is Element.Image -> el
         }
     }
 
@@ -332,6 +373,7 @@ class UseCase {
                 },
             ).touched()
             is Element.Shape -> el.copy(points = newPoints).touched()
+            is Element.Image -> el.copy(points = newPoints).touched()
         }
     }
 
@@ -446,6 +488,14 @@ class UseCase {
  * and don't change what the user sees. Squared so we can compare without sqrt.
  */
 private const val MIN_PEN_POINT_DIST_SQ: Float = 1f
+
+/**
+ * World-pixel cap on the longer side of an image placed via [UseCase.insertImage].
+ * Large source images (e.g. 4096×3000 screenshots) would otherwise dominate the
+ * default-zoom viewport and force the user to immediately resize. 600 px feels
+ * roughly notebook-size on a 1× canvas — still readable, easy to grow.
+ */
+private const val MAX_PLACED_EXTENT: Float = 600f
 
 /**
  * Slop, in world pixels, applied to a bindable shape's AABB when deciding

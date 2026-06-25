@@ -51,6 +51,16 @@ class Reducer(
                 intent.newPoint, state.elements, intent.pressure,
             ),
         )
+        is Intent.InsertImage -> {
+            val newImage = useCase.insertImage(
+                intent.bytes,
+                intent.position,
+                intent.intrinsicSize,
+            )
+            state.snapshot().copy(
+                elements = useCase.addElement(newImage, state.elements),
+            )
+        }
         is Intent.InsertNewShape -> {
             val newShape = useCase.insertNewShape(
                 intent.shapeType,
