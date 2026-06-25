@@ -2,6 +2,7 @@ package io.ak1.drawboxsample.save
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.toAwtImage
 import java.awt.image.BufferedImage
@@ -65,5 +66,35 @@ private class DesktopImageSaver : ImageSaver {
         if (chooser.showOpenDialog(null) != JFileChooser.APPROVE_OPTION) return
         val source = chooser.selectedFile ?: return
         onLoaded(source.readText())
+    }
+
+    override fun loadImage(onLoaded: (ByteArray, Size) -> Unit) {
+        val chooser = JFileChooser().apply {
+            dialogTitle = "Insert Image"
+            fileFilter = FileNameExtensionFilter(
+                "Image (PNG, JPEG, GIF, WebP, BMP)",
+                "png", "jpg", "jpeg", "gif", "webp", "bmp",
+            )
+        }
+        if (chooser.showOpenDialog(null) != JFileChooser.APPROVE_OPTION) return
+        val source = chooser.selectedFile ?: return
+        val bytes = try {
+            source.readBytes()
+        } catch (e: Throwable) {
+            println("Failed to read image file: ${e.message}")
+            return
+        }
+        // Read dimensions via ImageIO without keeping the decoded pixels around.
+        // We pass the raw encoded bytes back to the SDK; ImageIO is only used
+        // to determine intrinsicSize for the placement math.
+        val size: Size = try {
+            val decoded: BufferedImage? = ImageIO.read(source)
+            if (decoded != null) Size(decoded.width.toFloat(), decoded.height.toFloat())
+            else Size.Zero
+        } catch (e: Throwable) {
+            println("Failed to read image dimensions: ${e.message}")
+            Size.Zero
+        }
+        onLoaded(bytes, size)
     }
 }

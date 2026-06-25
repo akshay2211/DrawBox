@@ -1,7 +1,12 @@
+@file:OptIn(ExperimentalEncodingApi::class)
+
 package io.ak1.drawbox.domain.model
 
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import kotlin.io.encoding.Base64
+import kotlin.io.encoding.ExperimentalEncodingApi
 import kotlinx.serialization.json.Json
 
 fun Color.toHexString(): String {
@@ -113,8 +118,9 @@ data class ElementDto(
     val type: String,
     val zIndex: Int,
     /**
-     * Shape position list, encoded as "x,y" strings. Empty for Path elements
-     * — paths use [samples] instead so per-sample widths are colocated.
+     * Shape / image position list, encoded as "x,y" strings. Empty for Path
+     * elements — paths use [samples] instead so per-sample widths are
+     * colocated. For Image, this is `[topLeft, bottomRight]`.
      */
     val points: List<String>,
     val strokeColor: String,
@@ -132,9 +138,21 @@ data class ElementDto(
     val modifiedAt: Long? = null,
     /**
      * Path sample list, encoded as "x,y,w" strings. One entry per stroke
-     * sample. Only set for `type = "Path"`; null on Shape DTOs.
+     * sample. Only set for `type = "Path"`; null on Shape / Image DTOs.
      */
     val samples: List<String>? = null,
+    /**
+     * Raw encoded image payload, base64-encoded. Only set for Image
+     * elements. Inline (rather than external reference) so the JSON file
+     * round-trips as a single artifact.
+     */
+    val imageData: String? = null,
+    /** Source image's intrinsic pixel width. Only set for Image elements. */
+    val intrinsicWidth: Float? = null,
+    /** Source image's intrinsic pixel height. Only set for Image elements. */
+    val intrinsicHeight: Float? = null,
+    /** Render-time alpha for Image elements (0.0..1.0). */
+    val opacity: Float? = null,
 )
 
 fun Element.toDto(): ElementDto = when (this) {
@@ -151,6 +169,23 @@ fun Element.toDto(): ElementDto = when (this) {
         strokeStyle = strokeStyle.toWireString().takeIf { strokeStyle != StrokeStyle.SOLID },
         createdAt = createdAt.takeIf { it != 0L },
         modifiedAt = modifiedAt.takeIf { it != 0L },
+    )
+    is Element.Image -> ElementDto(
+        id = id,
+        type = "Image",
+        zIndex = zIndex,
+        points = points.map { it.toJsonString() },
+        // Image has no stroke; emit zeros so the field's contract (always
+        // present) is preserved. Loader ignores them.
+        strokeColor = "#00000000",
+        strokeWidth = 0f,
+        rotation = rotation.takeIf { it != 0f },
+        createdAt = createdAt.takeIf { it != 0L },
+        modifiedAt = modifiedAt.takeIf { it != 0L },
+        imageData = Base64.encode(bytes),
+        intrinsicWidth = intrinsicSize.width,
+        intrinsicHeight = intrinsicSize.height,
+        opacity = opacity.takeIf { it != 1f },
     )
     is Element.Shape -> ElementDto(
         id = id,
@@ -186,6 +221,20 @@ fun ElementDto.toElement(): Element = when (type) {
         zIndex = zIndex,
         rotation = rotation ?: 0f,
         strokeStyle = strokeStyle.toStrokeStyle(),
+        createdAt = createdAt ?: 0L,
+        modifiedAt = modifiedAt ?: createdAt ?: 0L,
+    )
+    "Image" -> Element.Image(
+        id = id,
+        bytes = imageData?.let { Base64.decode(it) } ?: ByteArray(0),
+        intrinsicSize = Size(
+            intrinsicWidth ?: 0f,
+            intrinsicHeight ?: 0f,
+        ),
+        points = points.map { it.toOffset() },
+        opacity = opacity ?: 1f,
+        zIndex = zIndex,
+        rotation = rotation ?: 0f,
         createdAt = createdAt ?: 0L,
         modifiedAt = modifiedAt ?: createdAt ?: 0L,
     )
@@ -256,6 +305,10 @@ data class SerializableElement(
     val createdAt: Long? = null,
     val modifiedAt: Long? = null,
     val samples: List<String>? = null,
+    val imageData: String? = null,
+    val intrinsicWidth: Float? = null,
+    val intrinsicHeight: Float? = null,
+    val opacity: Float? = null,
 )
 
 @kotlinx.serialization.Serializable
@@ -291,6 +344,10 @@ object DrawingSerializer {
                     createdAt = element.createdAt,
                     modifiedAt = element.modifiedAt,
                     samples = element.samples,
+                    imageData = element.imageData,
+                    intrinsicWidth = element.intrinsicWidth,
+                    intrinsicHeight = element.intrinsicHeight,
+                    opacity = element.opacity,
                 )
             },
         )
@@ -321,6 +378,10 @@ object DrawingSerializer {
                     createdAt = element.createdAt,
                     modifiedAt = element.modifiedAt,
                     samples = element.samples,
+                    imageData = element.imageData,
+                    intrinsicWidth = element.intrinsicWidth,
+                    intrinsicHeight = element.intrinsicHeight,
+                    opacity = element.opacity,
                 )
             },
         )

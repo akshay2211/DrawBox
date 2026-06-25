@@ -2,6 +2,7 @@ package io.ak1.drawboxsample.save
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asSkiaBitmap
 import kotlinx.cinterop.BetaInteropApi
@@ -100,6 +101,13 @@ private class IosImageSaver : ImageSaver {
         activeDelegate = delegate
         picker.delegate = delegate
         rootController.presentViewController(picker, true, null)
+    }
+
+    override fun loadImage(onLoaded: (ByteArray, Size) -> Unit) {
+        // iOS image picker requires UIImagePickerController + Photos auth or
+        // PHPickerViewController — out of scope for OSS v1. Logged as a hint
+        // for embedders; desktop & Android cover the demo.
+        NSLog("loadImage(): not implemented on iOS in OSS sample yet")
     }
 
     @OptIn(BetaInteropApi::class)

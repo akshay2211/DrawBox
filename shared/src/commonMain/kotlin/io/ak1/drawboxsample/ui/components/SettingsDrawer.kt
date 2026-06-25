@@ -31,6 +31,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DeleteSweep
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.GridOn
+import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.Pattern
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Upload
@@ -87,6 +88,7 @@ fun SettingsDrawer(
     onDownloadPng: () -> Unit,
     onExportJson: () -> Unit,
     onImportJson: () -> Unit,
+    onInsertImage: () -> Unit,
     onReplay: () -> Unit,
     onPickBgColor: () -> Unit,
     onBgPatternSelected: (BgPatternPreset?) -> Unit,
@@ -161,6 +163,11 @@ fun SettingsDrawer(
                         icon = Icons.Filled.Upload,
                         label = "Import JSON",
                         onClick = onImportJson,
+                    )
+                    DrawerRow(
+                        icon = Icons.Filled.Image,
+                        label = "Insert image",
+                        onClick = onInsertImage,
                     )
 
                     SectionLabel("Playback")

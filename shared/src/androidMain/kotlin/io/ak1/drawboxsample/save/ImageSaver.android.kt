@@ -9,10 +9,12 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
+import android.graphics.BitmapFactory
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.platform.LocalContext
@@ -24,16 +26,22 @@ import kotlinx.coroutines.launch
 actual fun rememberImageSaver(): ImageSaver {
     val context = LocalContext.current
     val saver = remember(context) { AndroidImageSaver(context.applicationContext) }
-    val launcher = rememberLauncherForActivityResult(
+    val jsonLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.OpenDocument(),
     ) { uri -> saver.onJsonPicked(uri) }
-    saver.jsonPicker = launcher
+    saver.jsonPicker = jsonLauncher
+    val imageLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.OpenDocument(),
+    ) { uri -> saver.onImagePicked(uri) }
+    saver.imagePicker = imageLauncher
     return saver
 }
 
 private class AndroidImageSaver(private val context: Context) : ImageSaver {
     var jsonPicker: ActivityResultLauncher<Array<String>>? = null
+    var imagePicker: ActivityResultLauncher<Array<String>>? = null
     private var pendingJsonCallback: ((String) -> Unit)? = null
+    private var pendingImageCallback: ((ByteArray, Size) -> Unit)? = null
 
     override fun savePng(bitmap: ImageBitmap) {
         GlobalScope.launch(Dispatchers.IO) {
@@ -98,6 +106,39 @@ private class AndroidImageSaver(private val context: Context) : ImageSaver {
         }
         pendingJsonCallback = onLoaded
         launcher.launch(arrayOf("application/json", "text/plain", "*/*"))
+    }
+
+    override fun loadImage(onLoaded: (ByteArray, Size) -> Unit) {
+        val launcher = imagePicker
+        if (launcher == null) {
+            showToast("Image picker not ready yet")
+            return
+        }
+        pendingImageCallback = onLoaded
+        launcher.launch(arrayOf("image/*"))
+    }
+
+    fun onImagePicked(uri: Uri?) {
+        val callback = pendingImageCallback
+        pendingImageCallback = null
+        if (uri == null || callback == null) return
+        GlobalScope.launch(Dispatchers.IO) {
+            val payload = try {
+                context.contentResolver.openInputStream(uri)?.use { it.readBytes() }
+            } catch (e: Throwable) {
+                android.util.Log.e("ImageSaver", "Error reading image", e)
+                showToast("Error reading image: ${e.message}")
+                null
+            } ?: return@launch
+            // Decode just bounds to recover intrinsic size — avoids loading the
+            // full bitmap into memory twice.
+            val opts = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+            BitmapFactory.decodeByteArray(payload, 0, payload.size, opts)
+            val size = if (opts.outWidth > 0 && opts.outHeight > 0) {
+                Size(opts.outWidth.toFloat(), opts.outHeight.toFloat())
+            } else Size.Zero
+            GlobalScope.launch(Dispatchers.Main) { callback(payload, size) }
+        }
     }
 
     fun onJsonPicked(uri: Uri?) {

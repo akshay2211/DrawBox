@@ -3,6 +3,7 @@
 package io.ak1.drawbox.domain.model
 
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
@@ -137,6 +138,67 @@ sealed class Element {
      * @see ShapeType for available shape types
      * @see androidx.compose.ui.graphics.drawscope.DrawScope.drawRect, drawCircle, drawPath for rendering details
      */
+    /**
+     * Bitmap element placed on the canvas. `bytes` is the raw encoded payload
+     * (PNG / JPEG / WebP) and the source of truth — the renderer decodes it
+     * into an [androidx.compose.ui.graphics.ImageBitmap] on demand and caches
+     * the result keyed by [id]. Resize / rotate / move / select reuse the
+     * standard two-point AABB infrastructure.
+     *
+     * @property bytes Raw encoded image bytes; never decoded until rendered.
+     * @property intrinsicSize Pixel dimensions of the source image, used to
+     *   preserve aspect ratio on initial placement and to drive SVG export's
+     *   `width` / `height` attributes.
+     * @property points Two-corner AABB in world space: `[topLeft, bottomRight]`.
+     * @property opacity Alpha applied at render time, independent of any
+     *   alpha already baked into the source pixels.
+     */
+    data class Image(
+        override val id: String = Uuid.random().toString(),
+        override val type: String = "Image",
+        val bytes: ByteArray,
+        val intrinsicSize: Size,
+        val points: List<Offset>,
+        val opacity: Float = 1f,
+        override val zIndex: Int = 0,
+        override val rotation: Float = 0f,
+        override val createdAt: Long = 0L,
+        override val modifiedAt: Long = 0L,
+    ) : Element() {
+        // ByteArray defaults to reference equality, which would make two
+        // identical-bytes copies of the same image compare unequal. Override
+        // so undo/redo snapshots that re-decode the same payload behave
+        // correctly. Keep id out of equality so element-level identity is
+        // already determined by id elsewhere; here we want structural
+        // equality for diffing.
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is Image) return false
+            if (id != other.id) return false
+            if (intrinsicSize != other.intrinsicSize) return false
+            if (points != other.points) return false
+            if (opacity != other.opacity) return false
+            if (zIndex != other.zIndex) return false
+            if (rotation != other.rotation) return false
+            if (createdAt != other.createdAt) return false
+            if (modifiedAt != other.modifiedAt) return false
+            return bytes.contentEquals(other.bytes)
+        }
+
+        override fun hashCode(): Int {
+            var result = id.hashCode()
+            result = 31 * result + intrinsicSize.hashCode()
+            result = 31 * result + points.hashCode()
+            result = 31 * result + opacity.hashCode()
+            result = 31 * result + zIndex
+            result = 31 * result + rotation.hashCode()
+            result = 31 * result + createdAt.hashCode()
+            result = 31 * result + modifiedAt.hashCode()
+            result = 31 * result + bytes.size
+            return result
+        }
+    }
+
     data class Shape(
         override val id: String = Uuid.random().toString(),
         override val type: String = "Shape",
@@ -200,6 +262,7 @@ fun Element.touched(now: Long = kotlin.time.Clock.System.now().toEpochMillisecon
     when (this) {
         is Element.Path -> copy(modifiedAt = now)
         is Element.Shape -> copy(modifiedAt = now)
+        is Element.Image -> copy(modifiedAt = now)
     }
 
 /**
