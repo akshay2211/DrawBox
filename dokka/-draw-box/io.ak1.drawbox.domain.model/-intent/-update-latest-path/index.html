@@ -107,24 +107,24 @@
   <div class="breadcrumbs"><a href="../../../../index.html">DrawBox</a><span class="delimiter">/</span><a href="../../index.html">io.ak1.drawbox.domain.model</a><span class="delimiter">/</span><a href="../index.html">Intent</a><span class="delimiter">/</span><span class="current">UpdateLatestPath</span></div>
   <div class="cover ">
     <h1 class="cover"><span>Update</span><wbr></wbr><span>Latest</span><wbr></wbr><span><span>Path</span></span></h1>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":DrawBox/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="index.html">UpdateLatestPath</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>newPoint<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/geometry/Offset.html">Offset</a></span></span><span class="token punctuation">)</span> : <a href="../index.html">Intent</a></div><p class="paragraph">Add a new point to the current path being drawn.</p><p class="paragraph">This intent is dispatched continuously during drag operations in PEN mode. It updates the latest path element with the new point.</p></div></div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":DrawBox/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="index.html">UpdateLatestPath</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>newPoint<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/geometry/Offset.html">Offset</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>pressure<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a><span class="token operator"> = </span><span class="token constant">1.0f</span></span></span><span class="token punctuation">)</span> : <a href="../index.html">Intent</a></div><p class="paragraph">Add a new point to the current path being drawn.</p><p class="paragraph">This intent is dispatched continuously during drag operations in PEN mode. It updates the latest path element with the new point.</p><p class="paragraph"><span data-unresolved-link="io.ak1.drawbox.domain.model/Intent.UpdateLatestPath//#androidx.compose.ui.geometry.Offset#kotlin.Float/PointingToCallableParameters(1)/">pressure</span> is a unit-clamped multiplier applied to the active <a href="../../-state/stroke-width.html">State.strokeWidth</a> for <i>this sample only</i>. <code class="lang-kotlin">1.0</code> is the no-signal / mouse / capacitive-touch default and produces uniform-width strokes (back-compat with pre-pressure builds). Values that differ from <code class="lang-kotlin">1.0</code> promote the path's <code class="lang-kotlin">pointWidths</code> from null to a per-sample list on the first non-unit reading.</p></div></div>
   </div>
   <div class="tabbedcontent">
     <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
     <div class="tabs-section-body">
       <div data-togglable="CONSTRUCTOR">
         <h2 class="tableheader">Constructors</h2>
-        <div class="table"><a data-name="-36170970%2FConstructors%2F-355813056" anchor-label="UpdateLatestPath" id="-36170970%2FConstructors%2F-355813056" data-filterable-set=":DrawBox/commonMain"></a>
+        <div class="table"><a data-name="721504298%2FConstructors%2F-355813056" anchor-label="UpdateLatestPath" id="721504298%2FConstructors%2F-355813056" data-filterable-set=":DrawBox/commonMain"></a>
           <div class="table-row table-row_content" data-togglable="CONSTRUCTOR" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="-update-latest-path.html"><span>Update</span><wbr></wbr><span>Latest</span><wbr></wbr><span><span>Path</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-36170970%2FConstructors%2F-355813056"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="721504298%2FConstructors%2F-355813056"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":DrawBox/commonMain"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">newPoint<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/geometry/Offset.html">Offset</a></span></span><span class="token punctuation">)</span></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":DrawBox/commonMain"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">newPoint<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/geometry/Offset.html">Offset</a><span class="token punctuation">, </span></span><span class="parameter ">pressure<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a><span class="token operator"> = </span><span class="token constant">1.0f</span></span></span><span class="token punctuation">)</span></div></div></div>
                 </div>
               </div>
             </div>
@@ -144,6 +144,21 @@
               <div>
                 <div class="title">
                   <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":DrawBox/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="new-point.html">newPoint</a><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/geometry/Offset.html">Offset</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-380829034%2FProperties%2F-355813056" anchor-label="pressure" id="-380829034%2FProperties%2F-355813056" data-filterable-set=":DrawBox/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="pressure.html"><span><span>pressure</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-380829034%2FProperties%2F-355813056"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":DrawBox/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="pressure.html">pressure</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a></div></div></div>
                 </div>
               </div>
             </div>
