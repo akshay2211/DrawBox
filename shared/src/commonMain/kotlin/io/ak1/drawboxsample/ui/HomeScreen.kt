@@ -131,6 +131,14 @@ fun HomeScreen(
         is Element.Path -> first.strokeWidth
         else -> state.strokeWidth
     }
+    // Fill + stroke-toggle are shape-only. Both are shown whenever the
+    // selection contains at least one Shape; the swatches reflect that shape's
+    // current fill / stroke state.
+    val selectedShapes = selectedDrawables.filterIsInstance<Element.Shape>()
+    val showFill = selectedShapes.isNotEmpty()
+    val showStrokeToggle = selectedShapes.isNotEmpty()
+    val currentFillColor = selectedShapes.firstOrNull()?.fillColor
+    val currentStrokeEnabled = selectedShapes.firstOrNull()?.strokeEnabled ?: true
 
     // Drawer + bg-pattern state.
     var drawerOpen by remember { mutableStateOf(false) }
@@ -186,7 +194,11 @@ fun HomeScreen(
                     isShapeMode = isShapeMode,
                     hasSelection = hasSelection,
                     showCornerRadius = showCornerRadius,
+                    showFill = showFill,
+                    showStrokeToggle = showStrokeToggle,
                     currentColor = currentShapeColor,
+                    currentFillColor = currentFillColor,
+                    currentStrokeEnabled = currentStrokeEnabled,
                     currentStrokeStyle = currentStrokeStyle,
                     currentStrokeWidth = currentStrokeWidth,
                     currentCornerRadius = currentRadius,
@@ -195,6 +207,8 @@ fun HomeScreen(
                         if (hasSelection) viewModel.setSelectionColor(color)
                         else viewModel.setColor(color)
                     },
+                    onFillColorChange = { color -> viewModel.setSelectionFillColor(color) },
+                    onStrokeEnabledChange = { enabled -> viewModel.setSelectionStrokeEnabled(enabled) },
                     onStrokeStyleChange = { style ->
                         if (hasSelection) viewModel.setSelectionStrokeStyle(style)
                         else viewModel.setStrokeStyle(style)

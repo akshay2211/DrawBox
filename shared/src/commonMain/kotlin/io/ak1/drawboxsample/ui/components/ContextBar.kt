@@ -66,12 +66,18 @@ fun ContextBar(
     isShapeMode: Boolean,
     hasSelection: Boolean,
     showCornerRadius: Boolean,
+    showFill: Boolean,
+    showStrokeToggle: Boolean,
     currentColor: Color,
+    currentFillColor: Color?,
+    currentStrokeEnabled: Boolean,
     currentStrokeStyle: StrokeStyle,
     currentStrokeWidth: Float,
     currentCornerRadius: Float,
     expanded: Boolean,
     onColorChange: (Color) -> Unit,
+    onFillColorChange: (Color?) -> Unit,
+    onStrokeEnabledChange: (Boolean) -> Unit,
     onStrokeStyleChange: (StrokeStyle) -> Unit,
     onStrokeWidthChange: (Float) -> Unit,
     onCornerRadiusChange: (Float) -> Unit,
@@ -92,19 +98,102 @@ fun ContextBar(
             onColorSelected = onColorChange,
         )
     }
+    var showFillDialog by remember { mutableStateOf(false) }
+    if (showFillDialog) {
+        ColorPickerDialog(
+            // RangVikalp has no "null" state — seed with the current fill or
+            // the stroke color so the picker opens on something sensible.
+            initialColor = currentFillColor ?: currentColor,
+            onDismiss = { showFillDialog = false },
+            onColorSelected = { onFillColorChange(it) },
+        )
+    }
 
     val active = MaterialTheme.colorScheme.primary
     val inactive = MaterialTheme.colorScheme.onSurfaceVariant
     val errorTint = MaterialTheme.colorScheme.error
 
     val items = buildList {
-        add(
-            FloatingMenuItem(
-                id = "color",
-                icon = { _ -> ColorSwatchIcon(color = currentColor) },
-                onClick = { showColorDialog = true },
-            ),
-        )
+        // When a shape is selected, the stroke slot becomes a parent that
+        // exposes both "no stroke" and a color picker so the user can express
+        // all three states (stroke-only / fill-only / both) from one place.
+        // In shape-mode without selection it stays a one-shot picker — there's
+        // no per-shape stroke yet to toggle.
+        if (showStrokeToggle) {
+            add(
+                FloatingMenuItem(
+                    id = "color",
+                    icon = { _ ->
+                        StrokeSwatchIcon(
+                            color = currentColor,
+                            enabled = currentStrokeEnabled,
+                        )
+                    },
+                    children = listOf(
+                        FloatingMenuItem(
+                            id = "stroke-none",
+                            isActive = !currentStrokeEnabled,
+                            icon = { isActive ->
+                                StrokeNoneIcon(color = isActive.getActiveColor())
+                            },
+                            onClick = { onStrokeEnabledChange(false) },
+                        ),
+                        FloatingMenuItem(
+                            id = "stroke-pick",
+                            isActive = currentStrokeEnabled,
+                            icon = { _ ->
+                                StrokeSwatchIcon(
+                                    color = currentColor,
+                                    enabled = true,
+                                )
+                            },
+                            onClick = {
+                                // Picking a color implies "stroke on" — saves a
+                                // round-trip if the user came from the no-stroke
+                                // state.
+                                if (!currentStrokeEnabled) onStrokeEnabledChange(true)
+                                showColorDialog = true
+                            },
+                        ),
+                    ),
+                ),
+            )
+        } else {
+            add(
+                FloatingMenuItem(
+                    id = "color",
+                    icon = { _ -> ColorSwatchIcon(color = currentColor) },
+                    onClick = { showColorDialog = true },
+                ),
+            )
+        }
+
+        if (showFill) {
+            add(
+                FloatingMenuItem(
+                    id = "fill",
+                    icon = { _ -> FillSwatchIcon(color = currentFillColor) },
+                    children = listOf(
+                        FloatingMenuItem(
+                            id = "fill-none",
+                            isActive = currentFillColor == null,
+                            icon = { isActive ->
+                                FillNoneIcon(color = isActive.getActiveColor())
+                            },
+                            onClick = { onFillColorChange(null) },
+                        ),
+                        FloatingMenuItem(
+                            id = "fill-pick",
+                            isActive = currentFillColor != null,
+                            icon = { _ ->
+                                FillSwatchIcon(color = currentFillColor)
+                            },
+                            onClick = { showFillDialog = true },
+                        ),
+                    ),
+                ),
+            )
+        }
 
         if (showConfig) {
             add(
@@ -256,6 +345,102 @@ private fun ColorSwatchIcon(color: Color) {
             .background(color)
             .border(1.dp, MaterialTheme.colorScheme.outline, CircleShape),
     )
+}
+
+/**
+ * Same shape as [ColorSwatchIcon] but adds a slash overlay when the stroke is
+ * disabled — visually pairs with [FillSwatchIcon]'s null-state.
+ */
+@Composable
+private fun StrokeSwatchIcon(color: Color, enabled: Boolean) {
+    val outline = MaterialTheme.colorScheme.outline
+    Box(
+        modifier = Modifier
+            .size(20.dp)
+            .clip(CircleShape)
+            .background(if (enabled) color else Color.Transparent)
+            .border(1.dp, outline, CircleShape),
+    ) {
+        if (!enabled) {
+            Canvas(modifier = Modifier.fillMaxSize()) {
+                drawLine(
+                    color = outline,
+                    start = Offset(0f, size.height),
+                    end = Offset(size.width, 0f),
+                    strokeWidth = 2f,
+                    cap = StrokeCap.Round,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun StrokeNoneIcon(color: Color) {
+    Box(
+        modifier = Modifier
+            .size(20.dp)
+            .clip(CircleShape)
+            .border(1.dp, color, CircleShape),
+    ) {
+        Canvas(modifier = Modifier.fillMaxSize()) {
+            drawLine(
+                color = color,
+                start = Offset(0f, size.height),
+                end = Offset(size.width, 0f),
+                strokeWidth = 2f,
+                cap = StrokeCap.Round,
+            )
+        }
+    }
+}
+
+@Composable
+private fun FillSwatchIcon(color: Color?) {
+    val outline = MaterialTheme.colorScheme.outline
+    val shape = RoundedCornerShape(4.dp)
+    Box(
+        modifier = Modifier
+            .size(20.dp)
+            .clip(shape)
+            .background(color ?: Color.Transparent)
+            .border(1.dp, outline, shape),
+    ) {
+        if (color == null) {
+            // Diagonal slash to communicate "no fill" — same visual idiom as
+            // the SettingsDrawer's transparent-bg swatch.
+            Canvas(modifier = Modifier.fillMaxSize()) {
+                drawLine(
+                    color = outline,
+                    start = Offset(0f, size.height),
+                    end = Offset(size.width, 0f),
+                    strokeWidth = 2f,
+                    cap = StrokeCap.Round,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun FillNoneIcon(color: Color) {
+    val shape = RoundedCornerShape(4.dp)
+    Box(
+        modifier = Modifier
+            .size(20.dp)
+            .clip(shape)
+            .border(1.dp, color, shape),
+    ) {
+        Canvas(modifier = Modifier.fillMaxSize()) {
+            drawLine(
+                color = color,
+                start = Offset(0f, size.height),
+                end = Offset(size.width, 0f),
+                strokeWidth = 2f,
+                cap = StrokeCap.Round,
+            )
+        }
+    }
 }
 
 @Composable

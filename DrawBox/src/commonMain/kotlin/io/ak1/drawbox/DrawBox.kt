@@ -1333,9 +1333,12 @@ private fun DrawScope.drawImageElement(image: Element.Image, imageCache: ImageBi
  * - width: absolute difference in x coordinates
  * - height: absolute difference in y coordinates
  *
- * **Fill vs Stroke:**
- * - If [Element.Shape.fillColor] is set: shape is filled
- * - If null: shape is stroked with [Element.Shape.strokeColor]
+ * **Fill and stroke (independent):**
+ * - If [Element.Shape.fillColor] is set, a fill pass is drawn with that color.
+ * - If [Element.Shape.strokeEnabled] is true AND [Element.Shape.strokeWidth] > 0,
+ *   a stroke pass is drawn on top with [Element.Shape.strokeColor].
+ * - Both can be on (filled with a colored border), either alone, or — for an
+ *   invisible shape — neither.
  *
  * @param shape The shape element to render
  *
@@ -1355,25 +1358,48 @@ private fun DrawScope.drawShape(shape: Element.Shape) {
         minOf(start.x, end.x),
         minOf(start.y, end.y)
     )
+    val hasFill = shape.fillColor != null
+    val hasStroke = shape.strokeEnabled && shape.strokeWidth > 0f
 
     when (shape.shapeType) {
         ShapeType.RECTANGLE -> {
             val r = shape.cornerRadius.coerceAtMost(minOf(width, height) * 0.5f)
-            if (r > 0f) {
-                drawRoundRect(
-                    color = shape.fillColor ?: shape.strokeColor,
-                    topLeft = topLeft,
-                    size = Size(width, height),
-                    cornerRadius = CornerRadius(r, r),
-                    style = shape.drawStyle(),
-                )
-            } else {
-                drawRect(
-                    color = shape.fillColor ?: shape.strokeColor,
-                    topLeft = topLeft,
-                    size = Size(width, height),
-                    style = shape.drawStyle(),
-                )
+            val size = Size(width, height)
+            if (hasFill) {
+                if (r > 0f) {
+                    drawRoundRect(
+                        color = shape.fillColor!!,
+                        topLeft = topLeft,
+                        size = size,
+                        cornerRadius = CornerRadius(r, r),
+                        style = Fill,
+                    )
+                } else {
+                    drawRect(
+                        color = shape.fillColor!!,
+                        topLeft = topLeft,
+                        size = size,
+                        style = Fill,
+                    )
+                }
+            }
+            if (hasStroke) {
+                if (r > 0f) {
+                    drawRoundRect(
+                        color = shape.strokeColor,
+                        topLeft = topLeft,
+                        size = size,
+                        cornerRadius = CornerRadius(r, r),
+                        style = shape.strokeDrawStyle(),
+                    )
+                } else {
+                    drawRect(
+                        color = shape.strokeColor,
+                        topLeft = topLeft,
+                        size = size,
+                        style = shape.strokeDrawStyle(),
+                    )
+                }
             }
         }
         ShapeType.CIRCLE -> {
@@ -1383,12 +1409,22 @@ private fun DrawScope.drawShape(shape: Element.Shape) {
             )
             val distance = sqrt((end.x - start.x) * (end.x - start.x) + (end.y - start.y) * (end.y - start.y))
             val radius = distance / 2
-            drawCircle(
-                color = shape.fillColor ?: shape.strokeColor,
-                radius = radius,
-                center = center,
-                style = shape.drawStyle(),
-            )
+            if (hasFill) {
+                drawCircle(
+                    color = shape.fillColor!!,
+                    radius = radius,
+                    center = center,
+                    style = Fill,
+                )
+            }
+            if (hasStroke) {
+                drawCircle(
+                    color = shape.strokeColor,
+                    radius = radius,
+                    center = center,
+                    style = shape.strokeDrawStyle(),
+                )
+            }
         }
         ShapeType.TRIANGLE -> {
             drawTriangle(topLeft, width, height, shape)
@@ -1427,9 +1463,13 @@ private fun DrawScope.drawShape(shape: Element.Shape) {
     }
 }
 
-/** Stroke/fill style for an [Element.Shape] respecting its [StrokeStyle]. */
-private fun Element.Shape.drawStyle(): androidx.compose.ui.graphics.drawscope.DrawStyle =
-    if (fillColor != null) Fill else Stroke(
+/**
+ * The Stroke style for an [Element.Shape] respecting its [StrokeStyle]. Always
+ * returns a Stroke — fill is drawn as a separate pass in [drawShape] so a
+ * shape can carry both a fill color and an outline.
+ */
+private fun Element.Shape.strokeDrawStyle(): androidx.compose.ui.graphics.drawscope.DrawStyle =
+    Stroke(
         width = strokeWidth,
         cap = strokeCapFor(strokeStyle),
         join = StrokeJoin.Round,
@@ -1641,11 +1681,12 @@ private fun DrawScope.drawTriangle(
             close()
         }
     }
-    drawPath(
-        path,
-        color = shape.fillColor ?: shape.strokeColor,
-        style = shape.drawStyle(),
-    )
+    if (shape.fillColor != null) {
+        drawPath(path, color = shape.fillColor, style = Fill)
+    }
+    if (shape.strokeEnabled && shape.strokeWidth > 0f) {
+        drawPath(path, color = shape.strokeColor, style = shape.strokeDrawStyle())
+    }
 }
 
 /**

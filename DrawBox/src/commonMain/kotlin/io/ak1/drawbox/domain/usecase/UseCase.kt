@@ -304,6 +304,39 @@ class UseCase {
         }
     }
 
+    /**
+     * Set the fill color of every selected shape. `null` clears the fill so the
+     * shape renders stroke-only. Paths and images have no fill concept and are
+     * left untouched — multi-selecting a mix still works.
+     */
+    fun setSelectedFillColor(
+        elements: List<Element>,
+        ids: Set<String>,
+        color: Color?,
+    ): List<Element> = elements.map { el ->
+        if (el.id !in ids) el else when (el) {
+            is Element.Shape -> el.copy(fillColor = color).touched()
+            is Element.Path -> el
+            is Element.Image -> el
+        }
+    }
+
+    /**
+     * Toggle the stroke pass on every selected shape. Paths are always
+     * stroked, so they're left untouched.
+     */
+    fun setSelectedStrokeEnabled(
+        elements: List<Element>,
+        ids: Set<String>,
+        enabled: Boolean,
+    ): List<Element> = elements.map { el ->
+        if (el.id !in ids) el else when (el) {
+            is Element.Shape -> el.copy(strokeEnabled = enabled).touched()
+            is Element.Path -> el
+            is Element.Image -> el
+        }
+    }
+
     /** Re-stroke every selected element. */
     fun setSelectedStrokeWidth(
         elements: List<Element>,

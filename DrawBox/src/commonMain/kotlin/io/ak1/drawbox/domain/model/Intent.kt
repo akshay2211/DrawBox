@@ -243,6 +243,20 @@ sealed class Intent {
     /** Replace the stroke color of every selected element. Snapshots history. */
     data class SetSelectedStrokeColor(val color: Color) : Intent()
 
+    /**
+     * Replace the fill color of every selected [Element.Shape]. Pass `null` to
+     * clear the fill so the shape renders stroke-only. Paths and images in the
+     * selection are left untouched. Snapshots history.
+     */
+    data class SetSelectedFillColor(val color: Color?) : Intent()
+
+    /**
+     * Toggle the stroke pass on every selected [Element.Shape]. `false` makes
+     * the shape fill-only; `true` restores the outline. Paths and images
+     * (always stroked) are left untouched. Snapshots history.
+     */
+    data class SetSelectedStrokeEnabled(val enabled: Boolean) : Intent()
+
     /** Replace the stroke width of every selected element. Snapshots history. */
     data class SetSelectedStrokeWidth(val width: Float) : Intent()
 

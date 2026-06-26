@@ -142,6 +142,12 @@ data class ElementDto(
      */
     val samples: List<String>? = null,
     /**
+     * Tri-state Shape stroke toggle. `null` (omitted) and `true` both mean
+     * "draw stroke" so legacy exports keep rendering; `false` skips the
+     * stroke pass entirely (fill-only shapes).
+     */
+    val strokeEnabled: Boolean? = null,
+    /**
      * Raw encoded image payload, base64-encoded. Only set for Image
      * elements. Inline (rather than external reference) so the JSON file
      * round-trips as a single artifact.
@@ -204,6 +210,7 @@ fun Element.toDto(): ElementDto = when (this) {
         endBinding = endBinding,
         createdAt = createdAt.takeIf { it != 0L },
         modifiedAt = modifiedAt.takeIf { it != 0L },
+        strokeEnabled = false.takeIf { !strokeEnabled },
     )
 }
 
@@ -244,6 +251,7 @@ fun ElementDto.toElement(): Element = when (type) {
         points = points.map { it.toOffset() },
         strokeColor = strokeColor.toColor(),
         fillColor = fillColor?.toColor(),
+        strokeEnabled = strokeEnabled ?: true,
         strokeWidth = strokeWidth,
         zIndex = zIndex,
         rotation = rotation ?: 0f,
@@ -305,6 +313,7 @@ data class SerializableElement(
     val createdAt: Long? = null,
     val modifiedAt: Long? = null,
     val samples: List<String>? = null,
+    val strokeEnabled: Boolean? = null,
     val imageData: String? = null,
     val intrinsicWidth: Float? = null,
     val intrinsicHeight: Float? = null,
@@ -344,6 +353,7 @@ object DrawingSerializer {
                     createdAt = element.createdAt,
                     modifiedAt = element.modifiedAt,
                     samples = element.samples,
+                    strokeEnabled = element.strokeEnabled,
                     imageData = element.imageData,
                     intrinsicWidth = element.intrinsicWidth,
                     intrinsicHeight = element.intrinsicHeight,
@@ -378,6 +388,7 @@ object DrawingSerializer {
                     createdAt = element.createdAt,
                     modifiedAt = element.modifiedAt,
                     samples = element.samples,
+                    strokeEnabled = element.strokeEnabled,
                     imageData = element.imageData,
                     intrinsicWidth = element.intrinsicWidth,
                     intrinsicHeight = element.intrinsicHeight,

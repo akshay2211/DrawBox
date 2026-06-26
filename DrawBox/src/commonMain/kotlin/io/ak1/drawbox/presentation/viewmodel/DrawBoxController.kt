@@ -263,6 +263,20 @@ class DrawBoxController(
     /** Recolor every selected element's stroke. */
     fun setSelectionColor(color: Color) = onIntent(Intent.SetSelectedStrokeColor(color))
 
+    /**
+     * Set the fill color of every selected shape. Pass `null` to clear fill so
+     * the shape renders stroke-only.
+     */
+    fun setSelectionFillColor(color: Color?) =
+        onIntent(Intent.SetSelectedFillColor(color))
+
+    /**
+     * Toggle the stroke pass on every selected shape. `false` makes the shape
+     * fill-only; `true` restores its outline.
+     */
+    fun setSelectionStrokeEnabled(enabled: Boolean) =
+        onIntent(Intent.SetSelectedStrokeEnabled(enabled))
+
     /** Re-stroke every selected element. */
     fun setSelectionStrokeWidth(width: Float) = onIntent(Intent.SetSelectedStrokeWidth(width))
 

@@ -153,6 +153,22 @@ class Reducer(
                 ),
             )
         }
+        is Intent.SetSelectedFillColor -> {
+            if (state.selectedIds.isEmpty()) state
+            else state.snapshot().copy(
+                elements = useCase.setSelectedFillColor(
+                    state.elements, state.selectedIds, intent.color,
+                ),
+            )
+        }
+        is Intent.SetSelectedStrokeEnabled -> {
+            if (state.selectedIds.isEmpty()) state
+            else state.snapshot().copy(
+                elements = useCase.setSelectedStrokeEnabled(
+                    state.elements, state.selectedIds, intent.enabled,
+                ),
+            )
+        }
         is Intent.SetSelectedStrokeWidth -> {
             if (state.selectedIds.isEmpty()) state
             else state.snapshot().copy(

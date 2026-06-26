@@ -161,8 +161,9 @@ object SvgExporter {
 
         val start = shape.points[0]
         val end = shape.points[1]
-        val color = colorToHex(shape.strokeColor)
-        val strokeWidth = shape.strokeWidth
+        val strokeOn = shape.strokeEnabled && shape.strokeWidth > 0f
+        val color = if (strokeOn) colorToHex(shape.strokeColor) else "none"
+        val strokeWidth = if (strokeOn) shape.strokeWidth else 0f
         val fillColor = if (shape.fillColor != null) colorToHex(shape.fillColor) else "none"
         val fillAttr = if (shape.fillColor != null) """fill="$fillColor"""" else """fill="none""""
 
@@ -170,8 +171,8 @@ object SvgExporter {
             ShapeType.RECTANGLE -> rectangleToSvg(start, end, color, strokeWidth, fillAttr)
             ShapeType.CIRCLE -> circleToSvg(start, end, color, strokeWidth, fillAttr)
             ShapeType.TRIANGLE -> triangleToSvg(start, end, color, strokeWidth, fillAttr)
-            ShapeType.ARROW -> arrowToSvg(start, end, color, strokeWidth)
-            ShapeType.LINE -> lineToSvg(start, end, color, strokeWidth)
+            ShapeType.ARROW -> arrowToSvg(start, end, colorToHex(shape.strokeColor), shape.strokeWidth)
+            ShapeType.LINE -> lineToSvg(start, end, colorToHex(shape.strokeColor), shape.strokeWidth)
         }
     }
 
