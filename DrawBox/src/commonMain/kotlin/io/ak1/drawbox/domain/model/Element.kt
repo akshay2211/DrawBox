@@ -206,6 +206,7 @@ sealed class Element {
         val points: List<Offset>,
         val strokeColor: Color,
         val fillColor: Color? = null,
+        val strokeEnabled: Boolean = true,
         val strokeWidth: Float,
         override val zIndex: Int = 0,
         override val rotation: Float = 0f,
