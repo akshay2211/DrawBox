@@ -2,3091 +2,3691 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://akshay2211.github.io/DrawBox/404.html</loc>
-    <lastmod>2026-06-26T18:42:34.352092</lastmod>
+    <lastmod>2026-06-27T13:14:52.770876</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/api-reference/controller/</loc>
-    <lastmod>2026-06-26T18:42:34.552289</lastmod>
+    <lastmod>2026-06-27T13:14:52.953212</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/contributing/</loc>
-    <lastmod>2026-06-26T18:42:34.438174</lastmod>
+    <lastmod>2026-06-27T13:14:52.850102</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/core-concepts/architecture/</loc>
-    <lastmod>2026-06-26T18:42:34.606094</lastmod>
+    <lastmod>2026-06-27T13:14:53.000546</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/development/architecture/</loc>
-    <lastmod>2026-06-26T18:42:34.617674</lastmod>
+    <lastmod>2026-06-27T13:14:53.010498</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/development/build-from-source/</loc>
-    <lastmod>2026-06-26T18:42:34.631619</lastmod>
+    <lastmod>2026-06-27T13:14:53.022525</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/development/contributing/</loc>
-    <lastmod>2026-06-26T18:42:34.641391</lastmod>
+    <lastmod>2026-06-27T13:14:53.031206</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/development/project-structure/</loc>
-    <lastmod>2026-06-26T18:42:34.652223</lastmod>
+    <lastmod>2026-06-27T13:14:53.040784</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox/-draw-box.html</loc>
-    <lastmod>2026-06-26T18:42:34.133891</lastmod>
+    <lastmod>2026-06-27T13:14:52.593836</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox/-drawing-preview.html</loc>
-    <lastmod>2026-06-26T18:42:34.134016</lastmod>
+    <lastmod>2026-06-27T13:14:52.593905</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox/create-path.html</loc>
-    <lastmod>2026-06-26T18:42:34.134132</lastmod>
+    <lastmod>2026-06-27T13:14:52.593973</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox/decode-image-bitmap.html</loc>
-    <lastmod>2026-06-26T18:42:34.134243</lastmod>
+    <lastmod>2026-06-27T13:14:52.594035</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox/</loc>
-    <lastmod>2026-06-26T18:42:34.133721</lastmod>
+    <lastmod>2026-06-27T13:14:52.593759</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-background-pattern/-background-pattern.html</loc>
-    <lastmod>2026-06-26T18:42:34.137953</lastmod>
+    <lastmod>2026-06-27T13:14:52.596190</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-background-pattern/</loc>
-    <lastmod>2026-06-26T18:42:34.137785</lastmod>
+    <lastmod>2026-06-27T13:14:52.596109</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-background-pattern/painter.html</loc>
-    <lastmod>2026-06-26T18:42:34.138086</lastmod>
+    <lastmod>2026-06-27T13:14:52.596257</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-background-pattern/tint.html</loc>
-    <lastmod>2026-06-26T18:42:34.138197</lastmod>
+    <lastmod>2026-06-27T13:14:52.596317</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-builtin-font-family-keys/-m-o-n-o.html</loc>
+    <lastmod>2026-06-27T13:14:52.596458</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-builtin-font-family-keys/-s-a-n-s.html</loc>
+    <lastmod>2026-06-27T13:14:52.596518</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-builtin-font-family-keys/-s-e-r-i-f.html</loc>
+    <lastmod>2026-06-27T13:14:52.596579</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-builtin-font-family-keys/</loc>
+    <lastmod>2026-06-27T13:14:52.596386</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-d-e-f-a-u-l-t_-f-o-n-t_-f-a-m-i-l-y_-k-e-y.html</loc>
+    <lastmod>2026-06-27T13:14:52.594260</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-drawing-export-dto/-drawing-export-dto.html</loc>
-    <lastmod>2026-06-26T18:42:34.138440</lastmod>
+    <lastmod>2026-06-27T13:14:52.596716</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-drawing-export-dto/bg-color.html</loc>
-    <lastmod>2026-06-26T18:42:34.138551</lastmod>
+    <lastmod>2026-06-27T13:14:52.596777</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-drawing-export-dto/elements.html</loc>
-    <lastmod>2026-06-26T18:42:34.138675</lastmod>
+    <lastmod>2026-06-27T13:14:52.596837</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-drawing-export-dto/</loc>
-    <lastmod>2026-06-26T18:42:34.138323</lastmod>
+    <lastmod>2026-06-27T13:14:52.596652</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-drawing-serializer/deserialize.html</loc>
-    <lastmod>2026-06-26T18:42:34.138955</lastmod>
+    <lastmod>2026-06-27T13:14:52.596973</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-drawing-serializer/</loc>
-    <lastmod>2026-06-26T18:42:34.138837</lastmod>
+    <lastmod>2026-06-27T13:14:52.596912</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-drawing-serializer/serialize.html</loc>
-    <lastmod>2026-06-26T18:42:34.139070</lastmod>
+    <lastmod>2026-06-27T13:14:52.597034</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/-image/-image.html</loc>
-    <lastmod>2026-06-26T18:42:34.140438</lastmod>
+    <lastmod>2026-06-27T13:14:52.597673</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/-image/bytes.html</loc>
-    <lastmod>2026-06-26T18:42:34.140556</lastmod>
+    <lastmod>2026-06-27T13:14:52.597733</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/-image/created-at.html</loc>
-    <lastmod>2026-06-26T18:42:34.140666</lastmod>
+    <lastmod>2026-06-27T13:14:52.597793</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/-image/equals.html</loc>
-    <lastmod>2026-06-26T18:42:34.140775</lastmod>
+    <lastmod>2026-06-27T13:14:52.597853</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/-image/hash-code.html</loc>
-    <lastmod>2026-06-26T18:42:34.140916</lastmod>
+    <lastmod>2026-06-27T13:14:52.597912</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/-image/id.html</loc>
-    <lastmod>2026-06-26T18:42:34.141027</lastmod>
+    <lastmod>2026-06-27T13:14:52.597972</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/-image/</loc>
-    <lastmod>2026-06-26T18:42:34.140307</lastmod>
+    <lastmod>2026-06-27T13:14:52.597600</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/-image/intrinsic-size.html</loc>
-    <lastmod>2026-06-26T18:42:34.141137</lastmod>
+    <lastmod>2026-06-27T13:14:52.598035</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/-image/modified-at.html</loc>
-    <lastmod>2026-06-26T18:42:34.141252</lastmod>
+    <lastmod>2026-06-27T13:14:52.598102</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/-image/opacity.html</loc>
-    <lastmod>2026-06-26T18:42:34.141363</lastmod>
+    <lastmod>2026-06-27T13:14:52.598173</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/-image/points.html</loc>
-    <lastmod>2026-06-26T18:42:34.141472</lastmod>
+    <lastmod>2026-06-27T13:14:52.598238</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/-image/rotation.html</loc>
-    <lastmod>2026-06-26T18:42:34.141585</lastmod>
+    <lastmod>2026-06-27T13:14:52.598302</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/-image/type.html</loc>
-    <lastmod>2026-06-26T18:42:34.141700</lastmod>
+    <lastmod>2026-06-27T13:14:52.598363</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/-image/z-index.html</loc>
-    <lastmod>2026-06-26T18:42:34.141830</lastmod>
+    <lastmod>2026-06-27T13:14:52.598423</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/-path/-path.html</loc>
-    <lastmod>2026-06-26T18:42:34.142086</lastmod>
+    <lastmod>2026-06-27T13:14:52.598572</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/-path/alpha.html</loc>
-    <lastmod>2026-06-26T18:42:34.142197</lastmod>
+    <lastmod>2026-06-27T13:14:52.598634</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/-path/created-at.html</loc>
-    <lastmod>2026-06-26T18:42:34.142309</lastmod>
+    <lastmod>2026-06-27T13:14:52.598697</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/-path/id.html</loc>
-    <lastmod>2026-06-26T18:42:34.142419</lastmod>
+    <lastmod>2026-06-27T13:14:52.598757</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/-path/</loc>
-    <lastmod>2026-06-26T18:42:34.141958</lastmod>
+    <lastmod>2026-06-27T13:14:52.598491</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/-path/modified-at.html</loc>
-    <lastmod>2026-06-26T18:42:34.142527</lastmod>
+    <lastmod>2026-06-27T13:14:52.598816</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/-path/rotation.html</loc>
-    <lastmod>2026-06-26T18:42:34.142643</lastmod>
+    <lastmod>2026-06-27T13:14:52.598876</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/-path/samples.html</loc>
-    <lastmod>2026-06-26T18:42:34.142752</lastmod>
+    <lastmod>2026-06-27T13:14:52.598936</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/-path/stroke-color.html</loc>
-    <lastmod>2026-06-26T18:42:34.142891</lastmod>
+    <lastmod>2026-06-27T13:14:52.598998</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/-path/stroke-style.html</loc>
-    <lastmod>2026-06-26T18:42:34.143005</lastmod>
+    <lastmod>2026-06-27T13:14:52.599057</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/-path/stroke-width.html</loc>
-    <lastmod>2026-06-26T18:42:34.143116</lastmod>
+    <lastmod>2026-06-27T13:14:52.599116</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/-path/type.html</loc>
-    <lastmod>2026-06-26T18:42:34.143226</lastmod>
+    <lastmod>2026-06-27T13:14:52.599189</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/-path/z-index.html</loc>
-    <lastmod>2026-06-26T18:42:34.143334</lastmod>
+    <lastmod>2026-06-27T13:14:52.599255</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/-path-sample/-path-sample.html</loc>
-    <lastmod>2026-06-26T18:42:34.143599</lastmod>
+    <lastmod>2026-06-27T13:14:52.599407</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/-path-sample/azimuth.html</loc>
-    <lastmod>2026-06-26T18:42:34.143712</lastmod>
+    <lastmod>2026-06-27T13:14:52.599468</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/-path-sample/</loc>
-    <lastmod>2026-06-26T18:42:34.143474</lastmod>
+    <lastmod>2026-06-27T13:14:52.599338</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/-path-sample/position.html</loc>
-    <lastmod>2026-06-26T18:42:34.143844</lastmod>
+    <lastmod>2026-06-27T13:14:52.599527</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/-path-sample/tilt.html</loc>
-    <lastmod>2026-06-26T18:42:34.143956</lastmod>
+    <lastmod>2026-06-27T13:14:52.599586</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/-path-sample/width.html</loc>
-    <lastmod>2026-06-26T18:42:34.144070</lastmod>
+    <lastmod>2026-06-27T13:14:52.599645</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/-shape/-shape.html</loc>
-    <lastmod>2026-06-26T18:42:34.144337</lastmod>
+    <lastmod>2026-06-27T13:14:52.599805</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/-shape/bend.html</loc>
-    <lastmod>2026-06-26T18:42:34.144490</lastmod>
+    <lastmod>2026-06-27T13:14:52.599869</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/-shape/corner-radius.html</loc>
-    <lastmod>2026-06-26T18:42:34.144630</lastmod>
+    <lastmod>2026-06-27T13:14:52.599932</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/-shape/created-at.html</loc>
-    <lastmod>2026-06-26T18:42:34.144747</lastmod>
+    <lastmod>2026-06-27T13:14:52.599994</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/-shape/end-binding.html</loc>
-    <lastmod>2026-06-26T18:42:34.144883</lastmod>
+    <lastmod>2026-06-27T13:14:52.600054</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/-shape/fill-color.html</loc>
-    <lastmod>2026-06-26T18:42:34.145003</lastmod>
+    <lastmod>2026-06-27T13:14:52.600114</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/-shape/id.html</loc>
-    <lastmod>2026-06-26T18:42:34.145113</lastmod>
+    <lastmod>2026-06-27T13:14:52.600189</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/-shape/</loc>
-    <lastmod>2026-06-26T18:42:34.144208</lastmod>
+    <lastmod>2026-06-27T13:14:52.599716</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/-shape/modified-at.html</loc>
-    <lastmod>2026-06-26T18:42:34.145223</lastmod>
+    <lastmod>2026-06-27T13:14:52.600251</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/-shape/points.html</loc>
-    <lastmod>2026-06-26T18:42:34.145338</lastmod>
+    <lastmod>2026-06-27T13:14:52.600311</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/-shape/rotation.html</loc>
-    <lastmod>2026-06-26T18:42:34.145447</lastmod>
+    <lastmod>2026-06-27T13:14:52.600371</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/-shape/shape-type.html</loc>
-    <lastmod>2026-06-26T18:42:34.145558</lastmod>
+    <lastmod>2026-06-27T13:14:52.600430</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/-shape/start-binding.html</loc>
-    <lastmod>2026-06-26T18:42:34.145666</lastmod>
+    <lastmod>2026-06-27T13:14:52.600491</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/-shape/stroke-color.html</loc>
-    <lastmod>2026-06-26T18:42:34.145773</lastmod>
+    <lastmod>2026-06-27T13:14:52.600550</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/-shape/stroke-enabled.html</loc>
-    <lastmod>2026-06-26T18:42:34.145911</lastmod>
+    <lastmod>2026-06-27T13:14:52.600612</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/-shape/stroke-style.html</loc>
-    <lastmod>2026-06-26T18:42:34.146022</lastmod>
+    <lastmod>2026-06-27T13:14:52.600672</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/-shape/stroke-width.html</loc>
-    <lastmod>2026-06-26T18:42:34.146132</lastmod>
+    <lastmod>2026-06-27T13:14:52.600731</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/-shape/type.html</loc>
-    <lastmod>2026-06-26T18:42:34.146239</lastmod>
+    <lastmod>2026-06-27T13:14:52.600793</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/-shape/z-index.html</loc>
-    <lastmod>2026-06-26T18:42:34.146346</lastmod>
+    <lastmod>2026-06-27T13:14:52.600853</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/-text/-text.html</loc>
+    <lastmod>2026-06-27T13:14:52.601011</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/-text/alignment.html</loc>
+    <lastmod>2026-06-27T13:14:52.601071</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/-text/color.html</loc>
+    <lastmod>2026-06-27T13:14:52.601139</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/-text/created-at.html</loc>
+    <lastmod>2026-06-27T13:14:52.601213</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/-text/font-family-key.html</loc>
+    <lastmod>2026-06-27T13:14:52.601278</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/-text/font-size.html</loc>
+    <lastmod>2026-06-27T13:14:52.601338</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/-text/id.html</loc>
+    <lastmod>2026-06-27T13:14:52.601398</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/-text/</loc>
+    <lastmod>2026-06-27T13:14:52.600930</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/-text/measured-height.html</loc>
+    <lastmod>2026-06-27T13:14:52.601459</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/-text/modified-at.html</loc>
+    <lastmod>2026-06-27T13:14:52.601519</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/-text/opacity.html</loc>
+    <lastmod>2026-06-27T13:14:52.601583</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/-text/rotation.html</loc>
+    <lastmod>2026-06-27T13:14:52.601645</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/-text/text.html</loc>
+    <lastmod>2026-06-27T13:14:52.601705</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/-text/top-left.html</loc>
+    <lastmod>2026-06-27T13:14:52.601765</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/-text/type.html</loc>
+    <lastmod>2026-06-27T13:14:52.601824</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/-text/wrap-width.html</loc>
+    <lastmod>2026-06-27T13:14:52.601886</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/-text/z-index.html</loc>
+    <lastmod>2026-06-27T13:14:52.601944</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/created-at.html</loc>
-    <lastmod>2026-06-26T18:42:34.139400</lastmod>
+    <lastmod>2026-06-27T13:14:52.597201</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/id.html</loc>
-    <lastmod>2026-06-26T18:42:34.139568</lastmod>
+    <lastmod>2026-06-27T13:14:52.597264</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/</loc>
-    <lastmod>2026-06-26T18:42:34.139214</lastmod>
+    <lastmod>2026-06-27T13:14:52.597108</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/modified-at.html</loc>
-    <lastmod>2026-06-26T18:42:34.139738</lastmod>
+    <lastmod>2026-06-27T13:14:52.597327</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/rotation.html</loc>
-    <lastmod>2026-06-26T18:42:34.139918</lastmod>
+    <lastmod>2026-06-27T13:14:52.597393</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/type.html</loc>
-    <lastmod>2026-06-26T18:42:34.140033</lastmod>
+    <lastmod>2026-06-27T13:14:52.597453</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element/z-index.html</loc>
-    <lastmod>2026-06-26T18:42:34.140146</lastmod>
+    <lastmod>2026-06-27T13:14:52.597516</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element-dto/-element-dto.html</loc>
-    <lastmod>2026-06-26T18:42:34.146624</lastmod>
+    <lastmod>2026-06-27T13:14:52.602106</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element-dto/alignment.html</loc>
+    <lastmod>2026-06-27T13:14:52.602185</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element-dto/alpha.html</loc>
-    <lastmod>2026-06-26T18:42:34.146737</lastmod>
+    <lastmod>2026-06-27T13:14:52.602248</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element-dto/bend.html</loc>
-    <lastmod>2026-06-26T18:42:34.146881</lastmod>
+    <lastmod>2026-06-27T13:14:52.602308</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element-dto/corner-radius.html</loc>
-    <lastmod>2026-06-26T18:42:34.146996</lastmod>
+    <lastmod>2026-06-27T13:14:52.602367</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element-dto/created-at.html</loc>
-    <lastmod>2026-06-26T18:42:34.147103</lastmod>
+    <lastmod>2026-06-27T13:14:52.602428</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element-dto/end-binding.html</loc>
-    <lastmod>2026-06-26T18:42:34.147211</lastmod>
+    <lastmod>2026-06-27T13:14:52.602487</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element-dto/fill-color.html</loc>
-    <lastmod>2026-06-26T18:42:34.147329</lastmod>
+    <lastmod>2026-06-27T13:14:52.602548</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element-dto/font-family-key.html</loc>
+    <lastmod>2026-06-27T13:14:52.602608</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element-dto/font-size.html</loc>
+    <lastmod>2026-06-27T13:14:52.602667</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element-dto/id.html</loc>
-    <lastmod>2026-06-26T18:42:34.147436</lastmod>
+    <lastmod>2026-06-27T13:14:52.602726</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element-dto/image-data.html</loc>
-    <lastmod>2026-06-26T18:42:34.147543</lastmod>
+    <lastmod>2026-06-27T13:14:52.602784</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element-dto/</loc>
-    <lastmod>2026-06-26T18:42:34.146491</lastmod>
+    <lastmod>2026-06-27T13:14:52.602022</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element-dto/intrinsic-height.html</loc>
-    <lastmod>2026-06-26T18:42:34.147655</lastmod>
+    <lastmod>2026-06-27T13:14:52.602842</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element-dto/intrinsic-width.html</loc>
-    <lastmod>2026-06-26T18:42:34.147762</lastmod>
+    <lastmod>2026-06-27T13:14:52.602905</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element-dto/modified-at.html</loc>
-    <lastmod>2026-06-26T18:42:34.147901</lastmod>
+    <lastmod>2026-06-27T13:14:52.602964</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element-dto/opacity.html</loc>
-    <lastmod>2026-06-26T18:42:34.148012</lastmod>
+    <lastmod>2026-06-27T13:14:52.603023</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element-dto/points.html</loc>
-    <lastmod>2026-06-26T18:42:34.148121</lastmod>
+    <lastmod>2026-06-27T13:14:52.603083</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element-dto/rotation.html</loc>
-    <lastmod>2026-06-26T18:42:34.148242</lastmod>
+    <lastmod>2026-06-27T13:14:52.603147</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element-dto/samples.html</loc>
-    <lastmod>2026-06-26T18:42:34.148361</lastmod>
+    <lastmod>2026-06-27T13:14:52.603219</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element-dto/shape-type.html</loc>
-    <lastmod>2026-06-26T18:42:34.148471</lastmod>
+    <lastmod>2026-06-27T13:14:52.603281</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element-dto/start-binding.html</loc>
-    <lastmod>2026-06-26T18:42:34.148579</lastmod>
+    <lastmod>2026-06-27T13:14:52.603346</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element-dto/stroke-color.html</loc>
-    <lastmod>2026-06-26T18:42:34.148687</lastmod>
+    <lastmod>2026-06-27T13:14:52.603406</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element-dto/stroke-enabled.html</loc>
-    <lastmod>2026-06-26T18:42:34.148818</lastmod>
+    <lastmod>2026-06-27T13:14:52.603465</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element-dto/stroke-style.html</loc>
-    <lastmod>2026-06-26T18:42:34.148937</lastmod>
+    <lastmod>2026-06-27T13:14:52.603525</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element-dto/stroke-width.html</loc>
-    <lastmod>2026-06-26T18:42:34.149046</lastmod>
+    <lastmod>2026-06-27T13:14:52.603584</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element-dto/text-top-left.html</loc>
+    <lastmod>2026-06-27T13:14:52.603643</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element-dto/text.html</loc>
+    <lastmod>2026-06-27T13:14:52.603703</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element-dto/type.html</loc>
-    <lastmod>2026-06-26T18:42:34.149155</lastmod>
+    <lastmod>2026-06-27T13:14:52.603765</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element-dto/wrap-width.html</loc>
+    <lastmod>2026-06-27T13:14:52.603825</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-element-dto/z-index.html</loc>
-    <lastmod>2026-06-26T18:42:34.149277</lastmod>
+    <lastmod>2026-06-27T13:14:52.603893</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-event/-drawing-loaded/-drawing-loaded.html</loc>
-    <lastmod>2026-06-26T18:42:34.149695</lastmod>
+    <lastmod>2026-06-27T13:14:52.604136</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-event/-drawing-loaded/</loc>
-    <lastmod>2026-06-26T18:42:34.149584</lastmod>
+    <lastmod>2026-06-27T13:14:52.604072</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-event/-drawing-loaded/state.html</loc>
-    <lastmod>2026-06-26T18:42:34.149822</lastmod>
+    <lastmod>2026-06-27T13:14:52.604208</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-event/-element-added/-element-added.html</loc>
-    <lastmod>2026-06-26T18:42:34.150077</lastmod>
+    <lastmod>2026-06-27T13:14:52.604338</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-event/-element-added/element.html</loc>
-    <lastmod>2026-06-26T18:42:34.150186</lastmod>
+    <lastmod>2026-06-27T13:14:52.604398</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-event/-element-added/</loc>
-    <lastmod>2026-06-26T18:42:34.149958</lastmod>
+    <lastmod>2026-06-27T13:14:52.604276</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-event/-element-deleted/-element-deleted.html</loc>
-    <lastmod>2026-06-26T18:42:34.150438</lastmod>
+    <lastmod>2026-06-27T13:14:52.604541</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-event/-element-deleted/element-id.html</loc>
-    <lastmod>2026-06-26T18:42:34.150546</lastmod>
+    <lastmod>2026-06-27T13:14:52.604601</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-event/-element-deleted/</loc>
-    <lastmod>2026-06-26T18:42:34.150326</lastmod>
+    <lastmod>2026-06-27T13:14:52.604475</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-event/-element-updated/-element-updated.html</loc>
-    <lastmod>2026-06-26T18:42:34.150794</lastmod>
+    <lastmod>2026-06-27T13:14:52.604740</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-event/-element-updated/element.html</loc>
-    <lastmod>2026-06-26T18:42:34.150932</lastmod>
+    <lastmod>2026-06-27T13:14:52.604801</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-event/-element-updated/</loc>
-    <lastmod>2026-06-26T18:42:34.150682</lastmod>
+    <lastmod>2026-06-27T13:14:52.604674</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-event/-error/-error.html</loc>
-    <lastmod>2026-06-26T18:42:34.151185</lastmod>
+    <lastmod>2026-06-27T13:14:52.604945</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-event/-error/</loc>
-    <lastmod>2026-06-26T18:42:34.151071</lastmod>
+    <lastmod>2026-06-27T13:14:52.604880</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-event/-error/message.html</loc>
-    <lastmod>2026-06-26T18:42:34.151304</lastmod>
+    <lastmod>2026-06-27T13:14:52.605006</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-event/-error/throwable.html</loc>
-    <lastmod>2026-06-26T18:42:34.151412</lastmod>
+    <lastmod>2026-06-27T13:14:52.605066</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-event/-history-changed/-history-changed.html</loc>
-    <lastmod>2026-06-26T18:42:34.151672</lastmod>
+    <lastmod>2026-06-27T13:14:52.605220</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-event/-history-changed/can-redo.html</loc>
-    <lastmod>2026-06-26T18:42:34.151784</lastmod>
+    <lastmod>2026-06-27T13:14:52.605282</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-event/-history-changed/can-undo.html</loc>
-    <lastmod>2026-06-26T18:42:34.151920</lastmod>
+    <lastmod>2026-06-27T13:14:52.605342</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-event/-history-changed/</loc>
-    <lastmod>2026-06-26T18:42:34.151555</lastmod>
+    <lastmod>2026-06-27T13:14:52.605140</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-event/-json-exported/-json-exported.html</loc>
-    <lastmod>2026-06-26T18:42:34.152168</lastmod>
+    <lastmod>2026-06-27T13:14:52.605479</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-event/-json-exported/</loc>
-    <lastmod>2026-06-26T18:42:34.152057</lastmod>
+    <lastmod>2026-06-27T13:14:52.605414</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-event/-json-exported/json.html</loc>
-    <lastmod>2026-06-26T18:42:34.152277</lastmod>
+    <lastmod>2026-06-27T13:14:52.605538</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-event/-png-saved/-png-saved.html</loc>
-    <lastmod>2026-06-26T18:42:34.152533</lastmod>
+    <lastmod>2026-06-27T13:14:52.605675</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-event/-png-saved/bitmap.html</loc>
-    <lastmod>2026-06-26T18:42:34.152656</lastmod>
+    <lastmod>2026-06-27T13:14:52.605735</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-event/-png-saved/</loc>
-    <lastmod>2026-06-26T18:42:34.152415</lastmod>
+    <lastmod>2026-06-27T13:14:52.605611</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-event/-png-saved/throwable.html</loc>
-    <lastmod>2026-06-26T18:42:34.152769</lastmod>
+    <lastmod>2026-06-27T13:14:52.605796</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-event/-svg-exported/-svg-exported.html</loc>
-    <lastmod>2026-06-26T18:42:34.153047</lastmod>
+    <lastmod>2026-06-27T13:14:52.605931</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-event/-svg-exported/</loc>
-    <lastmod>2026-06-26T18:42:34.152931</lastmod>
+    <lastmod>2026-06-27T13:14:52.605869</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-event/-svg-exported/svg.html</loc>
-    <lastmod>2026-06-26T18:42:34.153167</lastmod>
+    <lastmod>2026-06-27T13:14:52.605989</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-event/</loc>
-    <lastmod>2026-06-26T18:42:34.149423</lastmod>
+    <lastmod>2026-06-27T13:14:52.603978</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-add-element/-add-element.html</loc>
-    <lastmod>2026-06-26T18:42:34.153611</lastmod>
+    <lastmod>2026-06-27T13:14:52.606274</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-add-element/element.html</loc>
-    <lastmod>2026-06-26T18:42:34.153720</lastmod>
+    <lastmod>2026-06-27T13:14:52.606333</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-add-element/</loc>
-    <lastmod>2026-06-26T18:42:34.153499</lastmod>
+    <lastmod>2026-06-27T13:14:52.606209</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-begin-erase/</loc>
-    <lastmod>2026-06-26T18:42:34.153867</lastmod>
+    <lastmod>2026-06-27T13:14:52.606407</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-begin-transform/</loc>
-    <lastmod>2026-06-26T18:42:34.154012</lastmod>
+    <lastmod>2026-06-27T13:14:52.606484</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-bring-selection-to-front/</loc>
-    <lastmod>2026-06-26T18:42:34.154179</lastmod>
+    <lastmod>2026-06-27T13:14:52.606561</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-clear-selection/</loc>
-    <lastmod>2026-06-26T18:42:34.154319</lastmod>
+    <lastmod>2026-06-27T13:14:52.606633</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-commit-marquee/-commit-marquee.html</loc>
-    <lastmod>2026-06-26T18:42:34.154569</lastmod>
+    <lastmod>2026-06-27T13:14:52.606772</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-commit-marquee/</loc>
-    <lastmod>2026-06-26T18:42:34.154456</lastmod>
+    <lastmod>2026-06-27T13:14:52.606710</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-commit-marquee/rect.html</loc>
-    <lastmod>2026-06-26T18:42:34.154677</lastmod>
+    <lastmod>2026-06-27T13:14:52.606831</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-delete-element/-delete-element.html</loc>
-    <lastmod>2026-06-26T18:42:34.154948</lastmod>
+    <lastmod>2026-06-27T13:14:52.606964</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-delete-element/element-id.html</loc>
-    <lastmod>2026-06-26T18:42:34.155057</lastmod>
+    <lastmod>2026-06-27T13:14:52.607024</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-delete-element/</loc>
-    <lastmod>2026-06-26T18:42:34.154833</lastmod>
+    <lastmod>2026-06-27T13:14:52.606903</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-delete-selected/</loc>
-    <lastmod>2026-06-26T18:42:34.155202</lastmod>
+    <lastmod>2026-06-27T13:14:52.607096</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-end-erase/</loc>
-    <lastmod>2026-06-26T18:42:34.155344</lastmod>
+    <lastmod>2026-06-27T13:14:52.607184</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-end-transform/</loc>
-    <lastmod>2026-06-26T18:42:34.155483</lastmod>
+    <lastmod>2026-06-27T13:14:52.607268</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-erase-at/-erase-at.html</loc>
-    <lastmod>2026-06-26T18:42:34.155739</lastmod>
+    <lastmod>2026-06-27T13:14:52.607408</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-erase-at/</loc>
-    <lastmod>2026-06-26T18:42:34.155619</lastmod>
+    <lastmod>2026-06-27T13:14:52.607342</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-erase-at/point.html</loc>
-    <lastmod>2026-06-26T18:42:34.155878</lastmod>
+    <lastmod>2026-06-27T13:14:52.607469</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-erase-at/radius.html</loc>
-    <lastmod>2026-06-26T18:42:34.155988</lastmod>
+    <lastmod>2026-06-27T13:14:52.607529</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-finalize-arrow-bindings/-finalize-arrow-bindings.html</loc>
-    <lastmod>2026-06-26T18:42:34.156238</lastmod>
+    <lastmod>2026-06-27T13:14:52.607666</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-finalize-arrow-bindings/id.html</loc>
-    <lastmod>2026-06-26T18:42:34.156347</lastmod>
+    <lastmod>2026-06-27T13:14:52.607731</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-finalize-arrow-bindings/</loc>
-    <lastmod>2026-06-26T18:42:34.156125</lastmod>
+    <lastmod>2026-06-27T13:14:52.607602</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-insert-image/-insert-image.html</loc>
-    <lastmod>2026-06-26T18:42:34.156673</lastmod>
+    <lastmod>2026-06-27T13:14:52.607869</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-insert-image/bytes.html</loc>
-    <lastmod>2026-06-26T18:42:34.156838</lastmod>
+    <lastmod>2026-06-27T13:14:52.607933</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-insert-image/equals.html</loc>
-    <lastmod>2026-06-26T18:42:34.156979</lastmod>
+    <lastmod>2026-06-27T13:14:52.607994</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-insert-image/hash-code.html</loc>
-    <lastmod>2026-06-26T18:42:34.157104</lastmod>
+    <lastmod>2026-06-27T13:14:52.608058</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-insert-image/</loc>
-    <lastmod>2026-06-26T18:42:34.156532</lastmod>
+    <lastmod>2026-06-27T13:14:52.607802</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-insert-image/intrinsic-size.html</loc>
-    <lastmod>2026-06-26T18:42:34.157228</lastmod>
+    <lastmod>2026-06-27T13:14:52.608116</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-insert-image/position.html</loc>
-    <lastmod>2026-06-26T18:42:34.157354</lastmod>
+    <lastmod>2026-06-27T13:14:52.608189</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-insert-new-path/-insert-new-path.html</loc>
-    <lastmod>2026-06-26T18:42:34.157620</lastmod>
+    <lastmod>2026-06-27T13:14:52.608358</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-insert-new-path/</loc>
-    <lastmod>2026-06-26T18:42:34.157504</lastmod>
+    <lastmod>2026-06-27T13:14:52.608293</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-insert-new-path/offset.html</loc>
-    <lastmod>2026-06-26T18:42:34.157728</lastmod>
+    <lastmod>2026-06-27T13:14:52.608417</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-insert-new-shape/-insert-new-shape.html</loc>
-    <lastmod>2026-06-26T18:42:34.158020</lastmod>
+    <lastmod>2026-06-27T13:14:52.608559</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-insert-new-shape/</loc>
-    <lastmod>2026-06-26T18:42:34.157901</lastmod>
+    <lastmod>2026-06-27T13:14:52.608491</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-insert-new-shape/offset.html</loc>
-    <lastmod>2026-06-26T18:42:34.158130</lastmod>
+    <lastmod>2026-06-27T13:14:52.608623</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-insert-new-shape/shape-type.html</loc>
-    <lastmod>2026-06-26T18:42:34.158245</lastmod>
+    <lastmod>2026-06-27T13:14:52.608683</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-insert-text/-insert-text.html</loc>
+    <lastmod>2026-06-27T13:14:52.608823</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-insert-text/alignment.html</loc>
+    <lastmod>2026-06-27T13:14:52.608887</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-insert-text/color.html</loc>
+    <lastmod>2026-06-27T13:14:52.608948</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-insert-text/font-family-key.html</loc>
+    <lastmod>2026-06-27T13:14:52.609008</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-insert-text/font-size.html</loc>
+    <lastmod>2026-06-27T13:14:52.609067</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-insert-text/</loc>
+    <lastmod>2026-06-27T13:14:52.608757</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-insert-text/position.html</loc>
+    <lastmod>2026-06-27T13:14:52.609131</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-insert-text/text.html</loc>
+    <lastmod>2026-06-27T13:14:52.609207</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-load-drawing/</loc>
-    <lastmod>2026-06-26T18:42:34.158385</lastmod>
+    <lastmod>2026-06-27T13:14:52.609282</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-move-selected/-move-selected.html</loc>
-    <lastmod>2026-06-26T18:42:34.158635</lastmod>
+    <lastmod>2026-06-27T13:14:52.609427</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-move-selected/delta.html</loc>
-    <lastmod>2026-06-26T18:42:34.158743</lastmod>
+    <lastmod>2026-06-27T13:14:52.609487</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-move-selected/</loc>
-    <lastmod>2026-06-26T18:42:34.158521</lastmod>
+    <lastmod>2026-06-27T13:14:52.609364</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-pan-by/-pan-by.html</loc>
-    <lastmod>2026-06-26T18:42:34.159024</lastmod>
+    <lastmod>2026-06-27T13:14:52.609621</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-pan-by/delta.html</loc>
-    <lastmod>2026-06-26T18:42:34.159138</lastmod>
+    <lastmod>2026-06-27T13:14:52.609680</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-pan-by/</loc>
-    <lastmod>2026-06-26T18:42:34.158907</lastmod>
+    <lastmod>2026-06-27T13:14:52.609559</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-redo/</loc>
-    <lastmod>2026-06-26T18:42:34.159278</lastmod>
+    <lastmod>2026-06-27T13:14:52.609754</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-reset/</loc>
-    <lastmod>2026-06-26T18:42:34.159420</lastmod>
+    <lastmod>2026-06-27T13:14:52.609826</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-reset-camera/</loc>
-    <lastmod>2026-06-26T18:42:34.159557</lastmod>
+    <lastmod>2026-06-27T13:14:52.609900</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-save-bitmap/-save-bitmap.html</loc>
-    <lastmod>2026-06-26T18:42:34.159831</lastmod>
+    <lastmod>2026-06-27T13:14:52.610041</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-save-bitmap/bitmap.html</loc>
-    <lastmod>2026-06-26T18:42:34.159948</lastmod>
+    <lastmod>2026-06-27T13:14:52.610105</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-save-bitmap/</loc>
-    <lastmod>2026-06-26T18:42:34.159694</lastmod>
+    <lastmod>2026-06-27T13:14:52.609975</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-save-bitmap/throwable.html</loc>
-    <lastmod>2026-06-26T18:42:34.160063</lastmod>
+    <lastmod>2026-06-27T13:14:52.610199</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-select-at/-select-at.html</loc>
-    <lastmod>2026-06-26T18:42:34.160321</lastmod>
+    <lastmod>2026-06-27T13:14:52.610375</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-select-at/</loc>
-    <lastmod>2026-06-26T18:42:34.160206</lastmod>
+    <lastmod>2026-06-27T13:14:52.610294</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-select-at/offset.html</loc>
-    <lastmod>2026-06-26T18:42:34.160441</lastmod>
+    <lastmod>2026-06-27T13:14:52.610468</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-select-at/tolerance.html</loc>
-    <lastmod>2026-06-26T18:42:34.160551</lastmod>
+    <lastmod>2026-06-27T13:14:52.610534</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-send-selection-to-back/</loc>
-    <lastmod>2026-06-26T18:42:34.160687</lastmod>
+    <lastmod>2026-06-27T13:14:52.610615</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-background-pattern/-set-background-pattern.html</loc>
-    <lastmod>2026-06-26T18:42:34.160969</lastmod>
+    <lastmod>2026-06-27T13:14:52.610763</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-background-pattern/</loc>
-    <lastmod>2026-06-26T18:42:34.160854</lastmod>
+    <lastmod>2026-06-27T13:14:52.610692</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-background-pattern/pattern.html</loc>
-    <lastmod>2026-06-26T18:42:34.161077</lastmod>
+    <lastmod>2026-06-27T13:14:52.610831</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-bg-color/-set-bg-color.html</loc>
-    <lastmod>2026-06-26T18:42:34.161330</lastmod>
+    <lastmod>2026-06-27T13:14:52.610967</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-bg-color/bg-color.html</loc>
-    <lastmod>2026-06-26T18:42:34.161440</lastmod>
+    <lastmod>2026-06-27T13:14:52.611032</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-bg-color/</loc>
-    <lastmod>2026-06-26T18:42:34.161219</lastmod>
+    <lastmod>2026-06-27T13:14:52.610904</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-corner-radius/-set-corner-radius.html</loc>
-    <lastmod>2026-06-26T18:42:34.161696</lastmod>
+    <lastmod>2026-06-27T13:14:52.611183</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-corner-radius/</loc>
-    <lastmod>2026-06-26T18:42:34.161576</lastmod>
+    <lastmod>2026-06-27T13:14:52.611107</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-corner-radius/radius.html</loc>
-    <lastmod>2026-06-26T18:42:34.161827</lastmod>
+    <lastmod>2026-06-27T13:14:52.611247</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-element-bounds/-set-element-bounds.html</loc>
-    <lastmod>2026-06-26T18:42:34.162092</lastmod>
+    <lastmod>2026-06-27T13:14:52.611388</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-element-bounds/bounds.html</loc>
-    <lastmod>2026-06-26T18:42:34.162201</lastmod>
+    <lastmod>2026-06-27T13:14:52.611452</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-element-bounds/id.html</loc>
-    <lastmod>2026-06-26T18:42:34.162308</lastmod>
+    <lastmod>2026-06-27T13:14:52.611513</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-element-bounds/</loc>
-    <lastmod>2026-06-26T18:42:34.161973</lastmod>
+    <lastmod>2026-06-27T13:14:52.611321</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-element-points/-set-element-points.html</loc>
-    <lastmod>2026-06-26T18:42:34.162563</lastmod>
+    <lastmod>2026-06-27T13:14:52.611652</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-element-points/id.html</loc>
-    <lastmod>2026-06-26T18:42:34.162672</lastmod>
+    <lastmod>2026-06-27T13:14:52.611713</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-element-points/</loc>
-    <lastmod>2026-06-26T18:42:34.162450</lastmod>
+    <lastmod>2026-06-27T13:14:52.611588</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-element-points/points.html</loc>
-    <lastmod>2026-06-26T18:42:34.162779</lastmod>
+    <lastmod>2026-06-27T13:14:52.611771</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-element-rotation/-set-element-rotation.html</loc>
-    <lastmod>2026-06-26T18:42:34.163063</lastmod>
+    <lastmod>2026-06-27T13:14:52.611910</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-element-rotation/id.html</loc>
-    <lastmod>2026-06-26T18:42:34.163187</lastmod>
+    <lastmod>2026-06-27T13:14:52.611971</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-element-rotation/</loc>
-    <lastmod>2026-06-26T18:42:34.162945</lastmod>
+    <lastmod>2026-06-27T13:14:52.611844</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-element-rotation/rotation-degrees.html</loc>
-    <lastmod>2026-06-26T18:42:34.163295</lastmod>
+    <lastmod>2026-06-27T13:14:52.612031</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-eraser-size/-set-eraser-size.html</loc>
-    <lastmod>2026-06-26T18:42:34.163558</lastmod>
+    <lastmod>2026-06-27T13:14:52.612183</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-eraser-size/</loc>
-    <lastmod>2026-06-26T18:42:34.163439</lastmod>
+    <lastmod>2026-06-27T13:14:52.612108</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-eraser-size/size.html</loc>
-    <lastmod>2026-06-26T18:42:34.163667</lastmod>
+    <lastmod>2026-06-27T13:14:52.612248</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-font-family/-set-font-family.html</loc>
+    <lastmod>2026-06-27T13:14:52.612391</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-font-family/font-family-key.html</loc>
+    <lastmod>2026-06-27T13:14:52.612453</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-font-family/</loc>
+    <lastmod>2026-06-27T13:14:52.612328</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-font-size/-set-font-size.html</loc>
+    <lastmod>2026-06-27T13:14:52.612593</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-font-size/</loc>
+    <lastmod>2026-06-27T13:14:52.612528</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-font-size/size.html</loc>
+    <lastmod>2026-06-27T13:14:52.612654</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-line-bend/-set-line-bend.html</loc>
-    <lastmod>2026-06-26T18:42:34.163952</lastmod>
+    <lastmod>2026-06-27T13:14:52.612792</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-line-bend/bend.html</loc>
-    <lastmod>2026-06-26T18:42:34.164064</lastmod>
+    <lastmod>2026-06-27T13:14:52.612854</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-line-bend/id.html</loc>
-    <lastmod>2026-06-26T18:42:34.164181</lastmod>
+    <lastmod>2026-06-27T13:14:52.612913</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-line-bend/</loc>
-    <lastmod>2026-06-26T18:42:34.163832</lastmod>
+    <lastmod>2026-06-27T13:14:52.612727</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-marquee-rect/-set-marquee-rect.html</loc>
-    <lastmod>2026-06-26T18:42:34.164432</lastmod>
+    <lastmod>2026-06-27T13:14:52.613051</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-marquee-rect/</loc>
-    <lastmod>2026-06-26T18:42:34.164319</lastmod>
+    <lastmod>2026-06-27T13:14:52.612987</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-marquee-rect/rect.html</loc>
-    <lastmod>2026-06-26T18:42:34.164540</lastmod>
+    <lastmod>2026-06-27T13:14:52.613111</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-mode/-set-mode.html</loc>
-    <lastmod>2026-06-26T18:42:34.164787</lastmod>
+    <lastmod>2026-06-27T13:14:52.613261</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-mode/</loc>
-    <lastmod>2026-06-26T18:42:34.164676</lastmod>
+    <lastmod>2026-06-27T13:14:52.613197</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-mode/mode.html</loc>
-    <lastmod>2026-06-26T18:42:34.164927</lastmod>
+    <lastmod>2026-06-27T13:14:52.613321</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-opacity/-set-opacity.html</loc>
-    <lastmod>2026-06-26T18:42:34.165180</lastmod>
+    <lastmod>2026-06-27T13:14:52.613464</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-opacity/</loc>
-    <lastmod>2026-06-26T18:42:34.165067</lastmod>
+    <lastmod>2026-06-27T13:14:52.613399</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-opacity/opacity.html</loc>
-    <lastmod>2026-06-26T18:42:34.165290</lastmod>
+    <lastmod>2026-06-27T13:14:52.613526</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-selected-corner-radius/-set-selected-corner-radius.html</loc>
-    <lastmod>2026-06-26T18:42:34.165544</lastmod>
+    <lastmod>2026-06-27T13:14:52.613663</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-selected-corner-radius/</loc>
-    <lastmod>2026-06-26T18:42:34.165432</lastmod>
+    <lastmod>2026-06-27T13:14:52.613599</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-selected-corner-radius/radius.html</loc>
-    <lastmod>2026-06-26T18:42:34.165652</lastmod>
+    <lastmod>2026-06-27T13:14:52.613723</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-selected-fill-color/-set-selected-fill-color.html</loc>
-    <lastmod>2026-06-26T18:42:34.165932</lastmod>
+    <lastmod>2026-06-27T13:14:52.613892</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-selected-fill-color/color.html</loc>
-    <lastmod>2026-06-26T18:42:34.166046</lastmod>
+    <lastmod>2026-06-27T13:14:52.613953</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-selected-fill-color/</loc>
-    <lastmod>2026-06-26T18:42:34.165790</lastmod>
+    <lastmod>2026-06-27T13:14:52.613825</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-selected-font-family/-set-selected-font-family.html</loc>
+    <lastmod>2026-06-27T13:14:52.614096</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-selected-font-family/font-family-key.html</loc>
+    <lastmod>2026-06-27T13:14:52.614160</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-selected-font-family/</loc>
+    <lastmod>2026-06-27T13:14:52.614032</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-selected-font-size/-set-selected-font-size.html</loc>
+    <lastmod>2026-06-27T13:14:52.614316</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-selected-font-size/</loc>
+    <lastmod>2026-06-27T13:14:52.614252</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-selected-font-size/size.html</loc>
+    <lastmod>2026-06-27T13:14:52.614380</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-selected-stroke-color/-set-selected-stroke-color.html</loc>
-    <lastmod>2026-06-26T18:42:34.166303</lastmod>
+    <lastmod>2026-06-27T13:14:52.614519</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-selected-stroke-color/color.html</loc>
-    <lastmod>2026-06-26T18:42:34.166412</lastmod>
+    <lastmod>2026-06-27T13:14:52.614579</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-selected-stroke-color/</loc>
-    <lastmod>2026-06-26T18:42:34.166185</lastmod>
+    <lastmod>2026-06-27T13:14:52.614454</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-selected-stroke-enabled/-set-selected-stroke-enabled.html</loc>
-    <lastmod>2026-06-26T18:42:34.166667</lastmod>
+    <lastmod>2026-06-27T13:14:52.614725</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-selected-stroke-enabled/enabled.html</loc>
-    <lastmod>2026-06-26T18:42:34.166778</lastmod>
+    <lastmod>2026-06-27T13:14:52.614795</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-selected-stroke-enabled/</loc>
-    <lastmod>2026-06-26T18:42:34.166550</lastmod>
+    <lastmod>2026-06-27T13:14:52.614658</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-selected-stroke-style/-set-selected-stroke-style.html</loc>
-    <lastmod>2026-06-26T18:42:34.167060</lastmod>
+    <lastmod>2026-06-27T13:14:52.614936</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-selected-stroke-style/</loc>
-    <lastmod>2026-06-26T18:42:34.166945</lastmod>
+    <lastmod>2026-06-27T13:14:52.614873</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-selected-stroke-style/style.html</loc>
-    <lastmod>2026-06-26T18:42:34.167168</lastmod>
+    <lastmod>2026-06-27T13:14:52.615007</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-selected-stroke-width/-set-selected-stroke-width.html</loc>
-    <lastmod>2026-06-26T18:42:34.167418</lastmod>
+    <lastmod>2026-06-27T13:14:52.615147</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-selected-stroke-width/</loc>
-    <lastmod>2026-06-26T18:42:34.167305</lastmod>
+    <lastmod>2026-06-27T13:14:52.615084</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-selected-stroke-width/width.html</loc>
-    <lastmod>2026-06-26T18:42:34.167528</lastmod>
+    <lastmod>2026-06-27T13:14:52.615232</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-selected-text-alignment/-set-selected-text-alignment.html</loc>
+    <lastmod>2026-06-27T13:14:52.615386</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-selected-text-alignment/alignment.html</loc>
+    <lastmod>2026-06-27T13:14:52.615448</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-selected-text-alignment/</loc>
+    <lastmod>2026-06-27T13:14:52.615306</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-stroke-color/-set-stroke-color.html</loc>
-    <lastmod>2026-06-26T18:42:34.167787</lastmod>
+    <lastmod>2026-06-27T13:14:52.615591</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-stroke-color/color.html</loc>
-    <lastmod>2026-06-26T18:42:34.167931</lastmod>
+    <lastmod>2026-06-27T13:14:52.615654</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-stroke-color/</loc>
-    <lastmod>2026-06-26T18:42:34.167674</lastmod>
+    <lastmod>2026-06-27T13:14:52.615523</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-stroke-style/-set-stroke-style.html</loc>
-    <lastmod>2026-06-26T18:42:34.168189</lastmod>
+    <lastmod>2026-06-27T13:14:52.615791</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-stroke-style/</loc>
-    <lastmod>2026-06-26T18:42:34.168075</lastmod>
+    <lastmod>2026-06-27T13:14:52.615727</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-stroke-style/style.html</loc>
-    <lastmod>2026-06-26T18:42:34.168307</lastmod>
+    <lastmod>2026-06-27T13:14:52.615851</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-stroke-width/-set-stroke-width.html</loc>
-    <lastmod>2026-06-26T18:42:34.168556</lastmod>
+    <lastmod>2026-06-27T13:14:52.615988</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-stroke-width/</loc>
-    <lastmod>2026-06-26T18:42:34.168445</lastmod>
+    <lastmod>2026-06-27T13:14:52.615927</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-stroke-width/width.html</loc>
-    <lastmod>2026-06-26T18:42:34.168665</lastmod>
+    <lastmod>2026-06-27T13:14:52.616050</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-temp-pan/-set-temp-pan.html</loc>
-    <lastmod>2026-06-26T18:42:34.168941</lastmod>
+    <lastmod>2026-06-27T13:14:52.616200</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-temp-pan/active.html</loc>
-    <lastmod>2026-06-26T18:42:34.169057</lastmod>
+    <lastmod>2026-06-27T13:14:52.616265</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-temp-pan/</loc>
-    <lastmod>2026-06-26T18:42:34.168821</lastmod>
+    <lastmod>2026-06-27T13:14:52.616124</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-text-alignment/-set-text-alignment.html</loc>
+    <lastmod>2026-06-27T13:14:52.616409</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-text-alignment/alignment.html</loc>
+    <lastmod>2026-06-27T13:14:52.616471</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-set-text-alignment/</loc>
+    <lastmod>2026-06-27T13:14:52.616345</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-sync-text-measured-height/-sync-text-measured-height.html</loc>
+    <lastmod>2026-06-27T13:14:52.616613</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-sync-text-measured-height/height.html</loc>
+    <lastmod>2026-06-27T13:14:52.616675</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-sync-text-measured-height/id.html</loc>
+    <lastmod>2026-06-27T13:14:52.616738</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-sync-text-measured-height/</loc>
+    <lastmod>2026-06-27T13:14:52.616544</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-undo/</loc>
-    <lastmod>2026-06-26T18:42:34.169203</lastmod>
+    <lastmod>2026-06-27T13:14:52.616814</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-update-element/-update-element.html</loc>
-    <lastmod>2026-06-26T18:42:34.169465</lastmod>
+    <lastmod>2026-06-27T13:14:52.616958</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-update-element/element.html</loc>
-    <lastmod>2026-06-26T18:42:34.169578</lastmod>
+    <lastmod>2026-06-27T13:14:52.617018</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-update-element/</loc>
-    <lastmod>2026-06-26T18:42:34.169343</lastmod>
+    <lastmod>2026-06-27T13:14:52.616893</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-update-latest-path/-update-latest-path.html</loc>
-    <lastmod>2026-06-26T18:42:34.169855</lastmod>
+    <lastmod>2026-06-27T13:14:52.617173</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-update-latest-path/</loc>
-    <lastmod>2026-06-26T18:42:34.169716</lastmod>
+    <lastmod>2026-06-27T13:14:52.617095</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-update-latest-path/new-point.html</loc>
-    <lastmod>2026-06-26T18:42:34.169969</lastmod>
+    <lastmod>2026-06-27T13:14:52.617241</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-update-latest-path/pressure.html</loc>
-    <lastmod>2026-06-26T18:42:34.170082</lastmod>
+    <lastmod>2026-06-27T13:14:52.617334</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-update-latest-shape/-update-latest-shape.html</loc>
-    <lastmod>2026-06-26T18:42:34.170335</lastmod>
+    <lastmod>2026-06-27T13:14:52.617471</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-update-latest-shape/</loc>
-    <lastmod>2026-06-26T18:42:34.170219</lastmod>
+    <lastmod>2026-06-27T13:14:52.617408</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-update-latest-shape/new-point.html</loc>
-    <lastmod>2026-06-26T18:42:34.170449</lastmod>
+    <lastmod>2026-06-27T13:14:52.617532</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-update-text/-update-text.html</loc>
+    <lastmod>2026-06-27T13:14:52.617674</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-update-text/id.html</loc>
+    <lastmod>2026-06-27T13:14:52.617735</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-update-text/</loc>
+    <lastmod>2026-06-27T13:14:52.617606</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-update-text/text.html</loc>
+    <lastmod>2026-06-27T13:14:52.617794</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-zoom-by/-zoom-by.html</loc>
-    <lastmod>2026-06-26T18:42:34.170704</lastmod>
+    <lastmod>2026-06-27T13:14:52.617933</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-zoom-by/factor.html</loc>
-    <lastmod>2026-06-26T18:42:34.170834</lastmod>
+    <lastmod>2026-06-27T13:14:52.617992</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-zoom-by/focal-screen.html</loc>
-    <lastmod>2026-06-26T18:42:34.170961</lastmod>
+    <lastmod>2026-06-27T13:14:52.618052</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-zoom-by/</loc>
-    <lastmod>2026-06-26T18:42:34.170589</lastmod>
+    <lastmod>2026-06-27T13:14:52.617868</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-zoom-to/-zoom-to.html</loc>
-    <lastmod>2026-06-26T18:42:34.171218</lastmod>
+    <lastmod>2026-06-27T13:14:52.618206</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-zoom-to/focal-screen.html</loc>
-    <lastmod>2026-06-26T18:42:34.171326</lastmod>
+    <lastmod>2026-06-27T13:14:52.618271</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-zoom-to/</loc>
-    <lastmod>2026-06-26T18:42:34.171103</lastmod>
+    <lastmod>2026-06-27T13:14:52.618127</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/-zoom-to/target-scale.html</loc>
-    <lastmod>2026-06-26T18:42:34.171434</lastmod>
+    <lastmod>2026-06-27T13:14:52.618335</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-intent/</loc>
-    <lastmod>2026-06-26T18:42:34.153303</lastmod>
+    <lastmod>2026-06-27T13:14:52.606063</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-mode/-a-r-r-o-w/</loc>
-    <lastmod>2026-06-26T18:42:34.171743</lastmod>
+    <lastmod>2026-06-27T13:14:52.618509</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-mode/-c-i-r-c-l-e/</loc>
-    <lastmod>2026-06-26T18:42:34.171891</lastmod>
+    <lastmod>2026-06-27T13:14:52.618572</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-mode/-e-r-a-s-e-r/</loc>
-    <lastmod>2026-06-26T18:42:34.172034</lastmod>
+    <lastmod>2026-06-27T13:14:52.618648</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-mode/-l-i-n-e/</loc>
-    <lastmod>2026-06-26T18:42:34.172171</lastmod>
+    <lastmod>2026-06-27T13:14:52.618719</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-mode/-p-a-n/</loc>
-    <lastmod>2026-06-26T18:42:34.172312</lastmod>
+    <lastmod>2026-06-27T13:14:52.618795</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-mode/-p-e-n/</loc>
-    <lastmod>2026-06-26T18:42:34.172451</lastmod>
+    <lastmod>2026-06-27T13:14:52.618865</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-mode/-r-e-c-t-a-n-g-l-e/</loc>
-    <lastmod>2026-06-26T18:42:34.172590</lastmod>
+    <lastmod>2026-06-27T13:14:52.618938</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-mode/-s-e-l-e-c-t/</loc>
-    <lastmod>2026-06-26T18:42:34.172734</lastmod>
+    <lastmod>2026-06-27T13:14:52.619009</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-mode/-t-e-x-t/</loc>
+    <lastmod>2026-06-27T13:14:52.619083</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-mode/-t-r-i-a-n-g-l-e/</loc>
-    <lastmod>2026-06-26T18:42:34.172910</lastmod>
+    <lastmod>2026-06-27T13:14:52.619153</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-mode/</loc>
-    <lastmod>2026-06-26T18:42:34.171576</lastmod>
+    <lastmod>2026-06-27T13:14:52.618418</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-pay-load/-pay-load.html</loc>
-    <lastmod>2026-06-26T18:42:34.173172</lastmod>
+    <lastmod>2026-06-27T13:14:52.619310</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-pay-load/bg-color.html</loc>
-    <lastmod>2026-06-26T18:42:34.173284</lastmod>
+    <lastmod>2026-06-27T13:14:52.619372</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-pay-load/elements.html</loc>
-    <lastmod>2026-06-26T18:42:34.173393</lastmod>
+    <lastmod>2026-06-27T13:14:52.619433</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-pay-load/</loc>
-    <lastmod>2026-06-26T18:42:34.173053</lastmod>
+    <lastmod>2026-06-27T13:14:52.619246</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-resize-handle/-bottom/</loc>
-    <lastmod>2026-06-26T18:42:34.174054</lastmod>
+    <lastmod>2026-06-27T13:14:52.619789</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-resize-handle/-bottom-left/</loc>
-    <lastmod>2026-06-26T18:42:34.174188</lastmod>
+    <lastmod>2026-06-27T13:14:52.619854</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-resize-handle/-bottom-right/</loc>
-    <lastmod>2026-06-26T18:42:34.174330</lastmod>
+    <lastmod>2026-06-27T13:14:52.619928</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-resize-handle/-left/</loc>
-    <lastmod>2026-06-26T18:42:34.174474</lastmod>
+    <lastmod>2026-06-27T13:14:52.620001</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-resize-handle/-right/</loc>
-    <lastmod>2026-06-26T18:42:34.174614</lastmod>
+    <lastmod>2026-06-27T13:14:52.620076</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-resize-handle/-top/</loc>
-    <lastmod>2026-06-26T18:42:34.174750</lastmod>
+    <lastmod>2026-06-27T13:14:52.620150</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-resize-handle/-top-left/</loc>
-    <lastmod>2026-06-26T18:42:34.174917</lastmod>
+    <lastmod>2026-06-27T13:14:52.620245</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-resize-handle/-top-right/</loc>
-    <lastmod>2026-06-26T18:42:34.175063</lastmod>
+    <lastmod>2026-06-27T13:14:52.620321</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-resize-handle/entries.html</loc>
-    <lastmod>2026-06-26T18:42:34.173652</lastmod>
+    <lastmod>2026-06-27T13:14:52.619575</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-resize-handle/</loc>
-    <lastmod>2026-06-26T18:42:34.173529</lastmod>
+    <lastmod>2026-06-27T13:14:52.619508</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-resize-handle/value-of.html</loc>
-    <lastmod>2026-06-26T18:42:34.173761</lastmod>
+    <lastmod>2026-06-27T13:14:52.619642</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-resize-handle/values.html</loc>
-    <lastmod>2026-06-26T18:42:34.173897</lastmod>
+    <lastmod>2026-06-27T13:14:52.619704</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-serializable-drawing/-serializable-drawing.html</loc>
-    <lastmod>2026-06-26T18:42:34.175322</lastmod>
+    <lastmod>2026-06-27T13:14:52.620462</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-serializable-drawing/bg-color.html</loc>
-    <lastmod>2026-06-26T18:42:34.175433</lastmod>
+    <lastmod>2026-06-27T13:14:52.620525</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-serializable-drawing/elements.html</loc>
-    <lastmod>2026-06-26T18:42:34.175543</lastmod>
+    <lastmod>2026-06-27T13:14:52.620584</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-serializable-drawing/</loc>
-    <lastmod>2026-06-26T18:42:34.175205</lastmod>
+    <lastmod>2026-06-27T13:14:52.620398</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-serializable-element/-serializable-element.html</loc>
-    <lastmod>2026-06-26T18:42:34.175838</lastmod>
+    <lastmod>2026-06-27T13:14:52.620739</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-serializable-element/alignment.html</loc>
+    <lastmod>2026-06-27T13:14:52.620803</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-serializable-element/alpha.html</loc>
-    <lastmod>2026-06-26T18:42:34.175957</lastmod>
+    <lastmod>2026-06-27T13:14:52.620863</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-serializable-element/bend.html</loc>
-    <lastmod>2026-06-26T18:42:34.176064</lastmod>
+    <lastmod>2026-06-27T13:14:52.620923</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-serializable-element/corner-radius.html</loc>
-    <lastmod>2026-06-26T18:42:34.176174</lastmod>
+    <lastmod>2026-06-27T13:14:52.620991</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-serializable-element/created-at.html</loc>
-    <lastmod>2026-06-26T18:42:34.176280</lastmod>
+    <lastmod>2026-06-27T13:14:52.621051</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-serializable-element/end-binding.html</loc>
-    <lastmod>2026-06-26T18:42:34.176391</lastmod>
+    <lastmod>2026-06-27T13:14:52.621109</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-serializable-element/fill-color.html</loc>
-    <lastmod>2026-06-26T18:42:34.176503</lastmod>
+    <lastmod>2026-06-27T13:14:52.621187</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-serializable-element/font-family-key.html</loc>
+    <lastmod>2026-06-27T13:14:52.621250</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-serializable-element/font-size.html</loc>
+    <lastmod>2026-06-27T13:14:52.621310</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-serializable-element/id.html</loc>
-    <lastmod>2026-06-26T18:42:34.176612</lastmod>
+    <lastmod>2026-06-27T13:14:52.621370</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-serializable-element/image-data.html</loc>
-    <lastmod>2026-06-26T18:42:34.176732</lastmod>
+    <lastmod>2026-06-27T13:14:52.621429</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-serializable-element/</loc>
-    <lastmod>2026-06-26T18:42:34.175682</lastmod>
+    <lastmod>2026-06-27T13:14:52.620658</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-serializable-element/intrinsic-height.html</loc>
-    <lastmod>2026-06-26T18:42:34.176867</lastmod>
+    <lastmod>2026-06-27T13:14:52.621488</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-serializable-element/intrinsic-width.html</loc>
-    <lastmod>2026-06-26T18:42:34.176986</lastmod>
+    <lastmod>2026-06-27T13:14:52.621547</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-serializable-element/modified-at.html</loc>
-    <lastmod>2026-06-26T18:42:34.177094</lastmod>
+    <lastmod>2026-06-27T13:14:52.621608</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-serializable-element/opacity.html</loc>
-    <lastmod>2026-06-26T18:42:34.177200</lastmod>
+    <lastmod>2026-06-27T13:14:52.621667</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-serializable-element/points.html</loc>
-    <lastmod>2026-06-26T18:42:34.177306</lastmod>
+    <lastmod>2026-06-27T13:14:52.621728</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-serializable-element/rotation.html</loc>
-    <lastmod>2026-06-26T18:42:34.177413</lastmod>
+    <lastmod>2026-06-27T13:14:52.621789</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-serializable-element/samples.html</loc>
-    <lastmod>2026-06-26T18:42:34.177520</lastmod>
+    <lastmod>2026-06-27T13:14:52.621850</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-serializable-element/shape-type.html</loc>
-    <lastmod>2026-06-26T18:42:34.177629</lastmod>
+    <lastmod>2026-06-27T13:14:52.621914</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-serializable-element/start-binding.html</loc>
-    <lastmod>2026-06-26T18:42:34.177736</lastmod>
+    <lastmod>2026-06-27T13:14:52.621976</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-serializable-element/stroke-color.html</loc>
-    <lastmod>2026-06-26T18:42:34.177871</lastmod>
+    <lastmod>2026-06-27T13:14:52.622040</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-serializable-element/stroke-enabled.html</loc>
-    <lastmod>2026-06-26T18:42:34.177986</lastmod>
+    <lastmod>2026-06-27T13:14:52.622100</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-serializable-element/stroke-style.html</loc>
-    <lastmod>2026-06-26T18:42:34.178098</lastmod>
+    <lastmod>2026-06-27T13:14:52.622159</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-serializable-element/stroke-width.html</loc>
-    <lastmod>2026-06-26T18:42:34.178206</lastmod>
+    <lastmod>2026-06-27T13:14:52.622236</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-serializable-element/text-top-left.html</loc>
+    <lastmod>2026-06-27T13:14:52.622297</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-serializable-element/text.html</loc>
+    <lastmod>2026-06-27T13:14:52.622358</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-serializable-element/type.html</loc>
-    <lastmod>2026-06-26T18:42:34.178318</lastmod>
+    <lastmod>2026-06-27T13:14:52.622421</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-serializable-element/wrap-width.html</loc>
+    <lastmod>2026-06-27T13:14:52.622481</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-serializable-element/z-index.html</loc>
-    <lastmod>2026-06-26T18:42:34.178427</lastmod>
+    <lastmod>2026-06-27T13:14:52.622540</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-shape-type/-a-r-r-o-w/</loc>
-    <lastmod>2026-06-26T18:42:34.178729</lastmod>
+    <lastmod>2026-06-27T13:14:52.622711</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-shape-type/-c-i-r-c-l-e/</loc>
-    <lastmod>2026-06-26T18:42:34.178876</lastmod>
+    <lastmod>2026-06-27T13:14:52.622779</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-shape-type/-l-i-n-e/</loc>
-    <lastmod>2026-06-26T18:42:34.179014</lastmod>
+    <lastmod>2026-06-27T13:14:52.622852</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-shape-type/-r-e-c-t-a-n-g-l-e/</loc>
-    <lastmod>2026-06-26T18:42:34.179150</lastmod>
+    <lastmod>2026-06-27T13:14:52.622926</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-shape-type/-t-r-i-a-n-g-l-e/</loc>
-    <lastmod>2026-06-26T18:42:34.179288</lastmod>
+    <lastmod>2026-06-27T13:14:52.622998</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-shape-type/</loc>
-    <lastmod>2026-06-26T18:42:34.178568</lastmod>
+    <lastmod>2026-06-27T13:14:52.622617</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-state/-state.html</loc>
-    <lastmod>2026-06-26T18:42:34.179569</lastmod>
+    <lastmod>2026-06-27T13:14:52.623155</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-state/bg-color.html</loc>
-    <lastmod>2026-06-26T18:42:34.179688</lastmod>
+    <lastmod>2026-06-27T13:14:52.623233</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-state/bg-pattern.html</loc>
-    <lastmod>2026-06-26T18:42:34.179795</lastmod>
+    <lastmod>2026-06-27T13:14:52.623298</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-state/current-item-corner-radius.html</loc>
-    <lastmod>2026-06-26T18:42:34.179934</lastmod>
+    <lastmod>2026-06-27T13:14:52.623359</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-state/current-item-font-family-key.html</loc>
+    <lastmod>2026-06-27T13:14:52.623418</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-state/current-item-font-size.html</loc>
+    <lastmod>2026-06-27T13:14:52.623481</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-state/current-item-stroke-style.html</loc>
-    <lastmod>2026-06-26T18:42:34.180043</lastmod>
+    <lastmod>2026-06-27T13:14:52.623539</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-state/current-item-text-alignment.html</loc>
+    <lastmod>2026-06-27T13:14:52.623598</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-state/elements.html</loc>
-    <lastmod>2026-06-26T18:42:34.180157</lastmod>
+    <lastmod>2026-06-27T13:14:52.623660</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-state/eraser-size.html</loc>
-    <lastmod>2026-06-26T18:42:34.180265</lastmod>
+    <lastmod>2026-06-27T13:14:52.623720</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-state/erasing-session-dirty.html</loc>
-    <lastmod>2026-06-26T18:42:34.180372</lastmod>
+    <lastmod>2026-06-27T13:14:52.623779</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-state/future.html</loc>
-    <lastmod>2026-06-26T18:42:34.180486</lastmod>
+    <lastmod>2026-06-27T13:14:52.623839</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-state/history.html</loc>
-    <lastmod>2026-06-26T18:42:34.180593</lastmod>
+    <lastmod>2026-06-27T13:14:52.623902</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-state/</loc>
-    <lastmod>2026-06-26T18:42:34.179437</lastmod>
+    <lastmod>2026-06-27T13:14:52.623074</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-state/marquee-rect.html</loc>
-    <lastmod>2026-06-26T18:42:34.180702</lastmod>
+    <lastmod>2026-06-27T13:14:52.623962</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-state/mode.html</loc>
-    <lastmod>2026-06-26T18:42:34.180830</lastmod>
+    <lastmod>2026-06-27T13:14:52.624027</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-state/opacity.html</loc>
-    <lastmod>2026-06-26T18:42:34.180945</lastmod>
+    <lastmod>2026-06-27T13:14:52.624091</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-state/selected-ids.html</loc>
-    <lastmod>2026-06-26T18:42:34.181052</lastmod>
+    <lastmod>2026-06-27T13:14:52.624150</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-state/stroke-color.html</loc>
-    <lastmod>2026-06-26T18:42:34.181163</lastmod>
+    <lastmod>2026-06-27T13:14:52.624244</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-state/stroke-width.html</loc>
-    <lastmod>2026-06-26T18:42:34.181269</lastmod>
+    <lastmod>2026-06-27T13:14:52.624314</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-state/temp-pan-active.html</loc>
-    <lastmod>2026-06-26T18:42:34.181379</lastmod>
+    <lastmod>2026-06-27T13:14:52.624375</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-state/viewport.html</loc>
-    <lastmod>2026-06-26T18:42:34.181488</lastmod>
+    <lastmod>2026-06-27T13:14:52.624460</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-stroke-style/-d-a-s-h-e-d/</loc>
-    <lastmod>2026-06-26T18:42:34.182144</lastmod>
+    <lastmod>2026-06-27T13:14:52.624810</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-stroke-style/-d-o-t-t-e-d/</loc>
-    <lastmod>2026-06-26T18:42:34.182265</lastmod>
+    <lastmod>2026-06-27T13:14:52.624878</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-stroke-style/-s-o-l-i-d/</loc>
-    <lastmod>2026-06-26T18:42:34.182411</lastmod>
+    <lastmod>2026-06-27T13:14:52.624955</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-stroke-style/entries.html</loc>
-    <lastmod>2026-06-26T18:42:34.181744</lastmod>
+    <lastmod>2026-06-27T13:14:52.624604</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-stroke-style/</loc>
-    <lastmod>2026-06-26T18:42:34.181625</lastmod>
+    <lastmod>2026-06-27T13:14:52.624537</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-stroke-style/value-of.html</loc>
-    <lastmod>2026-06-26T18:42:34.181879</lastmod>
+    <lastmod>2026-06-27T13:14:52.624667</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-stroke-style/values.html</loc>
-    <lastmod>2026-06-26T18:42:34.181990</lastmod>
+    <lastmod>2026-06-27T13:14:52.624728</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-text-alignment/-c-e-n-t-e-r/</loc>
+    <lastmod>2026-06-27T13:14:52.625345</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-text-alignment/-l-e-f-t/</loc>
+    <lastmod>2026-06-27T13:14:52.625413</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-text-alignment/-r-i-g-h-t/</loc>
+    <lastmod>2026-06-27T13:14:52.625488</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-text-alignment/entries.html</loc>
+    <lastmod>2026-06-27T13:14:52.625097</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-text-alignment/</loc>
+    <lastmod>2026-06-27T13:14:52.625031</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-text-alignment/value-of.html</loc>
+    <lastmod>2026-06-27T13:14:52.625158</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-text-alignment/values.html</loc>
+    <lastmod>2026-06-27T13:14:52.625256</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-viewport/-companion/-m-a-x_-s-c-a-l-e.html</loc>
-    <lastmod>2026-06-26T18:42:34.183866</lastmod>
+    <lastmod>2026-06-27T13:14:52.626284</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-viewport/-companion/-m-i-n_-s-c-a-l-e.html</loc>
-    <lastmod>2026-06-26T18:42:34.183978</lastmod>
+    <lastmod>2026-06-27T13:14:52.626344</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-viewport/-companion/</loc>
-    <lastmod>2026-06-26T18:42:34.183728</lastmod>
+    <lastmod>2026-06-27T13:14:52.626218</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-viewport/-viewport.html</loc>
-    <lastmod>2026-06-26T18:42:34.182668</lastmod>
+    <lastmod>2026-06-27T13:14:52.625631</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-viewport/</loc>
-    <lastmod>2026-06-26T18:42:34.182551</lastmod>
+    <lastmod>2026-06-27T13:14:52.625564</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-viewport/offset.html</loc>
-    <lastmod>2026-06-26T18:42:34.182781</lastmod>
+    <lastmod>2026-06-27T13:14:52.625690</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-viewport/pan-by.html</loc>
-    <lastmod>2026-06-26T18:42:34.182913</lastmod>
+    <lastmod>2026-06-27T13:14:52.625756</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-viewport/scale-percent.html</loc>
-    <lastmod>2026-06-26T18:42:34.183026</lastmod>
+    <lastmod>2026-06-27T13:14:52.625815</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-viewport/scale.html</loc>
-    <lastmod>2026-06-26T18:42:34.183136</lastmod>
+    <lastmod>2026-06-27T13:14:52.625878</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-viewport/screen-to-world.html</loc>
-    <lastmod>2026-06-26T18:42:34.183244</lastmod>
+    <lastmod>2026-06-27T13:14:52.625941</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-viewport/world-to-screen.html</loc>
-    <lastmod>2026-06-26T18:42:34.183350</lastmod>
+    <lastmod>2026-06-27T13:14:52.626001</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-viewport/zoom-by.html</loc>
-    <lastmod>2026-06-26T18:42:34.183457</lastmod>
+    <lastmod>2026-06-27T13:14:52.626061</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/-viewport/zoom-to.html</loc>
-    <lastmod>2026-06-26T18:42:34.183565</lastmod>
+    <lastmod>2026-06-27T13:14:52.626121</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/angle-from-center.html</loc>
-    <lastmod>2026-06-26T18:42:34.134522</lastmod>
+    <lastmod>2026-06-27T13:14:52.594327</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/bezier-midpoint.html</loc>
-    <lastmod>2026-06-26T18:42:34.134640</lastmod>
+    <lastmod>2026-06-27T13:14:52.594394</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/boundary-point-toward.html</loc>
-    <lastmod>2026-06-26T18:42:34.134754</lastmod>
+    <lastmod>2026-06-27T13:14:52.594456</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/bounds.html</loc>
-    <lastmod>2026-06-26T18:42:34.134893</lastmod>
+    <lastmod>2026-06-27T13:14:52.594522</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/connector-anchor.html</loc>
-    <lastmod>2026-06-26T18:42:34.135005</lastmod>
+    <lastmod>2026-06-27T13:14:52.594586</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/control-point.html</loc>
-    <lastmod>2026-06-26T18:42:34.135117</lastmod>
+    <lastmod>2026-06-27T13:14:52.594650</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/effective-mode.html</loc>
-    <lastmod>2026-06-26T18:42:34.135225</lastmod>
+    <lastmod>2026-06-27T13:14:52.594717</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/hit-test.html</loc>
-    <lastmod>2026-06-26T18:42:34.135342</lastmod>
+    <lastmod>2026-06-27T13:14:52.594783</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/</loc>
-    <lastmod>2026-06-26T18:42:34.134372</lastmod>
+    <lastmod>2026-06-27T13:14:52.594108</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/positions.html</loc>
-    <lastmod>2026-06-26T18:42:34.135453</lastmod>
+    <lastmod>2026-06-27T13:14:52.594844</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/resize-bounds-for-element.html</loc>
-    <lastmod>2026-06-26T18:42:34.135561</lastmod>
+    <lastmod>2026-06-27T13:14:52.594906</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/resize-bounds.html</loc>
-    <lastmod>2026-06-26T18:42:34.135674</lastmod>
+    <lastmod>2026-06-27T13:14:52.594969</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/to-color.html</loc>
-    <lastmod>2026-06-26T18:42:34.135791</lastmod>
+    <lastmod>2026-06-27T13:14:52.595031</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/to-dto.html</loc>
-    <lastmod>2026-06-26T18:42:34.135928</lastmod>
+    <lastmod>2026-06-27T13:14:52.595092</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/to-element.html</loc>
-    <lastmod>2026-06-26T18:42:34.136038</lastmod>
+    <lastmod>2026-06-27T13:14:52.595150</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/to-hex-string.html</loc>
-    <lastmod>2026-06-26T18:42:34.136146</lastmod>
+    <lastmod>2026-06-27T13:14:52.595227</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/to-json-string.html</loc>
-    <lastmod>2026-06-26T18:42:34.136254</lastmod>
+    <lastmod>2026-06-27T13:14:52.595287</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/to-offset.html</loc>
-    <lastmod>2026-06-26T18:42:34.136364</lastmod>
+    <lastmod>2026-06-27T13:14:52.595352</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/to-path-sample.html</loc>
-    <lastmod>2026-06-26T18:42:34.136475</lastmod>
+    <lastmod>2026-06-27T13:14:52.595412</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/to-pay-load.html</loc>
-    <lastmod>2026-06-26T18:42:34.136586</lastmod>
+    <lastmod>2026-06-27T13:14:52.595473</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/to-shape-type.html</loc>
-    <lastmod>2026-06-26T18:42:34.136696</lastmod>
+    <lastmod>2026-06-27T13:14:52.595534</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/to-stroke-style.html</loc>
-    <lastmod>2026-06-26T18:42:34.136824</lastmod>
+    <lastmod>2026-06-27T13:14:52.595597</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/to-type-string.html</loc>
-    <lastmod>2026-06-26T18:42:34.136954</lastmod>
+    <lastmod>2026-06-27T13:14:52.595661</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/to-wire-string.html</loc>
-    <lastmod>2026-06-26T18:42:34.137064</lastmod>
+    <lastmod>2026-06-27T13:14:52.595721</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/topmost-hit.html</loc>
-    <lastmod>2026-06-26T18:42:34.137179</lastmod>
+    <lastmod>2026-06-27T13:14:52.595780</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/touched.html</loc>
-    <lastmod>2026-06-26T18:42:34.137290</lastmod>
+    <lastmod>2026-06-27T13:14:52.595842</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/translate.html</loc>
-    <lastmod>2026-06-26T18:42:34.137400</lastmod>
+    <lastmod>2026-06-27T13:14:52.595903</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/with-bounds.html</loc>
-    <lastmod>2026-06-26T18:42:34.137509</lastmod>
+    <lastmod>2026-06-27T13:14:52.595965</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.model/with-rotation.html</loc>
-    <lastmod>2026-06-26T18:42:34.137625</lastmod>
+    <lastmod>2026-06-27T13:14:52.596026</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.usecase/-svg-exporter/export-to-svg.html</loc>
-    <lastmod>2026-06-26T18:42:34.184495</lastmod>
+    <lastmod>2026-06-27T13:14:52.626624</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.usecase/-svg-exporter/</loc>
-    <lastmod>2026-06-26T18:42:34.184381</lastmod>
+    <lastmod>2026-06-27T13:14:52.626562</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.usecase/-use-case/-use-case.html</loc>
-    <lastmod>2026-06-26T18:42:34.184752</lastmod>
+    <lastmod>2026-06-27T13:14:52.626778</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.usecase/-use-case/add-element.html</loc>
-    <lastmod>2026-06-26T18:42:34.184887</lastmod>
+    <lastmod>2026-06-27T13:14:52.626837</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.usecase/-use-case/bring-to-front.html</loc>
-    <lastmod>2026-06-26T18:42:34.184998</lastmod>
+    <lastmod>2026-06-27T13:14:52.626898</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.usecase/-use-case/delete-element.html</loc>
-    <lastmod>2026-06-26T18:42:34.185107</lastmod>
+    <lastmod>2026-06-27T13:14:52.626960</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.usecase/-use-case/delete-selected.html</loc>
-    <lastmod>2026-06-26T18:42:34.185216</lastmod>
+    <lastmod>2026-06-27T13:14:52.627020</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.usecase/-use-case/erase-at.html</loc>
-    <lastmod>2026-06-26T18:42:34.185330</lastmod>
+    <lastmod>2026-06-27T13:14:52.627081</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.usecase/-use-case/finalize-arrow-bindings.html</loc>
-    <lastmod>2026-06-26T18:42:34.185443</lastmod>
+    <lastmod>2026-06-27T13:14:52.627143</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.usecase/-use-case/hit-topmost.html</loc>
-    <lastmod>2026-06-26T18:42:34.185552</lastmod>
+    <lastmod>2026-06-27T13:14:52.627224</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.usecase/-use-case/</loc>
-    <lastmod>2026-06-26T18:42:34.184617</lastmod>
+    <lastmod>2026-06-27T13:14:52.626688</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.usecase/-use-case/insert-image.html</loc>
-    <lastmod>2026-06-26T18:42:34.185663</lastmod>
+    <lastmod>2026-06-27T13:14:52.627288</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.usecase/-use-case/insert-new-path.html</loc>
-    <lastmod>2026-06-26T18:42:34.185771</lastmod>
+    <lastmod>2026-06-27T13:14:52.627349</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.usecase/-use-case/insert-new-shape.html</loc>
-    <lastmod>2026-06-26T18:42:34.185908</lastmod>
+    <lastmod>2026-06-27T13:14:52.627416</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.usecase/-use-case/insert-text.html</loc>
+    <lastmod>2026-06-27T13:14:52.627476</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.usecase/-use-case/propagate-bindings.html</loc>
-    <lastmod>2026-06-26T18:42:34.186019</lastmod>
+    <lastmod>2026-06-27T13:14:52.627536</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.usecase/-use-case/resize-single.html</loc>
-    <lastmod>2026-06-26T18:42:34.186131</lastmod>
+    <lastmod>2026-06-27T13:14:52.627597</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.usecase/-use-case/select-in-rect.html</loc>
-    <lastmod>2026-06-26T18:42:34.186242</lastmod>
+    <lastmod>2026-06-27T13:14:52.627661</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.usecase/-use-case/send-to-back.html</loc>
-    <lastmod>2026-06-26T18:42:34.186357</lastmod>
+    <lastmod>2026-06-27T13:14:52.627727</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.usecase/-use-case/set-element-bounds.html</loc>
-    <lastmod>2026-06-26T18:42:34.186466</lastmod>
+    <lastmod>2026-06-27T13:14:52.627790</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.usecase/-use-case/set-element-points.html</loc>
-    <lastmod>2026-06-26T18:42:34.186594</lastmod>
+    <lastmod>2026-06-27T13:14:52.627856</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.usecase/-use-case/set-element-rotation.html</loc>
-    <lastmod>2026-06-26T18:42:34.186704</lastmod>
+    <lastmod>2026-06-27T13:14:52.627918</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.usecase/-use-case/set-line-bend.html</loc>
-    <lastmod>2026-06-26T18:42:34.186833</lastmod>
+    <lastmod>2026-06-27T13:14:52.627979</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.usecase/-use-case/set-selected-corner-radius.html</loc>
-    <lastmod>2026-06-26T18:42:34.186947</lastmod>
+    <lastmod>2026-06-27T13:14:52.628041</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.usecase/-use-case/set-selected-fill-color.html</loc>
-    <lastmod>2026-06-26T18:42:34.187057</lastmod>
+    <lastmod>2026-06-27T13:14:52.628104</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.usecase/-use-case/set-selected-font-family.html</loc>
+    <lastmod>2026-06-27T13:14:52.628184</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.usecase/-use-case/set-selected-font-size.html</loc>
+    <lastmod>2026-06-27T13:14:52.628250</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.usecase/-use-case/set-selected-stroke-color.html</loc>
-    <lastmod>2026-06-26T18:42:34.187168</lastmod>
+    <lastmod>2026-06-27T13:14:52.628311</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.usecase/-use-case/set-selected-stroke-enabled.html</loc>
-    <lastmod>2026-06-26T18:42:34.187277</lastmod>
+    <lastmod>2026-06-27T13:14:52.628372</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.usecase/-use-case/set-selected-stroke-style.html</loc>
-    <lastmod>2026-06-26T18:42:34.187385</lastmod>
+    <lastmod>2026-06-27T13:14:52.628432</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.usecase/-use-case/set-selected-stroke-width.html</loc>
-    <lastmod>2026-06-26T18:42:34.187493</lastmod>
+    <lastmod>2026-06-27T13:14:52.628498</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.usecase/-use-case/set-selected-text-alignment.html</loc>
+    <lastmod>2026-06-27T13:14:52.628558</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.usecase/-use-case/sync-text-measured-height.html</loc>
+    <lastmod>2026-06-27T13:14:52.628618</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.usecase/-use-case/translate-selected.html</loc>
-    <lastmod>2026-06-26T18:42:34.187648</lastmod>
+    <lastmod>2026-06-27T13:14:52.628677</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.usecase/-use-case/update-element.html</loc>
-    <lastmod>2026-06-26T18:42:34.187761</lastmod>
+    <lastmod>2026-06-27T13:14:52.628737</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.usecase/-use-case/update-latest-path.html</loc>
-    <lastmod>2026-06-26T18:42:34.187918</lastmod>
+    <lastmod>2026-06-27T13:14:52.628798</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.usecase/-use-case/update-latest-shape.html</loc>
-    <lastmod>2026-06-26T18:42:34.188051</lastmod>
+    <lastmod>2026-06-27T13:14:52.628858</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.usecase/-use-case/update-text.html</loc>
+    <lastmod>2026-06-27T13:14:52.628920</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.usecase/</loc>
-    <lastmod>2026-06-26T18:42:34.184102</lastmod>
+    <lastmod>2026-06-27T13:14:52.626411</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.domain.usecase/supports-corner-radius.html</loc>
-    <lastmod>2026-06-26T18:42:34.184219</lastmod>
+    <lastmod>2026-06-27T13:14:52.626477</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.presentation.reducer/-reducer/-reducer.html</loc>
-    <lastmod>2026-06-26T18:42:34.188490</lastmod>
+    <lastmod>2026-06-27T13:14:52.629155</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.presentation.reducer/-reducer/</loc>
-    <lastmod>2026-06-26T18:42:34.188377</lastmod>
+    <lastmod>2026-06-27T13:14:52.629083</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.presentation.reducer/-reducer/reduce.html</loc>
-    <lastmod>2026-06-26T18:42:34.188603</lastmod>
+    <lastmod>2026-06-27T13:14:52.629230</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.presentation.reducer/</loc>
-    <lastmod>2026-06-26T18:42:34.188220</lastmod>
+    <lastmod>2026-06-27T13:14:52.628999</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/-draw-box-controller.html</loc>
-    <lastmod>2026-06-26T18:42:34.189160</lastmod>
+    <lastmod>2026-06-27T13:14:52.629534</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/bring-selection-to-front.html</loc>
-    <lastmod>2026-06-26T18:42:34.189270</lastmod>
+    <lastmod>2026-06-27T13:14:52.629601</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/can-redo.html</loc>
-    <lastmod>2026-06-26T18:42:34.189393</lastmod>
+    <lastmod>2026-06-27T13:14:52.629663</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/can-undo.html</loc>
-    <lastmod>2026-06-26T18:42:34.189504</lastmod>
+    <lastmod>2026-06-27T13:14:52.629725</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/clear-selection.html</loc>
-    <lastmod>2026-06-26T18:42:34.189621</lastmod>
+    <lastmod>2026-06-27T13:14:52.629786</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/delete-selected.html</loc>
-    <lastmod>2026-06-26T18:42:34.189729</lastmod>
+    <lastmod>2026-06-27T13:14:52.629848</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/erase-at.html</loc>
-    <lastmod>2026-06-26T18:42:34.189868</lastmod>
+    <lastmod>2026-06-27T13:14:52.629906</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/events.html</loc>
-    <lastmod>2026-06-26T18:42:34.189980</lastmod>
+    <lastmod>2026-06-27T13:14:52.629967</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/export-json.html</loc>
-    <lastmod>2026-06-26T18:42:34.190089</lastmod>
+    <lastmod>2026-06-27T13:14:52.630031</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/export-svg.html</loc>
-    <lastmod>2026-06-26T18:42:34.190196</lastmod>
+    <lastmod>2026-06-27T13:14:52.630093</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/import-path.html</loc>
-    <lastmod>2026-06-26T18:42:34.190309</lastmod>
+    <lastmod>2026-06-27T13:14:52.630156</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/</loc>
-    <lastmod>2026-06-26T18:42:34.189019</lastmod>
+    <lastmod>2026-06-27T13:14:52.629440</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/insert-image.html</loc>
-    <lastmod>2026-06-26T18:42:34.190421</lastmod>
+    <lastmod>2026-06-27T13:14:52.630235</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/insert-text.html</loc>
+    <lastmod>2026-06-27T13:14:52.630297</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/on-intent.html</loc>
-    <lastmod>2026-06-26T18:42:34.190532</lastmod>
+    <lastmod>2026-06-27T13:14:52.630360</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/pan-by.html</loc>
-    <lastmod>2026-06-26T18:42:34.190642</lastmod>
+    <lastmod>2026-06-27T13:14:52.630421</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/redo.html</loc>
-    <lastmod>2026-06-26T18:42:34.190750</lastmod>
+    <lastmod>2026-06-27T13:14:52.630484</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/register-font.html</loc>
+    <lastmod>2026-06-27T13:14:52.630545</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/reset-camera.html</loc>
-    <lastmod>2026-06-26T18:42:34.190882</lastmod>
+    <lastmod>2026-06-27T13:14:52.630608</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/reset.html</loc>
-    <lastmod>2026-06-26T18:42:34.190998</lastmod>
+    <lastmod>2026-06-27T13:14:52.630668</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/save-bitmap.html</loc>
-    <lastmod>2026-06-26T18:42:34.191106</lastmod>
+    <lastmod>2026-06-27T13:14:52.630727</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/select-at.html</loc>
-    <lastmod>2026-06-26T18:42:34.191216</lastmod>
+    <lastmod>2026-06-27T13:14:52.630787</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/send-selection-to-back.html</loc>
-    <lastmod>2026-06-26T18:42:34.191326</lastmod>
+    <lastmod>2026-06-27T13:14:52.630852</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/set-background-pattern.html</loc>
-    <lastmod>2026-06-26T18:42:34.191446</lastmod>
+    <lastmod>2026-06-27T13:14:52.630918</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/set-bg-color.html</loc>
-    <lastmod>2026-06-26T18:42:34.191557</lastmod>
+    <lastmod>2026-06-27T13:14:52.630981</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/set-color.html</loc>
-    <lastmod>2026-06-26T18:42:34.191670</lastmod>
+    <lastmod>2026-06-27T13:14:52.631043</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/set-corner-radius.html</loc>
-    <lastmod>2026-06-26T18:42:34.191787</lastmod>
+    <lastmod>2026-06-27T13:14:52.631105</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/set-eraser-size.html</loc>
-    <lastmod>2026-06-26T18:42:34.191923</lastmod>
+    <lastmod>2026-06-27T13:14:52.631177</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/set-font-family.html</loc>
+    <lastmod>2026-06-27T13:14:52.631241</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/set-font-size.html</loc>
+    <lastmod>2026-06-27T13:14:52.631301</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/set-mode.html</loc>
-    <lastmod>2026-06-26T18:42:34.192034</lastmod>
+    <lastmod>2026-06-27T13:14:52.631366</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/set-opacity.html</loc>
-    <lastmod>2026-06-26T18:42:34.192143</lastmod>
+    <lastmod>2026-06-27T13:14:52.631426</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/set-selection-color.html</loc>
-    <lastmod>2026-06-26T18:42:34.192253</lastmod>
+    <lastmod>2026-06-27T13:14:52.631487</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/set-selection-corner-radius.html</loc>
-    <lastmod>2026-06-26T18:42:34.192362</lastmod>
+    <lastmod>2026-06-27T13:14:52.631548</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/set-selection-fill-color.html</loc>
-    <lastmod>2026-06-26T18:42:34.192471</lastmod>
+    <lastmod>2026-06-27T13:14:52.631609</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/set-selection-font-family.html</loc>
+    <lastmod>2026-06-27T13:14:52.631670</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/set-selection-font-size.html</loc>
+    <lastmod>2026-06-27T13:14:52.631734</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/set-selection-stroke-enabled.html</loc>
-    <lastmod>2026-06-26T18:42:34.192590</lastmod>
+    <lastmod>2026-06-27T13:14:52.631793</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/set-selection-stroke-style.html</loc>
-    <lastmod>2026-06-26T18:42:34.192702</lastmod>
+    <lastmod>2026-06-27T13:14:52.631854</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/set-selection-stroke-width.html</loc>
-    <lastmod>2026-06-26T18:42:34.192833</lastmod>
+    <lastmod>2026-06-27T13:14:52.631914</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/set-selection-text-alignment.html</loc>
+    <lastmod>2026-06-27T13:14:52.631974</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/set-stroke-style.html</loc>
-    <lastmod>2026-06-26T18:42:34.192951</lastmod>
+    <lastmod>2026-06-27T13:14:52.632039</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/set-stroke-width.html</loc>
-    <lastmod>2026-06-26T18:42:34.193063</lastmod>
+    <lastmod>2026-06-27T13:14:52.632100</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/set-text-alignment.html</loc>
+    <lastmod>2026-06-27T13:14:52.632173</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/state.html</loc>
-    <lastmod>2026-06-26T18:42:34.193173</lastmod>
+    <lastmod>2026-06-27T13:14:52.632238</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/undo.html</loc>
-    <lastmod>2026-06-26T18:42:34.193290</lastmod>
+    <lastmod>2026-06-27T13:14:52.632302</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/update-text.html</loc>
+    <lastmod>2026-06-27T13:14:52.632365</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/zoom-by.html</loc>
-    <lastmod>2026-06-26T18:42:34.193402</lastmod>
+    <lastmod>2026-06-27T13:14:52.632427</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/zoom-to.html</loc>
-    <lastmod>2026-06-26T18:42:34.193513</lastmod>
+    <lastmod>2026-06-27T13:14:52.632491</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.presentation.viewmodel/</loc>
-    <lastmod>2026-06-26T18:42:34.188727</lastmod>
+    <lastmod>2026-06-27T13:14:52.629296</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.presentation.viewmodel/remember-draw-box-controller.html</loc>
-    <lastmod>2026-06-26T18:42:34.188863</lastmod>
+    <lastmod>2026-06-27T13:14:52.629359</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.text/-font-registry/</loc>
+    <lastmod>2026-06-27T13:14:52.632721</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.text/-font-registry/keys.html</loc>
+    <lastmod>2026-06-27T13:14:52.632783</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.text/-font-registry/register.html</loc>
+    <lastmod>2026-06-27T13:14:52.632843</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.text/-font-registry/resolve.html</loc>
+    <lastmod>2026-06-27T13:14:52.632902</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.text/-inline-text-editor.html</loc>
+    <lastmod>2026-06-27T13:14:52.632630</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://akshay2211.github.io/DrawBox/dokka/-draw-box/io.ak1.drawbox.text/</loc>
+    <lastmod>2026-06-27T13:14:52.632564</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/</loc>
-    <lastmod>2026-06-26T18:42:34.133222</lastmod>
+    <lastmod>2026-06-27T13:14:52.593420</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/dokka/navigation.html</loc>
-    <lastmod>2026-06-26T18:42:34.133350</lastmod>
+    <lastmod>2026-06-27T13:14:52.593518</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/faq/</loc>
-    <lastmod>2026-06-26T18:42:34.470776</lastmod>
+    <lastmod>2026-06-27T13:14:52.877922</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/features/colors-styles/</loc>
-    <lastmod>2026-06-26T18:42:34.665372</lastmod>
+    <lastmod>2026-06-27T13:14:53.052315</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/features/drawing-modes/</loc>
-    <lastmod>2026-06-26T18:42:34.681593</lastmod>
+    <lastmod>2026-06-27T13:14:53.066502</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/features/export-save/</loc>
-    <lastmod>2026-06-26T18:42:34.693110</lastmod>
+    <lastmod>2026-06-27T13:14:53.076726</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/features/tools/</loc>
-    <lastmod>2026-06-26T18:42:34.703394</lastmod>
+    <lastmod>2026-06-27T13:14:53.085932</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/features/undo-redo/</loc>
-    <lastmod>2026-06-26T18:42:34.715069</lastmod>
+    <lastmod>2026-06-27T13:14:53.096219</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/getting-started/installation/</loc>
-    <lastmod>2026-06-26T18:42:34.736407</lastmod>
+    <lastmod>2026-06-27T13:14:53.114640</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/getting-started/overview/</loc>
-    <lastmod>2026-06-26T18:42:34.748074</lastmod>
+    <lastmod>2026-06-27T13:14:53.124892</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/getting-started/quickstart/</loc>
-    <lastmod>2026-06-26T18:42:34.789494</lastmod>
+    <lastmod>2026-06-27T13:14:53.158735</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/getting-started/requirements/</loc>
-    <lastmod>2026-06-26T18:42:34.805548</lastmod>
+    <lastmod>2026-06-27T13:14:53.172969</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/guides/comparison/</loc>
-    <lastmod>2026-06-26T18:42:34.827849</lastmod>
+    <lastmod>2026-06-27T13:14:53.192446</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/guides/use-cases/</loc>
-    <lastmod>2026-06-26T18:42:34.851779</lastmod>
+    <lastmod>2026-06-27T13:14:53.213139</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/</loc>
-    <lastmod>2026-06-26T18:42:34.417139</lastmod>
+    <lastmod>2026-06-27T13:14:52.831844</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/license/</loc>
-    <lastmod>2026-06-26T18:42:34.483512</lastmod>
+    <lastmod>2026-06-27T13:14:52.888883</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/sample/</loc>
-    <lastmod>2026-06-26T18:44:56.723363</lastmod>
+    <lastmod>2026-06-27T13:17:27.010366</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/technical/api-reference/</loc>
-    <lastmod>2026-06-26T18:42:34.862231</lastmod>
+    <lastmod>2026-06-27T13:14:53.222401</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/technical/compose-architecture/</loc>
-    <lastmod>2026-06-26T18:42:34.874837</lastmod>
+    <lastmod>2026-06-27T13:14:53.233442</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/technical/kotlin-multiplatform/</loc>
-    <lastmod>2026-06-26T18:42:34.886133</lastmod>
+    <lastmod>2026-06-27T13:14:53.243551</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/technical/performance/</loc>
-    <lastmod>2026-06-26T18:42:34.897130</lastmod>
+    <lastmod>2026-06-27T13:14:53.253644</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/user-guide/advanced-techniques/</loc>
-    <lastmod>2026-06-26T18:42:34.910975</lastmod>
+    <lastmod>2026-06-27T13:14:53.265660</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/user-guide/basic-drawing/</loc>
-    <lastmod>2026-06-26T18:42:34.925620</lastmod>
+    <lastmod>2026-06-27T13:14:53.278261</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://akshay2211.github.io/DrawBox/user-guide/shortcuts/</loc>
-    <lastmod>2026-06-26T18:42:34.942445</lastmod>
+    <lastmod>2026-06-27T13:14:53.292910</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
