@@ -28,6 +28,10 @@ kotlin {
             jvmTarget = JvmTarget.JVM_21
         }
     }
+    js {
+        browser()
+        binaries.executable()
+    }
 
     jvm()
 
