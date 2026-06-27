@@ -40,6 +40,13 @@ sealed class Mode {
     /** Pan mode - drag pans the camera; useful for navigating the infinite canvas */
     data object PAN : Mode()
     /**
+     * Plain-text mode — tap on the canvas inserts an empty [Element.Text]
+     * at the tap position. The sample app opens a modal text field to
+     * gather the actual content; embedders can mirror that pattern or
+     * provide an inline editor (out of scope for OSS v1).
+     */
+    data object TEXT : Mode()
+    /**
      * Object eraser — tap or drag to delete any element whose body intersects
      * the eraser radius. Whole-element (not pixel-level): a single hit removes
      * the entire stroke or shape. Undoable as one gesture.
@@ -96,6 +103,25 @@ data class State(
     val strokeWidth: Float = 10f,
     val currentItemCornerRadius: Float = 0f,
     val currentItemStrokeStyle: StrokeStyle = StrokeStyle.SOLID,
+    /**
+     * Default font size in world pixels applied to text elements inserted via
+     * [Mode.TEXT]. Mutated by [Intent.SetFontSize] (the non-selection form);
+     * the selection form [Intent.SetSelectedFontSize] writes to the selected
+     * element instead and leaves this default untouched.
+     */
+    val currentItemFontSize: Float = 24f,
+    /**
+     * Default font family key applied to new text elements. See
+     * [Intent.SetFontFamily]. Always resolves via the host's
+     * [io.ak1.drawbox.text.FontRegistry] at render time, so an unregistered
+     * key here falls back to `sans` without crashing the canvas.
+     */
+    val currentItemFontFamilyKey: String = DEFAULT_FONT_FAMILY_KEY,
+    /**
+     * Default horizontal alignment for new text elements; see
+     * [Intent.SetTextAlignment].
+     */
+    val currentItemTextAlignment: TextAlignment = TextAlignment.LEFT,
     val opacity: Float = 1f,
     val bgColor: Color = Color.Black,
     val bgPattern: BackgroundPattern? = null,

@@ -5,7 +5,16 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.text.TextLayoutResult
+import androidx.compose.ui.text.TextMeasurer
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.sp
 import io.ak1.drawbox.domain.model.Element
+import io.ak1.drawbox.domain.model.TextAlignment
+import io.ak1.drawbox.text.FontRegistry
 
 
 fun createPath(points: List<Offset>) = Path().apply {
@@ -32,24 +41,31 @@ private fun calculateMidpoint(start: Offset, end: Offset) = Offset((start.x + en
 
 /**
  * Allocation-free check: do the entries of [current] (in order, excluding those
- * whose id is in [activeIds]) exactly match [reference] by reference identity?
+ * whose id is in [activeIds] or [hiddenIds]) exactly match [reference] by
+ * reference identity?
  *
  * Used as the freshness gate for the cached `finalizedLayer` recording in
  * `DrawBox`. The reducer always produces a fresh [Element] instance via
  * `copy(...)` on any mutation, so reference equality is both correct (catches
  * every meaningful change) and cheap (no field comparison).
  *
+ * [hiddenIds] is what flips a cache that was recorded *before* the host
+ * decided to hide an element. Without including it in the skip set, a Text
+ * element about to be edited inline would replay from the cache and ghost
+ * underneath the editor.
+ *
  * Iterates `current` exactly once, no intermediate list, no boxed iterators.
  */
 internal fun staticRefsMatch(
     current: List<Element>,
     activeIds: Set<String>,
+    hiddenIds: Set<String>,
     reference: List<Element>,
 ): Boolean {
     var refIdx = 0
     for (idx in 0 until current.size) {
         val e = current[idx]
-        if (e.id in activeIds) continue
+        if (e.id in activeIds || e.id in hiddenIds) continue
         if (refIdx >= reference.size) return false
         if (reference[refIdx] !== e) return false
         refIdx++
@@ -142,4 +158,69 @@ internal class ImageBitmapCache {
     }
 
     fun size(): Int = byId.size
+}
+
+/**
+ * Per-canvas cache of [TextLayoutResult] entries for [Element.Text]
+ * elements. Laying out a multi-line block runs the platform text shaper —
+ * cheap individually but cumulative across hundreds of elements per frame.
+ *
+ * The cache key is the tuple of fields that participate in layout: the
+ * text content, font family key, font size, alignment, and wrap width.
+ * Anything else (color, opacity, rotation, position) is applied at draw
+ * time and doesn't invalidate the layout.
+ *
+ * Entries survive recompositions via `remember`; stale entries are
+ * reclaimed by [retainOnly] when the live element set shrinks.
+ */
+internal class TextLayoutCache {
+    private data class Key(
+        val text: String,
+        val fontFamilyKey: String,
+        val fontSize: Float,
+        val alignment: TextAlignment,
+        val wrapWidth: Float,
+    )
+    private data class Entry(val key: Key, val layout: TextLayoutResult)
+    private val byId = HashMap<String, Entry>()
+
+    fun layoutFor(
+        id: String,
+        text: String,
+        fontFamilyKey: String,
+        fontSize: Float,
+        alignment: TextAlignment,
+        wrapWidth: Float,
+        measurer: TextMeasurer,
+    ): TextLayoutResult {
+        val key = Key(text, fontFamilyKey, fontSize, alignment, wrapWidth)
+        val existing = byId[id]
+        if (existing != null && existing.key == key) return existing.layout
+        val style = TextStyle(
+            fontSize = fontSize.sp,
+            fontFamily = FontRegistry.resolve(fontFamilyKey),
+            textAlign = alignment.toComposeAlign(),
+        )
+        val layout = measurer.measure(
+            text = text,
+            style = style,
+            constraints = Constraints(maxWidth = wrapWidth.toInt().coerceAtLeast(1)),
+            softWrap = true,
+        )
+        byId[id] = Entry(key, layout)
+        return layout
+    }
+
+    fun retainOnly(liveIds: Set<String>) {
+        if (byId.isEmpty()) return
+        byId.keys.retainAll(liveIds)
+    }
+
+    fun size(): Int = byId.size
+}
+
+private fun TextAlignment.toComposeAlign(): TextAlign = when (this) {
+    TextAlignment.LEFT -> TextAlign.Left
+    TextAlignment.CENTER -> TextAlign.Center
+    TextAlignment.RIGHT -> TextAlign.Right
 }

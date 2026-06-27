@@ -35,6 +35,7 @@ object SvgExporter {
                 is Element.Path -> svgElements.add(pathToSvg(element))
                 is Element.Shape -> svgElements.add(shapeToSvg(element))
                 is Element.Image -> svgElements.add(imageToSvg(element))
+                is Element.Text -> svgElements.add(textToSvg(element))
             }
         }
 
@@ -72,6 +73,16 @@ object SvgExporter {
                         maxX = kotlin.math.max(maxX, point.x)
                         maxY = kotlin.math.max(maxY, point.y)
                     }
+                }
+                is Element.Text -> {
+                    val left = element.topLeft.x
+                    val top = element.topLeft.y
+                    val right = left + element.wrapWidth
+                    val bottom = top + element.measuredHeight
+                    minX = kotlin.math.min(minX, left)
+                    minY = kotlin.math.min(minY, top)
+                    maxX = kotlin.math.max(maxX, right)
+                    maxY = kotlin.math.max(maxY, bottom)
                 }
             }
         }
@@ -259,6 +270,91 @@ object SvgExporter {
 
         return "$lineSvg\n  $headSvg"
     }
+
+    private fun textToSvg(text: Element.Text): String {
+        if (text.text.isEmpty()) return ""
+        val x = text.topLeft.x
+        val y = text.topLeft.y
+        val w = text.wrapWidth
+        val h = text.measuredHeight
+        val anchor = when (text.alignment) {
+            io.ak1.drawbox.domain.model.TextAlignment.LEFT -> "start"
+            io.ak1.drawbox.domain.model.TextAlignment.CENTER -> "middle"
+            io.ak1.drawbox.domain.model.TextAlignment.RIGHT -> "end"
+        }
+        val anchorX = when (text.alignment) {
+            io.ak1.drawbox.domain.model.TextAlignment.LEFT -> x
+            io.ak1.drawbox.domain.model.TextAlignment.CENTER -> x + w * 0.5f
+            io.ak1.drawbox.domain.model.TextAlignment.RIGHT -> x + w
+        }
+        val color = colorToHex(text.color)
+        val opacityAttr = if (text.opacity != 1f) """ opacity="${text.opacity}"""" else ""
+        val transformAttr = if (text.rotation != 0f) {
+            val cx = x + w * 0.5f
+            val cy = y + h * 0.5f
+            """ transform="rotate(${text.rotation}, $cx, $cy)""""
+        } else ""
+        // SVG doesn't natively support box-driven wrapping. Emit one <tspan>
+        // per visual line, splitting on hard `\n` and greedy word-wrap. This
+        // is intentionally lossy for re-import (the wrap rect isn't
+        // recoverable from the visual layout) — JSON is the lossless format.
+        val lineHeight = text.fontSize * 1.25f
+        val lines = wrapTextForSvg(text.text, w, text.fontSize)
+        val tspans = lines.mapIndexed { i, line ->
+            val dy = if (i == 0) text.fontSize else lineHeight
+            """<tspan x="$anchorX" dy="$dy">${escapeXml(line)}</tspan>"""
+        }.joinToString("")
+        return """<text x="$anchorX" y="$y" font-family="${escapeXmlAttr(text.fontFamilyKey)}" font-size="${text.fontSize}" fill="$color" text-anchor="$anchor"$opacityAttr$transformAttr>$tspans</text>"""
+    }
+
+    /**
+     * Cheap line-wrap approximation for SVG export. Estimates characters per
+     * line using a mean glyph width of ~0.55 × fontSize. Honors hard `\n`
+     * breaks; long words break at the character limit. Lossless round-trip
+     * happens through JSON, not SVG.
+     */
+    private fun wrapTextForSvg(text: String, widthWorld: Float, fontSize: Float): List<String> {
+        if (widthWorld <= 0f || fontSize <= 0f) return text.split('\n')
+        val approxCharWidth = fontSize * 0.55f
+        val charsPerLine = (widthWorld / approxCharWidth).toInt().coerceAtLeast(1)
+        val out = mutableListOf<String>()
+        for (hardLine in text.split('\n')) {
+            if (hardLine.length <= charsPerLine) {
+                out += hardLine
+                continue
+            }
+            var current = StringBuilder()
+            for (word in hardLine.split(' ')) {
+                val prospective = if (current.isEmpty()) word
+                else current.toString() + " " + word
+                if (prospective.length <= charsPerLine) {
+                    current = StringBuilder(prospective)
+                } else {
+                    if (current.isNotEmpty()) {
+                        out += current.toString()
+                        current = StringBuilder()
+                    }
+                    var rest = word
+                    while (rest.length > charsPerLine) {
+                        out += rest.substring(0, charsPerLine)
+                        rest = rest.substring(charsPerLine)
+                    }
+                    current = StringBuilder(rest)
+                }
+            }
+            if (current.isNotEmpty()) out += current.toString()
+        }
+        return out
+    }
+
+    private fun escapeXml(s: String): String = s
+        .replace("&", "&amp;")
+        .replace("<", "&lt;")
+        .replace(">", "&gt;")
+
+    private fun escapeXmlAttr(s: String): String = escapeXml(s)
+        .replace("\"", "&quot;")
+        .replace("'", "&apos;")
 
     private fun imageToSvg(image: Element.Image): String {
         if (image.points.size < 2) return ""

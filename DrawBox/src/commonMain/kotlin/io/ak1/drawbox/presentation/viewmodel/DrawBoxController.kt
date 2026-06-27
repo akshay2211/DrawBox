@@ -239,6 +239,68 @@ class DrawBoxController(
         position: Offset = Offset.Zero,
     ) = onIntent(Intent.InsertImage(bytes, position, intrinsicSize))
 
+    /**
+     * Place a plain-text block on the canvas. [text] may be empty — the
+     * sample-app modal-editor flow inserts an empty block first and then
+     * dispatches [updateText] when the user commits content.
+     *
+     * [fontFamilyKey] must be a key registered via [registerFont] or one of
+     * the built-in keys (`sans`, `serif`, `mono`); unknown keys fall back to
+     * `sans` at render time.
+     */
+    fun insertText(
+        text: String,
+        position: Offset = Offset.Zero,
+        fontSize: Float = 24f,
+        fontFamilyKey: String = io.ak1.drawbox.domain.model.DEFAULT_FONT_FAMILY_KEY,
+        alignment: io.ak1.drawbox.domain.model.TextAlignment =
+            io.ak1.drawbox.domain.model.TextAlignment.LEFT,
+        color: Color = Color.Black,
+    ) = onIntent(
+        Intent.InsertText(text, position, fontSize, fontFamilyKey, alignment, color),
+    )
+
+    /** Replace the text content of an existing [io.ak1.drawbox.domain.model.Element.Text]. */
+    fun updateText(id: String, text: String) =
+        onIntent(Intent.UpdateText(id, text))
+
+    /**
+     * Register a custom font family the SDK can resolve by [key] when
+     * rendering [io.ak1.drawbox.domain.model.Element.Text] elements. Built-in
+     * keys (`sans`, `serif`, `mono`) ship with the SDK and don't need
+     * registration; calling this is for adding host-provided typefaces.
+     *
+     * The registry is in-memory only — the host re-registers on app launch.
+     */
+    fun registerFont(
+        key: String,
+        family: androidx.compose.ui.text.font.FontFamily,
+    ) {
+        io.ak1.drawbox.text.FontRegistry.register(key, family)
+    }
+
+    /** Set the font size of every selected text element. */
+    fun setSelectionFontSize(size: Float) =
+        onIntent(Intent.SetSelectedFontSize(size))
+
+    /** Set the alignment of every selected text element. */
+    fun setSelectionTextAlignment(alignment: io.ak1.drawbox.domain.model.TextAlignment) =
+        onIntent(Intent.SetSelectedTextAlignment(alignment))
+
+    /** Set the font family key of every selected text element. */
+    fun setSelectionFontFamily(fontFamilyKey: String) =
+        onIntent(Intent.SetSelectedFontFamily(fontFamilyKey))
+
+    /** Default font size for the next [Intent.InsertText]. */
+    fun setFontSize(size: Float) = onIntent(Intent.SetFontSize(size))
+
+    /** Default font family key for the next [Intent.InsertText]. */
+    fun setFontFamily(fontFamilyKey: String) = onIntent(Intent.SetFontFamily(fontFamilyKey))
+
+    /** Default alignment for the next [Intent.InsertText]. */
+    fun setTextAlignment(alignment: io.ak1.drawbox.domain.model.TextAlignment) =
+        onIntent(Intent.SetTextAlignment(alignment))
+
     /** Undo the last drawing action */
     fun undo() = onIntent(Intent.Undo)
 
