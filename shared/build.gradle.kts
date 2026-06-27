@@ -27,6 +27,11 @@ kotlin {
         browser()
     }
 
+    js {
+        browser()
+        binaries.executable()
+    }
+
     android {
         namespace = "io.ak1.drawboxsample.shared"
         compileSdk = libs.versions.android.compileSdk.get().toInt()
