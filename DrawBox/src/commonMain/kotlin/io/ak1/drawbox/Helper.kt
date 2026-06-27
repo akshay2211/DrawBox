@@ -1,5 +1,6 @@
 package io.ak1.drawbox
 
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
@@ -15,6 +16,9 @@ import androidx.compose.ui.unit.sp
 import io.ak1.drawbox.domain.model.Element
 import io.ak1.drawbox.domain.model.TextAlignment
 import io.ak1.drawbox.text.FontRegistry
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 fun createPath(points: List<Offset>) = Path().apply {
@@ -124,41 +128,135 @@ internal class PathCache {
 }
 
 /**
- * Per-canvas cache of decoded [ImageBitmap] objects for [Element.Image]
- * elements. Decoding a typical 1 MB PNG takes several milliseconds and would
- * otherwise run every frame an image is on screen.
+ * Per-canvas async cache of decoded [ImageBitmap] objects for
+ * [io.ak1.drawbox.domain.model.Element.Image] elements. Decoding a typical
+ * 1 MB PNG takes several milliseconds and used to run on the UI thread
+ * inside the draw pass; this cache moves it onto [Dispatchers.Default] and
+ * stores at mip-level (a power-of-two cap on the longer side) so a small
+ * placement doesn't hold a source-resolution bitmap in memory.
  *
- * Cache hits require BOTH:
- *  - same element id, AND
- *  - the stored bytes reference equals the lookup bytes reference.
+ * ### Lookup contract
  *
- * The second check is what protects us when [Intent.UpdateElement] swaps the
- * payload of an existing id — the new `ByteArray` is a different reference,
- * so we miss and re-decode.
+ * [bitmapFor] is **synchronous and non-blocking** — it returns whatever is
+ * currently in the cache for `id`:
  *
- * Decoding is delegated to [decodeImageBitmap], an `expect`/`actual` that
- * dispatches to the platform's native decoder. Returns `null` when the bytes
- * fail to decode; callers should render a placeholder.
+ * - Exact hit (same `bytes` reference, same mip level): returns the cached
+ *   bitmap.
+ * - Mip-level mismatch (resize): returns the stale lower / higher-res
+ *   bitmap immediately and kicks off a background decode at the new level.
+ * - Bytes mismatch (image replaced): returns null (or stale) and kicks off
+ *   a fresh decode.
+ * - Cold miss: returns null and kicks off the first decode.
+ *
+ * The draw pass should treat null as "show placeholder"; the next
+ * recomposition (triggered by the [androidx.compose.runtime.snapshots.SnapshotStateMap]
+ * write) draws the bitmap.
+ *
+ * ### Race protection
+ *
+ * Each new decode request bumps a monotonic generation counter. When a
+ * decode completes, it only updates the cache if the entry's generation
+ * still matches — so a fast-resize storm that supersedes an in-flight
+ * decode discards the stale result instead of clobbering the newer one.
+ *
+ * ### Mip levels
+ *
+ * The target dimension passed by the caller (typically `placedSize ×
+ * viewport.scale`) is rounded **up** to the next power of two within
+ * `[MIN_MIP_PX, MAX_MIP_PX]`. The decoded bitmap fits inside that cap on
+ * its longer side; the shorter side scales proportionally.
  */
-internal class ImageBitmapCache {
-    private data class Entry(val bytesRef: ByteArray, val bitmap: ImageBitmap?)
-    private val byId = HashMap<String, Entry>()
+internal class ImageBitmapCache(
+    private val scope: CoroutineScope,
+) {
+    private data class Entry(
+        val gen: Long,
+        val bytesRef: ByteArray,
+        val mipLevelPx: Int,
+        val bitmap: ImageBitmap?,
+    )
 
-    fun bitmapFor(id: String, bytes: ByteArray): ImageBitmap? {
+    private val byId = mutableStateMapOf<String, Entry>()
+    private var nextGen: Long = 0L
+
+    /**
+     * Returns the current cached bitmap for [id], starting a background
+     * decode when the key differs from what's stored. The returned value
+     * may be `null` (no bitmap available yet) or a stale-resolution bitmap
+     * from a previous decode — both are valid "show this now" results.
+     *
+     * @param targetDim longer-side target in screen pixels (callers
+     *   typically pass `max(placedWidth, placedHeight) × viewport.scale`).
+     *   Used to pick a mip level; smaller targets get smaller bitmaps.
+     */
+    fun bitmapFor(id: String, bytes: ByteArray, targetDim: Int): ImageBitmap? {
+        val mipLevelPx = mipLevelFor(targetDim)
         val existing = byId[id]
-        if (existing != null && existing.bytesRef === bytes) return existing.bitmap
-        val fresh = decodeImageBitmap(bytes)
-        byId[id] = Entry(bytes, fresh)
-        return fresh
+        if (existing != null &&
+            existing.bytesRef === bytes &&
+            existing.mipLevelPx == mipLevelPx
+        ) {
+            return existing.bitmap
+        }
+
+        // Key changed (bytes swapped, different mip level, or never decoded).
+        // Bump the generation, write a provisional entry with the stale bitmap
+        // (so the renderer can keep showing something), and kick off a fresh
+        // decode in the background. Any prior in-flight decode for the same
+        // id with an older generation will be discarded on completion.
+        val myGen = ++nextGen
+        val staleBitmap = existing?.bitmap
+        byId[id] = Entry(
+            gen = myGen,
+            bytesRef = bytes,
+            mipLevelPx = mipLevelPx,
+            bitmap = staleBitmap,
+        )
+        scope.launch(Dispatchers.Default) {
+            val decoded = decodeImageBitmapDownsampled(bytes, mipLevelPx, mipLevelPx)
+            // Only land the result if our generation is still current. A
+            // newer request that arrived during the decode (fast resize,
+            // new bytes) supersedes us; we drop the result.
+            val current = byId[id]
+            if (current != null && current.gen == myGen) {
+                byId[id] = current.copy(bitmap = decoded)
+            }
+        }
+        return staleBitmap
     }
 
     fun retainOnly(liveIds: Set<String>) {
         if (byId.isEmpty()) return
-        byId.keys.retainAll(liveIds)
+        // SnapshotStateMap.keys.retainAll exists but does an iteration-time
+        // check. Build the drop list first to avoid mutation while iterating.
+        val drop = byId.keys.filter { it !in liveIds }
+        for (id in drop) byId.remove(id)
     }
 
     fun size(): Int = byId.size
+
+    private fun mipLevelFor(targetDim: Int): Int {
+        val clamped = targetDim.coerceIn(MIN_MIP_PX, MAX_MIP_PX)
+        var px = MIN_MIP_PX
+        while (px < clamped) px *= 2
+        return px
+    }
 }
+
+/**
+ * Smallest mip level the cache will produce. A 64×64 thumbnail still fits
+ * in this cap, so we don't decode at sub-thumbnail resolutions.
+ */
+private const val MIN_MIP_PX: Int = 128
+
+/**
+ * Largest mip level. Caps memory at this resolution; placements drawn at
+ * larger sizes will scale up via the GPU rather than the cache holding a
+ * source-resolution bitmap. 2048 px is a reasonable ceiling for canvas
+ * use cases (annotation, whiteboard) — much smaller than the photographic
+ * source size for typical screenshots.
+ */
+private const val MAX_MIP_PX: Int = 2048
 
 /**
  * Per-canvas cache of [TextLayoutResult] entries for [Element.Text]

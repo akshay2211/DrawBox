@@ -182,9 +182,11 @@ fun DrawBox(
     // reference actually changes, so finalized strokes don't allocate a new
     // Path every frame during pan/zoom or active drag.
     val pathCache = remember { PathCache() }
-    // Same idea for images: decode once per (id, bytes ref), reuse the
-    // ImageBitmap across frames. Re-decoded only when bytes reference changes.
-    val imageCache = remember { ImageBitmapCache() }
+    // ImageBitmapCache needs a CoroutineScope for off-main-thread decode +
+    // race-safe completion. Tied to the composable's scope so cancellation
+    // and lifecycle follow the canvas. Mip-level keyed so a small placement
+    // doesn't hold a source-resolution bitmap in memory.
+    val imageCache = remember(scope) { ImageBitmapCache(scope) }
     // Text layout cache: lay out each text block once per (id, text, style,
     // wrap width); reuse the result on subsequent frames. TextMeasurer is
     // composition-scoped and must come from rememberTextMeasurer.
@@ -776,7 +778,7 @@ fun DrawBox(
                     }) {
                         orderedElements.forEach { el ->
                             if (el.id !in activeIds && el.id !in hiddenElementIds) {
-                                renderElement(el, pathCache, imageCache, textCache, textMeasurer)
+                                renderElement(el, pathCache, imageCache, textCache, textMeasurer, vp.scale)
                             }
                         }
                     }
@@ -798,7 +800,7 @@ fun DrawBox(
             }) {
                 if (activeIds.isNotEmpty()) {
                     orderedElements.forEach { el ->
-                        if (el.id in activeIds && el.id !in hiddenElementIds) renderElement(el, pathCache, imageCache, textCache, textMeasurer)
+                        if (el.id in activeIds && el.id !in hiddenElementIds) renderElement(el, pathCache, imageCache, textCache, textMeasurer, vp.scale)
                     }
                 }
                 drawSelectionChrome(
@@ -840,7 +842,7 @@ fun DrawBox(
                         translate(vp.offset.x, vp.offset.y)
                         scale(vp.scale, vp.scale, pivot = Offset.Zero)
                     }) {
-                        orderedElements.forEach { renderElement(it, pathCache, imageCache, textCache, textMeasurer) }
+                        orderedElements.forEach { renderElement(it, pathCache, imageCache, textCache, textMeasurer, vp.scale) }
                     }
                 }
                 capturePending = false
@@ -1274,12 +1276,13 @@ private fun DrawScope.renderElement(
     imageCache: ImageBitmapCache? = null,
     textCache: TextLayoutCache? = null,
     textMeasurer: androidx.compose.ui.text.TextMeasurer? = null,
+    viewportScale: Float = 1f,
 ) {
     if (element.rotation == 0f) {
-        renderElementContent(element, pathCache, imageCache, textCache, textMeasurer)
+        renderElementContent(element, pathCache, imageCache, textCache, textMeasurer, viewportScale)
     } else {
         withTransform({ rotate(element.rotation, pivot = element.bounds().center) }) {
-            renderElementContent(element, pathCache, imageCache, textCache, textMeasurer)
+            renderElementContent(element, pathCache, imageCache, textCache, textMeasurer, viewportScale)
         }
     }
 }
@@ -1290,6 +1293,7 @@ private fun DrawScope.renderElementContent(
     imageCache: ImageBitmapCache?,
     textCache: TextLayoutCache?,
     textMeasurer: androidx.compose.ui.text.TextMeasurer?,
+    viewportScale: Float,
 ) {
     when (element) {
         is Element.Path -> {
@@ -1337,7 +1341,7 @@ private fun DrawScope.renderElementContent(
             drawShape(element)
         }
         is Element.Image -> {
-            drawImageElement(element, imageCache)
+            drawImageElement(element, imageCache, viewportScale)
         }
         is Element.Text -> {
             drawTextElement(element, textCache, textMeasurer)
@@ -1395,7 +1399,11 @@ private fun DrawScope.drawTextElement(
  * decode failed), we draw a neutral grey placeholder rectangle so the canvas
  * still reflects the element's footprint and selection chrome remains usable.
  */
-private fun DrawScope.drawImageElement(image: Element.Image, imageCache: ImageBitmapCache?) {
+private fun DrawScope.drawImageElement(
+    image: Element.Image,
+    imageCache: ImageBitmapCache?,
+    viewportScale: Float,
+) {
     if (image.points.size < 2) return
     val topLeft = image.points[0]
     val bottomRight = image.points[1]
@@ -1403,7 +1411,12 @@ private fun DrawScope.drawImageElement(image: Element.Image, imageCache: ImageBi
     val targetH = bottomRight.y - topLeft.y
     if (targetW <= 0f || targetH <= 0f) return
 
-    val bitmap = imageCache?.bitmapFor(image.id, image.bytes)
+    // The cache picks a mip level from the longer dimension in *screen*
+    // pixels — multiplying by viewport.scale gives the renderable size.
+    // A 600 px placement on a HiDPI 2× display at 1.5× zoom decodes at
+    // 1800 px, not 600 (or 4096 source).
+    val targetDimPx = (maxOf(targetW, targetH) * viewportScale).toInt()
+    val bitmap = imageCache?.bitmapFor(image.id, image.bytes, targetDimPx)
         ?: decodeImageBitmap(image.bytes)
     if (bitmap == null) {
         // Visible placeholder so a corrupt / unsupported payload doesn't render
