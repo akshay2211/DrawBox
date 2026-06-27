@@ -25,6 +25,12 @@ import kotlin.math.sqrt
 fun Element.bounds(): Rect = when (this) {
     is Element.Path -> pointsBounds(positions)
     is Element.Image -> pointsBounds(points)
+    is Element.Text -> Rect(
+        left = topLeft.x,
+        top = topLeft.y,
+        right = topLeft.x + wrapWidth,
+        bottom = topLeft.y + measuredHeight,
+    )
     is Element.Shape -> when (shapeType) {
         // Circle points are diameter endpoints, so the circle extends past them.
         // The bbox is the square inscribing the circle.
@@ -291,6 +297,7 @@ fun Element.hitTest(point: Offset, tolerance: Float = 8f): Boolean {
         is Element.Path -> hitTestPath(this, local, tolerance)
         is Element.Shape -> hitTestShape(this, local, b, tolerance)
         is Element.Image -> b.inflate(tolerance).contains(local)
+        is Element.Text -> b.inflate(tolerance).contains(local)
     }
 }
 
@@ -405,6 +412,7 @@ fun Element.translate(delta: Offset): Element = when (this) {
     ).touched()
     is Element.Shape -> copy(points = points.map { it + delta }).touched()
     is Element.Image -> copy(points = points.map { it + delta }).touched()
+    is Element.Text -> copy(topLeft = topLeft + delta).touched()
 }
 
 /**
@@ -426,6 +434,15 @@ fun Element.withBounds(newBounds: Rect): Element {
         }
         is Element.Image -> copy(
             points = listOf(safeBounds.topLeft, safeBounds.bottomRight),
+        ).touched()
+        // Resize for text only honors the X extents (topLeft.x + wrapWidth)
+        // and the topLeft.y. Bottom-edge drags are silently ignored — the
+        // renderer owns measuredHeight and will refresh it on the next
+        // layout pass via Intent.SyncTextMeasuredHeight. This makes vertical
+        // handles a visual no-op, matching the behavior in tldraw / Figma.
+        is Element.Text -> copy(
+            topLeft = safeBounds.topLeft,
+            wrapWidth = safeBounds.width,
         ).touched()
         is Element.Shape -> when (shapeType) {
             ShapeType.CIRCLE -> resizeCircle(this, safeBounds).touched()
@@ -486,6 +503,7 @@ fun Element.withRotation(degrees: Float): Element = when (this) {
     is Element.Path -> copy(rotation = degrees).touched()
     is Element.Shape -> copy(rotation = degrees).touched()
     is Element.Image -> copy(rotation = degrees).touched()
+    is Element.Text -> copy(rotation = degrees).touched()
 }
 
 /**

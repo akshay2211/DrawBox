@@ -199,6 +199,57 @@ sealed class Element {
         }
     }
 
+    /**
+     * Block-level plain-text element. Single style applies to the whole block;
+     * rich-text features (inline bold / italic spans, links, cursor-within-text
+     * editing) are intentionally NOT in scope here and are tracked separately.
+     *
+     * Two-piece geometry — the user owns the *wrap width*, the renderer owns
+     * the *measured height*. After every layout, if the rendered height drifts
+     * from [measuredHeight], the renderer dispatches a non-snapshotting
+     * [io.ak1.drawbox.domain.model.Intent.SyncTextMeasuredHeight] to bring the
+     * model back in sync — so [bounds] is always accurate without the data
+     * layer needing a [androidx.compose.ui.text.TextMeasurer].
+     *
+     * Resize semantics follow from this split: dragging a horizontal handle
+     * changes [wrapWidth] (causing a re-wrap and a height update on the next
+     * frame); dragging a vertical handle is a no-op since height is auto.
+     *
+     * @property text Raw string content. Newlines (`\n`) are honored as hard
+     *   breaks; auto-wrap fills each visual line up to [wrapWidth].
+     * @property fontFamilyKey Logical name resolved via the host-side
+     *   [io.ak1.drawbox.presentation.viewmodel.DrawBoxController.registerFont]
+     *   registry. Unknown keys fall back to `sans`.
+     * @property fontSize Em size in world pixels.
+     * @property color Text color.
+     * @property alignment Horizontal alignment inside the wrap box.
+     * @property topLeft World-space top-left corner of the wrap box.
+     * @property wrapWidth World-space wrap width — the only knob the user
+     *   manipulates via resize handles.
+     * @property measuredHeight Renderer-owned cached height. Initialized to a
+     *   single-line guess at insertion time and refreshed by the sync intent
+     *   after the first layout pass. Never written by user gestures.
+     * @property opacity Render-time alpha (0.0..1.0), independent of [color]'s
+     *   own alpha channel.
+     */
+    data class Text(
+        override val id: String = Uuid.random().toString(),
+        override val type: String = "Text",
+        val text: String,
+        val fontFamilyKey: String = DEFAULT_FONT_FAMILY_KEY,
+        val fontSize: Float,
+        val color: Color,
+        val alignment: TextAlignment = TextAlignment.LEFT,
+        val topLeft: Offset,
+        val wrapWidth: Float,
+        val measuredHeight: Float,
+        val opacity: Float = 1f,
+        override val zIndex: Int = 0,
+        override val rotation: Float = 0f,
+        override val createdAt: Long = 0L,
+        override val modifiedAt: Long = 0L,
+    ) : Element()
+
     data class Shape(
         override val id: String = Uuid.random().toString(),
         override val type: String = "Shape",
@@ -264,7 +315,27 @@ fun Element.touched(now: Long = kotlin.time.Clock.System.now().toEpochMillisecon
         is Element.Path -> copy(modifiedAt = now)
         is Element.Shape -> copy(modifiedAt = now)
         is Element.Image -> copy(modifiedAt = now)
+        is Element.Text -> copy(modifiedAt = now)
     }
+
+/**
+ * Horizontal alignment inside an [Element.Text]'s wrap box.
+ */
+enum class TextAlignment { LEFT, CENTER, RIGHT }
+
+/**
+ * Default font family key used when no [Element.Text.fontFamilyKey] is
+ * specified and as the fallback when a referenced key isn't registered.
+ */
+const val DEFAULT_FONT_FAMILY_KEY: String = "sans"
+
+/** Keys for the SDK's built-in font families. Hosts can register additional
+ *  families via the controller; these three are always available. */
+object BuiltinFontFamilyKeys {
+    const val SANS: String = "sans"
+    const val SERIF: String = "serif"
+    const val MONO: String = "mono"
+}
 
 /**
  * Defines how [Element.Shape] is rendered on the canvas.

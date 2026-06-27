@@ -13,6 +13,7 @@ import drawboxsample.shared.generated.resources.export
 import drawboxsample.shared.generated.resources.file_import
 import drawboxsample.shared.generated.resources.file_type_svg
 import drawboxsample.shared.generated.resources.hand_stop
+import drawboxsample.shared.generated.resources.letter_t
 import drawboxsample.shared.generated.resources.line
 import drawboxsample.shared.generated.resources.palette
 import drawboxsample.shared.generated.resources.png
@@ -43,6 +44,7 @@ object DrawBoxIcons {
     val BorderPill: DrawableResource = Res.drawable.border_corner_pill
     val BorderRounded: DrawableResource = Res.drawable.border_corner_rounded
     val BorderSquare: DrawableResource = Res.drawable.border_corner_square
+    val Text: DrawableResource = Res.drawable.letter_t
 
     // Drawing Tools
     val Ruler: DrawableResource = Res.drawable.ruler

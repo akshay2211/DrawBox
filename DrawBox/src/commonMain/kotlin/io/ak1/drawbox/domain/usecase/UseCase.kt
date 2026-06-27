@@ -8,6 +8,7 @@ import io.ak1.drawbox.domain.model.Element
 import io.ak1.drawbox.domain.model.ResizeHandle
 import io.ak1.drawbox.domain.model.ShapeType
 import io.ak1.drawbox.domain.model.StrokeStyle
+import io.ak1.drawbox.domain.model.TextAlignment
 import io.ak1.drawbox.domain.model.bounds
 import io.ak1.drawbox.domain.model.connectorAnchor
 import io.ak1.drawbox.domain.model.hitTest
@@ -28,6 +29,7 @@ class UseCase {
             is Element.Path -> element.copy(zIndex = currentElements.size)
             is Element.Shape -> element.copy(zIndex = currentElements.size)
             is Element.Image -> element.copy(zIndex = currentElements.size)
+            is Element.Text -> element.copy(zIndex = currentElements.size)
         }
         return currentElements + newElement
     }
@@ -126,6 +128,87 @@ class UseCase {
             createdAt = now,
             modifiedAt = now,
         )
+    }
+
+    // Text operations
+    @OptIn(ExperimentalTime::class)
+    fun insertText(
+        text: String,
+        position: Offset,
+        fontSize: Float,
+        fontFamilyKey: String,
+        alignment: TextAlignment,
+        color: Color,
+    ): Element.Text {
+        val now = Clock.System.now().toEpochMilliseconds()
+        // Initial guess: a single-line block at fontSize*1.2 tall. The
+        // renderer dispatches Intent.SyncTextMeasuredHeight after the first
+        // layout pass, so this value is only ever visible for one frame.
+        return Element.Text(
+            text = text,
+            fontFamilyKey = fontFamilyKey,
+            fontSize = fontSize,
+            color = color,
+            alignment = alignment,
+            topLeft = position,
+            wrapWidth = DEFAULT_TEXT_BOX_WIDTH,
+            measuredHeight = (fontSize * 1.2f).coerceAtLeast(fontSize),
+            createdAt = now,
+            modifiedAt = now,
+        )
+    }
+
+    /**
+     * Renderer-driven height sync — the canvas measures a text block, sees
+     * the rendered height differs from [Element.Text.measuredHeight] and
+     * dispatches [io.ak1.drawbox.domain.model.Intent.SyncTextMeasuredHeight]
+     * to bring the model in line. Bypasses history so this fixed-point
+     * convergence doesn't consume undo slots.
+     */
+    fun syncTextMeasuredHeight(
+        elements: List<Element>,
+        id: String,
+        height: Float,
+    ): List<Element> = elements.map { el ->
+        if (el is Element.Text && el.id == id) el.copy(measuredHeight = height)
+        else el
+    }
+
+    /** Replace the [text] field of a single [Element.Text]. Snapshots history. */
+    fun updateText(
+        elements: List<Element>,
+        id: String,
+        text: String,
+    ): List<Element> = elements.map { el ->
+        if (el.id == id && el is Element.Text) el.copy(text = text).touched()
+        else el
+    }
+
+    /** Set font size on every selected [Element.Text]. */
+    fun setSelectedFontSize(
+        elements: List<Element>,
+        ids: Set<String>,
+        size: Float,
+    ): List<Element> = elements.map { el ->
+        if (el.id in ids && el is Element.Text) el.copy(fontSize = size).touched() else el
+    }
+
+    /** Set text alignment on every selected [Element.Text]. */
+    fun setSelectedTextAlignment(
+        elements: List<Element>,
+        ids: Set<String>,
+        alignment: TextAlignment,
+    ): List<Element> = elements.map { el ->
+        if (el.id in ids && el is Element.Text) el.copy(alignment = alignment).touched() else el
+    }
+
+    /** Set font family key on every selected [Element.Text]. */
+    fun setSelectedFontFamily(
+        elements: List<Element>,
+        ids: Set<String>,
+        fontFamilyKey: String,
+    ): List<Element> = elements.map { el ->
+        if (el.id in ids && el is Element.Text) el.copy(fontFamilyKey = fontFamilyKey).touched() else el
     }
 
     // Image operations
@@ -267,6 +350,7 @@ class UseCase {
                 is Element.Path -> el.copy(zIndex = next++).touched()
                 is Element.Shape -> el.copy(zIndex = next++).touched()
                 is Element.Image -> el.copy(zIndex = next++).touched()
+                is Element.Text -> el.copy(zIndex = next++).touched()
             } else el
         }
     }
@@ -285,6 +369,7 @@ class UseCase {
                 is Element.Path -> el.copy(zIndex = newZ).touched()
                 is Element.Shape -> el.copy(zIndex = newZ).touched()
                 is Element.Image -> el.copy(zIndex = newZ).touched()
+                is Element.Text -> el.copy(zIndex = newZ).touched()
             } else el
         }
     }
@@ -301,6 +386,9 @@ class UseCase {
             // Images have no stroke — recolor is a no-op rather than an error,
             // so multi-selecting a mix of shapes and images still works.
             is Element.Image -> el
+            // Text reuses the "stroke color" intent as a unified tint so the
+            // existing color picker recolors text without a separate intent.
+            is Element.Text -> el.copy(color = color).touched()
         }
     }
 
@@ -318,6 +406,7 @@ class UseCase {
             is Element.Shape -> el.copy(fillColor = color).touched()
             is Element.Path -> el
             is Element.Image -> el
+            is Element.Text -> el
         }
     }
 
@@ -334,6 +423,7 @@ class UseCase {
             is Element.Shape -> el.copy(strokeEnabled = enabled).touched()
             is Element.Path -> el
             is Element.Image -> el
+            is Element.Text -> el
         }
     }
 
@@ -354,6 +444,7 @@ class UseCase {
             ).touched()
             is Element.Shape -> el.copy(strokeWidth = width).touched()
             is Element.Image -> el
+            is Element.Text -> el
         }
     }
 
@@ -383,6 +474,7 @@ class UseCase {
             is Element.Shape -> el.copy(strokeStyle = style).touched()
             is Element.Path -> el.copy(strokeStyle = style).touched()
             is Element.Image -> el
+            is Element.Text -> el
         }
     }
 
@@ -407,6 +499,10 @@ class UseCase {
             ).touched()
             is Element.Shape -> el.copy(points = newPoints).touched()
             is Element.Image -> el.copy(points = newPoints).touched()
+            // Text geometry is topLeft + wrapWidth + measuredHeight; the
+            // point-list intent doesn't apply. Treat as a no-op so multi-
+            // selecting LINE / ARROW + Text still works.
+            is Element.Text -> el
         }
     }
 
@@ -529,6 +625,14 @@ private const val MIN_PEN_POINT_DIST_SQ: Float = 1f
  * roughly notebook-size on a 1× canvas — still readable, easy to grow.
  */
 private const val MAX_PLACED_EXTENT: Float = 600f
+
+/**
+ * Default world-pixel width for a freshly inserted text block. Wide enough to
+ * fit a typical sentence at default font size without immediate re-wrap, and
+ * narrow enough that the wrap box's edge-handle is visible inside the
+ * default-zoom viewport.
+ */
+private const val DEFAULT_TEXT_BOX_WIDTH: Float = 240f
 
 /**
  * Slop, in world pixels, applied to a bindable shape's AABB when deciding

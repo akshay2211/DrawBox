@@ -93,6 +93,75 @@ sealed class Intent {
         }
     }
 
+    // ==================== Text Operations ====================
+
+    /**
+     * Insert an [Element.Text] at [position] with the given style. The wrap
+     * box is sized from a sensible default width; embedders that want a
+     * different layout can dispatch [SetElementBounds] immediately after.
+     * Snapshots history once.
+     */
+    data class InsertText(
+        val text: String,
+        val position: Offset,
+        val fontSize: Float,
+        val fontFamilyKey: String,
+        val alignment: TextAlignment,
+        val color: Color,
+    ) : Intent()
+
+    /**
+     * Replace the [text] content of an existing [Element.Text]. Snapshots
+     * history so a typing session can be undone as a single revision when
+     * the embedder commits with a single dispatch (typical for modal
+     * editors); embedders implementing inline editing should batch their
+     * own undo boundaries.
+     */
+    data class UpdateText(val id: String, val text: String) : Intent()
+
+    /** Replace font size on every selected text element. Snapshots history. */
+    data class SetSelectedFontSize(val size: Float) : Intent()
+
+    /** Replace text alignment on every selected text element. Snapshots history. */
+    data class SetSelectedTextAlignment(val alignment: TextAlignment) : Intent()
+
+    /** Replace font family key on every selected text element. Snapshots history. */
+    data class SetSelectedFontFamily(val fontFamilyKey: String) : Intent()
+
+    /**
+     * Default font size for future text inserts. Mirrors [SetStrokeWidth] for
+     * shapes: mutates the State default without touching any existing element.
+     * Not history-tracked — the default is session-level UI state.
+     */
+    data class SetFontSize(val size: Float) : Intent()
+
+    /** Default font family key for future text inserts. Not history-tracked. */
+    data class SetFontFamily(val fontFamilyKey: String) : Intent()
+
+    /** Default text alignment for future text inserts. Not history-tracked. */
+    data class SetTextAlignment(val alignment: TextAlignment) : Intent()
+
+    /**
+     * Renderer-driven height reconciliation for a single text element.
+     *
+     * The canvas measures the text's actual rendered height each frame; when
+     * that differs from [Element.Text.measuredHeight], it fires this intent
+     * so the model converges to what the user actually sees. Behavior notes:
+     *
+     * - Does **not** snapshot history — this is fixed-point convergence
+     *   driven by the renderer, not a user gesture, so it must not consume
+     *   undo slots or split a typing session across multiple reverts.
+     * - Does **not** bump `modifiedAt` — measuredHeight is renderer-cached
+     *   state, not a user edit; bumping LWW would corrupt collab merge.
+     * - Is idempotent — re-dispatching with the same value is a no-op (the
+     *   reducer short-circuits when the existing value is within 0.5px).
+     *
+     * Embedders building custom renderers should mirror this contract. The
+     * intent is intentionally typed so it cannot be confused with user-edit
+     * intents that DO snapshot.
+     */
+    data class SyncTextMeasuredHeight(val id: String, val height: Float) : Intent()
+
     // ==================== Shape Operations ====================
 
     /**

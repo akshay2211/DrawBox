@@ -1,5 +1,6 @@
 package io.ak1.drawbox.presentation.reducer
 
+import io.ak1.drawbox.domain.model.Element
 import io.ak1.drawbox.domain.model.HISTORY_CAP
 import io.ak1.drawbox.domain.model.Intent
 import io.ak1.drawbox.domain.model.Mode
@@ -51,6 +52,61 @@ class Reducer(
                 intent.newPoint, state.elements, intent.pressure,
             ),
         )
+        is Intent.InsertText -> {
+            val newText = useCase.insertText(
+                intent.text,
+                intent.position,
+                intent.fontSize,
+                intent.fontFamilyKey,
+                intent.alignment,
+                intent.color,
+            )
+            state.snapshot().copy(
+                elements = useCase.addElement(newText, state.elements),
+            )
+        }
+        is Intent.UpdateText -> state.snapshot().copy(
+            elements = useCase.updateText(state.elements, intent.id, intent.text),
+        )
+        is Intent.SetSelectedFontSize -> {
+            if (state.selectedIds.isEmpty()) state
+            else state.snapshot().copy(
+                elements = useCase.setSelectedFontSize(
+                    state.elements, state.selectedIds, intent.size,
+                ),
+            )
+        }
+        is Intent.SetSelectedTextAlignment -> {
+            if (state.selectedIds.isEmpty()) state
+            else state.snapshot().copy(
+                elements = useCase.setSelectedTextAlignment(
+                    state.elements, state.selectedIds, intent.alignment,
+                ),
+            )
+        }
+        is Intent.SetSelectedFontFamily -> {
+            if (state.selectedIds.isEmpty()) state
+            else state.snapshot().copy(
+                elements = useCase.setSelectedFontFamily(
+                    state.elements, state.selectedIds, intent.fontFamilyKey,
+                ),
+            )
+        }
+        is Intent.SyncTextMeasuredHeight -> {
+            // Short-circuit on no-op so identical layouts in successive
+            // frames don't generate State copies (recompositions, listener
+            // wakeups, sync-layer chatter). The 0.5px threshold matches the
+            // renderer's drift gate.
+            val target = state.elements.firstOrNull { it.id == intent.id } as? Element.Text
+            if (target == null ||
+                kotlin.math.abs(target.measuredHeight - intent.height) < 0.5f
+            ) state
+            else state.copy(
+                elements = useCase.syncTextMeasuredHeight(
+                    state.elements, intent.id, intent.height,
+                ),
+            )
+        }
         is Intent.InsertImage -> {
             val newImage = useCase.insertImage(
                 intent.bytes,
@@ -81,6 +137,9 @@ class Reducer(
         is Intent.SetStrokeWidth -> state.copy(strokeWidth = intent.width)
         is Intent.SetCornerRadius -> state.copy(currentItemCornerRadius = intent.radius)
         is Intent.SetStrokeStyle -> state.copy(currentItemStrokeStyle = intent.style)
+        is Intent.SetFontSize -> state.copy(currentItemFontSize = intent.size)
+        is Intent.SetFontFamily -> state.copy(currentItemFontFamilyKey = intent.fontFamilyKey)
+        is Intent.SetTextAlignment -> state.copy(currentItemTextAlignment = intent.alignment)
         is Intent.SetOpacity -> state.copy(opacity = intent.opacity)
         is Intent.SetBgColor -> state.copy(bgColor = intent.bgColor)
         is Intent.SetBackgroundPattern -> state.copy(bgPattern = intent.pattern)

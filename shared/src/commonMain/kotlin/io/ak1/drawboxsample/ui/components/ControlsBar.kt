@@ -17,7 +17,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import io.ak1.drawbox.domain.model.Mode
 import io.ak1.drawboxsample.ui.icons.DrawBoxIcons
@@ -143,6 +142,18 @@ fun ControlsBar(
                 )
             },
             onClick = { onModeSelected(Mode.PEN) },
+        ),
+        FloatingMenuItem(
+            id = "text",
+            isActive = currentMode == Mode.TEXT,
+            icon = { isActive ->
+                Icon(
+                    painter = painterResource(DrawBoxIcons.Text),
+                    contentDescription = "Text",
+                    tint = isActive.getActiveColor(),
+                )
+            },
+            onClick = { onModeSelected(Mode.TEXT) },
         ),
         separator("sep-tools"),
         FloatingMenuItem(

@@ -11,11 +11,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicText
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.FlipToBack
 import androidx.compose.material.icons.filled.FlipToFront
+import androidx.compose.material.icons.automirrored.filled.FormatAlignLeft
+import androidx.compose.material.icons.automirrored.filled.FormatAlignRight
+import androidx.compose.material.icons.filled.FormatAlignCenter
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FloatingToolbarDefaults
 import androidx.compose.material3.Icon
@@ -45,6 +50,13 @@ private const val RadiusRound = 40f
 private val StrokeWidthOptions = listOf(5f, 10f, 15f, 20f)
 
 /**
+ * World-pixel font-size presets surfaced by the text submenu. Picked to span
+ * caption (12) → display (48) at sensible intervals; intermediate values are
+ * available programmatically via [Intent.SetSelectedFontSize].
+ */
+private val TextSizePresets = listOf(12f, 16f, 20f, 24f, 32f, 48f)
+
+/**
  * Top-right contextual pill built on [ExpandableFloatingToolbar]. Mirrors the
  * bottom NavBar pattern: each slot is a single icon, and slots that have
  * children open a vertical sub-bar below the icon when tapped.
@@ -65,15 +77,22 @@ private val StrokeWidthOptions = listOf(5f, 10f, 15f, 20f)
 fun ContextBar(
     isShapeMode: Boolean,
     hasSelection: Boolean,
+    showShapeStroke: Boolean,
     showCornerRadius: Boolean,
     showFill: Boolean,
     showStrokeToggle: Boolean,
+    showTextControls: Boolean,
+    showEditText: Boolean,
     currentColor: Color,
     currentFillColor: Color?,
     currentStrokeEnabled: Boolean,
     currentStrokeStyle: StrokeStyle,
     currentStrokeWidth: Float,
     currentCornerRadius: Float,
+    currentFontSize: Float,
+    currentTextAlignment: io.ak1.drawbox.domain.model.TextAlignment,
+    currentFontFamilyKey: String,
+    fontFamilyKeys: Set<String>,
     expanded: Boolean,
     onColorChange: (Color) -> Unit,
     onFillColorChange: (Color?) -> Unit,
@@ -81,14 +100,20 @@ fun ContextBar(
     onStrokeStyleChange: (StrokeStyle) -> Unit,
     onStrokeWidthChange: (Float) -> Unit,
     onCornerRadiusChange: (Float) -> Unit,
+    onFontSizeChange: (Float) -> Unit,
+    onTextAlignmentChange: (io.ak1.drawbox.domain.model.TextAlignment) -> Unit,
+    onFontFamilyChange: (String) -> Unit,
+    onEditText: () -> Unit,
     onBringToFront: () -> Unit,
     onSendToBack: () -> Unit,
     onDelete: () -> Unit,
     onClear: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val showConfig = isShapeMode || hasSelection
-    if (!showConfig && !hasSelection) return
+    // The bar is visible whenever any of its slots have something to show.
+    val anySlot = showShapeStroke || showCornerRadius || showFill ||
+        showStrokeToggle || showTextControls || hasSelection
+    if (!anySlot) return
 
     var showColorDialog by remember { mutableStateOf(false) }
     if (showColorDialog) {
@@ -168,6 +193,86 @@ fun ContextBar(
             )
         }
 
+        if (showTextControls) {
+            if (showEditText) {
+                add(
+                    FloatingMenuItem(
+                        id = "text-edit",
+                        icon = { _ ->
+                            Icon(
+                                imageVector = androidx.compose.material.icons.Icons.Filled.Edit,
+                                contentDescription = "Edit text",
+                                tint = active,
+                            )
+                        },
+                        onClick = onEditText,
+                    ),
+                )
+            }
+            add(
+                FloatingMenuItem(
+                    id = "text-size",
+                    icon = { _ -> TextSizeIcon(size = currentFontSize, color = active) },
+                    children = TextSizePresets.map { value ->
+                        FloatingMenuItem(
+                            id = "text-size-${value.toInt()}",
+                            isActive = kotlin.math.abs(currentFontSize - value) < 0.5f,
+                            icon = { isActive ->
+                                TextSizeIcon(
+                                    size = value,
+                                    color = isActive.getActiveColor(),
+                                )
+                            },
+                            onClick = { onFontSizeChange(value) },
+                        )
+                    },
+                ),
+            )
+            add(
+                FloatingMenuItem(
+                    id = "text-align",
+                    icon = { _ ->
+                        TextAlignmentIcon(
+                            alignment = currentTextAlignment,
+                            color = active,
+                        )
+                    },
+                    children = io.ak1.drawbox.domain.model.TextAlignment.entries.map { align ->
+                        FloatingMenuItem(
+                            id = "text-align-${align.name.lowercase()}",
+                            isActive = align == currentTextAlignment,
+                            icon = { isActive ->
+                                TextAlignmentIcon(
+                                    alignment = align,
+                                    color = isActive.getActiveColor(),
+                                )
+                            },
+                            onClick = { onTextAlignmentChange(align) },
+                        )
+                    },
+                ),
+            )
+            add(
+                FloatingMenuItem(
+                    id = "text-family",
+                    icon = { _ -> FontFamilyLabel(key = currentFontFamilyKey, color = active) },
+                    children = fontFamilyKeys.sorted().map { key ->
+                        FloatingMenuItem(
+                            id = "text-family-$key",
+                            isActive = key == currentFontFamilyKey,
+                            icon = { isActive ->
+                                FontFamilyLabel(
+                                    key = key,
+                                    color = isActive.getActiveColor(),
+                                )
+                            },
+                            onClick = { onFontFamilyChange(key) },
+                        )
+                    },
+                ),
+            )
+        }
+
         if (showFill) {
             add(
                 FloatingMenuItem(
@@ -195,7 +300,7 @@ fun ContextBar(
             )
         }
 
-        if (showConfig) {
+        if (showShapeStroke) {
             add(
                 FloatingMenuItem(
                     id = "stroke",
@@ -238,7 +343,7 @@ fun ContextBar(
             )
         }
 
-        if (showConfig && showCornerRadius) {
+        if (showCornerRadius) {
             add(
                 FloatingMenuItem(
                     id = "corner",
@@ -476,6 +581,62 @@ private fun SizeDot(size: Float, isSelected: Boolean, color: Color) {
 
         )
     }
+}
+
+/**
+ * Glyph-on-a-chip for a font-size preset. The glyph itself scales with
+ * [size] (clamped to a chip-friendly range) so the chip visually reads as
+ * "small" / "medium" / "huge" without the user having to read a number.
+ */
+@Composable
+private fun TextSizeIcon(size: Float, color: Color) {
+    val display = size.coerceIn(8f, 28f)
+    BasicText(
+        text = "A",
+        style = androidx.compose.ui.text.TextStyle(
+            color = color,
+            fontSize = androidx.compose.ui.unit.TextUnit(display, androidx.compose.ui.unit.TextUnitType.Sp),
+            fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold,
+        ),
+    )
+}
+
+@Composable
+private fun TextAlignmentIcon(
+    alignment: io.ak1.drawbox.domain.model.TextAlignment,
+    color: Color,
+) {
+    val icon = when (alignment) {
+        io.ak1.drawbox.domain.model.TextAlignment.LEFT -> Icons.AutoMirrored.Filled.FormatAlignLeft
+        io.ak1.drawbox.domain.model.TextAlignment.CENTER -> Icons.Filled.FormatAlignCenter
+        io.ak1.drawbox.domain.model.TextAlignment.RIGHT -> Icons.AutoMirrored.Filled.FormatAlignRight
+    }
+    Icon(icon, contentDescription = alignment.name, tint = color)
+}
+
+/**
+ * Three-letter glyph for the family key — written in the family itself so the
+ * chip previews the typeface. Falls back to the key's first three characters
+ * for unknown / custom keys.
+ */
+@Composable
+private fun FontFamilyLabel(key: String, color: Color) {
+    val label = when (key) {
+        "sans" -> "Sa"
+        "serif" -> "Se"
+        "mono" -> "Mo"
+        else -> key.take(2).replaceFirstChar { it.uppercase() }
+    }
+    val family = io.ak1.drawbox.text.FontRegistry.resolve(key)
+    BasicText(
+        text = label,
+        style = androidx.compose.ui.text.TextStyle(
+            color = color,
+            fontFamily = family,
+            fontSize = androidx.compose.ui.unit.TextUnit(14f, androidx.compose.ui.unit.TextUnitType.Sp),
+            fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold,
+        ),
+    )
 }
 
 @Composable

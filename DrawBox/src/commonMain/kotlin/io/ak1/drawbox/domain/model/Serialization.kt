@@ -157,8 +157,24 @@ data class ElementDto(
     val intrinsicWidth: Float? = null,
     /** Source image's intrinsic pixel height. Only set for Image elements. */
     val intrinsicHeight: Float? = null,
-    /** Render-time alpha for Image elements (0.0..1.0). */
+    /** Render-time alpha for Image / Text elements (0.0..1.0). */
     val opacity: Float? = null,
+    /** Raw text content. Only set for Text elements. */
+    val text: String? = null,
+    /** Logical font family key resolved by the host's font registry. */
+    val fontFamilyKey: String? = null,
+    /** Em size in world pixels. */
+    val fontSize: Float? = null,
+    /** Horizontal alignment inside the wrap box: `LEFT`, `CENTER`, or `RIGHT`. */
+    val alignment: String? = null,
+    /**
+     * World-space top-left corner of a text element's wrap box, encoded as
+     * `"x,y"`. Only set for Text elements; Shape / Path / Image use the
+     * existing `points` field.
+     */
+    val textTopLeft: String? = null,
+    /** World-space wrap width for a text element. */
+    val wrapWidth: Float? = null,
 )
 
 fun Element.toDto(): ElementDto = when (this) {
@@ -192,6 +208,31 @@ fun Element.toDto(): ElementDto = when (this) {
         intrinsicWidth = intrinsicSize.width,
         intrinsicHeight = intrinsicSize.height,
         opacity = opacity.takeIf { it != 1f },
+    )
+    is Element.Text -> ElementDto(
+        id = id,
+        type = "Text",
+        zIndex = zIndex,
+        // Text geometry moved off the `points` list onto dedicated wire
+        // fields (textTopLeft + wrapWidth). measuredHeight is intentionally
+        // not serialized — it's renderer-cached and refreshed on load by
+        // the first SyncTextMeasuredHeight pass.
+        points = emptyList(),
+        // Text has no stroke; reuse strokeColor as the wire slot for the
+        // text color so legacy readers still parse a meaningful value.
+        // The dedicated `text` / `fontSize` fields below carry the rest.
+        strokeColor = color.toHexString(),
+        strokeWidth = 0f,
+        rotation = rotation.takeIf { it != 0f },
+        createdAt = createdAt.takeIf { it != 0L },
+        modifiedAt = modifiedAt.takeIf { it != 0L },
+        text = text,
+        fontFamilyKey = fontFamilyKey,
+        fontSize = fontSize,
+        alignment = alignment.name,
+        opacity = opacity.takeIf { it != 1f },
+        textTopLeft = topLeft.toJsonString(),
+        wrapWidth = wrapWidth,
     )
     is Element.Shape -> ElementDto(
         id = id,
@@ -245,6 +286,42 @@ fun ElementDto.toElement(): Element = when (type) {
         createdAt = createdAt ?: 0L,
         modifiedAt = modifiedAt ?: createdAt ?: 0L,
     )
+    "Text" -> {
+        val resolvedFontSize = fontSize ?: 24f
+        // Prefer the dedicated `textTopLeft` / `wrapWidth` fields; fall back
+        // to the first/last of `points` for any (in-development) JSON that
+        // predates the two-piece text geometry.
+        val resolvedTopLeft = textTopLeft?.toOffset()
+            ?: points.firstOrNull()?.toOffset()
+            ?: Offset.Zero
+        val resolvedWrapWidth = wrapWidth ?: run {
+            val pts = points.map { it.toOffset() }
+            if (pts.size >= 2) pts.last().x - pts.first().x else 240f
+        }
+        Element.Text(
+            id = id,
+            text = text ?: "",
+            fontFamilyKey = fontFamilyKey ?: io.ak1.drawbox.domain.model.DEFAULT_FONT_FAMILY_KEY,
+            fontSize = resolvedFontSize,
+            color = strokeColor.toColor(),
+            alignment = when (alignment) {
+                "CENTER" -> io.ak1.drawbox.domain.model.TextAlignment.CENTER
+                "RIGHT" -> io.ak1.drawbox.domain.model.TextAlignment.RIGHT
+                else -> io.ak1.drawbox.domain.model.TextAlignment.LEFT
+            },
+            topLeft = resolvedTopLeft,
+            wrapWidth = resolvedWrapWidth.coerceAtLeast(1f),
+            // Single-line guess — the renderer's first layout pass dispatches
+            // SyncTextMeasuredHeight to bring this to the actual rendered
+            // height on the next frame.
+            measuredHeight = (resolvedFontSize * 1.2f).coerceAtLeast(resolvedFontSize),
+            opacity = opacity ?: 1f,
+            zIndex = zIndex,
+            rotation = rotation ?: 0f,
+            createdAt = createdAt ?: 0L,
+            modifiedAt = modifiedAt ?: createdAt ?: 0L,
+        )
+    }
     "Shape" -> Element.Shape(
         id = id,
         shapeType = shapeType?.toShapeType() ?: ShapeType.RECTANGLE,
@@ -318,6 +395,12 @@ data class SerializableElement(
     val intrinsicWidth: Float? = null,
     val intrinsicHeight: Float? = null,
     val opacity: Float? = null,
+    val text: String? = null,
+    val fontFamilyKey: String? = null,
+    val fontSize: Float? = null,
+    val alignment: String? = null,
+    val textTopLeft: String? = null,
+    val wrapWidth: Float? = null,
 )
 
 @kotlinx.serialization.Serializable
@@ -358,6 +441,12 @@ object DrawingSerializer {
                     intrinsicWidth = element.intrinsicWidth,
                     intrinsicHeight = element.intrinsicHeight,
                     opacity = element.opacity,
+                    text = element.text,
+                    fontFamilyKey = element.fontFamilyKey,
+                    fontSize = element.fontSize,
+                    alignment = element.alignment,
+                    textTopLeft = element.textTopLeft,
+                    wrapWidth = element.wrapWidth,
                 )
             },
         )
@@ -393,6 +482,12 @@ object DrawingSerializer {
                     intrinsicWidth = element.intrinsicWidth,
                     intrinsicHeight = element.intrinsicHeight,
                     opacity = element.opacity,
+                    text = element.text,
+                    fontFamilyKey = element.fontFamilyKey,
+                    fontSize = element.fontSize,
+                    alignment = element.alignment,
+                    textTopLeft = element.textTopLeft,
+                    wrapWidth = element.wrapWidth,
                 )
             },
         )

@@ -23,6 +23,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.zIndex
 import androidx.compose.ui.unit.dp
 import io.ak1.drawbox.DrawBox
 import io.ak1.drawbox.domain.model.Element
@@ -39,6 +40,7 @@ import io.ak1.drawboxsample.ui.components.BgPatternPreset
 import io.ak1.drawboxsample.ui.components.ColorPickerDialog
 import io.ak1.drawboxsample.ui.components.ContextBar
 import io.ak1.drawboxsample.ui.components.ControlsBar
+import io.ak1.drawbox.text.InlineTextEditor
 import io.ak1.drawboxsample.ui.components.SettingsDrawer
 import io.ak1.drawboxsample.ui.components.TopRightControls
 import io.ak1.drawboxsample.ui.components.ZoomToolbar
@@ -111,8 +113,15 @@ fun HomeScreen(
     val selectedDrawables = state.elements.filter { it.id in state.selectedIds }
     val isShapeMode =
         state.mode == Mode.PEN || state.mode == Mode.RECTANGLE || state.mode == Mode.CIRCLE || state.mode == Mode.TRIANGLE || state.mode == Mode.ARROW || state.mode == Mode.LINE
+    val isTextMode = state.mode == Mode.TEXT
     val hasSelection = selectedDrawables.isNotEmpty()
-    val showShapeConfig = isShapeMode || hasSelection
+    // Shape-stroke chips apply to shapes/paths. Hide them in TEXT mode
+    // (the selection is text, or there's no selection — neither needs
+    // stroke style/width).
+    val selectedHasStrokeable = selectedDrawables.any {
+        it is Element.Shape || it is Element.Path
+    }
+    val showShapeStroke = isShapeMode || selectedHasStrokeable
     val showCornerRadius = state.mode == Mode.RECTANGLE || state.mode == Mode.TRIANGLE || selectedRoundable.isNotEmpty()
     val currentRadius = if (selectedRoundable.isNotEmpty()) (selectedRoundable.first() as Element.Shape).cornerRadius
     else state.currentItemCornerRadius
@@ -124,6 +133,7 @@ fun HomeScreen(
     val currentShapeColor = when (val first = selectedDrawables.firstOrNull()) {
         is Element.Shape -> first.strokeColor
         is Element.Path -> first.strokeColor
+        is Element.Text -> first.color
         else -> state.strokeColor
     }
     val currentStrokeWidth = when (val first = selectedDrawables.firstOrNull()) {
@@ -140,6 +150,21 @@ fun HomeScreen(
     val currentFillColor = selectedShapes.firstOrNull()?.fillColor
     val currentStrokeEnabled = selectedShapes.firstOrNull()?.strokeEnabled ?: true
 
+    // Text controls — surfaced in TEXT mode (pre-configure the next insert)
+    // OR when a single Text element is selected (edit existing). Multi-text
+    // editing is out of scope for v1 — the ContextBar would have to merge
+    // possibly-conflicting style values.
+    val selectedTexts = selectedDrawables.filterIsInstance<Element.Text>()
+    val singleSelectedText = selectedTexts.singleOrNull()?.takeIf { selectedDrawables.size == 1 }
+    val showTextControls = isTextMode || singleSelectedText != null
+    val showEditText = singleSelectedText != null
+    // Current values follow the selected element when present; otherwise
+    // fall back to the State defaults the next insert will use.
+    val currentFontSize = singleSelectedText?.fontSize ?: state.currentItemFontSize
+    val currentTextAlignment = singleSelectedText?.alignment ?: state.currentItemTextAlignment
+    val currentFontFamilyKey = singleSelectedText?.fontFamilyKey ?: state.currentItemFontFamilyKey
+    val fontFamilyKeys = io.ak1.drawbox.text.FontRegistry.keys()
+
     // Drawer + bg-pattern state.
     var drawerOpen by remember { mutableStateOf(false) }
     var replayOpen by remember { mutableStateOf(false) }
@@ -150,6 +175,35 @@ fun HomeScreen(
     // auto-collapse of floating bars so they get out of the way during drawing.
     var isDrawingActive by remember { mutableStateOf(false) }
     val barsExpanded = !isDrawingActive
+
+    // TEXT mode flow: DrawBox dispatches Intent.InsertText("") on tap. We
+    // detect the newly inserted empty Text element here and open the inline
+    // editor. The editor renders as the element-to-be (no border, no Done
+    // button) and is dismissed by tapping anywhere outside, which routes
+    // through a full-screen overlay below. Empty commits delete the element.
+    var editingTextId by remember { mutableStateOf<String?>(null) }
+    // Draft is hoisted up here so the outside-tap overlay can read the
+    // latest value when committing — no focus-event juggling needed.
+    var editDraft by remember { mutableStateOf("") }
+    LaunchedEffect(state.elements) {
+        if (editingTextId != null) return@LaunchedEffect
+        val last = state.elements.lastOrNull()
+        if (last is Element.Text && last.text.isEmpty()) {
+            editingTextId = last.id
+            editDraft = ""
+        }
+    }
+    // Helper: commit the current draft for the editing element. Empty drafts
+    // delete the element so an invisible wrap box never lingers.
+    fun commitTextEdit() {
+        val id = editingTextId ?: return
+        if (editDraft.isEmpty()) {
+            viewModel.onIntent(io.ak1.drawbox.domain.model.Intent.DeleteElement(id))
+        } else {
+            viewModel.updateText(id, editDraft)
+        }
+        editingTextId = null
+    }
 
     // Apply background pattern to the canvas. Tinted against onSurface so the
     // same drawable reads on both light and dark canvases.
@@ -182,6 +236,10 @@ fun HomeScreen(
                     }
                 },
             showGrid = showGrid.value,
+            // While the inline editor is open over a text element, tell the
+            // SDK to skip both the element render and its selection chrome
+            // so the editor's frame is the only one visible (no ghosting).
+            hiddenElementIds = editingTextId?.let { setOf(it) } ?: emptySet(),
         )
         BoxWithConstraints(modifier = Modifier.fillMaxSize().systemBarsPadding()) {
             val isNarrow = maxWidth < 600.dp
@@ -189,19 +247,28 @@ fun HomeScreen(
 
             // Top-right unified context bar — merges shape config + selection
             // actions into one pill. Rendered only when there's something to show.
-            if (showShapeConfig || hasSelection) {
+            val barVisible = showShapeStroke || showCornerRadius || showFill ||
+                showStrokeToggle || showTextControls || hasSelection
+            if (barVisible) {
                 ContextBar(
                     isShapeMode = isShapeMode,
                     hasSelection = hasSelection,
+                    showShapeStroke = showShapeStroke,
                     showCornerRadius = showCornerRadius,
                     showFill = showFill,
                     showStrokeToggle = showStrokeToggle,
+                    showTextControls = showTextControls,
+                    showEditText = showEditText,
                     currentColor = currentShapeColor,
                     currentFillColor = currentFillColor,
                     currentStrokeEnabled = currentStrokeEnabled,
                     currentStrokeStyle = currentStrokeStyle,
                     currentStrokeWidth = currentStrokeWidth,
                     currentCornerRadius = currentRadius,
+                    currentFontSize = currentFontSize,
+                    currentTextAlignment = currentTextAlignment,
+                    currentFontFamilyKey = currentFontFamilyKey,
+                    fontFamilyKeys = fontFamilyKeys,
                     expanded = barsExpanded,
                     onColorChange = { color ->
                         if (hasSelection) viewModel.setSelectionColor(color)
@@ -220,6 +287,27 @@ fun HomeScreen(
                     onCornerRadiusChange = { r ->
                         if (selectedRoundable.isNotEmpty()) viewModel.setSelectionCornerRadius(r)
                         else viewModel.setCornerRadius(r)
+                    },
+                    onFontSizeChange = { size ->
+                        // Selected text → mutate that element. TEXT mode with
+                        // no selection → mutate the State default so the next
+                        // insert picks it up.
+                        if (singleSelectedText != null) viewModel.setSelectionFontSize(size)
+                        else viewModel.setFontSize(size)
+                    },
+                    onTextAlignmentChange = { align ->
+                        if (singleSelectedText != null) viewModel.setSelectionTextAlignment(align)
+                        else viewModel.setTextAlignment(align)
+                    },
+                    onFontFamilyChange = { key ->
+                        if (singleSelectedText != null) viewModel.setSelectionFontFamily(key)
+                        else viewModel.setFontFamily(key)
+                    },
+                    onEditText = {
+                        singleSelectedText?.let { target ->
+                            editingTextId = target.id
+                            editDraft = target.text
+                        }
                     },
                     onBringToFront = { viewModel.bringSelectionToFront() },
                     onSendToBack = { viewModel.sendSelectionToBack() },
@@ -327,6 +415,49 @@ fun HomeScreen(
                 bgColor = state.bgColor,
                 onClose = { replayOpen = false },
             )
+        }
+
+        // Inline text editor + outside-tap commit overlay. The editor itself
+        // renders frameless — same font/size/alignment/color as the element
+        // it'll become, no border, no Done button. The full-screen overlay
+        // below it captures any tap outside the field and triggers commit.
+        // Empty commits delete the element.
+        val editingId = editingTextId
+        if (editingId != null) {
+            val target = state.elements.firstOrNull { it.id == editingId } as? Element.Text
+            if (target == null) {
+                editingTextId = null
+            } else {
+                // Click-catcher: positioned over the canvas + toolbars so any
+                // outside tap routes through here. Transparent — the canvas
+                // remains visible underneath. Blocks ContextBar interaction
+                // during edit by design (no mid-edit style changes); the
+                // user picks style first, then types.
+                androidx.compose.foundation.layout.Box(
+                    modifier = Modifier
+                        // Layer 2: above the canvas + toolbars (which sit at
+                        // the default z 0), below the editor (z 10).
+                        .zIndex(9f)
+                        .fillMaxSize()
+                        .pointerInput(editingId) {
+                            awaitPointerEventScope {
+                                while (true) {
+                                    val event = awaitPointerEvent()
+                                    if (event.type == PointerEventType.Press) {
+                                        commitTextEdit()
+                                        break
+                                    }
+                                }
+                            }
+                        },
+                )
+                InlineTextEditor(
+                    element = target,
+                    viewport = state.viewport,
+                    draft = editDraft,
+                    onDraftChange = { editDraft = it },
+                )
+            }
         }
     }
 }

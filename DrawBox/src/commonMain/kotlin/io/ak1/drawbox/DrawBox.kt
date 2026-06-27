@@ -65,6 +65,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.Density
+import androidx.compose.ui.text.drawText
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
@@ -156,6 +157,14 @@ fun DrawBox(
     onIntent: (Intent) -> Unit,
     modifier: Modifier = Modifier.fillMaxSize(),
     showGrid: Boolean = true,
+    /**
+     * IDs of elements that should be skipped entirely by the renderer and
+     * the selection chrome. Used by the sample app to suppress the
+     * underlying text while an inline editor overlays it; without this the
+     * editing TextField and the rendered text element would double-paint
+     * the same content (and ghost as the user types).
+     */
+    hiddenElementIds: Set<String> = emptySet(),
 ) {
     // Two-layer split:
     //   - finalizedLayer: cached display list of "static" elements (everything not
@@ -176,6 +185,41 @@ fun DrawBox(
     // Same idea for images: decode once per (id, bytes ref), reuse the
     // ImageBitmap across frames. Re-decoded only when bytes reference changes.
     val imageCache = remember { ImageBitmapCache() }
+    // Text layout cache: lay out each text block once per (id, text, style,
+    // wrap width); reuse the result on subsequent frames. TextMeasurer is
+    // composition-scoped and must come from rememberTextMeasurer.
+    val textMeasurer = androidx.compose.ui.text.rememberTextMeasurer()
+    val textCache = remember { TextLayoutCache() }
+
+    // Pre-measure every text element at composition time (cache hit when
+    // unchanged) and dispatch SyncTextMeasuredHeight when the rendered
+    // height drifts from what the model has stored. This is the loop that
+    // keeps bounds() / hit-test / selection chrome accurate without putting
+    // a TextMeasurer in the data layer.
+    //
+    // The effect runs after composition completes, so the first frame after
+    // an InsertText draws with the initial-guess height. The sync intent
+    // fires immediately, the reducer accepts (no snapshot), and the second
+    // frame has the correct geometry. The 0.5px drift gate in both the
+    // dispatch and the reducer ensures fixed-point convergence in one step.
+    LaunchedEffect(state.elements, textMeasurer) {
+        state.elements.forEach { el ->
+            if (el !is Element.Text) return@forEach
+            val layout = textCache.layoutFor(
+                id = el.id,
+                text = el.text,
+                fontFamilyKey = el.fontFamilyKey,
+                fontSize = el.fontSize,
+                alignment = el.alignment,
+                wrapWidth = el.wrapWidth.coerceAtLeast(1f),
+                measurer = textMeasurer,
+            )
+            val measured = layout.size.height.toFloat()
+            if (kotlin.math.abs(measured - el.measuredHeight) > 0.5f) {
+                onIntent(Intent.SyncTextMeasuredHeight(el.id, measured))
+            }
+        }
+    }
 
     // Drag-in-progress signal lifted out of the gesture coroutine so the render
     // path can tell when an element is being actively mutated (drawn, moved,
@@ -465,6 +509,21 @@ fun DrawBox(
                                 latestOnIntent(Intent.EraseAt(world, s.eraserSize / s.viewport.scale))
                                 latestOnIntent(Intent.EndErase)
                             }
+                            Mode.TEXT -> {
+                                // Drop an empty Text element at the tap, using
+                                // the State defaults the user pre-configured via
+                                // the ContextBar before tapping. Matches the
+                                // shape-mode pattern where stroke/fill/etc. are
+                                // pre-chosen before drawing.
+                                latestOnIntent(Intent.InsertText(
+                                    text = "",
+                                    position = world,
+                                    fontSize = s.currentItemFontSize,
+                                    fontFamilyKey = s.currentItemFontFamilyKey,
+                                    alignment = s.currentItemTextAlignment,
+                                    color = s.strokeColor,
+                                ))
+                            }
                             else -> modeShapeType(s.effectiveMode)?.let { st ->
                                 latestOnIntent(Intent.InsertNewShape(st, world))
                                 latestOnIntent(Intent.UpdateLatestShape(world))
@@ -678,6 +737,11 @@ fun DrawBox(
                     // empty and let staticRefsMatch handle the cache rebuild
                     // when the element list shrinks.
                     Mode.ERASER -> emptySet()
+                    // Text insertion is single-step (tap → InsertText with an
+                    // empty content), so there's no "drag-being-mutated"
+                    // element to mark active. The sample app's modal editor
+                    // dispatches the eventual UpdateText separately.
+                    Mode.TEXT -> emptySet()
                     Mode.PEN, Mode.RECTANGLE, Mode.CIRCLE, Mode.TRIANGLE, Mode.ARROW, Mode.LINE -> {
                         val lastId = orderedElements.lastOrNull()?.id
                         if (lastId == null) emptySet() else setOf(lastId)
@@ -686,10 +750,19 @@ fun DrawBox(
             }
 
             // Freshness check on the cached layer. Walks orderedElements once,
-            // comparing non-active entries against lastRecordedStaticRefs by
-            // reference (allocation-free).
+            // comparing non-active and non-hidden entries against
+            // lastRecordedStaticRefs by reference (allocation-free). Hidden
+            // ids are skipped so a freshly-hidden element invalidates the
+            // cache instead of replaying from a recording made before it was
+            // hidden (otherwise the inline editor would ghost over the
+            // still-cached text).
             val cacheFresh = lastRecordedVp == vp &&
-                staticRefsMatch(orderedElements, activeIds, lastRecordedStaticRefs)
+                staticRefsMatch(
+                    orderedElements,
+                    activeIds,
+                    hiddenElementIds,
+                    lastRecordedStaticRefs,
+                )
 
             if (!cacheFresh) {
                 // Re-record at screen-space (transform baked in). This means
@@ -702,12 +775,15 @@ fun DrawBox(
                         scale(vp.scale, vp.scale, pivot = Offset.Zero)
                     }) {
                         orderedElements.forEach { el ->
-                            if (el.id !in activeIds) renderElement(el, pathCache, imageCache)
+                            if (el.id !in activeIds && el.id !in hiddenElementIds) {
+                                renderElement(el, pathCache, imageCache, textCache, textMeasurer)
+                            }
                         }
                     }
                 }
                 lastRecordedVp = vp
-                lastRecordedStaticRefs = orderedElements.filter { it.id !in activeIds }
+                lastRecordedStaticRefs = orderedElements
+                    .filter { it.id !in activeIds && it.id !in hiddenElementIds }
             }
 
             // Play the cached static layer. No transform — it was baked in at
@@ -722,7 +798,7 @@ fun DrawBox(
             }) {
                 if (activeIds.isNotEmpty()) {
                     orderedElements.forEach { el ->
-                        if (el.id in activeIds) renderElement(el, pathCache, imageCache)
+                        if (el.id in activeIds && el.id !in hiddenElementIds) renderElement(el, pathCache, imageCache, textCache, textMeasurer)
                     }
                 }
                 drawSelectionChrome(
@@ -730,6 +806,7 @@ fun DrawBox(
                     handleSizePx = handleSizePx,
                     rotationOffsetPx = rotationOffsetPx,
                     inverseScale = 1f / vp.scale,
+                    hiddenElementIds = hiddenElementIds,
                 )
                 // Eraser cursor overlay: outline circle at the world-space
                 // pointer with the configured eraser radius. Drawn inside the
@@ -763,7 +840,7 @@ fun DrawBox(
                         translate(vp.offset.x, vp.offset.y)
                         scale(vp.scale, vp.scale, pivot = Offset.Zero)
                     }) {
-                        orderedElements.forEach { renderElement(it, pathCache, imageCache) }
+                        orderedElements.forEach { renderElement(it, pathCache, imageCache, textCache, textMeasurer) }
                     }
                 }
                 capturePending = false
@@ -776,13 +853,14 @@ fun DrawBox(
                 }
             }
 
-            // Reclaim PathCache + ImageBitmapCache entries for deleted elements.
-            // Cheap (HashMap key-retain over the live id set); only worth doing
-            // when the live set actually shrank.
-            if (pathCache.size() + imageCache.size() > state.elements.size) {
+            // Reclaim PathCache + ImageBitmapCache + TextLayoutCache entries
+            // for deleted elements. Cheap (HashMap key-retain over the live id
+            // set); only worth doing when the live set actually shrank.
+            if (pathCache.size() + imageCache.size() + textCache.size() > state.elements.size) {
                 val liveIds = state.elements.mapTo(HashSet(state.elements.size)) { it.id }
                 pathCache.retainOnly(liveIds)
                 imageCache.retainOnly(liveIds)
+                textCache.retainOnly(liveIds)
             }
         }
     }
@@ -863,7 +941,7 @@ private fun modeShapeType(mode: Mode): ShapeType? = when (mode) {
     Mode.TRIANGLE -> ShapeType.TRIANGLE
     Mode.ARROW -> ShapeType.ARROW
     Mode.LINE -> ShapeType.LINE
-    Mode.PEN, Mode.SELECT, Mode.PAN, Mode.ERASER -> null
+    Mode.PEN, Mode.SELECT, Mode.PAN, Mode.ERASER, Mode.TEXT -> null
 }
 
 // ==================== Selection gesture support ====================
@@ -1006,11 +1084,12 @@ private fun DrawScope.drawSelectionChrome(
     handleSizePx: Float,
     rotationOffsetPx: Float,
     inverseScale: Float,
+    hiddenElementIds: Set<String> = emptySet(),
 ) {
     val rotationOffsetWorld = rotationOffsetPx * inverseScale
     state.elements
         .asSequence()
-        .filter { it.id in state.selectedIds }
+        .filter { it.id in state.selectedIds && it.id !in hiddenElementIds }
         .forEach { el ->
             // LINE / ARROW get a minimal 3-dot chrome: start, end, and bend midpoint.
             if (el is Element.Shape && el.shapeType.isLineLike() && el.points.size >= 2) {
@@ -1193,12 +1272,14 @@ private fun DrawScope.renderElement(
     element: Element,
     pathCache: PathCache? = null,
     imageCache: ImageBitmapCache? = null,
+    textCache: TextLayoutCache? = null,
+    textMeasurer: androidx.compose.ui.text.TextMeasurer? = null,
 ) {
     if (element.rotation == 0f) {
-        renderElementContent(element, pathCache, imageCache)
+        renderElementContent(element, pathCache, imageCache, textCache, textMeasurer)
     } else {
         withTransform({ rotate(element.rotation, pivot = element.bounds().center) }) {
-            renderElementContent(element, pathCache, imageCache)
+            renderElementContent(element, pathCache, imageCache, textCache, textMeasurer)
         }
     }
 }
@@ -1207,6 +1288,8 @@ private fun DrawScope.renderElementContent(
     element: Element,
     pathCache: PathCache?,
     imageCache: ImageBitmapCache?,
+    textCache: TextLayoutCache?,
+    textMeasurer: androidx.compose.ui.text.TextMeasurer?,
 ) {
     when (element) {
         is Element.Path -> {
@@ -1256,7 +1339,53 @@ private fun DrawScope.renderElementContent(
         is Element.Image -> {
             drawImageElement(element, imageCache)
         }
+        is Element.Text -> {
+            drawTextElement(element, textCache, textMeasurer)
+        }
     }
+}
+
+/**
+ * Render an [Element.Text] inside its wrap box. Layout is delegated to
+ * [TextLayoutCache] so re-rendering an unchanged block is allocation-free.
+ *
+ * When the layout cache or [textMeasurer] isn't available (e.g. the
+ * read-only [DrawingPreview] preview path), the element falls back to a
+ * grey placeholder rectangle — preview surfaces don't need to lay out
+ * text and would otherwise pay a TextMeasurer cost per frame.
+ */
+private fun DrawScope.drawTextElement(
+    element: Element.Text,
+    textCache: TextLayoutCache?,
+    textMeasurer: androidx.compose.ui.text.TextMeasurer?,
+) {
+    val wrapWidth = element.wrapWidth.coerceAtLeast(1f)
+    if (textCache == null || textMeasurer == null) {
+        // Preview path: outline the wrap box so the reader can see the
+        // placeholder. No layout cost.
+        drawRect(
+            color = Color(0x33888888),
+            topLeft = element.topLeft,
+            size = Size(wrapWidth, element.measuredHeight.coerceAtLeast(1f)),
+            style = Stroke(width = 1f),
+        )
+        return
+    }
+    val layout = textCache.layoutFor(
+        id = element.id,
+        text = element.text,
+        fontFamilyKey = element.fontFamilyKey,
+        fontSize = element.fontSize,
+        alignment = element.alignment,
+        wrapWidth = wrapWidth,
+        measurer = textMeasurer,
+    )
+    drawText(
+        textLayoutResult = layout,
+        color = element.color,
+        topLeft = element.topLeft,
+        alpha = element.opacity,
+    )
 }
 
 /**
