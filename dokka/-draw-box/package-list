@@ -585,6 +585,7 @@ $dokka.location:io.ak1.drawbox//DrawBox/#io.ak1.drawbox.domain.model.State#kotli
 $dokka.location:io.ak1.drawbox//DrawingPreview/#kotlin.collections.List[io.ak1.drawbox.domain.model.Element]#androidx.compose.ui.graphics.Color#androidx.compose.ui.Modifier#io.ak1.drawbox.domain.model.Viewport/PointingToDeclaration/-draw-box/io.ak1.drawbox/-drawing-preview.html
 $dokka.location:io.ak1.drawbox//createPath/#kotlin.collections.List[androidx.compose.ui.geometry.Offset]/PointingToDeclaration/-draw-box/io.ak1.drawbox/create-path.html
 $dokka.location:io.ak1.drawbox//decodeImageBitmap/#kotlin.ByteArray/PointingToDeclaration/-draw-box/io.ak1.drawbox/decode-image-bitmap.html
+$dokka.location:io.ak1.drawbox//decodeImageBitmapDownsampled/#kotlin.ByteArray#kotlin.Int#kotlin.Int/PointingToDeclaration/-draw-box/io.ak1.drawbox/decode-image-bitmap-downsampled.html
 io.ak1.drawbox
 io.ak1.drawbox.domain.model
 io.ak1.drawbox.domain.usecase
