@@ -3,17 +3,17 @@
 <span class=w>    </span><span class=c1>// other repositories</span>
 <span class=p>}</span>
 </code></pre></div> <h2 id=step-2-add-drawbox-dependency>Step 2: Add DrawBox Dependency<a class=headerlink href=#step-2-add-drawbox-dependency title="Permanent link">&para;</a></h2> <h3 id=kotlin-dsl-recommended>Kotlin DSL (Recommended)<a class=headerlink href=#kotlin-dsl-recommended title="Permanent link">&para;</a></h3> <div class=highlight><pre><span></span><code><span class=n>dependencies</span><span class=w> </span><span class=p>{</span>
-<span class=w>    </span><span class=n>implementation</span><span class=p>(</span><span class=s>&quot;io.ak1:drawbox:2.0.0&quot;</span><span class=p>)</span>
+<span class=w>    </span><span class=n>implementation</span><span class=p>(</span><span class=s>&quot;io.ak1:drawbox:2.1.0-alpha01&quot;</span><span class=p>)</span>
 <span class=p>}</span>
 </code></pre></div> <h3 id=groovy-dsl>Groovy DSL<a class=headerlink href=#groovy-dsl title="Permanent link">&para;</a></h3> <div class=highlight><pre><span></span><code><span class=n>dependencies</span><span class=w> </span><span class=o>{</span>
-<span class=w>    </span><span class=n>implementation</span><span class=w> </span><span class=s1>&#39;io.ak1:drawbox:2.0.0&#39;</span>
+<span class=w>    </span><span class=n>implementation</span><span class=w> </span><span class=s1>&#39;io.ak1:drawbox:2.1.0-alpha01&#39;</span>
 <span class=o>}</span>
 </code></pre></div> <h3 id=maven>Maven<a class=headerlink href=#maven title="Permanent link">&para;</a></h3> <div class=highlight><pre><span></span><code><span class=nt>&lt;dependency&gt;</span>
 <span class=w>  </span><span class=nt>&lt;groupId&gt;</span>io.ak1<span class=nt>&lt;/groupId&gt;</span>
 <span class=w>  </span><span class=nt>&lt;artifactId&gt;</span>drawbox<span class=nt>&lt;/artifactId&gt;</span>
-<span class=w>  </span><span class=nt>&lt;version&gt;</span>2.0.0<span class=nt>&lt;/version&gt;</span>
+<span class=w>  </span><span class=nt>&lt;version&gt;</span>2.1.0-alpha01<span class=nt>&lt;/version&gt;</span>
 <span class=nt>&lt;/dependency&gt;</span>
-</code></pre></div> <h3 id=ivy>Ivy<a class=headerlink href=#ivy title="Permanent link">&para;</a></h3> <div class=highlight><pre><span></span><code><span class=nt>&lt;dependency</span><span class=w> </span><span class=na>org=</span><span class=s>&#39;io.ak1&#39;</span><span class=w> </span><span class=na>name=</span><span class=s>&#39;drawbox&#39;</span><span class=w> </span><span class=na>rev=</span><span class=s>&#39;2.0.0&#39;</span><span class=nt>&gt;</span>
+</code></pre></div> <h3 id=ivy>Ivy<a class=headerlink href=#ivy title="Permanent link">&para;</a></h3> <div class=highlight><pre><span></span><code><span class=nt>&lt;dependency</span><span class=w> </span><span class=na>org=</span><span class=s>&#39;io.ak1&#39;</span><span class=w> </span><span class=na>name=</span><span class=s>&#39;drawbox&#39;</span><span class=w> </span><span class=na>rev=</span><span class=s>&#39;2.1.0-alpha01&#39;</span><span class=nt>&gt;</span>
 <span class=w>  </span><span class=nt>&lt;artifact</span><span class=w> </span><span class=na>name=</span><span class=s>&#39;drawbox&#39;</span><span class=w> </span><span class=na>ext=</span><span class=s>&#39;pom&#39;</span><span class=w> </span><span class=nt>&gt;&lt;/artifact&gt;</span>
 <span class=nt>&lt;/dependency&gt;</span>
 </code></pre></div> <h2 id=platform-specific-setup>Platform-Specific Setup<a class=headerlink href=#platform-specific-setup title="Permanent link">&para;</a></h2> <h3 id=android>Android<a class=headerlink href=#android title="Permanent link">&para;</a></h3> <p>No additional setup required! DrawBox automatically includes the Android implementation.</p> <div class=highlight><pre><span></span><code><span class=c1>// In your android {} block</span>
@@ -44,7 +44,7 @@
 
 <span class=c1>// If these imports work, DrawBox is installed correctly!</span>
 </code></pre></div> <h2 id=troubleshooting>Troubleshooting<a class=headerlink href=#troubleshooting title="Permanent link">&para;</a></h2> <h3 id=import-errors>Import Errors<a class=headerlink href=#import-errors title="Permanent link">&para;</a></h3> <p>If you get "Unresolved reference" errors: 1. Run <code>./gradlew clean</code> 2. Sync Gradle: In Android Studio, go to File &gt; Sync Now 3. Invalidate cache: File &gt; Invalidate Caches</p> <h3 id=version-conflicts>Version Conflicts<a class=headerlink href=#version-conflicts title="Permanent link">&para;</a></h3> <p>If you have dependency version conflicts: <div class=highlight><pre><span></span><code><span class=n>dependencies</span><span class=w> </span><span class=p>{</span>
-<span class=w>    </span><span class=n>implementation</span><span class=p>(</span><span class=s>&quot;io.ak1:drawbox:2.0.0&quot;</span><span class=p>)</span><span class=w> </span><span class=p>{</span>
+<span class=w>    </span><span class=n>implementation</span><span class=p>(</span><span class=s>&quot;io.ak1:drawbox:2.1.0-alpha01&quot;</span><span class=p>)</span><span class=w> </span><span class=p>{</span>
 <span class=w>        </span><span class=n>exclude</span><span class=p>(</span><span class=n>group</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=s>&quot;androidx.compose.runtime&quot;</span><span class=p>,</span><span class=w> </span><span class=n>module</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=s>&quot;runtime&quot;</span><span class=p>)</span>
 <span class=w>    </span><span class=p>}</span>
 <span class=p>}</span>
