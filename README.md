@@ -1,4 +1,8 @@
-<img src="media/banner.gif"/>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="media/banner-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="media/banner.svg">
+  <img src="media/banner.svg" alt="DrawBox — a drawing SDK for Kotlin Multiplatform"/>
+</picture>
 
 # DrawBox
 
@@ -24,23 +28,90 @@ Run the sample right in your browser — no install required:
 [![Try it Live](https://img.shields.io/badge/Try%20it%20Live-WASM%20Sample-orange.svg?style=for-the-badge&logo=webassembly)](https://ak1.io/DrawBox/sample/)
 
 ## Features
-* **SDK-first Multiplatform Support**: Native support for Android, iOS, Web (WASM), and JVM platforms
-* **Multiple Drawing Modes**: Freehand pen, rectangles, circles, triangles, arrows, and lines
-* **Rich Customization**: 
-  - Customizable stroke size and color
-  - Opacity/alpha control for transparency
-  - Background color customization
-* **Full Undo/Redo** support with history tracking
-* **Export Formats**: 
-  - SVG export for vector graphics
-  - JSON export for preserving drawing state
-  - Bitmap export for raster images
-* **Reset and Clear** canvas functionality
-* **Modern Architecture**: MVI pattern with proper state management
-* **Embeddable SDK API**: Simple composable API with comprehensive documentation
+
+**Cross-platform, one codebase**
+- Ships to Android, iOS, Desktop (JVM), Web (WASM), and Kotlin/JS browser from a single shared module.
+- Pure Compose Multiplatform — no per-platform UI forks.
+
+**Drawing primitives**
+- Freehand pen with pressure / tilt / azimuth sampling on Apple Pencil and S Pen (mouse and capacitive touch default to unit pressure with zero overhead).
+- Shape tools: rectangle, circle, triangle, arrow, line — each with stroke, fill, corner radius, and dashed / dotted stroke styles.
+- Independent fill + stroke per shape, including explicit "no fill" and "no stroke" states.
+
+**Rich elements**
+- **Image element** — place, transform, rotate, and export bitmaps; bytes are the source of truth, decoded lazily with a mip-level cache so panning large images stays smooth.
+- **Text element** — block-level plain text with inline editor, font family / size / alignment controls, and SVG export.
+- **Connectors** with auto-snapping endpoints that anchor to the facing side midpoint of the target shape and follow rotation.
+
+**Editing**
+- Infinite canvas with zoom, pan (space-bar / middle-mouse / two-finger / scroll wheel), and a world-space cursor overlay that scales with zoom.
+- Object eraser tool with lazy history snapshots — a full sweep across N elements undoes as a single revision.
+- Full undo / redo, multi-select with drag and scale.
+
+**Import / export**
+- **SVG** export for vector output.
+- **PNG** export for raster output.
+- **JSON** import + export of the entire drawing state — round-trippable, human-editable. See [`samples/`](samples/) for ready-made examples.
+- **Image insertion** from the native picker, drag-and-drop (Desktop), or clipboard paste (Desktop, Web, Android, iOS).
+
+**Architecture**
+- MVI pattern with immutable state, sealed `Intent` / `Event` / `Mode` / `State` types.
+- `2.0` public surfaces (`DrawBoxController`, `Mode`, `Intent`, `Event`, `State`) frozen under semver; incubating surfaces opt in via explicit annotations.
 
 ## Demo
-<img src="media/media.gif"/>
+
+A short walkthrough of the SDK in action — pen, shapes, transforms, and the import / export pipeline.
+
+<video src="https://github.com/user-attachments/assets/7e319a52-9a84-492c-9b1d-7babcc88e9d8" controls muted loop></video>
+
+<details>
+<summary><strong>More demo footage</strong></summary>
+
+Drawing and shape editing — pen pressure, shapes with independent fill / stroke, multi-select transforms.
+
+<video src="https://github.com/user-attachments/assets/05ec40c4-971e-44c5-a8e7-090d4e544fd9" controls muted loop></video>
+
+Import / export round-trip — JSON in, edits, JSON out, plus SVG and PNG export.
+
+<video src="https://github.com/user-attachments/assets/bd68ccad-d05a-4778-8950-7efaa6d9c62b" controls muted loop></video>
+
+</details>
+
+### Sample app — settings drawer
+
+The bundled sample exposes the full SDK surface through a single settings drawer so you can probe each capability without writing host code.
+
+<p align="center">
+  <img src="media/s1.png" alt="DrawBox sample app — settings drawer" width="320" />
+</p>
+
+| Section | What it controls |
+| --- | --- |
+| **Export** | `Download SVG` writes the current scene as scalable vector XML. `Download PNG` rasterises the visible canvas. `Export JSON` serialises the entire scene (background, elements, styles) to a portable text file. |
+| **Import** | `Import JSON` loads a previously exported scene or any compatible JSON payload (try the files in [`samples/`](samples/)). `Insert image` opens the platform-native picker and places the chosen bitmap as an editable `Element.Image`. |
+| **Playback** | `Replay drawing` re-plays the strokes in the order they were created — useful for tutorials, time-lapses, or debugging stroke ordering. |
+| **Canvas** | `Background color` swaps the canvas tint. `Background pattern` toggles between `None`, `Graph`, `Checker`, `Hideout`, and `Texture` — all tileable SVG patterns rendered through Skia. |
+| **View** | `Show grid` toggles a world-space grid overlay that scales with zoom. |
+| **Danger** | `Clear canvas` removes every element. Snapshot-backed, so a single undo restores the cleared scene. |
+
+### Built entirely from JSON
+
+Drawings are serialised as plain JSON (`{ "bgColor": "...", "elements": [...] }`), which means a flowchart can be authored or programmatically generated and then imported into the SDK. The two scenes below were rendered by importing the sample files in [`samples/`](samples/) — no manual drawing involved.
+
+<table>
+  <tr>
+    <td align="center" width="50%">
+      <img src="media/s2.png" alt="Daily Loop — portrait flow chart imported from JSON" width="320" /><br/>
+      <sub><a href="samples/DrawBox-daily-loop.json"><code>samples/DrawBox-daily-loop.json</code></a> — portrait flow with mixed shapes, dashed strokes, a curved loop-back arrow, multi-line text, and connector bindings that auto-snap to the bound shape's facing side.</sub>
+    </td>
+    <td align="center" width="50%">
+      <img src="media/s3.png" alt="Build Cycle — landscape pipeline imported from JSON" width="100%" /><br/>
+      <sub><a href="samples/DrawBox-build-cycle.json"><code>samples/DrawBox-build-cycle.json</code></a> — landscape pipeline exercising every shape type (triangle, rectangle, circle), all three stroke styles (solid, dashed, dotted), and three font families (serif, sans, mono).</sub>
+    </td>
+  </tr>
+</table>
+
+> To try them yourself: open the sample app, tap **Settings → Import → Import JSON**, and paste the contents of either file.
 
 ## Usage
 
@@ -147,26 +218,25 @@ dependencies {
 
 > Full version history and the `1.x → 2.x` migration guide live in [CHANGELOG.md](CHANGELOG.md).
 
-## What's New in 2.0.0
+## What's New in 2.1.0-alpha01
 
-### Kotlin Multiplatform Migration
-- **Complete KMP rewrite** - Now supports Android, iOS, Web (WASM), and JVM platforms with a single codebase
-- **Shared architecture** - Core drawing logic and state management shared across all platforms
-- **Platform-specific implementations** - Optimized image saving and rendering for each platform
+First pre-release of the `2.1` line. The frozen `2.0` surfaces (`DrawBoxController`, `Mode`, `Intent`, `Event`, `State`) are extended only — see the [migration guide](CHANGELOG.md#migration-20x--21x) for the one structural change inside `Element.Path` made to accommodate pen-pressure data.
 
-### Architecture Improvements
-- **MVI Pattern**: Modern state management with Model-View-Intent architecture
-- **Immutable State**: Functional state updates ensure predictable behavior
-- **Event-Driven**: Side effects handled through a reactive event system
-- **Type-Safe**: Sealed classes for modes, intents, and events
+### Highlights
+- **Image element** (`Element.Image`, `Mode.IMAGE`) — place, transform, and export bitmaps as first-class canvas elements.
+- **Text element** (`Element.Text`, `Mode.TEXT`) — block-level plain text with inline editor, font controls, and SVG export.
+- **Pen pressure** sampling on PEN and ERASER modes. New `Element.PathSample` carries `position`, `width`, and optional `tilt` / `azimuth` from Apple Pencil and S Pen. Mouse / capacitive touch defaults to unit pressure with zero overhead.
+- **Cross-platform image inputs** under `io.ak1.drawbox.input`:
+    - `pasteImageFromClipboard(...)` — JVM, Web (WasmJS + JS), Android, iOS.
+    - `Modifier.imageDragAndDropTarget(...)` — real on Desktop; documented stubs on iOS / Web pending Compose Multiplatform API support.
+    - iOS PHPicker wired for native image insertion.
+- **Kotlin/JS browser target** alongside the existing Android / iOS / JVM / WASM artifacts.
+- **Independent fill + stroke** on `Element.Shape` with explicit "none" states for both.
+- **Connector side-anchoring** — arrow endpoints snap to the facing side midpoint of their bound shape, rotation-aware.
+- **Async + downsampled image decode** with a mip-level cache (internal perf, no API change).
+- Roborazzi-based snapshot test harness covering a complex multi-element scene.
 
-### New Features
-- **Multiple Drawing Modes**: Draw rectangles, circles, triangles, arrows, and lines
-- **SVG Export**: Export drawings as vector graphics for scalability
-- **Enhanced Customization**: Control opacity, background color, and more
-- **Improved State Management**: Better control over drawing history and canvas state
-- **Documentation**: Auto-generated Dokka documentation for better API visibility
-- **Code Quality**: Spotless code formatting for consistent style
+See [`CHANGELOG.md`](CHANGELOG.md) for the full list and the `2.0.x → 2.1.x` migration guide.
 
 ## Thanks to
 [RangVikalp](https://github.com/akshay2211/rang-vikalp) for the beautiful color picker used in DrawBox
