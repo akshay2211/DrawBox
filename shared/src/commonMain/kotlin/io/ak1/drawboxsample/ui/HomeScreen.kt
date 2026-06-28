@@ -20,6 +20,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.isCtrlPressed
+import androidx.compose.ui.input.key.isMetaPressed
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onPreviewKeyEvent
+import androidx.compose.ui.input.key.type
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.pointerInput
@@ -36,6 +43,7 @@ import io.ak1.drawbox.domain.model.bounds
 import io.ak1.drawbox.domain.model.controlPoint
 import io.ak1.drawbox.presentation.viewmodel.rememberDrawBoxController
 import io.ak1.drawboxsample.save.imageDragAndDropTarget
+import io.ak1.drawboxsample.save.pasteImageFromClipboard
 import io.ak1.drawboxsample.save.rememberImageSaver
 import io.ak1.drawboxsample.ui.components.BgPatternPreset
 import io.ak1.drawboxsample.ui.components.ColorPickerDialog
@@ -252,6 +260,24 @@ fun HomeScreen(
                             Offset(world.x + cascade, world.y + cascade),
                         )
                     }
+                // Cmd/Ctrl+V → paste an image from the system clipboard at
+                // the viewport center. Per-platform clipboard read happens
+                // in pasteImageFromClipboard; on touch platforms the call
+                // is a no-op. Hooked via onPreviewKeyEvent so the SDK's
+                // Space-bar pan handler (which only consumes Space) doesn't
+                // shadow us.
+                .onPreviewKeyEvent { event ->
+                    val isV = event.key == Key.V
+                    val isPaste = event.type == KeyEventType.KeyDown &&
+                        isV &&
+                        (event.isMetaPressed || event.isCtrlPressed)
+                    if (isPaste) {
+                        pasteImageFromClipboard { bytes, intrinsicSize ->
+                            val world = state.viewport.screenToWorld(ScreenCenter)
+                            viewModel.insertImage(bytes, intrinsicSize, world)
+                        }
+                        true
+                    } else false
                 },
             showGrid = showGrid.value,
             // While the inline editor is open over a text element, tell the
