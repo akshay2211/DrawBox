@@ -1,12 +1,11 @@
-package io.ak1.drawboxsample.save
+package io.ak1.drawbox.input
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 /**
- * No-op on WasmJS for now. The Compose Multiplatform drag-drop API
- * doesn't surface a stable browser `DataTransfer` payload yet —
- * tracked as a follow-up to #78.
+ * No-op on iOS. The natural insertion path is PHPicker (issue #80, wired
+ * in `ImageSaver.ios.kt`).
  */
 @Composable
 actual fun Modifier.imageDragAndDropTarget(

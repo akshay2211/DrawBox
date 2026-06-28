@@ -1,11 +1,10 @@
-package io.ak1.drawboxsample.save
+package io.ak1.drawbox.input
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 /**
- * No-op on iOS. The natural insertion path is PHPicker (issue #80, wired
- * in `ImageSaver.ios.kt`).
+ * No-op on legacy Kotlin/JS — same status as the WasmJS actual.
  */
 @Composable
 actual fun Modifier.imageDragAndDropTarget(

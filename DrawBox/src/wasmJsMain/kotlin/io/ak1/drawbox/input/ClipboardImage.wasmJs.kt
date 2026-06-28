@@ -1,4 +1,4 @@
-package io.ak1.drawboxsample.save
+package io.ak1.drawbox.input
 
 import androidx.compose.ui.geometry.Size
 import org.jetbrains.skia.Image
@@ -7,7 +7,7 @@ import org.khronos.webgl.Uint8Array
 import org.khronos.webgl.get
 
 actual fun pasteImageFromClipboard(
-    onLoaded: (ByteArray, Size) -> Unit,
+    onLoaded: (bytes: ByteArray, intrinsicSize: Size) -> Unit,
 ) {
     // navigator.clipboard.read() returns Promise<ClipboardItem[]>. On
     // browsers without the Async Clipboard API (older Safari, some
