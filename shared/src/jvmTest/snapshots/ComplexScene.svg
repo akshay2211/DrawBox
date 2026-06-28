@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="30.0 0.0 740.0 560.0">
+  <path d="M 60.0 410.0 L 120.0 390.0 Q 120.0 390.0 180.0 410.0 Q 180.0 410.0 240.0 390.0 Q 240.0 390.0 300.0 410.0 Q 300.0 410.0 360.0 390.0" stroke="#0d47a1" stroke-width="6.0" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="1.0"/>
+  <g><line x1="400.0" y1="410.0" x2="460.0" y2="405.0" stroke="#b71c1c" stroke-width="11.0" stroke-linecap="round" opacity="1.0"/><line x1="460.0" y1="405.0" x2="520.0" y2="400.0" stroke="#b71c1c" stroke-width="9.0" stroke-linecap="round" opacity="1.0"/><line x1="520.0" y1="400.0" x2="580.0" y2="395.0" stroke="#b71c1c" stroke-width="7.0" stroke-linecap="round" opacity="1.0"/><line x1="580.0" y1="395.0" x2="640.0" y2="390.0" stroke="#b71c1c" stroke-width="5.0" stroke-linecap="round" opacity="1.0"/><line x1="640.0" y1="390.0" x2="720.0" y2="388.0" stroke="#b71c1c" stroke-width="3.0" stroke-linecap="round" opacity="1.0"/></g>
+  <rect x="60.0" y="80.0" width="180.0" height="100.0" rx="18.0" ry="18.0" stroke="#1565c0" stroke-width="3.0" fill="#e3f2fd"/>
+  <circle cx="380.0" cy="130.0" r="102.9563" stroke="#e65100" stroke-width="3.0" fill="#fff3e0"/>
+  <path d="M 628.4853 88.48528 L 711.5147 171.51472 Q 720.0 180.0 708.0 180.0 L 532.0 180.0 Q 520.0 180.0 528.4853 171.51472 L 611.5147 88.48528 Q 620.0 80.0 628.4853 88.48528 Z" stroke="#2e7d32" stroke-width="3.0" fill="#e8f5e9"/>
+  <line x1="60.0" y1="220.0" x2="360.0" y2="220.0" stroke="#6a1b9a" stroke-width="3.0" stroke-linecap="round" stroke-dasharray="1.5,6.0"/>
+  <path d="M 400.0 230.0 Q 560.0 190.0 720.0 230.0" stroke="#ad1457" stroke-width="3.0" stroke-linecap="round" fill="none"/>
+  <text x="60.0" y="280.0" font-family="sans" font-size="14.0" fill="#263238" text-anchor="start"><tspan x="60.0" dy="14.0">Sans-serif, left-aligned.</tspan><tspan x="60.0" dy="17.5">Multi-line text wraps within</tspan><tspan x="60.0" dy="17.5">the box.</tspan></text>
+  <text x="410.0" y="280.0" font-family="serif" font-size="14.0" fill="#263238" text-anchor="middle"><tspan x="410.0" dy="14.0">Serif, centered.</tspan><tspan x="410.0" dy="17.5">Quoth the raven,</tspan><tspan x="410.0" dy="17.5">“Nevermore.”</tspan></text>
+  <text x="740.0" y="280.0" font-family="mono" font-size="13.0" fill="#1b5e20" text-anchor="end"><tspan x="740.0" dy="13.0">fun main() {</tspan><tspan x="740.0" dy="16.25">  println("Hello,</tspan><tspan x="740.0" dy="16.25">World!")</tspan><tspan x="740.0" dy="16.25">}</tspan></text>
+  <g transform="rotate(15.0, 160.0, 505.0)"><rect x="100.0" y="470.0" width="120.0" height="70.0" stroke="#c62828" stroke-width="3.0" fill="#ffcdd2"/></g>
+  <g transform="rotate(-10.0, 340.0, 505.0)"><polygon points="340.0,470.0 280.0,540.0 400.0,540.0" stroke="#4527a0" stroke-width="3.0" fill="#d1c4e9"/></g>
+  <line x1="460.0" y1="510.0" x2="709.60767" y2="510.0" stroke="#1b5e20" stroke-width="6.0" stroke-linecap="round"/>
+  <polygon points="720.0,510.0 709.60767,516.0 709.60767,504.0" fill="#1b5e20"/>
+  <text x="150.0" y="118.0" font-family="sans" font-size="18.0" fill="#0d47a1" text-anchor="middle"><tspan x="150.0" dy="18.0">Rectangle</tspan></text>
+  <text x="380.0" y="118.0" font-family="serif" font-size="18.0" fill="#bf360c" text-anchor="middle"><tspan x="380.0" dy="18.0">Circle</tspan></text>
+  <text x="620.0" y="140.0" font-family="mono" font-size="16.0" fill="#1b5e20" text-anchor="middle"><tspan x="620.0" dy="16.0">Triangle</tspan></text>
+  <path d="M 240.0 130.0 Q 265.0 100.0 290.0 130.0" stroke="#455a64" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+  <polygon points="290.0,130.0 280.61475,126.54793 288.29694,120.14609" fill="#455a64"/>
+  <line x1="470.0" y1="130.0" x2="511.33975" y2="130.0" stroke="#455a64" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="10.0,5.0"/>
+  <polygon points="520.0,130.0 511.33975,135.0 511.33975,125.0" fill="#455a64"/>
+  <text x="400.0" y="20.0" font-family="sans" font-size="28.0" fill="#263238" text-anchor="middle"><tspan x="400.0" dy="28.0">DrawBox Visual Regression</tspan></text>
+</svg>

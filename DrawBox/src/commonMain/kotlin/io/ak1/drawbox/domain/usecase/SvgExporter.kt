@@ -5,10 +5,17 @@ package io.ak1.drawbox.domain.usecase
 import androidx.compose.ui.graphics.Color
 import io.ak1.drawbox.domain.model.Element
 import io.ak1.drawbox.domain.model.ShapeType
+import io.ak1.drawbox.domain.model.StrokeStyle
 import androidx.compose.ui.geometry.Offset
 import kotlin.io.encoding.Base64
 import kotlin.io.encoding.ExperimentalEncodingApi
+import kotlin.math.PI
 import kotlin.math.abs
+import kotlin.math.atan2
+import kotlin.math.cos
+import kotlin.math.max
+import kotlin.math.min
+import kotlin.math.sin
 import kotlin.math.sqrt
 
 object SvgExporter {
@@ -177,14 +184,60 @@ object SvgExporter {
         val strokeWidth = if (strokeOn) shape.strokeWidth else 0f
         val fillColor = if (shape.fillColor != null) colorToHex(shape.fillColor) else "none"
         val fillAttr = if (shape.fillColor != null) """fill="$fillColor"""" else """fill="none""""
+        val dashAttr = strokeDashArrayAttr(shape.strokeStyle, shape.strokeWidth)
 
-        return when (shape.shapeType) {
-            ShapeType.RECTANGLE -> rectangleToSvg(start, end, color, strokeWidth, fillAttr)
-            ShapeType.CIRCLE -> circleToSvg(start, end, color, strokeWidth, fillAttr)
-            ShapeType.TRIANGLE -> triangleToSvg(start, end, color, strokeWidth, fillAttr)
-            ShapeType.ARROW -> arrowToSvg(start, end, colorToHex(shape.strokeColor), shape.strokeWidth)
-            ShapeType.LINE -> lineToSvg(start, end, colorToHex(shape.strokeColor), shape.strokeWidth)
+        val inner = when (shape.shapeType) {
+            ShapeType.RECTANGLE -> rectangleToSvg(
+                start, end, color, strokeWidth, fillAttr,
+                cornerRadius = shape.cornerRadius, dashAttr = dashAttr,
+            )
+            ShapeType.CIRCLE -> circleToSvg(start, end, color, strokeWidth, fillAttr, dashAttr)
+            ShapeType.TRIANGLE -> triangleToSvg(
+                start, end, color, strokeWidth, fillAttr,
+                cornerRadius = shape.cornerRadius, dashAttr = dashAttr,
+            )
+            ShapeType.ARROW -> arrowToSvg(
+                start, end, colorToHex(shape.strokeColor), shape.strokeWidth,
+                bend = shape.bend, dashAttr = dashAttr,
+            )
+            ShapeType.LINE -> lineToSvg(
+                start, end, colorToHex(shape.strokeColor), shape.strokeWidth,
+                bend = shape.bend, dashAttr = dashAttr,
+            )
         }
+
+        return if (shape.rotation != 0f) {
+            val center = shape.unrotatedCenter()
+            """<g transform="rotate(${shape.rotation}, ${center.first}, ${center.second})">$inner</g>"""
+        } else inner
+    }
+
+    /**
+     * Center point for SVG rotation. For RECTANGLE / TRIANGLE / ARROW / LINE
+     * the AABB center matches the renderer's `bounds().center`; for CIRCLE
+     * the center is the midpoint of the two diameter endpoints. Both reduce
+     * to `((start + end) / 2)` since the renderer's pivot is the bbox center.
+     */
+    private fun Element.Shape.unrotatedCenter(): Pair<Float, Float> {
+        val s = points[0]; val e = points[1]
+        return (s.x + e.x) * 0.5f to (s.y + e.y) * 0.5f
+    }
+
+    /**
+     * SVG `stroke-dasharray` mirroring DrawBox.kt's path effect: on / off
+     * pixels are multiples of [strokeWidth]. SOLID returns empty so the
+     * attribute is omitted (default SVG behavior is solid).
+     */
+    private fun strokeDashArrayAttr(style: StrokeStyle, strokeWidth: Float): String {
+        if (style == StrokeStyle.SOLID || strokeWidth <= 0f) return ""
+        val on: Float
+        val off: Float
+        when (style) {
+            StrokeStyle.DASHED -> { on = strokeWidth * 4f; off = strokeWidth * 2f }
+            StrokeStyle.DOTTED -> { on = strokeWidth * 0.5f; off = strokeWidth * 2f }
+            StrokeStyle.SOLID -> return ""
+        }
+        return """ stroke-dasharray="$on,$off""""
     }
 
     private fun rectangleToSvg(
@@ -192,14 +245,19 @@ object SvgExporter {
         end: Offset,
         color: String,
         strokeWidth: Float,
-        fillAttr: String
+        fillAttr: String,
+        cornerRadius: Float,
+        dashAttr: String,
     ): String {
-        val x = kotlin.math.min(start.x, end.x)
-        val y = kotlin.math.min(start.y, end.y)
+        val x = min(start.x, end.x)
+        val y = min(start.y, end.y)
         val width = abs(end.x - start.x)
         val height = abs(end.y - start.y)
-
-        return """<rect x="$x" y="$y" width="$width" height="$height" stroke="$color" stroke-width="$strokeWidth" $fillAttr/>"""
+        // Mirror DrawBox.kt's drawRoundRect clamp: corner radius can't
+        // exceed half the shorter side or the corners collide.
+        val r = cornerRadius.coerceAtMost(min(width, height) * 0.5f).coerceAtLeast(0f)
+        val rxAttr = if (r > 0f) """ rx="$r" ry="$r"""" else ""
+        return """<rect x="$x" y="$y" width="$width" height="$height"$rxAttr stroke="$color" stroke-width="$strokeWidth"$dashAttr $fillAttr/>"""
     }
 
     private fun circleToSvg(
@@ -207,13 +265,14 @@ object SvgExporter {
         end: Offset,
         color: String,
         strokeWidth: Float,
-        fillAttr: String
+        fillAttr: String,
+        dashAttr: String,
     ): String {
         val cx = (start.x + end.x) / 2
         val cy = (start.y + end.y) / 2
         val radius = sqrt(((end.x - start.x) / 2) * ((end.x - start.x) / 2) + ((end.y - start.y) / 2) * ((end.y - start.y) / 2))
 
-        return """<circle cx="$cx" cy="$cy" r="$radius" stroke="$color" stroke-width="$strokeWidth" $fillAttr/>"""
+        return """<circle cx="$cx" cy="$cy" r="$radius" stroke="$color" stroke-width="$strokeWidth"$dashAttr $fillAttr/>"""
     }
 
     private fun triangleToSvg(
@@ -221,54 +280,111 @@ object SvgExporter {
         end: Offset,
         color: String,
         strokeWidth: Float,
-        fillAttr: String
+        fillAttr: String,
+        cornerRadius: Float,
+        dashAttr: String,
     ): String {
         val centerX = (start.x + end.x) / 2
-        val baseY = kotlin.math.max(start.y, end.y)
-        val topY = kotlin.math.min(start.y, end.y)
+        val baseY = max(start.y, end.y)
+        val topY = min(start.y, end.y)
         val width = abs(end.x - start.x)
 
-        val points = listOf(
-            "$centerX,$topY",
-            "${centerX - width / 2},${baseY}",
-            "${centerX + width / 2},${baseY}"
-        ).joinToString(" ")
+        val apex = Offset(centerX, topY)
+        val br = Offset(centerX + width / 2, baseY)
+        val bl = Offset(centerX - width / 2, baseY)
 
-        return """<polygon points="$points" stroke="$color" stroke-width="$strokeWidth" $fillAttr/>"""
+        if (cornerRadius <= 0f) {
+            val pts = "${apex.x},${apex.y} ${bl.x},${bl.y} ${br.x},${br.y}"
+            return """<polygon points="$pts" stroke="$color" stroke-width="$strokeWidth"$dashAttr $fillAttr/>"""
+        }
+
+        // Rounded triangle — replace each vertex with a quadratic-bezier
+        // arc, mirroring DrawBox.kt's `roundedTrianglePath`. Clamp radius to
+        // half the shortest edge so adjacent tangent points don't cross.
+        val verts = listOf(apex, br, bl)
+        val edges = listOf(
+            distance(verts[0], verts[1]),
+            distance(verts[1], verts[2]),
+            distance(verts[2], verts[0]),
+        )
+        val r = cornerRadius.coerceAtMost((edges.minOrNull() ?: 0f) * 0.5f)
+        val t1 = Array(3) { Offset.Zero }
+        val t2 = Array(3) { Offset.Zero }
+        for (i in 0..2) {
+            val prev = verts[(i + 2) % 3]
+            val curr = verts[i]
+            val next = verts[(i + 1) % 3]
+            val toPrev = normalize(prev - curr)
+            val toNext = normalize(next - curr)
+            t1[i] = curr + toPrev * r
+            t2[i] = curr + toNext * r
+        }
+        val d = buildString {
+            append("M ${t2[0].x} ${t2[0].y}")
+            for (i in 0..2) {
+                val ni = (i + 1) % 3
+                append(" L ${t1[ni].x} ${t1[ni].y}")
+                append(" Q ${verts[ni].x} ${verts[ni].y} ${t2[ni].x} ${t2[ni].y}")
+            }
+            append(" Z")
+        }
+        return """<path d="$d" stroke="$color" stroke-width="$strokeWidth"$dashAttr $fillAttr/>"""
     }
 
     private fun arrowToSvg(
         start: Offset,
         end: Offset,
         color: String,
-        strokeWidth: Float
+        strokeWidth: Float,
+        bend: Offset,
+        dashAttr: String,
     ): String {
-        val arrowHeadSize = kotlin.math.max(strokeWidth * 2, 10f)
-        val dx = end.x - start.x
-        val dy = end.y - start.y
-        val length = sqrt(dx * dx + dy * dy)
+        val arrowHeadSize = max(strokeWidth * 2, 10f)
 
-        if (length == 0f) return ""
+        val bodySvg: String
+        val tangentX: Float
+        val tangentY: Float
 
-        val unitX = dx / length
-        val unitY = dy / length
+        if (bend == Offset.Zero) {
+            val dx = end.x - start.x
+            val dy = end.y - start.y
+            val length = sqrt(dx * dx + dy * dy)
+            if (length == 0f) return ""
+            // Shorten body so it doesn't poke through the filled arrowhead.
+            val arrowDepth = arrowHeadSize * cos(PI.toFloat() / 6f)
+            val lineEndX = end.x - dx / length * arrowDepth
+            val lineEndY = end.y - dy / length * arrowDepth
+            bodySvg = """<line x1="${start.x}" y1="${start.y}" x2="$lineEndX" y2="$lineEndY" stroke="$color" stroke-width="$strokeWidth" stroke-linecap="round"$dashAttr/>"""
+            tangentX = dx; tangentY = dy
+        } else {
+            // Quadratic bezier body. Tangent at t=1 is `2 * (end - control)`
+            // (proportional — atan2 only cares about direction).
+            val midX = (start.x + end.x) * 0.5f
+            val midY = (start.y + end.y) * 0.5f
+            val cx = midX + bend.x
+            val cy = midY + bend.y
+            bodySvg = """<path d="M ${start.x} ${start.y} Q $cx $cy ${end.x} ${end.y}" stroke="$color" stroke-width="$strokeWidth" stroke-linecap="round" fill="none"$dashAttr/>"""
+            tangentX = end.x - cx; tangentY = end.y - cy
+        }
 
-        val arrowX1 = end.x - unitX * arrowHeadSize
-        val arrowY1 = end.y - unitY * arrowHeadSize
+        val angle = atan2(tangentY, tangentX)
+        val p1x = end.x - arrowHeadSize * cos(angle - PI.toFloat() / 6f)
+        val p1y = end.y - arrowHeadSize * sin(angle - PI.toFloat() / 6f)
+        val p2x = end.x - arrowHeadSize * cos(angle + PI.toFloat() / 6f)
+        val p2y = end.y - arrowHeadSize * sin(angle + PI.toFloat() / 6f)
 
-        val perpX = -unitY * arrowHeadSize / 2
-        val perpY = unitX * arrowHeadSize / 2
+        val headSvg = """<polygon points="${end.x},${end.y} $p1x,$p1y $p2x,$p2y" fill="$color"/>"""
+        return "$bodySvg\n  $headSvg"
+    }
 
-        val arrowHeadPoints = listOf(
-            "${end.x},${end.y}",
-            "${arrowX1 + perpX},${arrowY1 + perpY}",
-            "${arrowX1 - perpX},${arrowY1 - perpY}"
-        ).joinToString(" ")
+    private fun distance(a: Offset, b: Offset): Float {
+        val dx = a.x - b.x; val dy = a.y - b.y
+        return sqrt(dx * dx + dy * dy)
+    }
 
-        val lineSvg = """<line x1="${start.x}" y1="${start.y}" x2="${end.x}" y2="${end.y}" stroke="$color" stroke-width="$strokeWidth" stroke-linecap="round"/>"""
-        val headSvg = """<polygon points="$arrowHeadPoints" fill="$color"/>"""
-
-        return "$lineSvg\n  $headSvg"
+    private fun normalize(v: Offset): Offset {
+        val len = sqrt(v.x * v.x + v.y * v.y)
+        return if (len > 0f) Offset(v.x / len, v.y / len) else Offset.Zero
     }
 
     private fun textToSvg(text: Element.Text): String {
@@ -299,7 +415,7 @@ object SvgExporter {
         // is intentionally lossy for re-import (the wrap rect isn't
         // recoverable from the visual layout) — JSON is the lossless format.
         val lineHeight = text.fontSize * 1.25f
-        val lines = wrapTextForSvg(text.text, w, text.fontSize)
+        val lines = wrapTextForSvg(text.text, w, text.fontSize, text.fontFamilyKey)
         val tspans = lines.mapIndexed { i, line ->
             val dy = if (i == 0) text.fontSize else lineHeight
             """<tspan x="$anchorX" dy="$dy">${escapeXml(line)}</tspan>"""
@@ -308,14 +424,29 @@ object SvgExporter {
     }
 
     /**
-     * Cheap line-wrap approximation for SVG export. Estimates characters per
-     * line using a mean glyph width of ~0.55 × fontSize. Honors hard `\n`
-     * breaks; long words break at the character limit. Lossless round-trip
-     * happens through JSON, not SVG.
+     * Cheap line-wrap approximation for SVG export. Honors hard `\n` breaks;
+     * long words break at the character limit. Lossless round-trip happens
+     * through JSON, not SVG.
+     *
+     * Per-family multipliers — monospace glyphs are uniformly wider than
+     * proportional ones (`~0.6 × em` vs `~0.55 × em` average), so a single
+     * constant under-estimates mono line lengths and lets through a
+     * `println("Hello, World!")` line that the renderer's `TextMeasurer`
+     * actually wraps. Aligning the multiplier with family keeps the SVG
+     * `<tspan>` breaks consistent with the renderer's measured wraps.
      */
-    private fun wrapTextForSvg(text: String, widthWorld: Float, fontSize: Float): List<String> {
+    private fun wrapTextForSvg(
+        text: String,
+        widthWorld: Float,
+        fontSize: Float,
+        fontFamilyKey: String,
+    ): List<String> {
         if (widthWorld <= 0f || fontSize <= 0f) return text.split('\n')
-        val approxCharWidth = fontSize * 0.55f
+        val charWidthMul = when (fontFamilyKey) {
+            io.ak1.drawbox.domain.model.BuiltinFontFamilyKeys.MONO -> 0.6f
+            else -> 0.55f
+        }
+        val approxCharWidth = fontSize * charWidthMul
         val charsPerLine = (widthWorld / approxCharWidth).toInt().coerceAtLeast(1)
         val out = mutableListOf<String>()
         for (hardLine in text.split('\n')) {
@@ -323,10 +454,21 @@ object SvgExporter {
                 out += hardLine
                 continue
             }
-            var current = StringBuilder()
-            for (word in hardLine.split(' ')) {
-                val prospective = if (current.isEmpty()) word
-                else current.toString() + " " + word
+            // Preserve leading whitespace so an indented code block keeps
+            // its indent on the first wrapped line — matches the renderer's
+            // `TextMeasurer` which doesn't drop leading spaces. Without
+            // this, `  println(...)` (26 chars) tokenizes to two empty
+            // words + `println(...)` (24 chars), fits inside the limit,
+            // and the SVG never wraps even though the PNG does.
+            val leadingWs = hardLine.takeWhile { it == ' ' || it == '\t' }
+            val rest = hardLine.drop(leadingWs.length)
+            var current = StringBuilder(leadingWs)
+            for (word in rest.split(' ')) {
+                // No separator before the first content word (it would
+                // become an extra space after the indent); space between
+                // subsequent words.
+                val sep = if (current.length <= leadingWs.length) "" else " "
+                val prospective = current.toString() + sep + word
                 if (prospective.length <= charsPerLine) {
                     current = StringBuilder(prospective)
                 } else {
@@ -334,12 +476,12 @@ object SvgExporter {
                         out += current.toString()
                         current = StringBuilder()
                     }
-                    var rest = word
-                    while (rest.length > charsPerLine) {
-                        out += rest.substring(0, charsPerLine)
-                        rest = rest.substring(charsPerLine)
+                    var rest2 = word
+                    while (rest2.length > charsPerLine) {
+                        out += rest2.substring(0, charsPerLine)
+                        rest2 = rest2.substring(charsPerLine)
                     }
-                    current = StringBuilder(rest)
+                    current = StringBuilder(rest2)
                 }
             }
             if (current.isNotEmpty()) out += current.toString()
@@ -411,9 +553,18 @@ object SvgExporter {
         start: Offset,
         end: Offset,
         color: String,
-        strokeWidth: Float
+        strokeWidth: Float,
+        bend: Offset,
+        dashAttr: String,
     ): String {
-        return """<line x1="${start.x}" y1="${start.y}" x2="${end.x}" y2="${end.y}" stroke="$color" stroke-width="$strokeWidth" stroke-linecap="round"/>"""
+        return if (bend == Offset.Zero) {
+            """<line x1="${start.x}" y1="${start.y}" x2="${end.x}" y2="${end.y}" stroke="$color" stroke-width="$strokeWidth" stroke-linecap="round"$dashAttr/>"""
+        } else {
+            // Quadratic bezier control = midpoint + bend, matching DrawBox.kt.
+            val cx = (start.x + end.x) * 0.5f + bend.x
+            val cy = (start.y + end.y) * 0.5f + bend.y
+            """<path d="M ${start.x} ${start.y} Q $cx $cy ${end.x} ${end.y}" stroke="$color" stroke-width="$strokeWidth" stroke-linecap="round" fill="none"$dashAttr/>"""
+        }
     }
 
     private fun colorToHex(color: Color): String {

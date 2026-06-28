@@ -882,6 +882,15 @@ fun DrawingPreview(
     modifier: Modifier = Modifier.fillMaxSize(),
     viewport: Viewport = Viewport(),
 ) {
+    // Preview path threads a real TextMeasurer + cache + per-element image
+    // cache so [Element.Text] and [Element.Image] render their actual content
+    // instead of placeholders. The main [DrawBox] composable does the same;
+    // duplicating here so headless / read-only consumers (replay screen,
+    // roborazzi tests) get the same fidelity.
+    val textMeasurer = androidx.compose.ui.text.rememberTextMeasurer()
+    val textCache = remember { TextLayoutCache() }
+    val previewScope = rememberCoroutineScope()
+    val imageCache = remember(previewScope) { ImageBitmapCache(previewScope) }
     Canvas(modifier = modifier) {
         drawRect(color = bgColor)
         withTransform({
@@ -890,7 +899,16 @@ fun DrawingPreview(
         }) {
             elements
                 .sortedBy { it.zIndex }
-                .forEach { renderElement(it) }
+                .forEach {
+                    renderElement(
+                        element = it,
+                        pathCache = null,
+                        imageCache = imageCache,
+                        textCache = textCache,
+                        textMeasurer = textMeasurer,
+                        viewportScale = viewport.scale,
+                    )
+                }
         }
     }
 }
