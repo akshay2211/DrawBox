@@ -47,7 +47,7 @@ Uses the **MVI (Model-View-Intent)** pattern with immutable state management, ma
 
 | Metric | Value |
 |--------|-------|
-| **Latest Version** | 2.0.0 |
+| **Latest Version** | v2.1.0-alpha01 |
 | **Platforms** | Android, iOS, Web, Desktop |
 | **Architecture** | MVI Pattern |
 | **State Management** | Immutable, Functional |
@@ -75,7 +75,7 @@ Add to your `build.gradle.kts`:
 
 ```kotlin
 dependencies {
-    implementation("io.ak1:drawbox:2.0.0")
+    implementation("io.ak1:drawbox:v2.1.0-alpha01")
 }
 ```
 
