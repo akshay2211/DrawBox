@@ -1,4 +1,4 @@
-package io.ak1.drawboxsample.save
+package io.ak1.drawbox.input
 
 import androidx.compose.ui.geometry.Size
 
@@ -9,7 +9,7 @@ import androidx.compose.ui.geometry.Size
  * screenshot → annotate workflow this issue solves on Desktop / Web.
  */
 actual fun pasteImageFromClipboard(
-    onLoaded: (ByteArray, Size) -> Unit,
+    onLoaded: (bytes: ByteArray, intrinsicSize: Size) -> Unit,
 ) {
     // intentionally no-op
 }

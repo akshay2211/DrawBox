@@ -42,7 +42,8 @@ import io.ak1.drawbox.domain.model.bezierMidpoint
 import io.ak1.drawbox.domain.model.bounds
 import io.ak1.drawbox.domain.model.controlPoint
 import io.ak1.drawbox.presentation.viewmodel.rememberDrawBoxController
-import io.ak1.drawboxsample.save.pasteImageFromClipboard
+import io.ak1.drawbox.input.imageDragAndDropTarget
+import io.ak1.drawbox.input.pasteImageFromClipboard
 import io.ak1.drawboxsample.save.rememberImageSaver
 import io.ak1.drawboxsample.ui.components.BgPatternPreset
 import io.ak1.drawboxsample.ui.components.ColorPickerDialog
@@ -179,11 +180,6 @@ fun HomeScreen(
     var currentBgPattern by remember { mutableStateOf<BgPatternPreset?>(null) }
     var colorPickerForBg by remember { mutableStateOf(false) }
 
-    // True while the user is actively touching/dragging on the canvas. Drives
-    // auto-collapse of floating bars so they get out of the way during drawing.
-    var isDrawingActive by remember { mutableStateOf(false) }
-    val barsExpanded = !isDrawingActive
-
     // TEXT mode flow: DrawBox dispatches Intent.InsertText("") on tap. We
     // detect the newly inserted empty Text element here and open the inline
     // editor. The editor renders as the element-to-be (no border, no Done
@@ -228,19 +224,21 @@ fun HomeScreen(
             state = state,
             onIntent = viewModel::onIntent,
             modifier = Modifier.fillMaxSize().clipToBounds()
-                // Peek pointer events on the Initial pass so we can flip
-                // isDrawingActive without consuming events from DrawBox's
-                // own gesture handlers.
-                .pointerInput(Unit) {
-                    awaitPointerEventScope {
-                        while (true) {
-                            val event = awaitPointerEvent(PointerEventPass.Initial)
-                            when (event.type) {
-                                PointerEventType.Press -> isDrawingActive = true
-                                PointerEventType.Release -> isDrawingActive = false
-                                else -> Unit
-                            }
-                        }
+                // OS drag-drop: dragging image files from Finder /
+                // Explorer onto the canvas inserts them at the drop
+                // point. Each file in a multi-file drop gets a small
+                // cumulative offset so they don't perfectly stack.
+                // Touch platforms + web targets receive a no-op modifier;
+                // JVM Desktop is the only target that wires it today.
+                .imageDragAndDropTarget { drops ->
+                    drops.forEachIndexed { i, drop ->
+                        val world = state.viewport.screenToWorld(drop.dropPositionScreen)
+                        val cascade = (i * 24f)
+                        viewModel.insertImage(
+                            drop.bytes,
+                            drop.intrinsicSize,
+                            Offset(world.x + cascade, world.y + cascade),
+                        )
                     }
                 }
                 // Cmd/Ctrl+V → paste an image from the system clipboard at
@@ -296,7 +294,7 @@ fun HomeScreen(
                     currentTextAlignment = currentTextAlignment,
                     currentFontFamilyKey = currentFontFamilyKey,
                     fontFamilyKeys = fontFamilyKeys,
-                    expanded = barsExpanded,
+                    expanded = false,
                     onColorChange = { color ->
                         if (hasSelection) viewModel.setSelectionColor(color)
                         else viewModel.setColor(color)
@@ -355,7 +353,7 @@ fun HomeScreen(
                 onZoomReset = { viewModel.resetCamera() },
                 onSettingsClick = { drawerOpen = true },
                 modifier = Modifier.align(Alignment.TopEnd).padding(top = 12.dp, end = 12.dp),
-                expanded = barsExpanded,
+                expanded = false,
             )
 
             // Bottom-left zoom (wide only). Narrow folds zoom into the top-right cluster.
@@ -366,7 +364,7 @@ fun HomeScreen(
                     onZoomOut = { viewModel.zoomBy(0.8f, ScreenCenter) },
                     onZoomReset = { viewModel.resetCamera() },
                     modifier = Modifier.align(Alignment.BottomStart).padding(start = 16.dp, bottom = 24.dp),
-                    expanded = barsExpanded,
+                    expanded = false,
                 )
             }
 
@@ -378,7 +376,7 @@ fun HomeScreen(
                 onUndo = { viewModel.undo() },
                 onRedo = { viewModel.redo() },
                 onModeSelected = { viewModel.setMode(it) },
-                expanded = barsExpanded,
+                expanded = false,
             )
 
 

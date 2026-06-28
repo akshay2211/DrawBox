@@ -1,4 +1,4 @@
-package io.ak1.drawboxsample.save
+package io.ak1.drawbox.input
 
 import androidx.compose.ui.geometry.Size
 import kotlinx.browser.window
@@ -14,7 +14,7 @@ import org.khronos.webgl.get
  * Async Clipboard call chain in JS land where the API was designed.
  */
 actual fun pasteImageFromClipboard(
-    onLoaded: (ByteArray, Size) -> Unit,
+    onLoaded: (bytes: ByteArray, intrinsicSize: Size) -> Unit,
 ) {
     val handler: (dynamic) -> Unit = { bytes ->
         val byteArray = arrayBufferToBytes(bytes as ArrayBuffer)
