@@ -35,6 +35,7 @@ import io.ak1.drawbox.domain.model.bezierMidpoint
 import io.ak1.drawbox.domain.model.bounds
 import io.ak1.drawbox.domain.model.controlPoint
 import io.ak1.drawbox.presentation.viewmodel.rememberDrawBoxController
+import io.ak1.drawboxsample.save.imageDragAndDropTarget
 import io.ak1.drawboxsample.save.rememberImageSaver
 import io.ak1.drawboxsample.ui.components.BgPatternPreset
 import io.ak1.drawboxsample.ui.components.ColorPickerDialog
@@ -233,6 +234,23 @@ fun HomeScreen(
                                 else -> Unit
                             }
                         }
+                    }
+                }
+                // OS drag-drop: dragging image files from Finder /
+                // Explorer onto the canvas inserts them at the drop
+                // point. Each file in a multi-file drop gets a small
+                // cumulative offset so they don't perfectly stack.
+                // Touch platforms + web targets receive a no-op modifier;
+                // JVM Desktop is the only target that wires it today.
+                .imageDragAndDropTarget { drops ->
+                    drops.forEachIndexed { i, drop ->
+                        val world = state.viewport.screenToWorld(drop.dropPositionScreen)
+                        val cascade = (i * 24f)
+                        viewModel.insertImage(
+                            drop.bytes,
+                            drop.intrinsicSize,
+                            Offset(world.x + cascade, world.y + cascade),
+                        )
                     }
                 },
             showGrid = showGrid.value,
