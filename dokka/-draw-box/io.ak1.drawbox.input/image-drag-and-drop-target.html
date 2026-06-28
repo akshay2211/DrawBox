@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>imageDragAndDropTarget</title>
+    <link href="../../images/logo-icon.svg" rel="icon" type="image/svg">
+        <script>var pathToRoot = "../../";</script>
+    <script>document.documentElement.classList.replace("no-js", "js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+      if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+          document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+      } else {
+        const savedDarkMode = JSON.parse(storage)
+        if (savedDarkMode === true) {
+          document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+      }
+    </script>
+<script type="text/javascript" src="../../scripts/sourceset_dependencies.js" async="async"></script>
+<link href="../../styles/style.css" rel="Stylesheet">
+<link href="../../styles/main.css" rel="Stylesheet">
+<link href="../../styles/prism.css" rel="Stylesheet">
+<link href="../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../ui-kit/ui-kit.min.css" rel="Stylesheet">
+<script type="text/javascript" src="../../scripts/safe-local-storage_blocking.js"></script>
+<script type="text/javascript" src="../../scripts/navigation-loader.js" async="async"></script>
+<script type="text/javascript" src="../../scripts/platform-content-handler.js" async="async"></script>
+<script type="text/javascript" src="../../scripts/main.js" defer="defer"></script>
+<script type="text/javascript" src="../../scripts/prism.js" async="async"></script>
+<script type="text/javascript" src="../../ui-kit/ui-kit.min.js" defer="defer"></script>
+</head>
+<body>
+<div class="root">
+    <header class="navigation theme-dark" id="navigation-wrapper" role="banner">
+            <a class="library-name--link" href="../../index.html" tabindex="1">
+                    DrawBox
+            </a>
+        <button class="navigation-controls--btn navigation-controls--btn_toc ui-kit_mobile-only" id="toc-toggle"
+                type="button">Toggle table of contents
+        </button>
+        <div class="navigation-controls--break ui-kit_mobile-only"></div>
+        <div class="library-version" id="library-version">
+        </div>
+        <div class="navigation-controls">
+        <ul class="filter-section filter-section_loading" id="filter-section" aria-label="Target filter">
+                <button class="platform-tag platform-selector jvm-like" data-active="" aria-pressed="true"
+                        data-filter=":DrawBox/androidMain">android</button>
+                <button class="platform-tag platform-selector common-like" data-active="" aria-pressed="true"
+                        data-filter=":DrawBox/commonMain">common</button>
+                <button class="platform-tag platform-selector native-like" data-active="" aria-pressed="true"
+                        data-filter=":DrawBox/iosMain">ios</button>
+                <button class="platform-tag platform-selector js-like" data-active="" aria-pressed="true"
+                        data-filter=":DrawBox/jsMain">js</button>
+                <button class="platform-tag platform-selector jvm-like" data-active="" aria-pressed="true"
+                        data-filter=":DrawBox/jvmMain">jvm</button>
+                <button class="platform-tag platform-selector wasm-like" data-active="" aria-pressed="true"
+                        data-filter=":DrawBox/wasmJsMain">wasmJs</button>
+            <div class="dropdown filter-section--dropdown" data-role="dropdown" id="filter-section-dropdown">
+                <button class="button button_dropdown filter-section--dropdown-toggle" role="combobox"
+                        data-role="dropdown-toggle"
+                        aria-controls="platform-tags-listbox"
+                        aria-haspopup="listbox"
+                        aria-expanded="false"
+                        aria-label="Toggle source sets"
+                ></button>
+                <ul role="listbox" id="platform-tags-listbox" class="dropdown--list" data-role="dropdown-listbox" aria-label="Target filter">
+                    <div class="dropdown--header"><span>Target filter</span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close target filter">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                        <li role="option" class="dropdown--option platform-selector-option jvm-like" tabindex="0">
+                            <label class="checkbox">
+                                <input type="checkbox" class="checkbox--input" id=":DrawBox/androidMain"
+                                       data-filter=":DrawBox/androidMain"/>
+                                <span class="checkbox--icon"></span>
+                                android
+                            </label>
+                        </li>
+                        <li role="option" class="dropdown--option platform-selector-option common-like" tabindex="0">
+                            <label class="checkbox">
+                                <input type="checkbox" class="checkbox--input" id=":DrawBox/commonMain"
+                                       data-filter=":DrawBox/commonMain"/>
+                                <span class="checkbox--icon"></span>
+                                common
+                            </label>
+                        </li>
+                        <li role="option" class="dropdown--option platform-selector-option native-like" tabindex="0">
+                            <label class="checkbox">
+                                <input type="checkbox" class="checkbox--input" id=":DrawBox/iosMain"
+                                       data-filter=":DrawBox/iosMain"/>
+                                <span class="checkbox--icon"></span>
+                                ios
+                            </label>
+                        </li>
+                        <li role="option" class="dropdown--option platform-selector-option js-like" tabindex="0">
+                            <label class="checkbox">
+                                <input type="checkbox" class="checkbox--input" id=":DrawBox/jsMain"
+                                       data-filter=":DrawBox/jsMain"/>
+                                <span class="checkbox--icon"></span>
+                                js
+                            </label>
+                        </li>
+                        <li role="option" class="dropdown--option platform-selector-option jvm-like" tabindex="0">
+                            <label class="checkbox">
+                                <input type="checkbox" class="checkbox--input" id=":DrawBox/jvmMain"
+                                       data-filter=":DrawBox/jvmMain"/>
+                                <span class="checkbox--icon"></span>
+                                jvm
+                            </label>
+                        </li>
+                        <li role="option" class="dropdown--option platform-selector-option wasm-like" tabindex="0">
+                            <label class="checkbox">
+                                <input type="checkbox" class="checkbox--input" id=":DrawBox/wasmJsMain"
+                                       data-filter=":DrawBox/wasmJsMain"/>
+                                <span class="checkbox--icon"></span>
+                                wasmJs
+                            </label>
+                        </li>
+                </ul>
+                <div class="dropdown--overlay"></div>
+            </div>
+        </ul>
+            <button class="navigation-controls--btn navigation-controls--btn_theme" id="theme-toggle-button"
+                    type="button">Switch theme
+            </button>
+            <div class="navigation-controls--btn navigation-controls--btn_search" id="searchBar" role="button">Search in
+                API
+            </div>
+        </div>
+    </header>
+    <div id="container">
+        <nav id="leftColumn" class="sidebar" data-item-type="SECTION" data-item-config='{"defaultSize": 280, "minSize": 200, "maxSize": 400}'>
+            <a class="toc--skip-link" href="#main">Skip to content</a>
+            <div class="dropdown theme-dark_mobile" data-role="dropdown" id="toc-dropdown">
+                <ul role="listbox" id="toc-listbox" class="dropdown--list dropdown--list_toc-list"
+                    data-role="dropdown-listbox" aria-label="Table of contents">
+                    <div class="dropdown--header">
+                            <span>
+                                    DrawBox
+                            </span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close table of contents">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                    <div class="sidebar--inner" id="sideMenu"></div>
+                </ul>
+                <div class="dropdown--overlay"></div>
+            </div>
+        </nav>
+        <div id="resizer" class="resizer" data-item-type="BAR"></div>
+        <div id="main" data-item-type="SECTION" role="main">
+<div class="main-content" data-page-type="member" id="content" pageIds="DrawBox::io.ak1.drawbox.input//imageDragAndDropTarget/androidx.compose.ui.Modifier#kotlin.Function1[kotlin.collections.List[io.ak1.drawbox.input.DroppedImage],kotlin.Unit]/PointingToDeclaration//1264275377">
+  <div class="breadcrumbs"><a href="../../index.html">DrawBox</a><span class="delimiter">/</span><a href="index.html">io.ak1.drawbox.input</a><span class="delimiter">/</span><span class="current">imageDragAndDropTarget</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>image</span><wbr></wbr><span>Drag</span><wbr></wbr><span>And</span><wbr></wbr><span>Drop</span><wbr></wbr><span><span>Target</span></span></h1>
+  </div>
+  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":DrawBox/androidMain" data-filterable-set=":DrawBox/androidMain" data-active="" data-toggle=":DrawBox/androidMain">android</button><button class="platform-bookmark" data-filterable-current=":DrawBox/commonMain" data-filterable-set=":DrawBox/commonMain" data-toggle=":DrawBox/commonMain">common</button><button class="platform-bookmark" data-filterable-current=":DrawBox/iosMain" data-filterable-set=":DrawBox/iosMain" data-toggle=":DrawBox/iosMain">ios</button><button class="platform-bookmark" data-filterable-current=":DrawBox/jsMain" data-filterable-set=":DrawBox/jsMain" data-toggle=":DrawBox/jsMain">js</button><button class="platform-bookmark" data-filterable-current=":DrawBox/jvmMain" data-filterable-set=":DrawBox/jvmMain" data-toggle=":DrawBox/jvmMain">jvm</button><button class="platform-bookmark" data-filterable-current=":DrawBox/wasmJsMain" data-filterable-set=":DrawBox/wasmJsMain" data-toggle=":DrawBox/wasmJsMain">wasmJs</button></div>
+<div class="content sourceset-dependent-content" data-togglable=":DrawBox/androidMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Composable.html"><span class="token annotation builtin">Composable</span></a></div></div><span class="token keyword">actual </span><span class="token keyword">fun </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/Modifier.html">Modifier</a><span class="token punctuation">.</span><a href="image-drag-and-drop-target.html"><span class="token function">imageDragAndDropTarget</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">onImagesDropped<span class="token operator">: </span><span class="token punctuation">(</span>drops<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="-dropped-image/index.html">DroppedImage</a><span class="token operator">&gt;</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/Modifier.html">Modifier</a></div><p class="paragraph">No-op on Android — touch platforms don't expose OS-level file drag-drop the same way Desktop does. The existing image picker covers this flow.</p></div><div class="content sourceset-dependent-content" data-active="" data-togglable=":DrawBox/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Composable.html"><span class="token annotation builtin">Composable</span></a></div></div><span class="token keyword">expect </span><span class="token keyword">fun </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/Modifier.html">Modifier</a><span class="token punctuation">.</span><a href="image-drag-and-drop-target.html"><span class="token function">imageDragAndDropTarget</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">onImagesDropped<span class="token operator">: </span><span class="token punctuation">(</span>drops<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="-dropped-image/index.html">DroppedImage</a><span class="token operator">&gt;</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/Modifier.html">Modifier</a></div><p class="paragraph">Attach an OS-level drag-and-drop target to a composable so files dropped onto it from Finder / Explorer / a browser tab get decoded and surfaced through <a href="image-drag-and-drop-target.html">onImagesDropped</a>.</p><p class="paragraph">One callback fire per drop event — if the user drops three files at once, <a href="image-drag-and-drop-target.html">onImagesDropped</a> receives a list of three triples in drop order:</p><div class="sample-container"><pre><code class="block lang-kotlin" theme="idea">(bytes, intrinsicSize, dropPositionScreen) for each accepted file</code></pre><span class="copy-tooltip"><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div><span class="copy-icon"></span></span></div><p class="paragraph">The host is expected to translate <code class="lang-kotlin">dropPositionScreen</code> to world space via the viewport and dispatch <code class="lang-kotlin">Intent.InsertImage</code> per entry, offsetting subsequent placements so they don't perfectly overlap.</p><p class="paragraph">Per-platform behavior:</p><ul><li><p class="paragraph"><strong>JVM (Desktop)</strong>: Hooks <code class="lang-kotlin">Modifier.dragAndDropTarget</code> and reads <code class="lang-kotlin">event.awtTransferable.getTransferData(DataFlavor.javaFileListFlavor)</code>. Image MIME sniffing via <a href="../io.ak1.drawbox/decode-image-bitmap.html">io.ak1.drawbox.decodeImageBitmap</a> isn't run — we just attempt <code class="lang-kotlin">ImageIO.read</code> and skip files that can't be decoded.</p></li><li><p class="paragraph"><strong>Web (WasmJS / JS)</strong>: Out of scope for this PR. The Compose Multiplatform drag-drop API doesn't surface a stable web payload yet; tracked separately.</p></li><li><p class="paragraph"><strong>Android / iOS</strong>: No-op. Touch platforms don't expose OS-level drag-drop in the same shape.</p></li></ul></div><div class="content sourceset-dependent-content" data-togglable=":DrawBox/iosMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Composable.html"><span class="token annotation builtin">Composable</span></a></div></div><span class="token keyword">actual </span><span class="token keyword">fun </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/Modifier.html">Modifier</a><span class="token punctuation">.</span><a href="image-drag-and-drop-target.html"><span class="token function">imageDragAndDropTarget</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">onImagesDropped<span class="token operator">: </span><span class="token punctuation">(</span>drops<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span data-unresolved-link="io.ak1.drawbox.input/DroppedImage///PointingToDeclaration/">DroppedImage</span><span class="token operator">&gt;</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/Modifier.html">Modifier</a></div><p class="paragraph">No-op on iOS. The natural insertion path is PHPicker (issue #80, wired in <code class="lang-kotlin">ImageSaver.ios.kt</code>).</p></div><div class="content sourceset-dependent-content" data-togglable=":DrawBox/jsMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Composable.html"><span class="token annotation builtin">Composable</span></a></div></div><span class="token keyword">actual </span><span class="token keyword">fun </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/Modifier.html">Modifier</a><span class="token punctuation">.</span><a href="image-drag-and-drop-target.html"><span class="token function">imageDragAndDropTarget</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">onImagesDropped<span class="token operator">: </span><span class="token punctuation">(</span>drops<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span data-unresolved-link="io.ak1.drawbox.input/DroppedImage///PointingToDeclaration/">DroppedImage</span><span class="token operator">&gt;</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/Modifier.html">Modifier</a></div><p class="paragraph">No-op on legacy Kotlin/JS — same status as the WasmJS actual.</p></div><div class="content sourceset-dependent-content" data-togglable=":DrawBox/jvmMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Composable.html"><span class="token annotation builtin">Composable</span></a></div></div><span class="token keyword">actual </span><span class="token keyword">fun </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/Modifier.html">Modifier</a><span class="token punctuation">.</span><a href="image-drag-and-drop-target.html"><span class="token function">imageDragAndDropTarget</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">onImagesDropped<span class="token operator">: </span><span class="token punctuation">(</span>drops<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="-dropped-image/index.html">DroppedImage</a><span class="token operator">&gt;</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/Modifier.html">Modifier</a></div><p class="paragraph">Attach an OS-level drag-and-drop target to a composable so files dropped onto it from Finder / Explorer / a browser tab get decoded and surfaced through <a href="image-drag-and-drop-target.html">onImagesDropped</a>.</p><p class="paragraph">One callback fire per drop event — if the user drops three files at once, <a href="image-drag-and-drop-target.html">onImagesDropped</a> receives a list of three triples in drop order:</p><div class="sample-container"><pre><code class="block lang-kotlin" theme="idea">(bytes, intrinsicSize, dropPositionScreen) for each accepted file</code></pre><span class="copy-tooltip"><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div><span class="copy-icon"></span></span></div><p class="paragraph">The host is expected to translate <code class="lang-kotlin">dropPositionScreen</code> to world space via the viewport and dispatch <code class="lang-kotlin">Intent.InsertImage</code> per entry, offsetting subsequent placements so they don't perfectly overlap.</p><p class="paragraph">Per-platform behavior:</p><ul><li><p class="paragraph"><strong>JVM (Desktop)</strong>: Hooks <code class="lang-kotlin">Modifier.dragAndDropTarget</code> and reads <code class="lang-kotlin">event.awtTransferable.getTransferData(DataFlavor.javaFileListFlavor)</code>. Image MIME sniffing via <a href="../io.ak1.drawbox/decode-image-bitmap.html">io.ak1.drawbox.decodeImageBitmap</a> isn't run — we just attempt <code class="lang-kotlin">ImageIO.read</code> and skip files that can't be decoded.</p></li><li><p class="paragraph"><strong>Web (WasmJS / JS)</strong>: Out of scope for this PR. The Compose Multiplatform drag-drop API doesn't surface a stable web payload yet; tracked separately.</p></li><li><p class="paragraph"><strong>Android / iOS</strong>: No-op. Touch platforms don't expose OS-level drag-drop in the same shape.</p></li></ul></div><div class="content sourceset-dependent-content" data-togglable=":DrawBox/wasmJsMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Composable.html"><span class="token annotation builtin">Composable</span></a></div></div><span class="token keyword">actual </span><span class="token keyword">fun </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/Modifier.html">Modifier</a><span class="token punctuation">.</span><a href="image-drag-and-drop-target.html"><span class="token function">imageDragAndDropTarget</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">onImagesDropped<span class="token operator">: </span><span class="token punctuation">(</span>drops<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span data-unresolved-link="io.ak1.drawbox.input/DroppedImage///PointingToDeclaration/">DroppedImage</span><span class="token operator">&gt;</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/Modifier.html">Modifier</a></div><p class="paragraph">No-op on WasmJS for now. The Compose Multiplatform drag-drop API doesn't surface a stable browser <code class="lang-kotlin">DataTransfer</code> payload yet — tracked as a follow-up to #78.</p></div>  </div>
+</div>
+    <div class="footer">
+        <div class="footer--container">
+            <a href="#content" id="go-to-top-link" class="footer--button footer--button_go-to-top"></a>
+            <div class="footer--content">
+                <div>
+                    <span>Generated by </span>
+                    <a class="footer--link footer--link_external" href="https://github.com/Kotlin/dokka">
+                        Dokka
+                    </a>
+                    <div>© 2026 Copyright</div>
+                </div>
+            </div>
+        </div>
+    </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

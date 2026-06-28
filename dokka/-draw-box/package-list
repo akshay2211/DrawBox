@@ -519,6 +519,16 @@ $dokka.location:io.ak1.drawbox.domain.usecase/UseCase/updateElement/#io.ak1.draw
 $dokka.location:io.ak1.drawbox.domain.usecase/UseCase/updateLatestPath/#androidx.compose.ui.geometry.Offset#kotlin.collections.List[io.ak1.drawbox.domain.model.Element]#kotlin.Float/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.usecase/-use-case/update-latest-path.html
 $dokka.location:io.ak1.drawbox.domain.usecase/UseCase/updateLatestShape/#androidx.compose.ui.geometry.Offset#kotlin.collections.List[io.ak1.drawbox.domain.model.Element]/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.usecase/-use-case/update-latest-shape.html
 $dokka.location:io.ak1.drawbox.domain.usecase/UseCase/updateText/#kotlin.collections.List[io.ak1.drawbox.domain.model.Element]#kotlin.String#kotlin.String/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.usecase/-use-case/update-text.html
+$dokka.location:io.ak1.drawbox.input////PointingToDeclaration/-draw-box/io.ak1.drawbox.input/index.html
+$dokka.location:io.ak1.drawbox.input//imageDragAndDropTarget/androidx.compose.ui.Modifier#kotlin.Function1[kotlin.collections.List[io.ak1.drawbox.input.DroppedImage],kotlin.Unit]/PointingToDeclaration/-draw-box/io.ak1.drawbox.input/image-drag-and-drop-target.html
+$dokka.location:io.ak1.drawbox.input//pasteImageFromClipboard/#kotlin.Function2[kotlin.ByteArray,androidx.compose.ui.geometry.Size,kotlin.Unit]/PointingToDeclaration/-draw-box/io.ak1.drawbox.input/paste-image-from-clipboard.html
+$dokka.location:io.ak1.drawbox.input/DroppedImage///PointingToDeclaration/-draw-box/io.ak1.drawbox.input/-dropped-image/index.html
+$dokka.location:io.ak1.drawbox.input/DroppedImage/DroppedImage/#kotlin.ByteArray#androidx.compose.ui.geometry.Size#androidx.compose.ui.geometry.Offset/PointingToDeclaration/-draw-box/io.ak1.drawbox.input/-dropped-image/-dropped-image.html
+$dokka.location:io.ak1.drawbox.input/DroppedImage/bytes/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.input/-dropped-image/bytes.html
+$dokka.location:io.ak1.drawbox.input/DroppedImage/dropPositionScreen/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.input/-dropped-image/drop-position-screen.html
+$dokka.location:io.ak1.drawbox.input/DroppedImage/equals/#kotlin.Any?/PointingToDeclaration/-draw-box/io.ak1.drawbox.input/-dropped-image/equals.html
+$dokka.location:io.ak1.drawbox.input/DroppedImage/hashCode/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.input/-dropped-image/hash-code.html
+$dokka.location:io.ak1.drawbox.input/DroppedImage/intrinsicSize/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.input/-dropped-image/intrinsic-size.html
 $dokka.location:io.ak1.drawbox.presentation.reducer////PointingToDeclaration/-draw-box/io.ak1.drawbox.presentation.reducer/index.html
 $dokka.location:io.ak1.drawbox.presentation.reducer/Reducer///PointingToDeclaration/-draw-box/io.ak1.drawbox.presentation.reducer/-reducer/index.html
 $dokka.location:io.ak1.drawbox.presentation.reducer/Reducer/Reducer/#io.ak1.drawbox.domain.usecase.UseCase/PointingToDeclaration/-draw-box/io.ak1.drawbox.presentation.reducer/-reducer/-reducer.html
@@ -589,6 +599,7 @@ $dokka.location:io.ak1.drawbox//decodeImageBitmapDownsampled/#kotlin.ByteArray#k
 io.ak1.drawbox
 io.ak1.drawbox.domain.model
 io.ak1.drawbox.domain.usecase
+io.ak1.drawbox.input
 io.ak1.drawbox.presentation.reducer
 io.ak1.drawbox.presentation.viewmodel
 io.ak1.drawbox.text
