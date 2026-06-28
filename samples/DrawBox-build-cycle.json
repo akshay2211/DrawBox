@@ -1,0 +1,230 @@
+{
+    "bgColor": "#eceff1ff",
+    "elements": [
+        {
+            "id": "title",
+            "type": "Text",
+            "zIndex": 10,
+            "points": [],
+            "strokeColor": "#1b2a41ff",
+            "strokeWidth": 0.0,
+            "modifiedAt": 1782669085173,
+            "text": "Build Cycle",
+            "fontFamilyKey": "serif",
+            "fontSize": 64.0,
+            "alignment": "CENTER",
+            "textTopLeft": "502.0,212.0",
+            "wrapWidth": 900.0
+        },
+        {
+            "id": "subtitle",
+            "type": "Text",
+            "zIndex": 10,
+            "points": [],
+            "strokeColor": "#5d6d7eff",
+            "strokeWidth": 0.0,
+            "modifiedAt": 1782669082446,
+            "text": "an idea on monday is a shipped feature by friday",
+            "fontFamilyKey": "sans",
+            "fontSize": 22.0,
+            "alignment": "CENTER",
+            "textTopLeft": "366.0,408.0",
+            "wrapWidth": 1274.0
+        },
+        {
+            "id": "track",
+            "type": "Shape",
+            "zIndex": 0,
+            "points": [
+                "268.0,650.0",
+                "1528.0,650.0"
+            ],
+            "strokeColor": "#d5dbdbff",
+            "strokeWidth": 2.0,
+            "shapeType": "LINE",
+            "strokeStyle": "DOTTED",
+            "modifiedAt": 1782669074313
+        },
+        {
+            "id": "idea-tri",
+            "type": "Shape",
+            "zIndex": 1,
+            "points": [
+                "210.0,542.0",
+                "490.0,762.0"
+            ],
+            "strokeColor": "#f39c12ff",
+            "strokeWidth": 5.0,
+            "shapeType": "TRIANGLE",
+            "fillColor": "#fce9c4ff",
+            "cornerRadius": 12.0,
+            "modifiedAt": 1782669102603
+        },
+        {
+            "id": "idea-label",
+            "type": "Text",
+            "zIndex": 5,
+            "points": [],
+            "strokeColor": "#1b2a41ff",
+            "strokeWidth": 0.0,
+            "modifiedAt": 1782669105793,
+            "text": "Idea",
+            "fontFamilyKey": "sans",
+            "fontSize": 30.0,
+            "alignment": "CENTER",
+            "textTopLeft": "294.0,643.0",
+            "wrapWidth": 280.0
+        },
+        {
+            "id": "arrow-1",
+            "type": "Shape",
+            "zIndex": 2,
+            "points": [
+                "420.0,652.0",
+                "568.0,650.0"
+            ],
+            "strokeColor": "#34495eff",
+            "strokeWidth": 3.0,
+            "shapeType": "ARROW",
+            "startBinding": "idea-tri",
+            "endBinding": "plan-rect",
+            "modifiedAt": 1782669102603
+        },
+        {
+            "id": "plan-rect",
+            "type": "Shape",
+            "zIndex": 1,
+            "points": [
+                "568.0,560.0",
+                "868.0,740.0"
+            ],
+            "strokeColor": "#16a085ff",
+            "strokeWidth": 5.0,
+            "shapeType": "RECTANGLE",
+            "fillColor": "#d1f2ebff",
+            "cornerRadius": 24.0,
+            "modifiedAt": 1782669074313
+        },
+        {
+            "id": "plan-label",
+            "type": "Text",
+            "zIndex": 5,
+            "points": [],
+            "strokeColor": "#0e6655ff",
+            "strokeWidth": 0.0,
+            "modifiedAt": 1782669108292,
+            "text": "Plan",
+            "fontFamilyKey": "sans",
+            "fontSize": 36.0,
+            "alignment": "CENTER",
+            "textTopLeft": "642.0,600.0",
+            "wrapWidth": 300.0
+        },
+        {
+            "id": "arrow-2",
+            "type": "Shape",
+            "zIndex": 2,
+            "points": [
+                "868.0,650.0",
+                "948.0,650.0"
+            ],
+            "strokeColor": "#34495eff",
+            "strokeWidth": 3.0,
+            "shapeType": "ARROW",
+            "startBinding": "plan-rect",
+            "endBinding": "build-rect",
+            "modifiedAt": 1782669074313
+        },
+        {
+            "id": "build-rect",
+            "type": "Shape",
+            "zIndex": 1,
+            "points": [
+                "948.0,560.0",
+                "1248.0,740.0"
+            ],
+            "strokeColor": "#e74c3cff",
+            "strokeWidth": 5.0,
+            "shapeType": "RECTANGLE",
+            "fillColor": "#fadbd8ff",
+            "cornerRadius": 24.0,
+            "strokeStyle": "DASHED",
+            "modifiedAt": 1782669074313
+        },
+        {
+            "id": "build-label",
+            "type": "Text",
+            "zIndex": 5,
+            "points": [],
+            "strokeColor": "#922b21ff",
+            "strokeWidth": 0.0,
+            "modifiedAt": 1782669111523,
+            "text": "Build",
+            "fontFamilyKey": "mono",
+            "fontSize": 36.0,
+            "alignment": "CENTER",
+            "textTopLeft": "988.0,602.0",
+            "wrapWidth": 300.0
+        },
+        {
+            "id": "arrow-3",
+            "type": "Shape",
+            "zIndex": 2,
+            "points": [
+                "1248.0,650.0",
+                "1328.0,650.0"
+            ],
+            "strokeColor": "#34495eff",
+            "strokeWidth": 3.0,
+            "shapeType": "ARROW",
+            "startBinding": "build-rect",
+            "endBinding": "ship-circle",
+            "modifiedAt": 1782669074313
+        },
+        {
+            "id": "ship-circle",
+            "type": "Shape",
+            "zIndex": 1,
+            "points": [
+                "1328.0,650.0",
+                "1528.0,650.0"
+            ],
+            "strokeColor": "#27ae60ff",
+            "strokeWidth": 0.0,
+            "shapeType": "CIRCLE",
+            "fillColor": "#27ae60ff",
+            "modifiedAt": 1782669074313,
+            "strokeEnabled": false
+        },
+        {
+            "id": "ship-label",
+            "type": "Text",
+            "zIndex": 5,
+            "points": [],
+            "strokeColor": "#ffffffff",
+            "strokeWidth": 0.0,
+            "modifiedAt": 1782669113638,
+            "text": "Ship",
+            "fontFamilyKey": "sans",
+            "fontSize": 32.0,
+            "alignment": "CENTER",
+            "textTopLeft": "1360.0,607.0",
+            "wrapWidth": 200.0
+        },
+        {
+            "id": "caption",
+            "type": "Text",
+            "zIndex": 10,
+            "points": [],
+            "strokeColor": "#7f8c8dff",
+            "strokeWidth": 0.0,
+            "modifiedAt": 1782669122928,
+            "text": "from sketch to release · four moves · one repo",
+            "fontFamilyKey": "serif",
+            "fontSize": 20.0,
+            "alignment": "CENTER",
+            "textTopLeft": "428.0,822.0",
+            "wrapWidth": 900.0
+        }
+    ]
+}
