@@ -25,8 +25,13 @@ import androidx.compose.ui.geometry.Size
  *   re-encoded to PNG via `ImageIO.write`.
  * - **Web (WasmJS / JS)**: `navigator.clipboard.read()` → `ClipboardItem` →
  *   `getType("image/png")` → blob → bytes.
- * - **Android / iOS**: no-op (touch-screen platforms don't have a Cmd/Ctrl+V
- *   flow; covered by drag-drop / native pickers respectively).
+ * - **Android**: `ClipboardManager.primaryClip` → image URI →
+ *   `ContentResolver` → PNG bytes (off the UI thread). Targets the
+ *   tablet / Chromebook / DeX hardware-keyboard Cmd+V flow; a host
+ *   toolbar button can bind to the same call on phones.
+ * - **iOS**: `UIPasteboard.general.image` re-encoded via
+ *   `UIImagePNGRepresentation`. Wired primarily for iPad hardware
+ *   keyboards (Cmd+V); phones go through a host toolbar button.
  */
 expect fun pasteImageFromClipboard(
     onLoaded: (bytes: ByteArray, intrinsicSize: Size) -> Unit,
