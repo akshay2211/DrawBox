@@ -87,6 +87,26 @@ class DrawBoxController(
      */
     val state: StateFlow<State> = _state.asStateFlow()
 
+    private val _intents = MutableSharedFlow<Intent>(extraBufferCapacity = 64)
+    /**
+     * Reactive stream of intents that have been processed by this controller.
+     *
+     * Each intent is emitted **after** the reducer has run and [state] has been
+     * updated, so subscribers can read [state] at emission time and observe the
+     * state that the intent produced.
+     *
+     * This is the extension seam for cross-cutting concerns that need to
+     * observe the intent stream without owning it — collaboration transports,
+     * analytics, external history / macro recording, and layered controllers
+     * (e.g. brush controllers) that decorate a base [DrawBoxController].
+     *
+     * Buffered ([extraBufferCapacity]) so slow subscribers don't back-pressure
+     * the drawing loop. If a subscriber falls behind the buffer, its emissions
+     * are dropped — subscribers that require lossless delivery should collect
+     * on a dedicated dispatcher and keep their handler cheap.
+     */
+    val intents: SharedFlow<Intent> = _intents.asSharedFlow()
+
     private val _events = MutableSharedFlow<Event>(extraBufferCapacity = 1)
     /**
      * Side effect events like drawing saved, drawing loaded, or errors.
@@ -143,6 +163,9 @@ class DrawBoxController(
         val newState = reducer.reduce(_state.value, intent)
         _state.value = newState
         updateHistoryState()
+        // Emit AFTER state has been updated so subscribers reading state.value
+        // at the moment of emission observe the post-reduce state.
+        _intents.tryEmit(intent)
         // Handle side effects
         when (intent) {
             is Intent.SaveBitmap -> emitSaveEvent(intent.bitmap,intent.throwable)
