@@ -6,6 +6,7 @@ import androidx.compose.foundation.focusable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -165,6 +166,17 @@ fun DrawBox(
      * the same content (and ghost as the user types).
      */
     hiddenElementIds: Set<String> = emptySet(),
+    /**
+     * Host-owned composable rendered inside the same [Box] as the canvas,
+     * on top of all strokes and selection chrome. Composed in screen space
+     * — hosts that need world-space anchoring map through [State.viewport].
+     *
+     * The [BoxScope] receiver gives the host the usual `align` / `matchParentSize`
+     * helpers for placing chrome (brush preview, presence cursors, floating
+     * inspector chips) relative to the canvas bounds. Default is a no-op, so
+     * existing call sites are unaffected.
+     */
+    overlay: @Composable BoxScope.() -> Unit = {},
 ) {
     // Two-layer split:
     //   - finalizedLayer: cached display list of "static" elements (everything not
@@ -865,6 +877,7 @@ fun DrawBox(
                 textCache.retainOnly(liveIds)
             }
         }
+        overlay()
     }
 }
 
