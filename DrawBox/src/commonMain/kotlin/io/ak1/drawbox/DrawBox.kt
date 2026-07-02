@@ -48,6 +48,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.ImageShader
 import androidx.compose.ui.graphics.luminance
+import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.ShaderBrush
@@ -952,17 +953,23 @@ private fun DrawScope.drawGrid(vp: Viewport, bgColor: Color) {
 /**
  * Unit-clamped pressure multiplier for the current pointer sample.
  *
- * Returns `1.0` (no-signal default — uniform stroke) when:
- *   - The pointer is a mouse. Mouse pressure isn't meaningful for drawing;
- *     pretending it is would scale every stroke by a stale, half-correct value.
- *   - The reported pressure is `0.0`. Compose forwards `0.0` for events that
- *     genuinely carry no pressure (e.g. some touch screens, hover events).
+ * Returns `1.0` (no-signal default — uniform stroke) for every pointer type
+ * except [PointerType.Stylus] and [PointerType.Eraser], the only inputs
+ * with real pressure sensors. Mouse pressure isn't meaningful, and touch
+ * pressure is unreliable: Android reports noisy area-based estimates, and
+ * the W3C Pointer Events spec has browsers return the constant default
+ * `0.5` when touch hardware has no pressure sensor. Trusting that would
+ * silently halve every finger stroke on WASM/desktop (issue #98) and, when
+ * the value jitters between samples, drop the renderer into the
+ * variable-width path whose per-segment round caps bead visibly under an
+ * alpha color (issue #97).
  *
- * Otherwise the reading is clamped to `[0.2, 1.0]` so a barely-touching pen
- * still produces a visible stroke instead of a zero-width segment.
+ * For pen/stylus input the reading is clamped to `[0.2, 1.0]` so a
+ * barely-touching pen still produces a visible stroke instead of a
+ * zero-width segment. `0.0` / `NaN` from a stylus is treated as no-signal.
  */
 private fun PointerInputChange.pressureMultiplier(): Float {
-    if (type == PointerType.Mouse) return 1f
+    if (type != PointerType.Stylus && type != PointerType.Eraser) return 1f
     val p = pressure
     if (p == 0f || p.isNaN()) return 1f
     return p.coerceIn(0.2f, 1f)
@@ -1746,6 +1753,20 @@ private fun DrawScope.drawVariableWidthPath(
     fun safeOff(w: Float): Float =
         style.offLength(w.coerceAtLeast(MIN_DASH_WIDTH)).coerceAtLeast(MIN_INTERVAL_LENGTH)
 
+    // Segment-per-sample rendering with round caps beads under alpha: each
+    // cap overlaps its neighbour and the alphas accumulate at every junction
+    // (issue #97). Composite the whole stroke into an offscreen layer at
+    // full opacity and blit it once at the requested alpha so overlapping
+    // caps read as a single translucent stroke instead of a chain of dots.
+    val useLayer = alpha < 1f
+    if (useLayer) {
+        drawContext.canvas.saveLayer(
+            bounds = Rect(Offset.Zero, size),
+            paint = Paint().apply { this.alpha = alpha },
+        )
+    }
+    val segAlpha = if (useLayer) 1f else alpha
+
     var inOn = true
     var remaining = safeOn(samples[0].width)
 
@@ -1782,7 +1803,7 @@ private fun DrawScope.drawVariableWidthPath(
                     end = endPos,
                     strokeWidth = (startW + endW) * 0.5f,
                     cap = StrokeCap.Round,
-                    alpha = alpha,
+                    alpha = segAlpha,
                 )
             }
             val consumed = span * segLen
@@ -1795,6 +1816,8 @@ private fun DrawScope.drawVariableWidthPath(
             }
         }
     }
+
+    if (useLayer) drawContext.canvas.restore()
 }
 
 /**
