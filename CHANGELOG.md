@@ -8,7 +8,18 @@ The `2.0.x` line is the Kotlin Multiplatform rewrite. The `1.x` line was an Andr
 
 ## [Unreleased]
 
-_Nothing yet._
+### Added
+- **`DrawBoxController.intents: SharedFlow<Intent>`** — observable stream of
+  processed intents. Emission happens after the reducer runs and `state` has
+  been updated, so subscribers can read `state.value` at emission time and
+  see the resulting state. Unblocks layered controllers (brush), collaboration
+  transports, and analytics recorders without subclassing or state-diffing.
+  (#99)
+- **`overlay` slot on `DrawBox`** — new `overlay: @Composable BoxScope.() -> Unit`
+  parameter, composed inside the canvas `Box` above strokes and selection
+  chrome. Renders in screen space; hosts anchor to world coordinates via
+  `state.viewport`. Default is a no-op, so existing call sites are
+  unchanged. (#99)
 
 ## [2.1.0-alpha01] — 2026-06-28
 
