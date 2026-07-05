@@ -15,6 +15,8 @@
 [![Klibs](https://img.shields.io/badge/KLibs-DrawBox-purple.svg?style=flat-square)](https://klibs.io/project/akshay2211/DrawBox)
 [![Blog](https://img.shields.io/badge/Blog-DrawBox%20Goes%20Multiplatform-ff6b35.svg?style=flat-square)](https://ak1.io/blog/2026/06/23/drawbox-goes-multiplatform/)
 
+<a href="https://trendshift.io/repositories/40007?utm_source=trendshift-badge&amp;utm_medium=badge&amp;utm_campaign=badge-trendshift-40007" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/trendshift/repositories/40007/daily?language=Kotlin" alt="akshay2211%2FDrawBox | Trendshift" width="250" height="55"/></a>
+
 DrawBox is a Kotlin Multiplatform drawing SDK for Compose Multiplatform. It helps developers embed editable drawing, annotation, diagramming, and export capabilities across Android, iOS, Web, and Desktop from one shared Kotlin codebase.
 
 > **Maintainer response policy:** issues and pull requests receive a first response within 7 days. Security reports go through [SECURITY.md](SECURITY.md).
