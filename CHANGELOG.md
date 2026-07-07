@@ -8,18 +8,44 @@ The `2.0.x` line is the Kotlin Multiplatform rewrite. The `1.x` line was an Andr
 
 ## [Unreleased]
 
+_Nothing yet._
+
+## [2.1.0-alpha02] — 2026-07-07
+
+Second `2.1` pre-release. Two additive seams for hosts that want to layer on
+top of `DrawBoxController` (an intents `SharedFlow` and an `overlay` slot on
+`DrawBox`), plus a fix for finger-drawn strokes on WASM/browser and for
+translucent pen colours rendering as beaded dots.
+
+No breaking changes on top of `2.1.0-alpha01`. New surfaces stay under the
+alpha stability bucket described in that release.
+
 ### Added
 - **`DrawBoxController.intents: SharedFlow<Intent>`** — observable stream of
   processed intents. Emission happens after the reducer runs and `state` has
   been updated, so subscribers can read `state.value` at emission time and
   see the resulting state. Unblocks layered controllers (brush), collaboration
   transports, and analytics recorders without subclassing or state-diffing.
-  (#99)
+  Buffered so slow subscribers don't back-pressure the drawing loop. (#99)
 - **`overlay` slot on `DrawBox`** — new `overlay: @Composable BoxScope.() -> Unit`
   parameter, composed inside the canvas `Box` above strokes and selection
   chrome. Renders in screen space; hosts anchor to world coordinates via
   `state.viewport`. Default is a no-op, so existing call sites are
   unchanged. (#99)
+
+### Fixed
+- **Finger strokes halved on WASM/browser (#98).** Pointer pressure is now
+  trusted only from `Stylus` and `Eraser` input types. WASM/browser touch
+  reports the W3C default `0.5` when there is no pressure sensor, which
+  was silently halving finger strokes. Mouse and capacitive touch now fall
+  back to unit pressure.
+- **Translucent pen strokes beading into dots (#97).** The same touch
+  pressure jitter was pushing uniform strokes into the variable-width
+  branch, where per-segment round caps stacked alpha and beaded
+  translucent colours. Also composites the variable-width path through
+  `canvas.saveLayer` when `alpha < 1`, so a legitimate pen stroke with a
+  translucent colour renders as a single translucent line instead of a
+  chain of overlapping dots. (#101)
 
 ## [2.1.0-alpha01] — 2026-06-28
 
@@ -384,7 +410,8 @@ under semver. Incubating surfaces (collab plumbing, advanced eraser
 modes, etc.) are gated behind opt-in annotations and may evolve in
 minor versions.
 
-[Unreleased]: https://github.com/akshay2211/DrawBox/compare/v2.1.0-alpha01...HEAD
+[Unreleased]: https://github.com/akshay2211/DrawBox/compare/v2.1.0-alpha02...HEAD
+[2.1.0-alpha02]: https://github.com/akshay2211/DrawBox/compare/v2.1.0-alpha01...v2.1.0-alpha02
 [2.1.0-alpha01]: https://github.com/akshay2211/DrawBox/compare/v2.0.0...v2.1.0-alpha01
 [2.0.0]: https://github.com/akshay2211/DrawBox/compare/2.0.0-alpha02...v2.0.0
 [2.0.0-alpha02]: https://github.com/akshay2211/DrawBox/compare/2.0.0-alpha01...2.0.0-alpha02
