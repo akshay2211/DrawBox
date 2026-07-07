@@ -237,7 +237,7 @@ fun SimpleDrawingApp() {
 ## Troubleshooting
 
 ### "Cannot resolve symbol DrawBox"
-- Ensure DrawBox is installed: `implementation("io.ak1:drawbox:2.1.0-alpha01")`
+- Ensure DrawBox is installed: `implementation("io.ak1:drawbox:2.1.0-alpha02")`
 - Run `./gradlew clean` and sync Gradle
 
 ### Canvas appears but doesn't respond to touches
