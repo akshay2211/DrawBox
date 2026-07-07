@@ -23,14 +23,14 @@ repositories {
 ### Kotlin DSL (Recommended)
 ```kotlin
 dependencies {
-    implementation("io.ak1:drawbox:2.1.0-alpha01")
+    implementation("io.ak1:drawbox:2.1.0-alpha02")
 }
 ```
 
 ### Groovy DSL
 ```groovy
 dependencies {
-    implementation 'io.ak1:drawbox:2.1.0-alpha01'
+    implementation 'io.ak1:drawbox:2.1.0-alpha02'
 }
 ```
 
@@ -39,13 +39,13 @@ dependencies {
 <dependency>
   <groupId>io.ak1</groupId>
   <artifactId>drawbox</artifactId>
-  <version>2.1.0-alpha01</version>
+  <version>2.1.0-alpha02</version>
 </dependency>
 ```
 
 ### Ivy
 ```xml
-<dependency org='io.ak1' name='drawbox' rev='2.1.0-alpha01'>
+<dependency org='io.ak1' name='drawbox' rev='2.1.0-alpha02'>
   <artifact name='drawbox' ext='pom' ></artifact>
 </dependency>
 ```
@@ -126,7 +126,7 @@ If you get "Unresolved reference" errors:
 If you have dependency version conflicts:
 ```kotlin
 dependencies {
-    implementation("io.ak1:drawbox:2.1.0-alpha01") {
+    implementation("io.ak1:drawbox:2.1.0-alpha02") {
         exclude(group = "androidx.compose.runtime", module = "runtime")
     }
 }
