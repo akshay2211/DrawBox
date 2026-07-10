@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3ExpressiveApi::class)
 
-package io.ak1.drawboxsample.ui.components
+package io.ak1.drawbox.ui.toolbar
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.SizeTransform
@@ -11,7 +11,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -19,17 +18,6 @@ import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.HomeMini
-import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FloatingToolbarColors
 import androidx.compose.material3.FloatingToolbarDefaults
@@ -38,8 +26,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.material3.VerticalFloatingToolbar
 import androidx.compose.runtime.Composable
@@ -51,6 +37,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.platform.LocalDensity
@@ -67,8 +56,8 @@ import androidx.compose.ui.unit.dp
  *   [onClick], being active also flips click semantics: clicking opens the
  *   submenu instead of firing [onClick]. Inactive items with the same shape
  *   fire [onClick] (e.g., "select this tool") without opening the submenu.
- *   Items with children but no [onClick] (the legacy ContextBar pattern)
- *   ignore [isActive] for click behavior and always open the submenu on tap.
+ *   Items with children but no [onClick] ignore [isActive] for click behavior
+ *   and always open the submenu on tap.
  */
 data class FloatingMenuItem(
     val id: String,
@@ -88,8 +77,8 @@ data class FloatingMenuItem(
 fun separator(id: String): FloatingMenuItem = FloatingMenuItem(id = id, isSeparator = true)
 
 /**
- * Direction the vertical submenu pops in. [Above] suits bottom-anchored bars
- * (default), [Below] suits top-anchored bars like the contextual config bar.
+ * Direction the vertical submenu pops in. [Above] suits bottom-anchored bars,
+ * [Below] suits top-anchored bars like the contextual config bar.
  */
 enum class SubmenuPosition { Above, Below }
 
@@ -103,6 +92,9 @@ enum class SubmenuPosition { Above, Below }
  *
  * @param controlledActiveId pass a non-null value to drive selection from the
  *   caller (and listen via [onActiveIdChange]); leave null for internal state.
+ * @param activeItemBackground when true, items whose [FloatingMenuItem.isActive]
+ *   is true render with a `primaryContainer` chip background so the selected
+ *   tool reads at a glance. Also applied to selected submenu children.
  */
 @Composable
 fun ExpandableFloatingToolbar(
@@ -116,6 +108,7 @@ fun ExpandableFloatingToolbar(
     verticalContentPadding: PaddingValues = PaddingValues(2.dp),
     verticalMenuSpacing: Dp = 8.dp,
     dismissOnChildClick: Boolean = true,
+    activeItemBackground: Boolean = true,
     controlledActiveId: String? = null,
     onActiveIdChange: ((String?) -> Unit)? = null,
     onItemClick: ((FloatingMenuItem) -> Unit)? = null,
@@ -178,8 +171,6 @@ fun ExpandableFloatingToolbar(
                     .requiredWidth(40.dp),
                 content = {
                     current.children.forEach { child ->
-                        val childBg = if (child.isActive)
-                            MaterialTheme.colorScheme.primaryContainer else Color.Transparent
                         IconButton(
                             onClick = {
                                 child.onClick?.invoke()
@@ -188,9 +179,22 @@ fun ExpandableFloatingToolbar(
                             },
                             modifier = Modifier
                                 .size(36.dp)
-                                .clip(CircleShape)
+                                .clip(CircleShape),
                         ) {
-                            child.icon(child.isActive)
+                            Box(
+                                modifier = Modifier
+                                    .size(28.dp)
+                                    .activeChipBg(child.isActive && activeItemBackground),
+                                contentAlignment = Alignment.Center,
+                            ) {
+                                Box(
+                                    modifier = Modifier.size(20.dp),
+                                    contentAlignment = Alignment.Center,
+                                    propagateMinConstraints = true,
+                                ) {
+                                    child.icon(child.isActive)
+                                }
+                            }
                         }
                     }
                 },
@@ -235,8 +239,8 @@ fun ExpandableFloatingToolbar(
                                 // Open submenu when:
                                 //  - the item has children AND is already active (second tap on
                                 //    a selected tool opens its sub-options), OR
-                                //  - the item has children but no onClick (legacy items whose
-                                //    only purpose is to host a submenu, e.g., ContextBar slots).
+                                //  - the item has children but no onClick (items whose only
+                                //    purpose is to host a submenu).
                                 val openSubmenu = hasChildren && (item.isActive || click == null)
                                 if (!openSubmenu && click != null) click()
                                 onItemClick?.invoke(item)
@@ -248,9 +252,22 @@ fun ExpandableFloatingToolbar(
                             },
                             modifier = Modifier
                                 .size(36.dp)
-                                .clip(CircleShape)
+                                .clip(CircleShape),
                         ) {
-                            item.icon(item.isActive)
+                            Box(
+                                modifier = Modifier
+                                    .size(28.dp)
+                                    .activeChipBg(item.isActive && activeItemBackground),
+                                contentAlignment = Alignment.Center,
+                            ) {
+                                Box(
+                                    modifier = Modifier.size(20.dp),
+                                    contentAlignment = Alignment.Center,
+                                    propagateMinConstraints = true,
+                                ) {
+                                    item.icon(item.isActive)
+                                }
+                            }
                         }
                     }
                 }
@@ -272,75 +289,21 @@ fun ExpandableFloatingToolbar(
     }
 }
 
+/**
+ * Convenience: `MaterialTheme.colorScheme.primary` when true, otherwise the
+ * ambient content colour. Used by every stock item-icon composable so that
+ * "active" tinting is uniform across bars.
+ */
 @Composable
-fun Boolean.getActiveColor():Color = if (this) MaterialTheme.colorScheme.primary else LocalContentColor.current
+fun Boolean.activeIconTint(): Color =
+    if (this) MaterialTheme.colorScheme.primary else LocalContentColor.current
 
+/**
+ * Applies a `primaryContainer` background clipped to [CircleShape] when
+ * [active] is true. Sized to match the IconButton's state-layer (hover / press)
+ * disc so the selected chip and the hover highlight share visual weight rather
+ * than competing.
+ */
 @Composable
-fun ExpandableFloatingToolbarDemo(modifier: Modifier = Modifier) {
-    var lastPicked by remember { mutableStateOf<String?>(null) }
-
-    val items = remember {
-        listOf(
-            FloatingMenuItem(
-                id = "edit",
-                icon = {  isActive -> Icon(Icons.Filled.Edit, contentDescription = "Edit", tint = isActive.getActiveColor() ) },
-                children = listOf(
-                    FloatingMenuItem("edit-add", { isActive ->Icon(Icons.Filled.Add, "Add", tint = isActive.getActiveColor()) }),
-                    FloatingMenuItem("edit-person", { isActive ->Icon(Icons.Filled.Person, "Person", tint = isActive.getActiveColor()) }),
-                    FloatingMenuItem("edit-fav", { isActive ->Icon(Icons.Filled.Favorite, "Favorite", tint = isActive.getActiveColor()) }),
-                ),
-            ),
-            FloatingMenuItem(
-                id = "more",
-                icon = { isActive ->Icon(Icons.Filled.MoreVert, contentDescription = "More", tint = isActive.getActiveColor()) },
-                children = listOf(
-                    FloatingMenuItem("more-i", {isActive -> Icon(Icons.Filled.Add, "i", tint = isActive.getActiveColor()) }),
-                    FloatingMenuItem("more-j", { isActive ->Icon(Icons.Filled.Person, "j", tint = isActive.getActiveColor()) }),
-                    FloatingMenuItem("more-k", { isActive ->Icon(Icons.Filled.Favorite, "k", tint = isActive.getActiveColor()) }),
-                    FloatingMenuItem("more-l", { isActive ->Icon(Icons.Filled.ArrowDropDown, "l", tint = isActive.getActiveColor()) }),
-                ),
-            ),
-            FloatingMenuItem(
-                id = "fav",
-                icon = {isActive -> Icon(Icons.Filled.Favorite, contentDescription = "Favorite", tint = isActive.getActiveColor()) },
-                children = listOf(
-                    FloatingMenuItem("fav-x", {isActive -> Icon(Icons.Filled.Add, "x", tint = isActive.getActiveColor()) }),
-                    FloatingMenuItem("fav-y", {isActive -> Icon(Icons.Filled.Person, "y", tint = isActive.getActiveColor()) }),
-                ),
-            ),
-            FloatingMenuItem(
-                id = "leaf",
-                icon = {isActive -> Icon(Icons.Filled.Add, contentDescription = "Add", tint = isActive.getActiveColor()) },
-                onClick = { lastPicked = "leaf (no sub-menu)" },
-            ),
-            FloatingMenuItem(
-                id = "leaf",
-                icon = {isActive -> Icon(Icons.Filled.HomeMini, contentDescription = "Add", tint = isActive.getActiveColor()) },
-                onClick = null,
-            ),
-        )
-    }
-
-    Surface(modifier = modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            Text(
-                text = lastPicked?.let { "Last picked: $it" } ?: "Tap a parent icon",
-                color = MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier.align(Alignment.Center),
-            )
-
-            ExpandableFloatingToolbar(
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(bottom = 24.dp),
-                items = items,
-                horizontalColors = FloatingToolbarDefaults.vibrantFloatingToolbarColors(),
-                verticalColors = FloatingToolbarDefaults.vibrantFloatingToolbarColors(),
-                verticalMenuSpacing = 12.dp,
-                onChildClick = { parent, child ->
-                    lastPicked = "${parent.id} → ${child.id}"
-                },
-            )
-        }
-    }
-}
+private fun Modifier.activeChipBg(active: Boolean): Modifier =
+    if (active) this.background(MaterialTheme.colorScheme.primaryContainer, CircleShape) else this
