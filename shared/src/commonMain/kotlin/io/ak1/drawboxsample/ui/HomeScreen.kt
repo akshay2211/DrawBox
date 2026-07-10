@@ -46,9 +46,15 @@ import io.ak1.drawbox.input.imageDragAndDropTarget
 import io.ak1.drawbox.input.pasteImageFromClipboard
 import io.ak1.drawboxsample.save.rememberImageSaver
 import io.ak1.drawboxsample.ui.components.BgPatternPreset
-import io.ak1.drawboxsample.ui.components.ColorPickerDialog
-import io.ak1.drawboxsample.ui.components.ContextBar
-import io.ak1.drawboxsample.ui.components.ControlsBar
+import io.ak1.drawbox.ui.context.ContextBar
+import io.ak1.drawbox.ui.controls.ControlsBar
+import io.ak1.drawbox.ui.controls.ControlsBarIntent
+import io.ak1.drawbox.ui.controls.ControlsBarState
+import io.ak1.drawbox.ui.controls.defaultControlsBarItems
+import io.ak1.drawbox.ui.model.ContextBarIntent
+import io.ak1.drawbox.ui.model.ContextBarSlots
+import io.ak1.drawbox.ui.model.ContextBarState
+import io.ak1.drawbox.ui.picker.RangVikalpColorPicker
 import io.ak1.drawbox.text.InlineTextEditor
 import io.ak1.drawboxsample.ui.components.SettingsDrawer
 import io.ak1.drawboxsample.ui.components.TopRightControls
@@ -275,70 +281,71 @@ fun HomeScreen(
             val barVisible = showShapeStroke || showCornerRadius || showFill ||
                 showStrokeToggle || showTextControls || hasSelection
             if (barVisible) {
-                ContextBar(
-                    isShapeMode = isShapeMode,
-                    hasSelection = hasSelection,
-                    showShapeStroke = showShapeStroke,
-                    showCornerRadius = showCornerRadius,
-                    showFill = showFill,
-                    showStrokeToggle = showStrokeToggle,
-                    showTextControls = showTextControls,
-                    showEditText = showEditText,
-                    currentColor = currentShapeColor,
-                    currentFillColor = currentFillColor,
-                    currentStrokeEnabled = currentStrokeEnabled,
-                    currentStrokeStyle = currentStrokeStyle,
-                    currentStrokeWidth = currentStrokeWidth,
-                    currentCornerRadius = currentRadius,
-                    currentFontSize = currentFontSize,
-                    currentTextAlignment = currentTextAlignment,
-                    currentFontFamilyKey = currentFontFamilyKey,
+                val contextBarState = ContextBarState(
+                    strokeColor = currentShapeColor,
+                    strokeEnabled = currentStrokeEnabled,
+                    strokeStyle = currentStrokeStyle,
+                    strokeWidth = currentStrokeWidth,
+                    fillColor = currentFillColor,
+                    cornerRadius = currentRadius,
+                    fontSize = currentFontSize,
+                    textAlignment = currentTextAlignment,
+                    fontFamilyKey = currentFontFamilyKey,
                     fontFamilyKeys = fontFamilyKeys,
-                    expanded = false,
-                    onColorChange = { color ->
-                        if (hasSelection) viewModel.setSelectionColor(color)
-                        else viewModel.setColor(color)
-                    },
-                    onFillColorChange = { color -> viewModel.setSelectionFillColor(color) },
-                    onStrokeEnabledChange = { enabled -> viewModel.setSelectionStrokeEnabled(enabled) },
-                    onStrokeStyleChange = { style ->
-                        if (hasSelection) viewModel.setSelectionStrokeStyle(style)
-                        else viewModel.setStrokeStyle(style)
-                    },
-                    onStrokeWidthChange = { w ->
-                        if (hasSelection) viewModel.setSelectionStrokeWidth(w)
-                        else viewModel.setStrokeWidth(w)
-                    },
-                    onCornerRadiusChange = { r ->
-                        if (selectedRoundable.isNotEmpty()) viewModel.setSelectionCornerRadius(r)
-                        else viewModel.setCornerRadius(r)
-                    },
-                    onFontSizeChange = { size ->
-                        // Selected text → mutate that element. TEXT mode with
-                        // no selection → mutate the State default so the next
-                        // insert picks it up.
-                        if (singleSelectedText != null) viewModel.setSelectionFontSize(size)
-                        else viewModel.setFontSize(size)
-                    },
-                    onTextAlignmentChange = { align ->
-                        if (singleSelectedText != null) viewModel.setSelectionTextAlignment(align)
-                        else viewModel.setTextAlignment(align)
-                    },
-                    onFontFamilyChange = { key ->
-                        if (singleSelectedText != null) viewModel.setSelectionFontFamily(key)
-                        else viewModel.setFontFamily(key)
-                    },
-                    onEditText = {
-                        singleSelectedText?.let { target ->
-                            editingTextId = target.id
-                            editDraft = target.text
+                )
+                val contextBarSlots = ContextBarSlots(
+                    showStroke = true,
+                    strokeToggleable = showStrokeToggle,
+                    showShapeStroke = showShapeStroke,
+                    showFill = showFill,
+                    showCornerRadius = showCornerRadius,
+                    showText = showTextControls,
+                    showEditText = showEditText,
+                    showSelectionActions = hasSelection,
+                )
+                ContextBar(
+                    state = contextBarState,
+                    slots = contextBarSlots,
+                    onIntent = { intent ->
+                        when (intent) {
+                            is ContextBarIntent.SetStrokeColor ->
+                                if (hasSelection) viewModel.setSelectionColor(intent.color)
+                                else viewModel.setColor(intent.color)
+                            is ContextBarIntent.SetStrokeEnabled ->
+                                viewModel.setSelectionStrokeEnabled(intent.enabled)
+                            is ContextBarIntent.SetStrokeStyle ->
+                                if (hasSelection) viewModel.setSelectionStrokeStyle(intent.style)
+                                else viewModel.setStrokeStyle(intent.style)
+                            is ContextBarIntent.SetStrokeWidth ->
+                                if (hasSelection) viewModel.setSelectionStrokeWidth(intent.width)
+                                else viewModel.setStrokeWidth(intent.width)
+                            is ContextBarIntent.SetFillColor ->
+                                viewModel.setSelectionFillColor(intent.color)
+                            is ContextBarIntent.SetCornerRadius ->
+                                if (selectedRoundable.isNotEmpty()) viewModel.setSelectionCornerRadius(intent.radius)
+                                else viewModel.setCornerRadius(intent.radius)
+                            is ContextBarIntent.SetFontSize ->
+                                if (singleSelectedText != null) viewModel.setSelectionFontSize(intent.size)
+                                else viewModel.setFontSize(intent.size)
+                            is ContextBarIntent.SetTextAlignment ->
+                                if (singleSelectedText != null) viewModel.setSelectionTextAlignment(intent.alignment)
+                                else viewModel.setTextAlignment(intent.alignment)
+                            is ContextBarIntent.SetFontFamily ->
+                                if (singleSelectedText != null) viewModel.setSelectionFontFamily(intent.key)
+                                else viewModel.setFontFamily(intent.key)
+                            ContextBarIntent.EditText -> singleSelectedText?.let { target ->
+                                editingTextId = target.id
+                                editDraft = target.text
+                            }
+                            ContextBarIntent.BringToFront -> viewModel.bringSelectionToFront()
+                            ContextBarIntent.SendToBack -> viewModel.sendSelectionToBack()
+                            ContextBarIntent.Delete -> viewModel.deleteSelected()
+                            ContextBarIntent.ClearSelection -> viewModel.clearSelection()
                         }
                     },
-                    onBringToFront = { viewModel.bringSelectionToFront() },
-                    onSendToBack = { viewModel.sendSelectionToBack() },
-                    onDelete = { viewModel.deleteSelected() },
-                    onClear = { viewModel.clearSelection() },
+                    fontFamilyResolver = { key -> io.ak1.drawbox.text.FontRegistry.resolve(key) },
                     modifier = Modifier.align(Alignment.TopEnd).padding(top = 72.dp, end = 12.dp),
+                    expanded = false,
                 )
             }
 
@@ -369,31 +376,47 @@ fun HomeScreen(
             }
 
             // Bottom-center main NavBar.
+            val controlsBarItems = defaultControlsBarItems(
+                state = ControlsBarState(
+                    currentMode = state.mode,
+                    canUndo = canUndo,
+                    canRedo = canRedo,
+                    strokeColor = currentShapeColor,
+                ),
+                dispatch = { intent ->
+                    when (intent) {
+                        ControlsBarIntent.Undo -> viewModel.undo()
+                        ControlsBarIntent.Redo -> viewModel.redo()
+                        is ControlsBarIntent.SelectMode -> viewModel.setMode(intent.mode)
+                        is ControlsBarIntent.SetStrokeColor ->
+                            if (hasSelection) viewModel.setSelectionColor(intent.color)
+                            else viewModel.setColor(intent.color)
+                    }
+                },
+            )
             ControlsBar(
-                canUndo = canUndo,
-                canRedo = canRedo,
-                currentMode = state.mode,
-                onUndo = { viewModel.undo() },
-                onRedo = { viewModel.redo() },
-                onModeSelected = { viewModel.setMode(it) },
+                items = controlsBarItems,
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = 24.dp),
                 expanded = false,
             )
 
 
 
             if (colorPickerForBg) {
-                ColorPickerDialog(
-                    initialColor = state.bgColor,
+                RangVikalpColorPicker(
+                    initial = state.bgColor,
                     onDismiss = { colorPickerForBg = false },
-                    onColorSelected = { viewModel.setBgColor(it) },
+                    onSelected = { viewModel.setBgColor(it) },
                 )
             }
 
             if (showColorDialog.value) {
-                ColorPickerDialog(
-                    initialColor = state.strokeColor,
+                RangVikalpColorPicker(
+                    initial = state.strokeColor,
                     onDismiss = { showColorDialog.value = false },
-                    onColorSelected = { color -> viewModel.setColor(color) },
+                    onSelected = { color -> viewModel.setColor(color) },
                 )
             }
         }

@@ -54,6 +54,7 @@ kotlin {
         }
         commonMain.dependencies {
             implementation(projects.drawBox)
+            implementation(projects.drawboxUi)
             implementation(libs.compose.runtime)
             implementation(libs.compose.foundation)
             implementation(libs.compose.material3)
