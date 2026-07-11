@@ -1,20 +1,29 @@
 ---
 name: Feature request
-about: Suggest an idea for this project
-title: ''
-labels: ''
+about: Propose a change to the DrawBox SDK surface, tools, or exporters
+title: "[feat] "
+labels: ["enhancement", "needs-triage"]
 assignees: ''
 
 ---
 
-**Is your feature request related to a problem? Please describe.**
-A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
+<!--
+Maintainer response policy: feature requests receive a first response within 7 days.
+Larger proposals (new public API, new module) may be asked to go through a short RFC in docs/rfcs/.
+-->
 
-**Describe the solution you'd like**
-A clear and concise description of what you want to happen.
+**Problem**
+<!-- What are you trying to build with DrawBox that is awkward or impossible today? -->
 
-**Describe alternatives you've considered**
-A clear and concise description of any alternative solutions or features you've considered.
+**Proposed solution**
+<!-- What would you like the SDK surface (API, tool, exporter, mode) to look like? -->
+
+**Alternatives considered**
+<!-- Existing workarounds, or approaches you rejected and why. -->
+
+**Scope**
+- [ ] Fits inside the current `2.x` frozen surface (additive only)
+- [ ] Requires a new incubating API (opt-in annotation)
+- [ ] Requires a breaking change (would land in a future major)
 
 **Additional context**
-Add any other context or screenshots about the feature request here.

@@ -1,33 +1,42 @@
 ---
 name: Bug report
-about: Create a report to help us improve
-title: ''
-labels: ''
+about: Report incorrect behavior in the DrawBox SDK
+title: "[bug] "
+labels: ["bug", "needs-triage"]
 assignees: ''
 
 ---
 
-**Describe the bug**
-A clear and concise description of what the bug is.
+<!--
+Maintainer response policy: bug reports receive a first response within 7 days.
+Security issues: do NOT file here — see SECURITY.md for the private reporting channel.
+Old (1.x, Android-only) reports: please note this in the report so we can label `android-1.x` vs `2.x-kmp`.
+-->
 
-**To Reproduce**
-Steps to reproduce the behavior:
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
+**DrawBox version**
+<!-- e.g. 2.1.0-alpha02 -->
+
+**Target platform(s)**
+<!-- Which affected? Android / iOS / JVM Desktop / Web WASM / Web JS -->
+
+**Kotlin / Compose Multiplatform versions**
+<!-- e.g. Kotlin 2.1.0, CMP 1.7.3 -->
+
+**Describe the bug**
+<!-- What happened? -->
+
+**Reproduction**
+<!-- Minimal steps or a link to a repo/branch that reproduces the issue. -->
+1.
+2.
+3.
 
 **Expected behavior**
-A clear and concise description of what you expected to happen.
 
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
+**Actual behavior**
 
-**Smartphone (please complete the following information):**
- - Device: [e.g. iPhone6]
- - OS: [e.g. iOS8.1]
- - Browser [e.g. stock browser, safari]
- - Version [e.g. 22]
+**Logs / stack trace**
+<!-- Paste the full stack trace inside a fenced code block. -->
 
 **Additional context**
-Add any other context about the problem here.
+<!-- Screenshots, JSON scene file, host-app snippet, etc. -->

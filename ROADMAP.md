@@ -8,22 +8,22 @@ The roadmap is a living document. Dates are targets, not commitments — major s
 
 DrawBox aims to be **the canonical drawing SDK for Compose Multiplatform** — a small, focused, accessible, and well-benchmarked canvas layer that any annotation, whiteboard, diagramming, or design tool can embed across Android, iOS, Web (Wasm), and Desktop.
 
-We prioritize **SDK primitives over end-user products**: a strong foundation other tools depend on, rather than a feature-rich drawing application.
+We prioritize **SDK primitives over end-user products**: a strong foundation other tools depend on, rather than a feature-rich drawing application. The same primitive — a versioned, editable JSON scene format — is what makes DrawBox uniquely positioned to be the target format for LLM- and agent-driven drawing generation in the Kotlin ecosystem (see the natural-language drawing milestone below).
 
 ## Status
 
-Latest published version: **2.0.0-alpha02** (KMP preview)
+Latest published version: **2.1.0-alpha02** (KMP preview)
 
-The 2.x line is a full rewrite on Kotlin Multiplatform with shared drawing logic and an MVI architecture. The current alpha is feature-complete for the core drawing primitives across all four target platforms and is in stabilization.
+The 2.x line is a full rewrite on Kotlin Multiplatform with shared drawing logic and an MVI architecture. The `2.0` public surfaces (`DrawBoxController`, `Mode`, `Intent`, `Event`, `State`) are frozen and extended-only; `2.1.x` adds image, text, and pen-pressure surfaces incrementally.
 
 ## Near term — 2.0.0 stable (Q3 2026)
 
-Goal: ship 2.0.0 with a stable public API and a documented migration path from 1.x.
+Goal: promote the frozen `2.0` surfaces to a stable `2.0.0` release and publish the accompanying migration path from 1.x.
 
-- API freeze for `DrawBoxController`, `Mode`, `Intent`, and `Event`
-- Migration guide from 1.x (Android-only) to 2.x (KMP)
-- Public WASM playground at `akshay2211.github.io/DrawBox/sample/`
-- Snapshot-based regression tests across platforms
+- Public API freeze for `DrawBoxController`, `Mode`, `Intent`, `Event`, and `State` — **done**, extended only in `2.1.x`
+- Migration guide from 1.x (Android-only) to 2.x (KMP) — **published in [CHANGELOG.md](CHANGELOG.md#migration-1x--2x)**
+- Public WASM playground at `akshay2211.github.io/DrawBox/sample/` — **live**
+- Snapshot-based regression tests across platforms — Roborazzi harness landed for JVM; extend to Android and iOS
 - Dokka API reference published alongside the user docs
 
 ## Next — Accessibility & performance (Q4 2026)
@@ -48,6 +48,20 @@ Goal: let third parties extend DrawBox without forking it.
 - Stable extension contracts with semantic versioning
 - A first example community plugin to validate the surface
 
+## Mid-to-long term — Natural-language drawing (Q2–Q3 2027)
+
+Goal: turn structured visual intent (natural language, LLM tool calls, agent output) into **editable** DrawBox scenes — not throwaway raster images.
+
+This is a Kotlin ecosystem gap: Compose Multiplatform apps that want to embed LLM-driven diagram or sketch generation currently either (a) render server-side SVG and lose editability, or (b) hand-roll their own translation layer. DrawBox already has the primitive an AI layer needs: a versioned, human-readable JSON scene format that round-trips through the SDK.
+
+- **`DrawBoxAi` optional module** — separate artifact so the core library stays offline and vendor-free.
+- **`AiDrawingProvider` interface** — provider-neutral; host apps supply their own OpenAI / Anthropic / local-model implementation. Keys, billing, and rate limits never touch the core SDK.
+- **Validated scene output** — models return `AiDrawingScene` (versioned JSON), which is schema-validated and clamped (element count, coordinates, text length) before insertion. Preview-before-insert is required; the whole generation is a single undo step.
+- **Reference implementations** — sample OpenAI and Anthropic providers ship in `samples/`, not in the core artifact.
+- **Safety defaults** — existing drawings are never sent to a provider without explicit user opt-in; no prompt / key / raw-response logging in the SDK.
+
+See [STRATEGY.md](STRATEGY.md#recommended-ai-architecture) for the full design rationale.
+
 ## Long term — Collaboration & domain integrations (2027 H2)
 
 Goal: unlock real-time and domain-specific use cases.
@@ -69,7 +83,7 @@ Work that runs in parallel across all phases:
 
 - **Try it**: the live WASM sample is at `https://akshay2211.github.io/DrawBox/sample/`
 - **Report**: open issues on [GitHub](https://github.com/akshay2211/DrawBox/issues) — bug reports, feature requests, and accessibility findings are all welcome
-- **Contribute**: see [CONTRIBUTING](docs/development/contributing.md). Start with issues tagged `good first issue`
+- **Contribute**: see [CONTRIBUTING.md](CONTRIBUTING.md). Start with issues tagged `good first issue`
 - **Propose**: larger changes go through a short RFC in `docs/rfcs/` before implementation
 - **Sponsor**: see the repository sidebar for sponsorship links
 

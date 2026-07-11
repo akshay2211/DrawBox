@@ -23,6 +23,7 @@ local.properties
 /kotlin-js-store/
 /app/build/
 /androidApp/src/main/assets/composeResources/drawboxsample.shared.generated.resources/
+/androidApp/src/main/assets/composeResources/io.ak1.drawbox.ui.resources/
 /site/
 /STRATEGY.md
 /PLAYBOOK.md

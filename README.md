@@ -15,6 +15,14 @@
 [![Klibs](https://img.shields.io/badge/KLibs-DrawBox-purple.svg?style=flat-square)](https://klibs.io/project/akshay2211/DrawBox)
 [![Blog](https://img.shields.io/badge/Blog-DrawBox%20Goes%20Multiplatform-ff6b35.svg?style=flat-square)](https://ak1.io/blog/2026/06/23/drawbox-goes-multiplatform/)
 
+
+[![License](https://img.shields.io/github/license/akshay2211/DrawBox?style=flat-square)](LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/akshay2211/DrawBox?style=flat-square)](https://github.com/akshay2211/DrawBox/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/akshay2211/DrawBox?style=flat-square)](https://github.com/akshay2211/DrawBox/network/members)
+[![Contributors](https://img.shields.io/github/contributors/akshay2211/DrawBox?style=flat-square)](https://github.com/akshay2211/DrawBox/graphs/contributors)
+[![Last commit](https://img.shields.io/github/last-commit/akshay2211/DrawBox?style=flat-square)](https://github.com/akshay2211/DrawBox/commits/main)
+[![Issue response](https://img.shields.io/badge/issue%20response-%E2%89%A47%20days-blue?style=flat-square)](#community--maintenance)
+
 <a href="https://trendshift.io/repositories/40007?utm_source=trendshift-badge&amp;utm_medium=badge&amp;utm_campaign=badge-trendshift-40007" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/trendshift/repositories/40007/daily?language=Kotlin" alt="akshay2211%2FDrawBox | Trendshift" width="250" height="55"/></a>
 
 DrawBox is a Kotlin Multiplatform drawing SDK for Compose Multiplatform. It helps developers embed editable drawing, annotation, diagramming, and export capabilities across Android, iOS, Web, and Desktop from one shared Kotlin codebase.
@@ -242,6 +250,14 @@ See [`CHANGELOG.md`](CHANGELOG.md) for the full list and the `2.0.x → 2.1.x` m
 
 ## Thanks to
 [RangVikalp](https://github.com/akshay2211/rang-vikalp) for the beautiful color picker used in DrawBox
+
+## Community & maintenance
+
+- **Response SLO** — issues and pull requests receive a first response within 7 days. Triage labels (`needs-repro`, `bug`, `enhancement`, `android-1.x`, `fixed-in-2.x`) route incoming reports quickly.
+- **Release cadence** — minor versions target a quarterly cadence; every release ships a [CHANGELOG](CHANGELOG.md) entry and a migration note when the public surface moves.
+- **Roadmap** — the 12–18 month direction (accessibility, benchmarking, extensibility, natural-language drawing) lives in [ROADMAP.md](ROADMAP.md).
+- **Contributing** — start with issues tagged `good first issue`. Larger changes go through a short RFC in `docs/rfcs/`.
+- **Governance** — code of conduct in [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md); security disclosure in [SECURITY.md](SECURITY.md).
 
 ## Security
 Please report vulnerabilities privately. See [SECURITY.md](SECURITY.md) for the supported versions, reporting channel, and disclosure policy.

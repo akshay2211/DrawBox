@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security vulnerability
+    url: https://github.com/akshay2211/DrawBox/security/advisories/new
+    about: Report vulnerabilities privately via GitHub Security Advisories (see SECURITY.md).
+  - name: Question or discussion
+    url: https://github.com/akshay2211/DrawBox/discussions
+    about: Ask usage questions or discuss ideas before filing a formal issue.
