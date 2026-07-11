@@ -55,6 +55,34 @@ sealed class Mode {
 }
 
 /**
+ * Per-tool snapshot captured by [State.toolMemory]. Restored to [State]'s
+ * top-level style fields when the user swaps back to a tool.
+ */
+data class ToolSettings(
+    val strokeColor: Color,
+    val strokeWidth: Float,
+    val strokeStyle: StrokeStyle,
+    val cornerRadius: Float,
+    val fillColor: Color?,
+    val strokeEnabled: Boolean,
+    val fontSize: Float,
+    val fontFamilyKey: String,
+    val textAlignment: TextAlignment,
+)
+
+/** Modes that carry meaningful per-tool style. Utility modes are excluded. */
+private val PersistedModes: Set<Mode> = setOf(
+    Mode.PEN, Mode.RECTANGLE, Mode.CIRCLE, Mode.TRIANGLE,
+    Mode.ARROW, Mode.LINE, Mode.TEXT,
+)
+
+/**
+ * Whether [mode] participates in [State.toolMemory] save/restore on
+ * [Intent.SetMode].
+ */
+fun Mode.persistsSettings(): Boolean = this in PersistedModes
+
+/**
  * Resize handle positions around a selected element's bounding box. Eight
  * handles in total: four corners and four edge midpoints.
  */
@@ -117,6 +145,17 @@ data class State(
      * elements instead.
      */
     val currentItemStrokeEnabled: Boolean = true,
+    /**
+     * Per-tool memory: each drawing mode (PEN, RECTANGLE, CIRCLE, TRIANGLE,
+     * ARROW, LINE, TEXT) snapshots its own color / width / style / fill /
+     * corner / text settings. On [Intent.SetMode] the outgoing mode's current
+     * top-level fields are captured here, and the incoming mode's saved
+     * settings are restored to the top-level fields. Non-drawing modes
+     * (SELECT, ERASER, PAN) don't participate — they pass through settings
+     * untouched. Users get the "each pen remembers its own color" behavior
+     * Samsung Notes / OPPO Notes use.
+     */
+    val toolMemory: Map<Mode, ToolSettings> = emptyMap(),
     /**
      * Default font size in world pixels applied to text elements inserted via
      * [Mode.TEXT]. Mutated by [Intent.SetFontSize] (the non-selection form);
