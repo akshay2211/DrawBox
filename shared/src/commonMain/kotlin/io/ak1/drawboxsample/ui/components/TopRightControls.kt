@@ -2,6 +2,8 @@
 
 package io.ak1.drawboxsample.ui.components
 
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -12,6 +14,7 @@ import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.draw.shadow
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -125,15 +128,24 @@ private fun RowScope.ZoomCluster(
     ) {
         Icon(Icons.Filled.Remove, contentDescription = "Zoom out")
     }
-    // Hide the percent readout at exact 100% — reading "100%" every frame is
-    // noise. The reset gesture still lives on this Box's click, so we render
-    // an invisible-but-clickable spacer of the same width to keep the toolbar
-    // dimensions stable regardless of zoom.
+    // Collapse the percent readout to zero width at exact 100% — the toolbar
+    // contracts horizontally so [-] and [+] sit right next to each other, and
+    // expands back with a spring-like tween on the first non-100 tick. Reset
+    // gesture only exists when the label is visible (nothing to reset TO at
+    // 100%).
+    val labelWidth by animateDpAsState(
+        targetValue = if (scalePercent == 100) 0.dp else 48.dp,
+        animationSpec = tween(durationMillis = 180),
+        label = "zoomLabelWidth",
+    )
     Box(
         modifier = Modifier
             .align(Alignment.CenterVertically)
-            .width(48.dp)
-            .clickable(onClick = onZoomReset)
+            .width(labelWidth)
+            .then(
+                if (scalePercent != 100) Modifier.clickable(onClick = onZoomReset)
+                else Modifier,
+            )
             .padding(vertical = 4.dp),
         contentAlignment = Alignment.Center,
     ) {

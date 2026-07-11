@@ -156,12 +156,20 @@ fun MultiTargetColorPicker(
                         onClick = { target = ColorTarget.Fill },
                     )
                     Spacer(Modifier.width(4.dp))
+                    // Off-toggle is only offered when (a) the target being
+                    // edited is currently active AND (b) the OTHER target is
+                    // active — turning off the last visible layer would leave
+                    // the shape invisible, so we simply don't show the button.
                     val offLabel = if (target == ColorTarget.Border) "No stroke" else "No fill"
-                    val offEnabled = when (target) {
+                    val currentIsOn = when (target) {
                         ColorTarget.Border -> strokeEnabled
                         ColorTarget.Fill -> fillColor != null
                     }
-                    if (offEnabled) {
+                    val otherIsOn = when (target) {
+                        ColorTarget.Border -> fillColor != null
+                        ColorTarget.Fill -> strokeEnabled
+                    }
+                    if (currentIsOn && otherIsOn) {
                         TextButton(onClick = {
                             when (target) {
                                 ColorTarget.Border -> onStrokeEnabledChanged(false)

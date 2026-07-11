@@ -122,11 +122,16 @@ fun colorsContextItem(
                 },
             ),
         )
-        if (strokeToggleable) {
+        // "No stroke" / "No fill" toggles only appear when the OTHER target
+        // is currently visible — otherwise turning this one off would leave
+        // the shape invisible (invariant: at least one of stroke / fill on).
+        val strokeIsOn = state.strokeEnabled
+        val fillIsOn = state.fillColor != null
+        if (strokeToggleable && fillIsOn) {
             add(
                 FloatingMenuItem(
                     id = "colors-stroke-none",
-                    isActive = !state.strokeEnabled,
+                    isActive = !strokeIsOn,
                     icon = { isActive -> StrokeNoneIcon(color = isActive.activeIconTint()) },
                     onClick = { dispatch(ContextBarIntent.SetStrokeEnabled(false)) },
                 ),
@@ -137,19 +142,21 @@ fun colorsContextItem(
             add(
                 FloatingMenuItem(
                     id = "colors-fill",
-                    isActive = state.fillColor != null,
+                    isActive = fillIsOn,
                     icon = { _ -> FillSwatchIcon(color = state.fillColor) },
                     onClick = onPickFillColor,
                 ),
             )
-            add(
-                FloatingMenuItem(
-                    id = "colors-fill-none",
-                    isActive = state.fillColor == null,
-                    icon = { isActive -> FillNoneIcon(color = isActive.activeIconTint()) },
-                    onClick = { dispatch(ContextBarIntent.SetFillColor(null)) },
-                ),
-            )
+            if (strokeIsOn) {
+                add(
+                    FloatingMenuItem(
+                        id = "colors-fill-none",
+                        isActive = !fillIsOn,
+                        icon = { isActive -> FillNoneIcon(color = isActive.activeIconTint()) },
+                        onClick = { dispatch(ContextBarIntent.SetFillColor(null)) },
+                    ),
+                )
+            }
         }
     }
     return listOf(
