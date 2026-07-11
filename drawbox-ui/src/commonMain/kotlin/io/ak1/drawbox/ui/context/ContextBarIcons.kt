@@ -90,6 +90,27 @@ internal fun FillSwatchIcon(color: Color?) {
     }
 }
 
+/**
+ * Compound "stroke ring + fill center" swatch — the parent chip for the
+ * combined colors slot. Stroke reads as a 1.5dp ring on the outside; fill
+ * reads as the inner disc. If stroke is disabled the ring becomes the
+ * outline token; if fill is null the inner is transparent.
+ */
+@Composable
+internal fun ColorsSwatchIcon(strokeColor: Color, strokeEnabled: Boolean, fillColor: Color?) {
+    val outline = MaterialTheme.colorScheme.outline
+    val ringColor = if (strokeEnabled) strokeColor else outline
+    Box(
+        modifier = Modifier
+            .size(20.dp)
+            .clip(CircleShape)
+            .background(fillColor ?: Color.Transparent)
+            .border(1.5.dp, ringColor, CircleShape),
+    ) {
+        if (!strokeEnabled && fillColor == null) DiagonalSlash(outline)
+    }
+}
+
 @Composable
 internal fun FillNoneIcon(color: Color) {
     val shape = RoundedCornerShape(4.dp)

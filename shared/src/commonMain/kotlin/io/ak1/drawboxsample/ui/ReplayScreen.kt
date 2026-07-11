@@ -90,7 +90,7 @@ fun ReplayScreen(
                 .padding(top = 12.dp, end = 12.dp)
                 .shadow(elevation = 3.dp, shape = CircleShape, clip = false)
                 .size(40.dp)
-                .background(MaterialTheme.colorScheme.surface, CircleShape),
+                .background(MaterialTheme.colorScheme.surfaceContainer, CircleShape),
         ) {
             Icon(Icons.Filled.Close, contentDescription = "Close replay")
         }
@@ -103,8 +103,7 @@ fun ReplayScreen(
                 .shadow(elevation = 3.dp, shape = CircleShape, clip = false)
                 .fillMaxWidth(0.85f),
             shape = CircleShape,
-            color = MaterialTheme.colorScheme.surface,
-            tonalElevation = 4.dp,
+            color = MaterialTheme.colorScheme.surfaceContainerHigh,
         ) {
             Row(
                 modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),

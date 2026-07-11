@@ -116,6 +116,8 @@ class UseCase {
         width: Float,
         cornerRadius: Float = 0f,
         strokeStyle: StrokeStyle = StrokeStyle.SOLID,
+        fillColor: Color? = null,
+        strokeEnabled: Boolean = true,
     ): Element.Shape {
         val now = Clock.System.now().toEpochMilliseconds()
         return Element.Shape(
@@ -125,6 +127,8 @@ class UseCase {
             strokeWidth = width,
             cornerRadius = cornerRadius,
             strokeStyle = strokeStyle,
+            fillColor = fillColor,
+            strokeEnabled = strokeEnabled,
             createdAt = now,
             modifiedAt = now,
         )

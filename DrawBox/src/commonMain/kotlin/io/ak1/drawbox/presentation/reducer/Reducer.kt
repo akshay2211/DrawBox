@@ -125,6 +125,8 @@ class Reducer(
                 state.strokeWidth,
                 state.currentItemCornerRadius,
                 state.currentItemStrokeStyle,
+                state.currentItemFillColor,
+                state.currentItemStrokeEnabled,
             )
             state.snapshot().copy(
                 elements = useCase.addElement(newShape, state.elements),
@@ -137,6 +139,8 @@ class Reducer(
         is Intent.SetStrokeWidth -> state.copy(strokeWidth = intent.width)
         is Intent.SetCornerRadius -> state.copy(currentItemCornerRadius = intent.radius)
         is Intent.SetStrokeStyle -> state.copy(currentItemStrokeStyle = intent.style)
+        is Intent.SetFillColor -> state.copy(currentItemFillColor = intent.color)
+        is Intent.SetStrokeEnabled -> state.copy(currentItemStrokeEnabled = intent.enabled)
         is Intent.SetFontSize -> state.copy(currentItemFontSize = intent.size)
         is Intent.SetFontFamily -> state.copy(currentItemFontFamilyKey = intent.fontFamilyKey)
         is Intent.SetTextAlignment -> state.copy(currentItemTextAlignment = intent.alignment)

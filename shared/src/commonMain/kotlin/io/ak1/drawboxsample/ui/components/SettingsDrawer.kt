@@ -49,7 +49,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import drawboxsample.shared.generated.resources.Res
 import drawboxsample.shared.generated.resources.bg_graph_paper
 import drawboxsample.shared.generated.resources.bg_hideout
@@ -106,7 +105,7 @@ fun SettingsDrawer(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.Black.copy(alpha = 0.4f))
+                    .background(MaterialTheme.colorScheme.scrim.copy(alpha = 0.4f))
                     .clickable(
                         indication = null,
                         interactionSource = remember { MutableInteractionSource() },
@@ -130,8 +129,7 @@ fun SettingsDrawer(
                         interactionSource = remember { MutableInteractionSource() },
                         onClick = {},
                     ),
-                color = MaterialTheme.colorScheme.surface,
-                tonalElevation = 4.dp,
+                color = MaterialTheme.colorScheme.surfaceContainerHigh,
                 shape = RoundedCornerShape(topStart = 24.dp, bottomStart = 24.dp),
             ) {
                 Column(
@@ -211,8 +209,7 @@ private fun DrawerHeader(onDismiss: () -> Unit) {
     ) {
         Text(
             text = "Settings",
-            fontSize = 18.sp,
-            fontWeight = FontWeight.SemiBold,
+            style = MaterialTheme.typography.titleLarge,
             color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.padding(horizontal = 4.dp),
         )
@@ -226,7 +223,7 @@ private fun DrawerHeader(onDismiss: () -> Unit) {
 private fun SectionLabel(text: String) {
     Text(
         text = text.uppercase(),
-        fontSize = 10.sp,
+        style = MaterialTheme.typography.labelSmall,
         fontWeight = FontWeight.SemiBold,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
         modifier = Modifier.padding(start = 20.dp, top = 14.dp, bottom = 6.dp),
@@ -252,7 +249,7 @@ private fun DrawerRow(
         Icon(icon, contentDescription = null, tint = tint, modifier = Modifier.size(20.dp))
         Text(
             text = label,
-            fontSize = 14.sp,
+            style = MaterialTheme.typography.bodyLarge,
             color = tint,
             modifier = Modifier.padding(end = 8.dp),
         )
@@ -282,7 +279,7 @@ private fun BgColorRow(currentBgColor: Color, onClick: () -> Unit) {
         )
         Text(
             text = "Background color",
-            fontSize = 14.sp,
+            style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.padding(end = 8.dp),
         )
@@ -316,7 +313,7 @@ private fun BgPatternRow(
             )
             Text(
                 text = "Background pattern",
-                fontSize = 14.sp,
+                style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurface,
             )
         }
@@ -380,7 +377,7 @@ private fun PatternChip(
         }
         Text(
             text = label,
-            fontSize = 10.sp,
+            style = MaterialTheme.typography.labelSmall,
             color = if (selected) MaterialTheme.colorScheme.primary
             else MaterialTheme.colorScheme.onSurfaceVariant,
         )
@@ -405,7 +402,7 @@ private fun GridSwitchRow(checked: Boolean, onCheckedChange: (Boolean) -> Unit) 
         )
         Text(
             text = "Show grid",
-            fontSize = 14.sp,
+            style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.padding(end = 8.dp),
         )

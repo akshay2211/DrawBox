@@ -14,9 +14,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.ui.draw.shadow
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.BrightnessAuto
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.LightMode
+import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FloatingToolbarDefaults
@@ -30,7 +32,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import io.ak1.drawboxsample.ui.theme.ThemeMode
 import io.ak1.drawboxsample.ui.theme.next
 
@@ -129,7 +130,7 @@ private fun RowScope.ZoomCluster(
         onClick = onZoomOut,
         modifier = Modifier.size(36.dp),
     ) {
-        Text("−", fontSize = 18.sp, color = MaterialTheme.colorScheme.onSurface)
+        Icon(Icons.Filled.Remove, contentDescription = "Zoom out")
     }
     Box(
         modifier = Modifier
@@ -141,7 +142,7 @@ private fun RowScope.ZoomCluster(
     ) {
         Text(
             text = "$scalePercent%",
-            fontSize = 12.sp,
+            style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.onSurface,
         )
     }
@@ -149,7 +150,7 @@ private fun RowScope.ZoomCluster(
         onClick = onZoomIn,
         modifier = Modifier.size(36.dp),
     ) {
-        Text("+", fontSize = 18.sp, color = MaterialTheme.colorScheme.onSurface)
+        Icon(Icons.Filled.Add, contentDescription = "Zoom in")
     }
 }
 

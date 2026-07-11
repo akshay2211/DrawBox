@@ -2,6 +2,7 @@
 
 package io.ak1.drawbox.ui.controls
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -23,12 +24,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import io.ak1.drawbox.domain.model.Mode
 import io.ak1.drawbox.ui.icons.DrawBoxIcons
 import io.ak1.drawbox.ui.picker.ColorPickerSlot
+import io.ak1.drawbox.ui.picker.MultiTargetColorPicker
 import io.ak1.drawbox.ui.picker.RangVikalpColorPicker
 import io.ak1.drawbox.ui.toolbar.ExpandableFloatingToolbar
 import io.ak1.drawbox.ui.toolbar.FloatingMenuItem
@@ -53,6 +59,16 @@ data class ControlsBarState(
     val canRedo: Boolean = false,
     val strokeColor: Color = Color.Black,
     val recentColors: List<Color> = emptyList(),
+    /**
+     * When true, the color swatch renders as a 45°-split disc (stroke ring on
+     * the top-left, fill disc on the bottom-right) and taps open the multi-
+     * target picker. Enable only for elements/modes that support both stroke
+     * AND fill — closed shapes (rect, circle, triangle). Everything else keeps
+     * the plain single-target swatch.
+     */
+    val showFillTarget: Boolean = false,
+    val strokeEnabled: Boolean = true,
+    val fillColor: Color? = null,
 )
 
 /** Every user gesture a [ControlsBar] can emit. */
@@ -61,6 +77,8 @@ sealed interface ControlsBarIntent {
     data object Redo : ControlsBarIntent
     data class SelectMode(val mode: Mode) : ControlsBarIntent
     data class SetStrokeColor(val color: Color) : ControlsBarIntent
+    data class SetStrokeEnabled(val enabled: Boolean) : ControlsBarIntent
+    data class SetFillColor(val color: Color?) : ControlsBarIntent
 }
 
 typealias ControlsBarDispatch = (ControlsBarIntent) -> Unit
@@ -165,11 +183,25 @@ fun defaultControlsBarItems(
 ): List<FloatingMenuItem> {
     var showPicker by remember { mutableStateOf(false) }
     if (showPicker) {
-        colorPicker(
-            state.strokeColor,
-            { showPicker = false },
-            { color -> dispatch(ControlsBarIntent.SetStrokeColor(color)) },
-        )
+        // Fillable target => multi-target picker (Border / Fill tabs +
+        // off-toggle). Non-fillable => plain single-target picker as before.
+        if (state.showFillTarget) {
+            MultiTargetColorPicker(
+                strokeColor = state.strokeColor,
+                strokeEnabled = state.strokeEnabled,
+                fillColor = state.fillColor,
+                onDismiss = { showPicker = false },
+                onStrokeSelected = { dispatch(ControlsBarIntent.SetStrokeColor(it)) },
+                onStrokeEnabledChanged = { dispatch(ControlsBarIntent.SetStrokeEnabled(it)) },
+                onFillSelected = { dispatch(ControlsBarIntent.SetFillColor(it)) },
+            )
+        } else {
+            colorPicker(
+                state.strokeColor,
+                { showPicker = false },
+                { color -> dispatch(ControlsBarIntent.SetStrokeColor(color)) },
+            )
+        }
     }
 
     var lastShape by remember { mutableStateOf(shapes.firstOrNull() ?: Mode.RECTANGLE) }
@@ -231,11 +263,23 @@ private fun colorSwatchItem(
     labels: ControlsBarLabels,
     onPickColor: () -> Unit,
 ): FloatingMenuItem {
+    val swatchIcon: @Composable () -> Unit = {
+        if (state.showFillTarget) {
+            SplitColorSwatch(
+                strokeColor = state.strokeColor,
+                strokeEnabled = state.strokeEnabled,
+                fillColor = state.fillColor,
+                contentDescription = labels.color,
+            )
+        } else {
+            ColorSwatchButton(color = state.strokeColor, contentDescription = labels.color)
+        }
+    }
     val recents = state.recentColors
     if (recents.isEmpty()) {
         return FloatingMenuItem(
             id = "color",
-            icon = { _ -> ColorSwatchButton(color = state.strokeColor, contentDescription = labels.color) },
+            icon = { _ -> swatchIcon() },
             onClick = onPickColor,
         )
     }
@@ -260,7 +304,7 @@ private fun colorSwatchItem(
     }
     return FloatingMenuItem(
         id = "color",
-        icon = { _ -> ColorSwatchButton(color = state.strokeColor, contentDescription = labels.color) },
+        icon = { _ -> swatchIcon() },
         // onClick = null → tapping opens the submenu of recents + custom.
         children = listOf(paletteChild) + recentChildren,
     )
@@ -275,6 +319,84 @@ private fun ColorSwatchButton(color: Color, contentDescription: String, size: Dp
             .background(color)
             .border(1.dp, MaterialTheme.colorScheme.outline, CircleShape),
     )
+}
+
+/**
+ * 45°-split disc showing stroke and fill together — top-left half = border
+ * color, bottom-right half = fill color. When a target is disabled (stroke
+ * off / fill null) that half renders as transparent with a diagonal slash
+ * inside the outline, mirroring the "no stroke"/"no fill" idiom in
+ * ContextBarIcons.
+ */
+@Composable
+private fun SplitColorSwatch(
+    strokeColor: Color,
+    strokeEnabled: Boolean,
+    fillColor: Color?,
+    contentDescription: String,
+    size: Dp = 20.dp,
+) {
+    val outline = MaterialTheme.colorScheme.outline
+    Canvas(modifier = Modifier.size(size)) {
+        val d = this.size.minDimension
+        val topLeft = Offset(
+            (this.size.width - d) / 2f,
+            (this.size.height - d) / 2f,
+        )
+        val arcSize = Size(d, d)
+        // Top-left half (stroke). Compose Canvas angles: 0°=east, +sweep=CW,
+        // so start=135° sweep=180° fills the region above the SW→NE diagonal.
+        if (strokeEnabled) {
+            drawArc(
+                color = strokeColor,
+                startAngle = 135f,
+                sweepAngle = 180f,
+                useCenter = true,
+                topLeft = topLeft,
+                size = arcSize,
+            )
+        }
+        // Bottom-right half (fill).
+        if (fillColor != null) {
+            drawArc(
+                color = fillColor,
+                startAngle = 315f,
+                sweepAngle = 180f,
+                useCenter = true,
+                topLeft = topLeft,
+                size = arcSize,
+            )
+        }
+        // Diagonal slashes for disabled halves. Each slash runs NW→SE
+        // (perpendicular to the SW→NE split axis) and stays inside its own
+        // half — a point (x, y) is in the top-left half when x+y < d.
+        val strokeW = 1.5.dp.toPx()
+        if (!strokeEnabled) {
+            drawLine(
+                color = outline,
+                start = topLeft + Offset(d * 0.15f, d * 0.40f),
+                end = topLeft + Offset(d * 0.40f, d * 0.15f),
+                strokeWidth = strokeW,
+                cap = StrokeCap.Round,
+            )
+        }
+        if (fillColor == null) {
+            drawLine(
+                color = outline,
+                start = topLeft + Offset(d * 0.60f, d * 0.85f),
+                end = topLeft + Offset(d * 0.85f, d * 0.60f),
+                strokeWidth = strokeW,
+                cap = StrokeCap.Round,
+            )
+        }
+        // Outline circle on top.
+        drawCircle(
+            color = outline,
+            radius = d / 2f,
+            center = topLeft + Offset(d / 2f, d / 2f),
+            style = Stroke(width = 1.dp.toPx()),
+        )
+    }
 }
 
 private fun modeItem(

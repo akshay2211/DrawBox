@@ -104,6 +104,20 @@ data class State(
     val currentItemCornerRadius: Float = 0f,
     val currentItemStrokeStyle: StrokeStyle = StrokeStyle.SOLID,
     /**
+     * Default fill color applied to new [Element.Shape]s (rect/circle/triangle).
+     * `null` means stroke-only — the shape renders without a fill. Mutated by
+     * [Intent.SetFillColor]; the selection form [Intent.SetSelectedFillColor]
+     * writes to selected elements instead.
+     */
+    val currentItemFillColor: Color? = null,
+    /**
+     * Whether the outline pass is drawn on new [Element.Shape]s. When `false`,
+     * new shapes render fill-only. Mutated by [Intent.SetStrokeEnabled]; the
+     * selection form [Intent.SetSelectedStrokeEnabled] writes to selected
+     * elements instead.
+     */
+    val currentItemStrokeEnabled: Boolean = true,
+    /**
      * Default font size in world pixels applied to text elements inserted via
      * [Mode.TEXT]. Mutated by [Intent.SetFontSize] (the non-selection form);
      * the selection form [Intent.SetSelectedFontSize] writes to the selected

@@ -136,8 +136,6 @@ fun HomeScreen(
     val selectedHasStrokeable = selectedDrawables.any {
         it is Element.Shape || it is Element.Path
     }
-    val showShapeStroke = isShapeMode || selectedHasStrokeable
-    val showCornerRadius = state.mode == Mode.RECTANGLE || state.mode == Mode.TRIANGLE || selectedRoundable.isNotEmpty()
     val currentRadius = if (selectedRoundable.isNotEmpty()) (selectedRoundable.first() as Element.Shape).cornerRadius
     else state.currentItemCornerRadius
     val currentStrokeStyle = when (val first = selectedDrawables.firstOrNull()) {
@@ -164,6 +162,25 @@ fun HomeScreen(
     val showStrokeToggle = selectedShapes.isNotEmpty()
     val currentFillColor = selectedShapes.firstOrNull()?.fillColor
     val currentStrokeEnabled = selectedShapes.firstOrNull()?.strokeEnabled ?: true
+    // Elements that support BOTH stroke and fill drive ControlsBar's split-disc
+    // swatch + the multi-target picker. Only closed shapes qualify — LINE and
+    // ARROW are stroke-only, paths and text likewise.
+    val hasFillableSelection = selectedShapes.any {
+        it.shapeType == ShapeType.RECTANGLE ||
+            it.shapeType == ShapeType.CIRCLE ||
+            it.shapeType == ShapeType.TRIANGLE
+    }
+    // Also let the split disc appear in fillable-shape tool modes with no
+    // selection, so the user can preconfigure fill BEFORE dropping the shape.
+    // Backed by State.currentItemFillColor / currentItemStrokeEnabled.
+    val isFillableToolMode = state.mode == Mode.RECTANGLE ||
+        state.mode == Mode.CIRCLE ||
+        state.mode == Mode.TRIANGLE
+    val showFillTarget = hasFillableSelection || (!hasSelection && isFillableToolMode)
+    val toolOrSelectionStrokeEnabled = if (hasFillableSelection)
+        currentStrokeEnabled else state.currentItemStrokeEnabled
+    val toolOrSelectionFillColor = if (hasFillableSelection)
+        currentFillColor else state.currentItemFillColor
 
     // Text controls — surfaced in TEXT mode (pre-configure the next insert)
     // OR when a single Text element is selected (edit existing). Multi-text
@@ -171,8 +188,6 @@ fun HomeScreen(
     // possibly-conflicting style values.
     val selectedTexts = selectedDrawables.filterIsInstance<Element.Text>()
     val singleSelectedText = selectedTexts.singleOrNull()?.takeIf { selectedDrawables.size == 1 }
-    val showTextControls = isTextMode || singleSelectedText != null
-    val showEditText = singleSelectedText != null
     // Current values follow the selected element when present; otherwise
     // fall back to the State defaults the next insert will use.
     val currentFontSize = singleSelectedText?.fontSize ?: state.currentItemFontSize
@@ -276,63 +291,91 @@ fun HomeScreen(
             val isNarrow = maxWidth < 600.dp
 
 
-            // Top-right unified context bar — merges shape config + selection
-            // actions into one pill. Rendered only when there's something to show.
-            val barVisible = showShapeStroke || showCornerRadius || showFill ||
-                showStrokeToggle || showTextControls || hasSelection
-            if (barVisible) {
-                val contextBarState = ContextBarState(
-                    strokeColor = currentShapeColor,
-                    strokeEnabled = currentStrokeEnabled,
-                    strokeStyle = currentStrokeStyle,
-                    strokeWidth = currentStrokeWidth,
-                    fillColor = currentFillColor,
-                    cornerRadius = currentRadius,
-                    fontSize = currentFontSize,
-                    textAlignment = currentTextAlignment,
-                    fontFamilyKey = currentFontFamilyKey,
-                    fontFamilyKeys = fontFamilyKeys,
-                )
-                val contextBarSlots = ContextBarSlots(
-                    showStroke = true,
-                    strokeToggleable = showStrokeToggle,
-                    showShapeStroke = showShapeStroke,
-                    showFill = showFill,
-                    showCornerRadius = showCornerRadius,
-                    showText = showTextControls,
-                    showEditText = showEditText,
-                    showSelectionActions = hasSelection,
-                )
+            // Config bars split by attachment target — notes-app-style discipline:
+            //  - Tool bar (bottom-center, above ControlsBar): configures the
+            //    active tool's NEXT stroke/insert. Shown when a configurable
+            //    tool mode is active AND nothing is selected.
+            //  - Selection bar (top-right): edits / acts on the current
+            //    selection. Shown when there IS a selection.
+            // Mutually exclusive by construction — the user's attention is on
+            // one thing at a time, so only one bar is ever visible.
+            val commonBarState = ContextBarState(
+                strokeColor = currentShapeColor,
+                strokeEnabled = currentStrokeEnabled,
+                strokeStyle = currentStrokeStyle,
+                strokeWidth = currentStrokeWidth,
+                fillColor = currentFillColor,
+                cornerRadius = currentRadius,
+                fontSize = currentFontSize,
+                textAlignment = currentTextAlignment,
+                fontFamilyKey = currentFontFamilyKey,
+                fontFamilyKeys = fontFamilyKeys,
+            )
+
+            val toolBarVisible = !hasSelection && (isShapeMode || isTextMode)
+            if (toolBarVisible) {
                 ContextBar(
-                    state = contextBarState,
-                    slots = contextBarSlots,
+                    state = commonBarState,
+                    slots = ContextBarSlots(
+                        // Color already lives on ControlsBar's swatch — no need
+                        // to duplicate it on the tool config bar. This keeps the
+                        // tool bar focused on options ControlsBar doesn't
+                        // expose (style, width, corner, size, align, family).
+                        showStroke = false,
+                        strokeToggleable = false,
+                        showShapeStroke = isShapeMode,
+                        showFill = false,
+                        showCornerRadius = state.mode == Mode.RECTANGLE ||
+                            state.mode == Mode.TRIANGLE,
+                        showText = isTextMode,
+                        showEditText = false,
+                        showSelectionActions = false,
+                    ),
                     onIntent = { intent ->
                         when (intent) {
-                            is ContextBarIntent.SetStrokeColor ->
-                                if (hasSelection) viewModel.setSelectionColor(intent.color)
-                                else viewModel.setColor(intent.color)
-                            is ContextBarIntent.SetStrokeEnabled ->
-                                viewModel.setSelectionStrokeEnabled(intent.enabled)
-                            is ContextBarIntent.SetStrokeStyle ->
-                                if (hasSelection) viewModel.setSelectionStrokeStyle(intent.style)
-                                else viewModel.setStrokeStyle(intent.style)
-                            is ContextBarIntent.SetStrokeWidth ->
-                                if (hasSelection) viewModel.setSelectionStrokeWidth(intent.width)
-                                else viewModel.setStrokeWidth(intent.width)
-                            is ContextBarIntent.SetFillColor ->
-                                viewModel.setSelectionFillColor(intent.color)
-                            is ContextBarIntent.SetCornerRadius ->
-                                if (selectedRoundable.isNotEmpty()) viewModel.setSelectionCornerRadius(intent.radius)
-                                else viewModel.setCornerRadius(intent.radius)
-                            is ContextBarIntent.SetFontSize ->
-                                if (singleSelectedText != null) viewModel.setSelectionFontSize(intent.size)
-                                else viewModel.setFontSize(intent.size)
-                            is ContextBarIntent.SetTextAlignment ->
-                                if (singleSelectedText != null) viewModel.setSelectionTextAlignment(intent.alignment)
-                                else viewModel.setTextAlignment(intent.alignment)
-                            is ContextBarIntent.SetFontFamily ->
-                                if (singleSelectedText != null) viewModel.setSelectionFontFamily(intent.key)
-                                else viewModel.setFontFamily(intent.key)
+                            is ContextBarIntent.SetStrokeColor -> viewModel.setColor(intent.color)
+                            is ContextBarIntent.SetStrokeStyle -> viewModel.setStrokeStyle(intent.style)
+                            is ContextBarIntent.SetStrokeWidth -> viewModel.setStrokeWidth(intent.width)
+                            is ContextBarIntent.SetCornerRadius -> viewModel.setCornerRadius(intent.radius)
+                            is ContextBarIntent.SetFontSize -> viewModel.setFontSize(intent.size)
+                            is ContextBarIntent.SetTextAlignment -> viewModel.setTextAlignment(intent.alignment)
+                            is ContextBarIntent.SetFontFamily -> viewModel.setFontFamily(intent.key)
+                            else -> {}
+                        }
+                    },
+                    fontFamilyResolver = { key -> io.ak1.drawbox.text.FontRegistry.resolve(key) },
+                    modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 76.dp),
+                    expanded = false,
+                )
+            }
+
+            if (hasSelection) {
+                ContextBar(
+                    state = commonBarState,
+                    slots = ContextBarSlots(
+                        // Color affordance owned by ControlsBar's swatch (plain
+                        // or split-disc based on hasFillableSelection). The
+                        // selection bar focuses on style/geometry/actions.
+                        showStroke = false,
+                        strokeToggleable = false,
+                        showShapeStroke = selectedHasStrokeable,
+                        showFill = false,
+                        showCornerRadius = selectedRoundable.isNotEmpty(),
+                        showText = singleSelectedText != null,
+                        showEditText = singleSelectedText != null,
+                        showSelectionActions = true,
+                    ),
+                    onIntent = { intent ->
+                        when (intent) {
+                            is ContextBarIntent.SetStrokeColor -> viewModel.setSelectionColor(intent.color)
+                            is ContextBarIntent.SetStrokeEnabled -> viewModel.setSelectionStrokeEnabled(intent.enabled)
+                            is ContextBarIntent.SetStrokeStyle -> viewModel.setSelectionStrokeStyle(intent.style)
+                            is ContextBarIntent.SetStrokeWidth -> viewModel.setSelectionStrokeWidth(intent.width)
+                            is ContextBarIntent.SetFillColor -> viewModel.setSelectionFillColor(intent.color)
+                            is ContextBarIntent.SetCornerRadius -> viewModel.setSelectionCornerRadius(intent.radius)
+                            is ContextBarIntent.SetFontSize -> viewModel.setSelectionFontSize(intent.size)
+                            is ContextBarIntent.SetTextAlignment -> viewModel.setSelectionTextAlignment(intent.alignment)
+                            is ContextBarIntent.SetFontFamily -> viewModel.setSelectionFontFamily(intent.key)
                             ContextBarIntent.EditText -> singleSelectedText?.let { target ->
                                 editingTextId = target.id
                                 editDraft = target.text
@@ -382,6 +425,12 @@ fun HomeScreen(
                     canUndo = canUndo,
                     canRedo = canRedo,
                     strokeColor = currentShapeColor,
+                    // Split-disc swatch + multi-target picker light up for
+                    // fillable-shape selections AND for fillable-shape tool
+                    // modes with no selection (preconfigure fill before draw).
+                    showFillTarget = showFillTarget,
+                    strokeEnabled = toolOrSelectionStrokeEnabled,
+                    fillColor = toolOrSelectionFillColor,
                 ),
                 dispatch = { intent ->
                     when (intent) {
@@ -391,6 +440,12 @@ fun HomeScreen(
                         is ControlsBarIntent.SetStrokeColor ->
                             if (hasSelection) viewModel.setSelectionColor(intent.color)
                             else viewModel.setColor(intent.color)
+                        is ControlsBarIntent.SetStrokeEnabled ->
+                            if (hasSelection) viewModel.setSelectionStrokeEnabled(intent.enabled)
+                            else viewModel.setStrokeEnabled(intent.enabled)
+                        is ControlsBarIntent.SetFillColor ->
+                            if (hasSelection) viewModel.setSelectionFillColor(intent.color)
+                            else viewModel.setFillColor(intent.color)
                     }
                 },
             )

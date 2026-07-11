@@ -17,6 +17,7 @@ import io.ak1.drawbox.ui.model.ContextBarIntent
 import io.ak1.drawbox.ui.model.ContextBarState
 import io.ak1.drawbox.ui.toolbar.FloatingMenuItem
 import io.ak1.drawbox.ui.toolbar.activeIconTint
+import io.ak1.drawbox.ui.toolbar.separator
 import kotlin.math.abs
 
 /** Stroke-width presets surfaced by the shape stroke-width sub-menu. */
@@ -81,6 +82,90 @@ fun strokeColorContextItem(
         )
     }
     return listOf(root)
+}
+
+/**
+ * Combined stroke + fill "colors" slot. One parent chip whose vertical submenu
+ * groups stroke and fill sections:
+ *
+ *   [stroke swatch → picker]
+ *   [no-stroke toggle]        (only if [strokeToggleable])
+ *   ─────
+ *   [fill swatch → picker]    (only if [showFill])
+ *   [no-fill toggle]          (only if [showFill])
+ *
+ * Emit this instead of separate [strokeColorContextItem] + [fillContextItems]
+ * when the host wants one consolidated colors chip — same UX Samsung Notes and
+ * Figma use. Falls back to a simple stroke-only chip when [showFill] is false
+ * and [strokeToggleable] is false.
+ */
+fun colorsContextItem(
+    state: ContextBarState,
+    dispatch: ContextBarDispatch,
+    onPickStrokeColor: () -> Unit,
+    onPickFillColor: () -> Unit,
+    strokeToggleable: Boolean = false,
+    showFill: Boolean = false,
+): List<FloatingMenuItem> {
+    // Degenerate case — no toggle, no fill — just the plain stroke picker.
+    if (!strokeToggleable && !showFill) {
+        return strokeColorContextItem(state, dispatch, onPickStrokeColor, toggleable = false)
+    }
+    val children = buildList {
+        add(
+            FloatingMenuItem(
+                id = "colors-stroke",
+                isActive = state.strokeEnabled,
+                icon = { _ -> StrokeSwatchIcon(color = state.strokeColor, enabled = true) },
+                onClick = {
+                    if (!state.strokeEnabled) dispatch(ContextBarIntent.SetStrokeEnabled(true))
+                    onPickStrokeColor()
+                },
+            ),
+        )
+        if (strokeToggleable) {
+            add(
+                FloatingMenuItem(
+                    id = "colors-stroke-none",
+                    isActive = !state.strokeEnabled,
+                    icon = { isActive -> StrokeNoneIcon(color = isActive.activeIconTint()) },
+                    onClick = { dispatch(ContextBarIntent.SetStrokeEnabled(false)) },
+                ),
+            )
+        }
+        if (showFill) {
+            add(separator("colors-sep"))
+            add(
+                FloatingMenuItem(
+                    id = "colors-fill",
+                    isActive = state.fillColor != null,
+                    icon = { _ -> FillSwatchIcon(color = state.fillColor) },
+                    onClick = onPickFillColor,
+                ),
+            )
+            add(
+                FloatingMenuItem(
+                    id = "colors-fill-none",
+                    isActive = state.fillColor == null,
+                    icon = { isActive -> FillNoneIcon(color = isActive.activeIconTint()) },
+                    onClick = { dispatch(ContextBarIntent.SetFillColor(null)) },
+                ),
+            )
+        }
+    }
+    return listOf(
+        FloatingMenuItem(
+            id = "colors",
+            icon = { _ ->
+                ColorsSwatchIcon(
+                    strokeColor = state.strokeColor,
+                    strokeEnabled = state.strokeEnabled,
+                    fillColor = state.fillColor,
+                )
+            },
+            children = children,
+        ),
+    )
 }
 
 /**

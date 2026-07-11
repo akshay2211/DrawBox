@@ -214,6 +214,12 @@ class DrawBoxController(
     fun setSelectionStrokeStyle(style: io.ak1.drawbox.domain.model.StrokeStyle) =
         onIntent(Intent.SetSelectedStrokeStyle(style))
 
+    /** Default fill color applied to new shapes. `null` = stroke-only. */
+    fun setFillColor(color: Color?) = onIntent(Intent.SetFillColor(color))
+
+    /** Whether new shapes render an outline pass. `false` = fill-only. */
+    fun setStrokeEnabled(enabled: Boolean) = onIntent(Intent.SetStrokeEnabled(enabled))
+
     /** Change the opacity for new drawings (0.0 to 1.0) */
     fun setOpacity(opacity: Float) = onIntent(Intent.SetOpacity(opacity))
 

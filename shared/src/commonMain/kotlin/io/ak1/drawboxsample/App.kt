@@ -19,7 +19,7 @@ fun App() {
     var themeMode by rememberSaveable { mutableStateOf(ThemeMode.SYSTEM) }
     DrawBoxTheme(darkTheme = themeMode.resolveIsDark()) {
         Surface(
-            color = MaterialTheme.colorScheme.background,
+            color = MaterialTheme.colorScheme.surface,
             modifier = Modifier.fillMaxSize(),
         ) {
             HomeScreen(
