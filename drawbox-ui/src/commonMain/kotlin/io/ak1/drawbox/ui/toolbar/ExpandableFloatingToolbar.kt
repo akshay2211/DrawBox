@@ -21,6 +21,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FloatingToolbarColors
 import androidx.compose.material3.FloatingToolbarDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.HorizontalFloatingToolbar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -100,7 +101,7 @@ enum class SubmenuPosition { Above, Below }
 fun ExpandableFloatingToolbar(
     items: List<FloatingMenuItem>,
     modifier: Modifier = Modifier,
-    expanded: Boolean = true,
+    expanded: Boolean = false,
     submenuPosition: SubmenuPosition = SubmenuPosition.Above,
     horizontalColors: FloatingToolbarColors = FloatingToolbarDefaults.standardFloatingToolbarColors(),
     verticalColors: FloatingToolbarColors = FloatingToolbarDefaults.standardFloatingToolbarColors(),
@@ -171,6 +172,16 @@ fun ExpandableFloatingToolbar(
                     .requiredWidth(40.dp),
                 content = {
                     current.children.forEach { child ->
+                        if (child.isSeparator) {
+                            HorizontalDivider(
+                                modifier = Modifier
+                                    .align(Alignment.CenterHorizontally)
+                                    .requiredWidth(20.dp)
+                                    .padding(vertical = 4.dp),
+                                color = MaterialTheme.colorScheme.outlineVariant,
+                            )
+                            return@forEach
+                        }
                         IconButton(
                             onClick = {
                                 child.onClick?.invoke()

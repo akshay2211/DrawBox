@@ -49,7 +49,7 @@ fun ContextBar(
     onIntent: ContextBarDispatch,
     slots: ContextBarSlots,
     modifier: Modifier = Modifier,
-    expanded: Boolean = true,
+    expanded: Boolean = false,
     colorPicker: ColorPickerSlot = { initial, onDismiss, onSelected ->
         RangVikalpColorPicker(initial, onDismiss, onSelected)
     },
@@ -87,14 +87,31 @@ fun ContextBar(
 
     val items: List<FloatingMenuItem> = buildList {
         if (slots.showStroke) {
-            addAll(
-                strokeColorContextItem(
-                    state = state,
-                    dispatch = onIntent,
-                    onPickColor = { showStrokeDialog = true },
-                    toggleable = slots.strokeToggleable,
-                ),
-            )
+            // When fill is also on, collapse stroke + strokeEnabled + fill into
+            // ONE consolidated "colors" chip whose submenu groups the sections.
+            // Cuts a shape selection's bar from 5 config chips to 4 and matches
+            // the Samsung Notes / Figma pattern.
+            if (slots.showFill) {
+                addAll(
+                    colorsContextItem(
+                        state = state,
+                        dispatch = onIntent,
+                        onPickStrokeColor = { showStrokeDialog = true },
+                        onPickFillColor = { showFillDialog = true },
+                        strokeToggleable = slots.strokeToggleable,
+                        showFill = true,
+                    ),
+                )
+            } else {
+                addAll(
+                    strokeColorContextItem(
+                        state = state,
+                        dispatch = onIntent,
+                        onPickColor = { showStrokeDialog = true },
+                        toggleable = slots.strokeToggleable,
+                    ),
+                )
+            }
         }
         if (slots.showText) {
             addAll(
@@ -106,15 +123,8 @@ fun ContextBar(
                 ),
             )
         }
-        if (slots.showFill) {
-            addAll(
-                fillContextItems(
-                    state = state,
-                    dispatch = onIntent,
-                    onPickFillColor = { showFillDialog = true },
-                ),
-            )
-        }
+        // showFill alone (without showStroke) is now a no-op — its behavior is
+        // owned by the combined colors chip above.
         if (slots.showShapeStroke) {
             addAll(shapeStrokeContextItems(state = state, dispatch = onIntent))
         }

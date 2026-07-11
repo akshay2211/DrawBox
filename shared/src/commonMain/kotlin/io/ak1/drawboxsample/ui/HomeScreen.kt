@@ -2,6 +2,8 @@
 
 package io.ak1.drawboxsample.ui
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -18,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.key.Key
@@ -136,8 +139,6 @@ fun HomeScreen(
     val selectedHasStrokeable = selectedDrawables.any {
         it is Element.Shape || it is Element.Path
     }
-    val showShapeStroke = isShapeMode || selectedHasStrokeable
-    val showCornerRadius = state.mode == Mode.RECTANGLE || state.mode == Mode.TRIANGLE || selectedRoundable.isNotEmpty()
     val currentRadius = if (selectedRoundable.isNotEmpty()) (selectedRoundable.first() as Element.Shape).cornerRadius
     else state.currentItemCornerRadius
     val currentStrokeStyle = when (val first = selectedDrawables.firstOrNull()) {
@@ -164,6 +165,25 @@ fun HomeScreen(
     val showStrokeToggle = selectedShapes.isNotEmpty()
     val currentFillColor = selectedShapes.firstOrNull()?.fillColor
     val currentStrokeEnabled = selectedShapes.firstOrNull()?.strokeEnabled ?: true
+    // Elements that support BOTH stroke and fill drive ControlsBar's split-disc
+    // swatch + the multi-target picker. Only closed shapes qualify — LINE and
+    // ARROW are stroke-only, paths and text likewise.
+    val hasFillableSelection = selectedShapes.any {
+        it.shapeType == ShapeType.RECTANGLE ||
+            it.shapeType == ShapeType.CIRCLE ||
+            it.shapeType == ShapeType.TRIANGLE
+    }
+    // Also let the split disc appear in fillable-shape tool modes with no
+    // selection, so the user can preconfigure fill BEFORE dropping the shape.
+    // Backed by State.currentItemFillColor / currentItemStrokeEnabled.
+    val isFillableToolMode = state.mode == Mode.RECTANGLE ||
+        state.mode == Mode.CIRCLE ||
+        state.mode == Mode.TRIANGLE
+    val showFillTarget = hasFillableSelection || (!hasSelection && isFillableToolMode)
+    val toolOrSelectionStrokeEnabled = if (hasFillableSelection)
+        currentStrokeEnabled else state.currentItemStrokeEnabled
+    val toolOrSelectionFillColor = if (hasFillableSelection)
+        currentFillColor else state.currentItemFillColor
 
     // Text controls — surfaced in TEXT mode (pre-configure the next insert)
     // OR when a single Text element is selected (edit existing). Multi-text
@@ -171,8 +191,6 @@ fun HomeScreen(
     // possibly-conflicting style values.
     val selectedTexts = selectedDrawables.filterIsInstance<Element.Text>()
     val singleSelectedText = selectedTexts.singleOrNull()?.takeIf { selectedDrawables.size == 1 }
-    val showTextControls = isTextMode || singleSelectedText != null
-    val showEditText = singleSelectedText != null
     // Current values follow the selected element when present; otherwise
     // fall back to the State defaults the next insert will use.
     val currentFontSize = singleSelectedText?.fontSize ?: state.currentItemFontSize
@@ -223,6 +241,16 @@ fun HomeScreen(
         viewModel.setBackgroundPattern(patternPainter, patternTint)
     }
 
+    // Fade all floating chrome down to 0.35 alpha while the user's actively
+    // touching the canvas — matches the Samsung / OPPO Notes idle-canvas
+    // pattern. Peek at pointer events on the Initial pass so DrawBox still
+    // sees them un-consumed.
+    var isGesturing by remember { mutableStateOf(false) }
+    val chromeAlpha by animateFloatAsState(
+        targetValue = if (isGesturing) 0.35f else 1f,
+        animationSpec = tween(durationMillis = 120),
+        label = "chromeAlpha",
+    )
 
     Scaffold { _ ->
 
@@ -230,6 +258,14 @@ fun HomeScreen(
             state = state,
             onIntent = viewModel::onIntent,
             modifier = Modifier.fillMaxSize().clipToBounds()
+                .pointerInput(Unit) {
+                    awaitPointerEventScope {
+                        while (true) {
+                            val event = awaitPointerEvent(PointerEventPass.Initial)
+                            isGesturing = event.changes.any { it.pressed }
+                        }
+                    }
+                }
                 // OS drag-drop: dragging image files from Finder /
                 // Explorer onto the canvas inserts them at the drop
                 // point. Each file in a multi-file drop gets a small
@@ -274,65 +310,144 @@ fun HomeScreen(
         )
         BoxWithConstraints(modifier = Modifier.fillMaxSize().systemBarsPadding()) {
             val isNarrow = maxWidth < 600.dp
+            val density = androidx.compose.ui.platform.LocalDensity.current
+            val viewportW = with(density) { maxWidth.toPx() }
+            val viewportH = with(density) { maxHeight.toPx() }
+
+            // Selection-anchor math for the selection ContextBar. Computes the
+            // union of selected element bounds in world space, converts to
+            // screen space, and returns an (x, y) top-left anchor to hang the
+            // pill from. Falls back to null (→ fixed top-right) when the
+            // selection is entirely off-screen or spans the viewport.
+            val selectionAnchor: androidx.compose.ui.unit.DpOffset? = remember(
+                state.selectedIds, state.elements, state.viewport, viewportW, viewportH,
+            ) {
+                if (!hasSelection) return@remember null
+                val worldRects = state.elements
+                    .filter { it.id in state.selectedIds }
+                    .map { it.bounds() }
+                if (worldRects.isEmpty()) return@remember null
+                val worldLeft = worldRects.minOf { it.left }
+                val worldTop = worldRects.minOf { it.top }
+                val worldRight = worldRects.maxOf { it.right }
+                val worldBottom = worldRects.maxOf { it.bottom }
+                val topLeftS = state.viewport.worldToScreen(Offset(worldLeft, worldTop))
+                val bottomRightS = state.viewport.worldToScreen(Offset(worldRight, worldBottom))
+                val onScreen = topLeftS.x < viewportW && bottomRightS.x > 0f &&
+                    topLeftS.y < viewportH && bottomRightS.y > 0f
+                val spansViewport = (bottomRightS.x - topLeftS.x) > viewportW * 0.9f ||
+                    (bottomRightS.y - topLeftS.y) > viewportH * 0.9f
+                if (!onScreen || spansViewport) return@remember null
+                // Anchor above the selection with a 12dp gap and estimate the
+                // pill's own height at 48dp. Fall back to below when the top
+                // slot would collide with the app-bar area (< 72dp from top).
+                val barHeightPx = with(density) { 48.dp.toPx() }
+                val gapPx = with(density) { 12.dp.toPx() }
+                val topAbovePx = topLeftS.y - gapPx - barHeightPx
+                val topBelowPx = bottomRightS.y + gapPx
+                val minTopPx = with(density) { 72.dp.toPx() }
+                val maxTopPx = viewportH - barHeightPx - with(density) { 12.dp.toPx() }
+                val yPx = if (topAbovePx >= minTopPx) topAbovePx else topBelowPx
+                // Left-anchor the pill to the selection's left. Assume ~360dp
+                // max chip stack, clamp so the pill stays fully in-viewport.
+                val estBarWidthPx = with(density) { 360.dp.toPx() }
+                val minLeftPx = with(density) { 12.dp.toPx() }
+                val maxLeftPx = (viewportW - estBarWidthPx).coerceAtLeast(minLeftPx)
+                val xPx = topLeftS.x.coerceIn(minLeftPx, maxLeftPx)
+                val yPxClamped = yPx.coerceIn(minTopPx, maxTopPx)
+                androidx.compose.ui.unit.DpOffset(
+                    x = with(density) { xPx.toDp() },
+                    y = with(density) { yPxClamped.toDp() },
+                )
+            }
 
 
-            // Top-right unified context bar — merges shape config + selection
-            // actions into one pill. Rendered only when there's something to show.
-            val barVisible = showShapeStroke || showCornerRadius || showFill ||
-                showStrokeToggle || showTextControls || hasSelection
-            if (barVisible) {
-                val contextBarState = ContextBarState(
-                    strokeColor = currentShapeColor,
-                    strokeEnabled = currentStrokeEnabled,
-                    strokeStyle = currentStrokeStyle,
-                    strokeWidth = currentStrokeWidth,
-                    fillColor = currentFillColor,
-                    cornerRadius = currentRadius,
-                    fontSize = currentFontSize,
-                    textAlignment = currentTextAlignment,
-                    fontFamilyKey = currentFontFamilyKey,
-                    fontFamilyKeys = fontFamilyKeys,
-                )
-                val contextBarSlots = ContextBarSlots(
-                    showStroke = true,
-                    strokeToggleable = showStrokeToggle,
-                    showShapeStroke = showShapeStroke,
-                    showFill = showFill,
-                    showCornerRadius = showCornerRadius,
-                    showText = showTextControls,
-                    showEditText = showEditText,
-                    showSelectionActions = hasSelection,
-                )
+            // Config bars split by attachment target — notes-app-style discipline:
+            //  - Tool bar (bottom-center, above ControlsBar): configures the
+            //    active tool's NEXT stroke/insert. Shown when a configurable
+            //    tool mode is active AND nothing is selected.
+            //  - Selection bar (top-right): edits / acts on the current
+            //    selection. Shown when there IS a selection.
+            // Mutually exclusive by construction — the user's attention is on
+            // one thing at a time, so only one bar is ever visible.
+            val commonBarState = ContextBarState(
+                strokeColor = currentShapeColor,
+                strokeEnabled = currentStrokeEnabled,
+                strokeStyle = currentStrokeStyle,
+                strokeWidth = currentStrokeWidth,
+                fillColor = currentFillColor,
+                cornerRadius = currentRadius,
+                fontSize = currentFontSize,
+                textAlignment = currentTextAlignment,
+                fontFamilyKey = currentFontFamilyKey,
+                fontFamilyKeys = fontFamilyKeys,
+            )
+
+            val toolBarVisible = !hasSelection && (isShapeMode || isTextMode)
+            if (toolBarVisible) {
                 ContextBar(
-                    state = contextBarState,
-                    slots = contextBarSlots,
+                    state = commonBarState,
+                    slots = ContextBarSlots(
+                        // Color already lives on ControlsBar's swatch — no need
+                        // to duplicate it on the tool config bar. This keeps the
+                        // tool bar focused on options ControlsBar doesn't
+                        // expose (style, width, corner, size, align, family).
+                        showStroke = false,
+                        strokeToggleable = false,
+                        showShapeStroke = isShapeMode,
+                        showFill = false,
+                        showCornerRadius = state.mode == Mode.RECTANGLE ||
+                            state.mode == Mode.TRIANGLE,
+                        showText = isTextMode,
+                        showEditText = false,
+                        showSelectionActions = false,
+                    ),
                     onIntent = { intent ->
                         when (intent) {
-                            is ContextBarIntent.SetStrokeColor ->
-                                if (hasSelection) viewModel.setSelectionColor(intent.color)
-                                else viewModel.setColor(intent.color)
-                            is ContextBarIntent.SetStrokeEnabled ->
-                                viewModel.setSelectionStrokeEnabled(intent.enabled)
-                            is ContextBarIntent.SetStrokeStyle ->
-                                if (hasSelection) viewModel.setSelectionStrokeStyle(intent.style)
-                                else viewModel.setStrokeStyle(intent.style)
-                            is ContextBarIntent.SetStrokeWidth ->
-                                if (hasSelection) viewModel.setSelectionStrokeWidth(intent.width)
-                                else viewModel.setStrokeWidth(intent.width)
-                            is ContextBarIntent.SetFillColor ->
-                                viewModel.setSelectionFillColor(intent.color)
-                            is ContextBarIntent.SetCornerRadius ->
-                                if (selectedRoundable.isNotEmpty()) viewModel.setSelectionCornerRadius(intent.radius)
-                                else viewModel.setCornerRadius(intent.radius)
-                            is ContextBarIntent.SetFontSize ->
-                                if (singleSelectedText != null) viewModel.setSelectionFontSize(intent.size)
-                                else viewModel.setFontSize(intent.size)
-                            is ContextBarIntent.SetTextAlignment ->
-                                if (singleSelectedText != null) viewModel.setSelectionTextAlignment(intent.alignment)
-                                else viewModel.setTextAlignment(intent.alignment)
-                            is ContextBarIntent.SetFontFamily ->
-                                if (singleSelectedText != null) viewModel.setSelectionFontFamily(intent.key)
-                                else viewModel.setFontFamily(intent.key)
+                            is ContextBarIntent.SetStrokeColor -> viewModel.setColor(intent.color)
+                            is ContextBarIntent.SetStrokeStyle -> viewModel.setStrokeStyle(intent.style)
+                            is ContextBarIntent.SetStrokeWidth -> viewModel.setStrokeWidth(intent.width)
+                            is ContextBarIntent.SetCornerRadius -> viewModel.setCornerRadius(intent.radius)
+                            is ContextBarIntent.SetFontSize -> viewModel.setFontSize(intent.size)
+                            is ContextBarIntent.SetTextAlignment -> viewModel.setTextAlignment(intent.alignment)
+                            is ContextBarIntent.SetFontFamily -> viewModel.setFontFamily(intent.key)
+                            else -> {}
+                        }
+                    },
+                    fontFamilyResolver = { key -> io.ak1.drawbox.text.FontRegistry.resolve(key) },
+                    modifier = Modifier.align(Alignment.BottomCenter)
+                        .padding(bottom = 76.dp)
+                        .alpha(chromeAlpha),
+                )
+            }
+
+            if (hasSelection) {
+                ContextBar(
+                    state = commonBarState,
+                    slots = ContextBarSlots(
+                        // Color affordance owned by ControlsBar's swatch (plain
+                        // or split-disc based on hasFillableSelection). The
+                        // selection bar focuses on style/geometry/actions.
+                        showStroke = false,
+                        strokeToggleable = false,
+                        showShapeStroke = selectedHasStrokeable,
+                        showFill = false,
+                        showCornerRadius = selectedRoundable.isNotEmpty(),
+                        showText = singleSelectedText != null,
+                        showEditText = singleSelectedText != null,
+                        showSelectionActions = true,
+                    ),
+                    onIntent = { intent ->
+                        when (intent) {
+                            is ContextBarIntent.SetStrokeColor -> viewModel.setSelectionColor(intent.color)
+                            is ContextBarIntent.SetStrokeEnabled -> viewModel.setSelectionStrokeEnabled(intent.enabled)
+                            is ContextBarIntent.SetStrokeStyle -> viewModel.setSelectionStrokeStyle(intent.style)
+                            is ContextBarIntent.SetStrokeWidth -> viewModel.setSelectionStrokeWidth(intent.width)
+                            is ContextBarIntent.SetFillColor -> viewModel.setSelectionFillColor(intent.color)
+                            is ContextBarIntent.SetCornerRadius -> viewModel.setSelectionCornerRadius(intent.radius)
+                            is ContextBarIntent.SetFontSize -> viewModel.setSelectionFontSize(intent.size)
+                            is ContextBarIntent.SetTextAlignment -> viewModel.setSelectionTextAlignment(intent.alignment)
+                            is ContextBarIntent.SetFontFamily -> viewModel.setSelectionFontFamily(intent.key)
                             ContextBarIntent.EditText -> singleSelectedText?.let { target ->
                                 editingTextId = target.id
                                 editDraft = target.text
@@ -344,23 +459,32 @@ fun HomeScreen(
                         }
                     },
                     fontFamilyResolver = { key -> io.ak1.drawbox.text.FontRegistry.resolve(key) },
-                    modifier = Modifier.align(Alignment.TopEnd).padding(top = 72.dp, end = 12.dp),
-                    expanded = false,
+                    modifier = if (selectionAnchor != null) {
+                        Modifier.align(Alignment.TopStart)
+                            .padding(start = selectionAnchor.x, top = selectionAnchor.y)
+                            .alpha(chromeAlpha)
+                    } else {
+                        // Fallback: fixed top-right when selection is off-screen
+                        // or spans the viewport.
+                        Modifier.align(Alignment.TopEnd)
+                            .padding(top = 72.dp, end = 12.dp)
+                            .alpha(chromeAlpha)
+                    },
                 )
             }
 
-            // Top-right cluster: zoom (only narrow), theme toggle, settings.
+            // Top-right cluster: zoom (only narrow) + settings. Theme moved
+            // into SettingsDrawer's View section.
             TopRightControls(
                 isNarrow = isNarrow,
                 scalePercent = state.viewport.scalePercent,
-                themeMode = themeMode,
-                onThemeModeChange = onThemeModeChange,
                 onZoomIn = { viewModel.zoomBy(1.25f, ScreenCenter) },
                 onZoomOut = { viewModel.zoomBy(0.8f, ScreenCenter) },
                 onZoomReset = { viewModel.resetCamera() },
                 onSettingsClick = { drawerOpen = true },
-                modifier = Modifier.align(Alignment.TopEnd).padding(top = 12.dp, end = 12.dp),
-                expanded = false,
+                modifier = Modifier.align(Alignment.TopEnd)
+                    .padding(top = 12.dp, end = 12.dp)
+                    .alpha(chromeAlpha),
             )
 
             // Bottom-left zoom (wide only). Narrow folds zoom into the top-right cluster.
@@ -370,8 +494,9 @@ fun HomeScreen(
                     onZoomIn = { viewModel.zoomBy(1.25f, ScreenCenter) },
                     onZoomOut = { viewModel.zoomBy(0.8f, ScreenCenter) },
                     onZoomReset = { viewModel.resetCamera() },
-                    modifier = Modifier.align(Alignment.BottomStart).padding(start = 16.dp, bottom = 24.dp),
-                    expanded = false,
+                    modifier = Modifier.align(Alignment.BottomStart)
+                        .padding(start = 16.dp, bottom = 24.dp)
+                        .alpha(chromeAlpha),
                 )
             }
 
@@ -382,6 +507,12 @@ fun HomeScreen(
                     canUndo = canUndo,
                     canRedo = canRedo,
                     strokeColor = currentShapeColor,
+                    // Split-disc swatch + multi-target picker light up for
+                    // fillable-shape selections AND for fillable-shape tool
+                    // modes with no selection (preconfigure fill before draw).
+                    showFillTarget = showFillTarget,
+                    strokeEnabled = toolOrSelectionStrokeEnabled,
+                    fillColor = toolOrSelectionFillColor,
                 ),
                 dispatch = { intent ->
                     when (intent) {
@@ -391,6 +522,12 @@ fun HomeScreen(
                         is ControlsBarIntent.SetStrokeColor ->
                             if (hasSelection) viewModel.setSelectionColor(intent.color)
                             else viewModel.setColor(intent.color)
+                        is ControlsBarIntent.SetStrokeEnabled ->
+                            if (hasSelection) viewModel.setSelectionStrokeEnabled(intent.enabled)
+                            else viewModel.setStrokeEnabled(intent.enabled)
+                        is ControlsBarIntent.SetFillColor ->
+                            if (hasSelection) viewModel.setSelectionFillColor(intent.color)
+                            else viewModel.setFillColor(intent.color)
                     }
                 },
             )
@@ -398,8 +535,8 @@ fun HomeScreen(
                 items = controlsBarItems,
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
-                    .padding(bottom = 24.dp),
-                expanded = false,
+                    .padding(bottom = 24.dp)
+                    .alpha(chromeAlpha),
             )
 
 
@@ -426,6 +563,8 @@ fun HomeScreen(
             showGrid = showGrid.value,
             currentBgColor = state.bgColor,
             currentBgPattern = currentBgPattern,
+            themeMode = themeMode,
+            onThemeModeChange = onThemeModeChange,
             onDismiss = { drawerOpen = false },
             onDownloadSvg = { viewModel.exportSvg(); drawerOpen = false },
             onDownloadPng = { viewModel.saveBitmap(); drawerOpen = false },

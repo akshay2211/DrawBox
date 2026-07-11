@@ -2,6 +2,8 @@
 
 package io.ak1.drawboxsample.ui.components
 
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -12,11 +14,11 @@ import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.draw.shadow
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.BrightnessAuto
-import androidx.compose.material.icons.filled.DarkMode
-import androidx.compose.material.icons.filled.LightMode
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FloatingToolbarDefaults
@@ -30,29 +32,25 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import io.ak1.drawboxsample.ui.theme.ThemeMode
-import io.ak1.drawboxsample.ui.theme.next
 
 /**
  * Top-right floating control cluster.
  *
- * Wide screens: [Theme] [Settings] only — zoom lives at bottom-left.
- * Narrow screens: [Zoom -/%/+] [Theme] [Settings] folded into a single bar so
- * there's only one floating control row on small viewports.
+ * Wide screens: just [Settings] — zoom lives at bottom-left, theme moved into
+ * the settings drawer.
+ * Narrow screens: [Zoom -/%/+] | [Settings] folded into a single bar so there's
+ * only one floating control row on small viewports.
  */
 @Composable
 fun TopRightControls(
     isNarrow: Boolean,
     scalePercent: Int,
-    themeMode: ThemeMode,
-    onThemeModeChange: (ThemeMode) -> Unit,
     onZoomIn: () -> Unit,
     onZoomOut: () -> Unit,
     onZoomReset: () -> Unit,
     onSettingsClick: () -> Unit,
     modifier: Modifier = Modifier,
-    expanded: Boolean = true,
+    expanded: Boolean = false,
 ) {
     HorizontalFloatingToolbar(
         expanded = expanded,
@@ -77,7 +75,6 @@ fun TopRightControls(
                     color = MaterialTheme.colorScheme.outlineVariant,
                 )
             }
-            ThemeToggleButton(themeMode = themeMode, onCycle = { onThemeModeChange(themeMode.next()) })
             IconButton(
                 onClick = onSettingsClick,
                 modifier = Modifier.size(36.dp),
@@ -98,7 +95,7 @@ fun ZoomToolbar(
     onZoomOut: () -> Unit,
     onZoomReset: () -> Unit,
     modifier: Modifier = Modifier,
-    expanded: Boolean = true,
+    expanded: Boolean = false,
 ) {
     HorizontalFloatingToolbar(
         expanded = expanded,
@@ -129,44 +126,42 @@ private fun RowScope.ZoomCluster(
         onClick = onZoomOut,
         modifier = Modifier.size(36.dp),
     ) {
-        Text("−", fontSize = 18.sp, color = MaterialTheme.colorScheme.onSurface)
+        Icon(Icons.Filled.Remove, contentDescription = "Zoom out")
     }
+    // Collapse the percent readout to zero width at exact 100% — the toolbar
+    // contracts horizontally so [-] and [+] sit right next to each other, and
+    // expands back with a spring-like tween on the first non-100 tick. Reset
+    // gesture only exists when the label is visible (nothing to reset TO at
+    // 100%).
+    val labelWidth by animateDpAsState(
+        targetValue = if (scalePercent == 100) 0.dp else 48.dp,
+        animationSpec = tween(durationMillis = 180),
+        label = "zoomLabelWidth",
+    )
     Box(
         modifier = Modifier
             .align(Alignment.CenterVertically)
-            .width(48.dp)
-            .clickable(onClick = onZoomReset)
+            .width(labelWidth)
+            .then(
+                if (scalePercent != 100) Modifier.clickable(onClick = onZoomReset)
+                else Modifier,
+            )
             .padding(vertical = 4.dp),
         contentAlignment = Alignment.Center,
     ) {
-        Text(
-            text = "$scalePercent%",
-            fontSize = 12.sp,
-            color = MaterialTheme.colorScheme.onSurface,
-        )
+        if (scalePercent != 100) {
+            Text(
+                text = "$scalePercent%",
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+        }
     }
     IconButton(
         onClick = onZoomIn,
         modifier = Modifier.size(36.dp),
     ) {
-        Text("+", fontSize = 18.sp, color = MaterialTheme.colorScheme.onSurface)
+        Icon(Icons.Filled.Add, contentDescription = "Zoom in")
     }
 }
 
-@Composable
-private fun ThemeToggleButton(
-    themeMode: ThemeMode,
-    onCycle: () -> Unit,
-) {
-    val (vector, label) = when (themeMode) {
-        ThemeMode.SYSTEM -> Icons.Filled.BrightnessAuto to "Theme: System"
-        ThemeMode.LIGHT -> Icons.Filled.LightMode to "Theme: Light"
-        ThemeMode.DARK -> Icons.Filled.DarkMode to "Theme: Dark"
-    }
-    IconButton(
-        onClick = onCycle,
-        modifier = Modifier.size(36.dp),
-    ) {
-        Icon(imageVector = vector, contentDescription = label)
-    }
-}

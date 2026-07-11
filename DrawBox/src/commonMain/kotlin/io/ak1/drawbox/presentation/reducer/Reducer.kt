@@ -5,7 +5,9 @@ import io.ak1.drawbox.domain.model.HISTORY_CAP
 import io.ak1.drawbox.domain.model.Intent
 import io.ak1.drawbox.domain.model.Mode
 import io.ak1.drawbox.domain.model.State
+import io.ak1.drawbox.domain.model.ToolSettings
 import io.ak1.drawbox.domain.model.Viewport
+import io.ak1.drawbox.domain.model.persistsSettings
 import io.ak1.drawbox.domain.usecase.UseCase
 
 /**
@@ -125,6 +127,8 @@ class Reducer(
                 state.strokeWidth,
                 state.currentItemCornerRadius,
                 state.currentItemStrokeStyle,
+                state.currentItemFillColor,
+                state.currentItemStrokeEnabled,
             )
             state.snapshot().copy(
                 elements = useCase.addElement(newShape, state.elements),
@@ -137,6 +141,8 @@ class Reducer(
         is Intent.SetStrokeWidth -> state.copy(strokeWidth = intent.width)
         is Intent.SetCornerRadius -> state.copy(currentItemCornerRadius = intent.radius)
         is Intent.SetStrokeStyle -> state.copy(currentItemStrokeStyle = intent.style)
+        is Intent.SetFillColor -> state.copy(currentItemFillColor = intent.color)
+        is Intent.SetStrokeEnabled -> state.copy(currentItemStrokeEnabled = intent.enabled)
         is Intent.SetFontSize -> state.copy(currentItemFontSize = intent.size)
         is Intent.SetFontFamily -> state.copy(currentItemFontFamilyKey = intent.fontFamilyKey)
         is Intent.SetTextAlignment -> state.copy(currentItemTextAlignment = intent.alignment)
@@ -144,12 +150,42 @@ class Reducer(
         is Intent.SetBgColor -> state.copy(bgColor = intent.bgColor)
         is Intent.SetBackgroundPattern -> state.copy(bgPattern = intent.pattern)
         is Intent.SetMode -> {
-            // Selection is meaningful only in SELECT mode. Switching away clears it.
+            // Per-tool memory: capture the outgoing mode's style snapshot if
+            // it's a persisted mode, then restore the incoming mode's saved
+            // snapshot (if any). Utility modes (SELECT, ERASER, PAN) pass
+            // through settings unchanged in both directions.
+            val outgoingMode = state.mode
+            val snapshot = ToolSettings(
+                strokeColor = state.strokeColor,
+                strokeWidth = state.strokeWidth,
+                strokeStyle = state.currentItemStrokeStyle,
+                cornerRadius = state.currentItemCornerRadius,
+                fillColor = state.currentItemFillColor,
+                strokeEnabled = state.currentItemStrokeEnabled,
+                fontSize = state.currentItemFontSize,
+                fontFamilyKey = state.currentItemFontFamilyKey,
+                textAlignment = state.currentItemTextAlignment,
+            )
+            val nextMemory = if (outgoingMode.persistsSettings())
+                state.toolMemory + (outgoingMode to snapshot)
+            else state.toolMemory
+            val restored = if (intent.mode.persistsSettings())
+                nextMemory[intent.mode] else null
             val nextSelected = if (intent.mode == Mode.SELECT) state.selectedIds else emptySet()
             state.copy(
                 mode = intent.mode,
                 selectedIds = nextSelected,
                 marqueeRect = null,
+                toolMemory = nextMemory,
+                strokeColor = restored?.strokeColor ?: state.strokeColor,
+                strokeWidth = restored?.strokeWidth ?: state.strokeWidth,
+                currentItemStrokeStyle = restored?.strokeStyle ?: state.currentItemStrokeStyle,
+                currentItemCornerRadius = restored?.cornerRadius ?: state.currentItemCornerRadius,
+                currentItemFillColor = restored?.fillColor ?: state.currentItemFillColor,
+                currentItemStrokeEnabled = restored?.strokeEnabled ?: state.currentItemStrokeEnabled,
+                currentItemFontSize = restored?.fontSize ?: state.currentItemFontSize,
+                currentItemFontFamilyKey = restored?.fontFamilyKey ?: state.currentItemFontFamilyKey,
+                currentItemTextAlignment = restored?.textAlignment ?: state.currentItemTextAlignment,
             )
         }
 

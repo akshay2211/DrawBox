@@ -53,6 +53,16 @@ tasks.register<Copy>("copyComposeResources") {
     into("src/main/assets/composeResources/drawboxsample.shared.generated.resources")
 }
 
+// drawbox-ui's Compose Resources package is "io.ak1.drawbox.ui.resources" (see
+// its build.gradle.kts). The KMP-Android library plugin doesn't auto-bundle its
+// compose resources into the consuming Android app's assets, so mirror them by
+// hand — same workaround as the shared task above.
+tasks.register<Copy>("copyDrawBoxUiComposeResources") {
+    delete("src/main/assets/composeResources/io.ak1.drawbox.ui.resources")
+    from("../drawbox-ui/src/commonMain/composeResources")
+    into("src/main/assets/composeResources/io.ak1.drawbox.ui.resources")
+}
+
 tasks.named("preBuild") {
-    dependsOn("copyComposeResources")
+    dependsOn("copyComposeResources", "copyDrawBoxUiComposeResources")
 }

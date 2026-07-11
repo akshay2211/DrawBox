@@ -205,6 +205,20 @@ sealed class Intent {
      */
     data class SetStrokeStyle(val style: StrokeStyle) : Intent()
 
+    /**
+     * Default fill color for new [Element.Shape]s. `null` clears the fill so
+     * new shapes render stroke-only. Has no effect on shapes already on the
+     * canvas; use [SetSelectedFillColor] to retro-edit those.
+     */
+    data class SetFillColor(val color: Color?) : Intent()
+
+    /**
+     * Default outline pass for new [Element.Shape]s. When `false`, new shapes
+     * render fill-only. Has no effect on shapes already on the canvas; use
+     * [SetSelectedStrokeEnabled] to retro-edit those.
+     */
+    data class SetStrokeEnabled(val enabled: Boolean) : Intent()
+
     /** Change the opacity/alpha for new drawings (0.0 to 1.0) */
     data class SetOpacity(val opacity: Float) : Intent()
 
