@@ -2,6 +2,8 @@
 
 package io.ak1.drawboxsample.ui
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -18,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.key.Key
@@ -238,6 +241,16 @@ fun HomeScreen(
         viewModel.setBackgroundPattern(patternPainter, patternTint)
     }
 
+    // Fade all floating chrome down to 0.35 alpha while the user's actively
+    // touching the canvas — matches the Samsung / OPPO Notes idle-canvas
+    // pattern. Peek at pointer events on the Initial pass so DrawBox still
+    // sees them un-consumed.
+    var isGesturing by remember { mutableStateOf(false) }
+    val chromeAlpha by animateFloatAsState(
+        targetValue = if (isGesturing) 0.35f else 1f,
+        animationSpec = tween(durationMillis = 120),
+        label = "chromeAlpha",
+    )
 
     Scaffold { _ ->
 
@@ -245,6 +258,14 @@ fun HomeScreen(
             state = state,
             onIntent = viewModel::onIntent,
             modifier = Modifier.fillMaxSize().clipToBounds()
+                .pointerInput(Unit) {
+                    awaitPointerEventScope {
+                        while (true) {
+                            val event = awaitPointerEvent(PointerEventPass.Initial)
+                            isGesturing = event.changes.any { it.pressed }
+                        }
+                    }
+                }
                 // OS drag-drop: dragging image files from Finder /
                 // Explorer onto the canvas inserts them at the drop
                 // point. Each file in a multi-file drop gets a small
@@ -289,6 +310,56 @@ fun HomeScreen(
         )
         BoxWithConstraints(modifier = Modifier.fillMaxSize().systemBarsPadding()) {
             val isNarrow = maxWidth < 600.dp
+            val density = androidx.compose.ui.platform.LocalDensity.current
+            val viewportW = with(density) { maxWidth.toPx() }
+            val viewportH = with(density) { maxHeight.toPx() }
+
+            // Selection-anchor math for the selection ContextBar. Computes the
+            // union of selected element bounds in world space, converts to
+            // screen space, and returns an (x, y) top-left anchor to hang the
+            // pill from. Falls back to null (→ fixed top-right) when the
+            // selection is entirely off-screen or spans the viewport.
+            val selectionAnchor: androidx.compose.ui.unit.DpOffset? = remember(
+                state.selectedIds, state.elements, state.viewport, viewportW, viewportH,
+            ) {
+                if (!hasSelection) return@remember null
+                val worldRects = state.elements
+                    .filter { it.id in state.selectedIds }
+                    .map { it.bounds() }
+                if (worldRects.isEmpty()) return@remember null
+                val worldLeft = worldRects.minOf { it.left }
+                val worldTop = worldRects.minOf { it.top }
+                val worldRight = worldRects.maxOf { it.right }
+                val worldBottom = worldRects.maxOf { it.bottom }
+                val topLeftS = state.viewport.worldToScreen(Offset(worldLeft, worldTop))
+                val bottomRightS = state.viewport.worldToScreen(Offset(worldRight, worldBottom))
+                val onScreen = topLeftS.x < viewportW && bottomRightS.x > 0f &&
+                    topLeftS.y < viewportH && bottomRightS.y > 0f
+                val spansViewport = (bottomRightS.x - topLeftS.x) > viewportW * 0.9f ||
+                    (bottomRightS.y - topLeftS.y) > viewportH * 0.9f
+                if (!onScreen || spansViewport) return@remember null
+                // Anchor above the selection with a 12dp gap and estimate the
+                // pill's own height at 48dp. Fall back to below when the top
+                // slot would collide with the app-bar area (< 72dp from top).
+                val barHeightPx = with(density) { 48.dp.toPx() }
+                val gapPx = with(density) { 12.dp.toPx() }
+                val topAbovePx = topLeftS.y - gapPx - barHeightPx
+                val topBelowPx = bottomRightS.y + gapPx
+                val minTopPx = with(density) { 72.dp.toPx() }
+                val maxTopPx = viewportH - barHeightPx - with(density) { 12.dp.toPx() }
+                val yPx = if (topAbovePx >= minTopPx) topAbovePx else topBelowPx
+                // Left-anchor the pill to the selection's left. Assume ~360dp
+                // max chip stack, clamp so the pill stays fully in-viewport.
+                val estBarWidthPx = with(density) { 360.dp.toPx() }
+                val minLeftPx = with(density) { 12.dp.toPx() }
+                val maxLeftPx = (viewportW - estBarWidthPx).coerceAtLeast(minLeftPx)
+                val xPx = topLeftS.x.coerceIn(minLeftPx, maxLeftPx)
+                val yPxClamped = yPx.coerceIn(minTopPx, maxTopPx)
+                androidx.compose.ui.unit.DpOffset(
+                    x = with(density) { xPx.toDp() },
+                    y = with(density) { yPxClamped.toDp() },
+                )
+            }
 
 
             // Config bars split by attachment target — notes-app-style discipline:
@@ -344,7 +415,9 @@ fun HomeScreen(
                         }
                     },
                     fontFamilyResolver = { key -> io.ak1.drawbox.text.FontRegistry.resolve(key) },
-                    modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 76.dp),
+                    modifier = Modifier.align(Alignment.BottomCenter)
+                        .padding(bottom = 76.dp)
+                        .alpha(chromeAlpha),
                 )
             }
 
@@ -386,7 +459,17 @@ fun HomeScreen(
                         }
                     },
                     fontFamilyResolver = { key -> io.ak1.drawbox.text.FontRegistry.resolve(key) },
-                    modifier = Modifier.align(Alignment.TopEnd).padding(top = 72.dp, end = 12.dp),
+                    modifier = if (selectionAnchor != null) {
+                        Modifier.align(Alignment.TopStart)
+                            .padding(start = selectionAnchor.x, top = selectionAnchor.y)
+                            .alpha(chromeAlpha)
+                    } else {
+                        // Fallback: fixed top-right when selection is off-screen
+                        // or spans the viewport.
+                        Modifier.align(Alignment.TopEnd)
+                            .padding(top = 72.dp, end = 12.dp)
+                            .alpha(chromeAlpha)
+                    },
                 )
             }
 
@@ -399,7 +482,9 @@ fun HomeScreen(
                 onZoomOut = { viewModel.zoomBy(0.8f, ScreenCenter) },
                 onZoomReset = { viewModel.resetCamera() },
                 onSettingsClick = { drawerOpen = true },
-                modifier = Modifier.align(Alignment.TopEnd).padding(top = 12.dp, end = 12.dp),
+                modifier = Modifier.align(Alignment.TopEnd)
+                    .padding(top = 12.dp, end = 12.dp)
+                    .alpha(chromeAlpha),
             )
 
             // Bottom-left zoom (wide only). Narrow folds zoom into the top-right cluster.
@@ -409,7 +494,9 @@ fun HomeScreen(
                     onZoomIn = { viewModel.zoomBy(1.25f, ScreenCenter) },
                     onZoomOut = { viewModel.zoomBy(0.8f, ScreenCenter) },
                     onZoomReset = { viewModel.resetCamera() },
-                    modifier = Modifier.align(Alignment.BottomStart).padding(start = 16.dp, bottom = 24.dp),
+                    modifier = Modifier.align(Alignment.BottomStart)
+                        .padding(start = 16.dp, bottom = 24.dp)
+                        .alpha(chromeAlpha),
                 )
             }
 
@@ -448,7 +535,8 @@ fun HomeScreen(
                 items = controlsBarItems,
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
-                    .padding(bottom = 24.dp),
+                    .padding(bottom = 24.dp)
+                    .alpha(chromeAlpha),
             )
 
 
