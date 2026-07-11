@@ -26,12 +26,15 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.BrightnessAuto
 import androidx.compose.material.icons.filled.Brush
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.DeleteSweep
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.GridOn
 import androidx.compose.material.icons.filled.Image
+import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.Pattern
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Upload
@@ -50,6 +53,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import drawboxsample.shared.generated.resources.Res
+import io.ak1.drawboxsample.ui.theme.ThemeMode
 import drawboxsample.shared.generated.resources.bg_graph_paper
 import drawboxsample.shared.generated.resources.bg_hideout
 import drawboxsample.shared.generated.resources.bg_texture
@@ -82,6 +86,8 @@ fun SettingsDrawer(
     showGrid: Boolean,
     currentBgColor: Color,
     currentBgPattern: BgPatternPreset?,
+    themeMode: ThemeMode,
+    onThemeModeChange: (ThemeMode) -> Unit,
     onDismiss: () -> Unit,
     onDownloadSvg: () -> Unit,
     onDownloadPng: () -> Unit,
@@ -183,6 +189,7 @@ fun SettingsDrawer(
                     )
 
                     SectionLabel("View")
+                    ThemeRow(current = themeMode, onSelect = onThemeModeChange)
                     GridSwitchRow(checked = showGrid, onCheckedChange = onToggleGrid)
 
                     SectionLabel("Danger")
@@ -381,6 +388,76 @@ private fun PatternChip(
             color = if (selected) MaterialTheme.colorScheme.primary
             else MaterialTheme.colorScheme.onSurfaceVariant,
         )
+    }
+}
+
+/**
+ * Three-way theme picker rendered as icon buttons trailing a labeled row.
+ * Matches the drawer's row idiom — icon+label+trailing content — instead of
+ * a floating cycle button.
+ */
+@Composable
+private fun ThemeRow(current: ThemeMode, onSelect: (ThemeMode) -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(14.dp),
+    ) {
+        val icon = when (current) {
+            ThemeMode.SYSTEM -> Icons.Filled.BrightnessAuto
+            ThemeMode.LIGHT -> Icons.Filled.LightMode
+            ThemeMode.DARK -> Icons.Filled.DarkMode
+        }
+        Icon(
+            icon,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.size(20.dp),
+        )
+        Text(
+            text = "Theme",
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.padding(end = 8.dp),
+        )
+        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterEnd) {
+            Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                ThemeChoice(Icons.Filled.BrightnessAuto, "System", current == ThemeMode.SYSTEM) {
+                    onSelect(ThemeMode.SYSTEM)
+                }
+                ThemeChoice(Icons.Filled.LightMode, "Light", current == ThemeMode.LIGHT) {
+                    onSelect(ThemeMode.LIGHT)
+                }
+                ThemeChoice(Icons.Filled.DarkMode, "Dark", current == ThemeMode.DARK) {
+                    onSelect(ThemeMode.DARK)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ThemeChoice(
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    label: String,
+    selected: Boolean,
+    onClick: () -> Unit,
+) {
+    val bg = if (selected) MaterialTheme.colorScheme.primaryContainer
+    else Color.Transparent
+    val tint = if (selected) MaterialTheme.colorScheme.onPrimaryContainer
+    else MaterialTheme.colorScheme.onSurfaceVariant
+    Box(
+        modifier = Modifier
+            .size(32.dp)
+            .clip(CircleShape)
+            .background(bg)
+            .clickable(onClick = onClick),
+        contentAlignment = Alignment.Center,
+    ) {
+        Icon(icon, contentDescription = label, tint = tint, modifier = Modifier.size(18.dp))
     }
 }
 

@@ -49,7 +49,7 @@ fun ContextBar(
     onIntent: ContextBarDispatch,
     slots: ContextBarSlots,
     modifier: Modifier = Modifier,
-    expanded: Boolean = true,
+    expanded: Boolean = false,
     colorPicker: ColorPickerSlot = { initial, onDismiss, onSelected ->
         RangVikalpColorPicker(initial, onDismiss, onSelected)
     },

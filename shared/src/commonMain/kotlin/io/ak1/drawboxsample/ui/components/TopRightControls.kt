@@ -15,9 +15,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.ui.draw.shadow
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.BrightnessAuto
-import androidx.compose.material.icons.filled.DarkMode
-import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -32,28 +29,25 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import io.ak1.drawboxsample.ui.theme.ThemeMode
-import io.ak1.drawboxsample.ui.theme.next
 
 /**
  * Top-right floating control cluster.
  *
- * Wide screens: [Theme] [Settings] only — zoom lives at bottom-left.
- * Narrow screens: [Zoom -/%/+] [Theme] [Settings] folded into a single bar so
- * there's only one floating control row on small viewports.
+ * Wide screens: just [Settings] — zoom lives at bottom-left, theme moved into
+ * the settings drawer.
+ * Narrow screens: [Zoom -/%/+] | [Settings] folded into a single bar so there's
+ * only one floating control row on small viewports.
  */
 @Composable
 fun TopRightControls(
     isNarrow: Boolean,
     scalePercent: Int,
-    themeMode: ThemeMode,
-    onThemeModeChange: (ThemeMode) -> Unit,
     onZoomIn: () -> Unit,
     onZoomOut: () -> Unit,
     onZoomReset: () -> Unit,
     onSettingsClick: () -> Unit,
     modifier: Modifier = Modifier,
-    expanded: Boolean = true,
+    expanded: Boolean = false,
 ) {
     HorizontalFloatingToolbar(
         expanded = expanded,
@@ -78,7 +72,6 @@ fun TopRightControls(
                     color = MaterialTheme.colorScheme.outlineVariant,
                 )
             }
-            ThemeToggleButton(themeMode = themeMode, onCycle = { onThemeModeChange(themeMode.next()) })
             IconButton(
                 onClick = onSettingsClick,
                 modifier = Modifier.size(36.dp),
@@ -99,7 +92,7 @@ fun ZoomToolbar(
     onZoomOut: () -> Unit,
     onZoomReset: () -> Unit,
     modifier: Modifier = Modifier,
-    expanded: Boolean = true,
+    expanded: Boolean = false,
 ) {
     HorizontalFloatingToolbar(
         expanded = expanded,
@@ -132,6 +125,10 @@ private fun RowScope.ZoomCluster(
     ) {
         Icon(Icons.Filled.Remove, contentDescription = "Zoom out")
     }
+    // Hide the percent readout at exact 100% — reading "100%" every frame is
+    // noise. The reset gesture still lives on this Box's click, so we render
+    // an invisible-but-clickable spacer of the same width to keep the toolbar
+    // dimensions stable regardless of zoom.
     Box(
         modifier = Modifier
             .align(Alignment.CenterVertically)
@@ -140,11 +137,13 @@ private fun RowScope.ZoomCluster(
             .padding(vertical = 4.dp),
         contentAlignment = Alignment.Center,
     ) {
-        Text(
-            text = "$scalePercent%",
-            style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.onSurface,
-        )
+        if (scalePercent != 100) {
+            Text(
+                text = "$scalePercent%",
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+        }
     }
     IconButton(
         onClick = onZoomIn,
@@ -154,20 +153,3 @@ private fun RowScope.ZoomCluster(
     }
 }
 
-@Composable
-private fun ThemeToggleButton(
-    themeMode: ThemeMode,
-    onCycle: () -> Unit,
-) {
-    val (vector, label) = when (themeMode) {
-        ThemeMode.SYSTEM -> Icons.Filled.BrightnessAuto to "Theme: System"
-        ThemeMode.LIGHT -> Icons.Filled.LightMode to "Theme: Light"
-        ThemeMode.DARK -> Icons.Filled.DarkMode to "Theme: Dark"
-    }
-    IconButton(
-        onClick = onCycle,
-        modifier = Modifier.size(36.dp),
-    ) {
-        Icon(imageVector = vector, contentDescription = label)
-    }
-}

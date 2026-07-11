@@ -101,7 +101,7 @@ enum class SubmenuPosition { Above, Below }
 fun ExpandableFloatingToolbar(
     items: List<FloatingMenuItem>,
     modifier: Modifier = Modifier,
-    expanded: Boolean = true,
+    expanded: Boolean = false,
     submenuPosition: SubmenuPosition = SubmenuPosition.Above,
     horizontalColors: FloatingToolbarColors = FloatingToolbarDefaults.standardFloatingToolbarColors(),
     verticalColors: FloatingToolbarColors = FloatingToolbarDefaults.standardFloatingToolbarColors(),

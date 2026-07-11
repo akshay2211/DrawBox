@@ -130,7 +130,7 @@ data class ControlsBarLabels(
 fun ControlsBar(
     items: List<FloatingMenuItem>,
     modifier: Modifier = Modifier,
-    expanded: Boolean = true,
+    expanded: Boolean = false,
     submenuPosition: SubmenuPosition = SubmenuPosition.Above,
     leading: List<FloatingMenuItem> = emptyList(),
     trailing: List<FloatingMenuItem> = emptyList(),

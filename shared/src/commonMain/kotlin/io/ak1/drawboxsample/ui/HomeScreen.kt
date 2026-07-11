@@ -345,7 +345,6 @@ fun HomeScreen(
                     },
                     fontFamilyResolver = { key -> io.ak1.drawbox.text.FontRegistry.resolve(key) },
                     modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 76.dp),
-                    expanded = false,
                 )
             }
 
@@ -388,22 +387,19 @@ fun HomeScreen(
                     },
                     fontFamilyResolver = { key -> io.ak1.drawbox.text.FontRegistry.resolve(key) },
                     modifier = Modifier.align(Alignment.TopEnd).padding(top = 72.dp, end = 12.dp),
-                    expanded = false,
                 )
             }
 
-            // Top-right cluster: zoom (only narrow), theme toggle, settings.
+            // Top-right cluster: zoom (only narrow) + settings. Theme moved
+            // into SettingsDrawer's View section.
             TopRightControls(
                 isNarrow = isNarrow,
                 scalePercent = state.viewport.scalePercent,
-                themeMode = themeMode,
-                onThemeModeChange = onThemeModeChange,
                 onZoomIn = { viewModel.zoomBy(1.25f, ScreenCenter) },
                 onZoomOut = { viewModel.zoomBy(0.8f, ScreenCenter) },
                 onZoomReset = { viewModel.resetCamera() },
                 onSettingsClick = { drawerOpen = true },
                 modifier = Modifier.align(Alignment.TopEnd).padding(top = 12.dp, end = 12.dp),
-                expanded = false,
             )
 
             // Bottom-left zoom (wide only). Narrow folds zoom into the top-right cluster.
@@ -414,7 +410,6 @@ fun HomeScreen(
                     onZoomOut = { viewModel.zoomBy(0.8f, ScreenCenter) },
                     onZoomReset = { viewModel.resetCamera() },
                     modifier = Modifier.align(Alignment.BottomStart).padding(start = 16.dp, bottom = 24.dp),
-                    expanded = false,
                 )
             }
 
@@ -454,7 +449,6 @@ fun HomeScreen(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .padding(bottom = 24.dp),
-                expanded = false,
             )
 
 
@@ -481,6 +475,8 @@ fun HomeScreen(
             showGrid = showGrid.value,
             currentBgColor = state.bgColor,
             currentBgPattern = currentBgPattern,
+            themeMode = themeMode,
+            onThemeModeChange = onThemeModeChange,
             onDismiss = { drawerOpen = false },
             onDownloadSvg = { viewModel.exportSvg(); drawerOpen = false },
             onDownloadPng = { viewModel.saveBitmap(); drawerOpen = false },

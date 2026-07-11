@@ -1,7 +1,6 @@
 package io.ak1.drawbox.ui.context
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.FlipToBack
@@ -361,7 +360,11 @@ fun textContextItems(
 }
 
 /**
- * Selection actions: bring to front, send to back, delete, clear.
+ * Selection actions: bring to front, send to back, delete.
+ *
+ * Deselection is not surfaced as a chip — tapping empty canvas, Esc, or
+ * switching tools all deselect for free. A dedicated "clear" affordance is
+ * the least-used chip in the pill and the cheapest to drop.
  */
 @Composable
 fun selectionContextItems(dispatch: ContextBarDispatch): List<FloatingMenuItem> {
@@ -395,17 +398,6 @@ fun selectionContextItems(dispatch: ContextBarDispatch): List<FloatingMenuItem> 
                 Icon(Icons.Filled.Delete, contentDescription = "Delete selection", tint = errorTint)
             },
             onClick = { dispatch(ContextBarIntent.Delete) },
-        ),
-        FloatingMenuItem(
-            id = "clear",
-            icon = { isActive ->
-                Icon(
-                    Icons.Filled.Close,
-                    contentDescription = "Clear selection",
-                    tint = isActive.activeIconTint(),
-                )
-            },
-            onClick = { dispatch(ContextBarIntent.ClearSelection) },
         ),
     )
 }
