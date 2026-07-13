@@ -504,6 +504,18 @@ fun DrawBox(
             }
             .pointerInput(Unit) {
                 detectTapGestures(
+                    onDoubleTap = { screenPos ->
+                        // Double-tap a text element in SELECT mode → request
+                        // in-place edit. The controller resolves the hit and
+                        // emits Event.TextEditRequested for the host to open its
+                        // editor; non-text hits are no-ops.
+                        val s = latestState
+                        if (s.effectiveMode == Mode.SELECT) {
+                            val world = s.viewport.screenToWorld(screenPos)
+                            val tol = pickTolerancePx / s.viewport.scale
+                            latestOnIntent(Intent.RequestTextEditAt(world, tol))
+                        }
+                    },
                     onTap = { screenPos ->
                         val s = latestState
                         val world = s.viewport.screenToWorld(screenPos)

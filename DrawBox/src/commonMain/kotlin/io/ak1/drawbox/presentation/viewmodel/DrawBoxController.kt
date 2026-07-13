@@ -3,6 +3,7 @@ package io.ak1.drawbox.presentation.viewmodel
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import io.ak1.drawbox.domain.model.Element
 import io.ak1.drawbox.domain.model.Event
 import io.ak1.drawbox.domain.model.Intent
 import io.ak1.drawbox.domain.model.State
@@ -160,7 +161,8 @@ class DrawBoxController(
      * @see Intent for available intent types
      */
     fun onIntent(intent: Intent) {
-        val newState = reducer.reduce(_state.value, intent)
+        val prev = _state.value
+        val newState = reducer.reduce(prev, intent)
         _state.value = newState
         updateHistoryState()
         // Emit AFTER state has been updated so subscribers reading state.value
@@ -170,6 +172,19 @@ class DrawBoxController(
         when (intent) {
             is Intent.SaveBitmap -> emitSaveEvent(intent.bitmap,intent.throwable)
             is Intent.LoadDrawing -> emitLoadEvent()
+            // Double-tap in SELECT mode: open the editor for the hit text.
+            is Intent.RequestTextEditAt ->
+                reducer.hitTopmost(prev.elements, intent.offset, intent.tolerance)
+                    .let { it as? Element.Text }
+                    ?.let { _events.tryEmit(Event.TextEditRequested(it.id)) }
+            // Second tap on an already-sole-selected text opens the editor too
+            // (tldraw/Figma pattern). `prev` is the pre-reduce selection.
+            is Intent.SelectAt -> {
+                val hit = reducer.hitTopmost(prev.elements, intent.offset, intent.tolerance)
+                if (hit is Element.Text && prev.selectedIds == setOf(hit.id)) {
+                    _events.tryEmit(Event.TextEditRequested(hit.id))
+                }
+            }
             else -> {
 
             }

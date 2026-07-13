@@ -251,6 +251,15 @@ sealed class Intent {
      */
     data class SelectAt(val offset: Offset, val tolerance: Float = 8f) : Intent()
 
+    /**
+     * Request in-place text editing at [offset] (dispatched on a double-tap in
+     * [Mode.SELECT]). Selects the topmost [Element.Text] under the point within
+     * [tolerance]; when one is hit, the controller emits
+     * [Event.TextEditRequested]. A no-op when the topmost hit is not a text
+     * element. Not undoable — selection changes only.
+     */
+    data class RequestTextEditAt(val offset: Offset, val tolerance: Float = 8f) : Intent()
+
     /** Replace the current marquee rectangle (or clear with null). Not undoable. */
     data class SetMarqueeRect(val rect: Rect?) : Intent()
 
