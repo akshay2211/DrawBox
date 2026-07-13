@@ -20,7 +20,6 @@ local.properties
 /androidApp/build/
 /desktopApp/build/
 /kotlin-js-store/
-/kotlin-js-store/
 /app/build/
 /androidApp/src/main/assets/composeResources/drawboxsample.shared.generated.resources/
 /androidApp/src/main/assets/composeResources/io.ak1.drawbox.ui.resources/

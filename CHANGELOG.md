@@ -8,7 +8,15 @@ The `2.0.x` line is the Kotlin Multiplatform rewrite. The `1.x` line was an Andr
 
 ## [Unreleased]
 
-_Nothing yet._
+### Changed
+- **`FontRegistry` now warns once per key on web targets** when a built-in
+  key (`sans` / `serif` / `mono`) resolves to a generic `FontFamily` —
+  the case Skia-WASM cannot differentiate. Warning is a one-shot `println`
+  guarded by `expect fun isWebTarget()`, so non-web builds pay nothing.
+  `FontRegistry.register(...)` resets the guard for the affected key so a
+  re-registration will re-warn if the host swaps back to a generic family.
+  KDoc on `FontRegistry` and `BuiltinFontFamilyKeys` now documents the
+  Skia-WASM bundled-font behavior. Addresses #89 SDK-side.
 
 ## [2.1.0-alpha02] — 2026-07-07
 
