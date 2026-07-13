@@ -32,6 +32,7 @@ import androidx.compose.ui.input.key.onPreviewKeyEvent
 import androidx.compose.ui.input.key.type
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.PointerEventType
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.zIndex
 import androidx.compose.ui.unit.dp
@@ -83,6 +84,15 @@ fun HomeScreen(
     val canUndo by viewModel.canUndo.collectAsState()
     val canRedo by viewModel.canRedo.collectAsState()
 
+    // Inline-text-edit state. Hoisted above the event collector because
+    // Event.TextEditRequested (double-tap / re-tap of a selected text) opens
+    // the editor from there. `editDraft` is the live buffer the outside-tap
+    // overlay reads on commit; `editOriginal` is the pre-edit text so Esc can
+    // revert without committing (#83.5).
+    var editingTextId by remember { mutableStateOf<String?>(null) }
+    var editDraft by remember { mutableStateOf("") }
+    var editOriginal by remember { mutableStateOf("") }
+
     // Canvas bg follows the active theme. Re-applies whenever the resolved
     // background color changes (theme toggle, SYSTEM follow flips, etc.).
     LaunchedEffect(themedBg) { viewModel.setBgColor(themedBg) }
@@ -97,6 +107,15 @@ fun HomeScreen(
 
                 is Event.SvgExported -> imageSaver.saveSvg(event.svg)
                 is Event.JsonExported -> imageSaver.saveJson(event.json)
+                // Double-tap (#83.2) or second tap on a selected text (#83.6):
+                // open the inline editor for the requested element.
+                is Event.TextEditRequested -> {
+                    (state.elements.firstOrNull { it.id == event.id } as? Element.Text)?.let {
+                        editingTextId = it.id
+                        editDraft = it.text
+                        editOriginal = it.text
+                    }
+                }
                 else -> {}
             }
         }
@@ -186,16 +205,22 @@ fun HomeScreen(
         currentFillColor else state.currentItemFillColor
 
     // Text controls — surfaced in TEXT mode (pre-configure the next insert)
-    // OR when a single Text element is selected (edit existing). Multi-text
-    // editing is out of scope for v1 — the ContextBar would have to merge
-    // possibly-conflicting style values.
+    // OR when one or more Text elements are selected. For a multi-text
+    // selection (#83.3) the chips seed from the first element and flag any
+    // property whose members disagree as "mixed"; the Set* intents already
+    // apply to every selected element.
     val selectedTexts = selectedDrawables.filterIsInstance<Element.Text>()
     val singleSelectedText = selectedTexts.singleOrNull()?.takeIf { selectedDrawables.size == 1 }
-    // Current values follow the selected element when present; otherwise
-    // fall back to the State defaults the next insert will use.
-    val currentFontSize = singleSelectedText?.fontSize ?: state.currentItemFontSize
-    val currentTextAlignment = singleSelectedText?.alignment ?: state.currentItemTextAlignment
-    val currentFontFamilyKey = singleSelectedText?.fontFamilyKey ?: state.currentItemFontFamilyKey
+    val firstSelectedText = selectedTexts.firstOrNull()
+    // Current values follow the selection's first element when present;
+    // otherwise fall back to the State defaults the next insert will use.
+    val currentFontSize = firstSelectedText?.fontSize ?: state.currentItemFontSize
+    val currentTextAlignment = firstSelectedText?.alignment ?: state.currentItemTextAlignment
+    val currentFontFamilyKey = firstSelectedText?.fontFamilyKey ?: state.currentItemFontFamilyKey
+    // Mixed when >1 text selected and the property isn't uniform across them.
+    val fontSizeMixed = selectedTexts.size > 1 && selectedTexts.distinctBy { it.fontSize }.size > 1
+    val textAlignmentMixed = selectedTexts.size > 1 && selectedTexts.distinctBy { it.alignment }.size > 1
+    val fontFamilyMixed = selectedTexts.size > 1 && selectedTexts.distinctBy { it.fontFamilyKey }.size > 1
     val fontFamilyKeys = io.ak1.drawbox.text.FontRegistry.keys()
 
     // Drawer + bg-pattern state.
@@ -209,16 +234,14 @@ fun HomeScreen(
     // editor. The editor renders as the element-to-be (no border, no Done
     // button) and is dismissed by tapping anywhere outside, which routes
     // through a full-screen overlay below. Empty commits delete the element.
-    var editingTextId by remember { mutableStateOf<String?>(null) }
-    // Draft is hoisted up here so the outside-tap overlay can read the
-    // latest value when committing — no focus-event juggling needed.
-    var editDraft by remember { mutableStateOf("") }
+    // (State declared above the event collector.)
     LaunchedEffect(state.elements) {
         if (editingTextId != null) return@LaunchedEffect
         val last = state.elements.lastOrNull()
         if (last is Element.Text && last.text.isEmpty()) {
             editingTextId = last.id
             editDraft = ""
+            editOriginal = ""
         }
     }
     // Helper: commit the current draft for the editing element. Empty drafts
@@ -229,6 +252,17 @@ fun HomeScreen(
             viewModel.onIntent(io.ak1.drawbox.domain.model.Intent.DeleteElement(id))
         } else {
             viewModel.updateText(id, editDraft)
+        }
+        editingTextId = null
+    }
+    // Cancel (Esc, #83.5): abandon the edit without committing the draft. A
+    // freshly inserted element (empty pre-edit text) is deleted so it doesn't
+    // linger; an existing element keeps its pre-edit text, which state already
+    // holds since we only mutate on commit.
+    fun cancelTextEdit() {
+        val id = editingTextId ?: return
+        if (editOriginal.isEmpty()) {
+            viewModel.onIntent(io.ak1.drawbox.domain.model.Intent.DeleteElement(id))
         }
         editingTextId = null
     }
@@ -381,6 +415,9 @@ fun HomeScreen(
                 textAlignment = currentTextAlignment,
                 fontFamilyKey = currentFontFamilyKey,
                 fontFamilyKeys = fontFamilyKeys,
+                fontSizeMixed = fontSizeMixed,
+                textAlignmentMixed = textAlignmentMixed,
+                fontFamilyMixed = fontFamilyMixed,
             )
 
             val toolBarVisible = !hasSelection && (isShapeMode || isTextMode)
@@ -433,7 +470,9 @@ fun HomeScreen(
                         showShapeStroke = selectedHasStrokeable,
                         showFill = false,
                         showCornerRadius = selectedRoundable.isNotEmpty(),
-                        showText = singleSelectedText != null,
+                        // Text style chips for any text selection (multi-text
+                        // merges via "mixed"); inline edit stays single-only.
+                        showText = selectedTexts.isNotEmpty(),
                         showEditText = singleSelectedText != null,
                         showSelectionActions = true,
                     ),
@@ -451,6 +490,7 @@ fun HomeScreen(
                             ContextBarIntent.EditText -> singleSelectedText?.let { target ->
                                 editingTextId = target.id
                                 editDraft = target.text
+                                editOriginal = target.text
                             }
                             ContextBarIntent.BringToFront -> viewModel.bringSelectionToFront()
                             ContextBarIntent.SendToBack -> viewModel.sendSelectionToBack()
@@ -469,7 +509,11 @@ fun HomeScreen(
                         Modifier.align(Alignment.TopEnd)
                             .padding(top = 72.dp, end = 12.dp)
                             .alpha(chromeAlpha)
-                    },
+                    }
+                        // While editing, sit above the commit overlay (z 9) so
+                        // style chips are tappable and restyle the element live
+                        // instead of committing the editor (#83.1).
+                        .zIndex(if (editingTextId != null) 9.5f else 0f),
                 )
             }
 
@@ -615,22 +659,25 @@ fun HomeScreen(
             if (target == null) {
                 editingTextId = null
             } else {
-                // Click-catcher: positioned over the canvas + toolbars so any
-                // outside tap routes through here. Transparent — the canvas
-                // remains visible underneath. Blocks ContextBar interaction
-                // during edit by design (no mid-edit style changes); the
-                // user picks style first, then types.
+                // Commit overlay: catches taps outside the editor and commits.
+                // Mid-edit styling (#83.1): the selection ContextBar is raised
+                // ABOVE this overlay while editing and consumes its own taps, so
+                // a press that a style chip already consumed does NOT commit —
+                // tapping a chip restyles the (selected) element live instead.
+                // Presses on empty canvas remain unconsumed and commit.
                 androidx.compose.foundation.layout.Box(
                     modifier = Modifier
-                        // Layer 2: above the canvas + toolbars (which sit at
-                        // the default z 0), below the editor (z 10).
+                        // Layer 2: above the canvas (z 0), below the editor
+                        // (z 10) and the editing ContextBar (z 9.5).
                         .zIndex(9f)
                         .fillMaxSize()
                         .pointerInput(editingId) {
                             awaitPointerEventScope {
                                 while (true) {
                                     val event = awaitPointerEvent()
-                                    if (event.type == PointerEventType.Press) {
+                                    if (event.type == PointerEventType.Press &&
+                                        event.changes.none { it.isConsumed }
+                                    ) {
                                         commitTextEdit()
                                         break
                                     }
@@ -638,12 +685,35 @@ fun HomeScreen(
                             }
                         },
                 )
-                InlineTextEditor(
-                    element = target,
-                    viewport = state.viewport,
-                    draft = editDraft,
-                    onDraftChange = { editDraft = it },
-                )
+                // Editor wrapper (fillMaxSize keeps InlineTextEditor's offset
+                // origin identical to the canvas). Esc reverts without
+                // committing; losing focus — IME dismiss, window blur, tap-away
+                // — commits (#83.5).
+                var editorHadFocus by remember(editingId) { mutableStateOf(false) }
+                androidx.compose.foundation.layout.Box(
+                    modifier = Modifier
+                        .zIndex(10f)
+                        .fillMaxSize()
+                        .onPreviewKeyEvent { e ->
+                            if (e.type == KeyEventType.KeyDown && e.key == Key.Escape) {
+                                cancelTextEdit()
+                                true
+                            } else {
+                                false
+                            }
+                        }
+                        .onFocusChanged { focus ->
+                            if (focus.hasFocus) editorHadFocus = true
+                            else if (editorHadFocus) commitTextEdit()
+                        },
+                ) {
+                    InlineTextEditor(
+                        element = target,
+                        viewport = state.viewport,
+                        draft = editDraft,
+                        onDraftChange = { editDraft = it },
+                    )
+                }
             }
         }
     }

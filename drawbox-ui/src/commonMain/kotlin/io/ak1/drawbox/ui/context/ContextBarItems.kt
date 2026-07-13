@@ -293,6 +293,8 @@ fun textContextItems(
     sizePresets: List<Float> = DefaultTextSizePresets,
 ): List<FloatingMenuItem> {
     val active = MaterialTheme.colorScheme.primary
+    // Dimmed tint for a chip whose selected elements disagree ("mixed").
+    val mixedTint = active.copy(alpha = 0.4f)
     return buildList {
         if (showEdit) {
             add(
@@ -308,11 +310,13 @@ fun textContextItems(
         add(
             FloatingMenuItem(
                 id = "text-size",
-                icon = { _ -> TextSizeIcon(size = state.fontSize, color = active) },
+                icon = { _ ->
+                    TextSizeIcon(size = state.fontSize, color = if (state.fontSizeMixed) mixedTint else active)
+                },
                 children = sizePresets.map { value ->
                     FloatingMenuItem(
                         id = "text-size-${value.toInt()}",
-                        isActive = abs(state.fontSize - value) < 0.5f,
+                        isActive = !state.fontSizeMixed && abs(state.fontSize - value) < 0.5f,
                         icon = { isActive ->
                             TextSizeIcon(size = value, color = isActive.activeIconTint())
                         },
@@ -324,11 +328,16 @@ fun textContextItems(
         add(
             FloatingMenuItem(
                 id = "text-align",
-                icon = { _ -> TextAlignmentIcon(alignment = state.textAlignment, color = active) },
+                icon = { _ ->
+                    TextAlignmentIcon(
+                        alignment = state.textAlignment,
+                        color = if (state.textAlignmentMixed) mixedTint else active,
+                    )
+                },
                 children = TextAlignment.entries.map { align ->
                     FloatingMenuItem(
                         id = "text-align-${align.name.lowercase()}",
-                        isActive = align == state.textAlignment,
+                        isActive = !state.textAlignmentMixed && align == state.textAlignment,
                         icon = { isActive ->
                             TextAlignmentIcon(alignment = align, color = isActive.activeIconTint())
                         },
@@ -343,14 +352,14 @@ fun textContextItems(
                 icon = { _ ->
                     FontFamilyLabel(
                         key = state.fontFamilyKey,
-                        color = active,
+                        color = if (state.fontFamilyMixed) mixedTint else active,
                         fontFamily = fontFamilyResolver(state.fontFamilyKey),
                     )
                 },
                 children = state.fontFamilyKeys.sorted().map { key ->
                     FloatingMenuItem(
                         id = "text-family-$key",
-                        isActive = key == state.fontFamilyKey,
+                        isActive = !state.fontFamilyMixed && key == state.fontFamilyKey,
                         icon = { isActive ->
                             FontFamilyLabel(
                                 key = key,
