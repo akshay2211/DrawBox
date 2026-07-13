@@ -14,7 +14,7 @@ copy_files:
 theme:
   name: material
   logo: assets/logo.png
-  favicon: assets/favicon.ico
+  favicon: assets/favicon.png
   palette:
     - scheme: default
       primary: indigo
