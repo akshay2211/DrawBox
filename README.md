@@ -184,7 +184,7 @@ controller.events.collect { event ->  // Listen to events
 
 ## Download
 
-Latest Version: **2.1.0-alpha02** (KMP Preview)
+Latest Version: **2.1.0** (KMP Preview)
 
 [![Download](https://img.shields.io/badge/Download-blue.svg?style=flat-square)](https://search.maven.org/artifact/io.ak1/drawbox) or grab via Gradle:
 
@@ -195,7 +195,7 @@ repositories {
 }
 
 dependencies {
-    implementation("io.ak1:drawbox:2.1.0-alpha02")
+    implementation("io.ak1:drawbox:2.1.0")
 }
 ```
 
@@ -206,7 +206,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'io.ak1:drawbox:2.1.0-alpha02'
+    implementation 'io.ak1:drawbox:2.1.0'
 }
 ```
 
@@ -215,13 +215,13 @@ dependencies {
 <dependency>
   <groupId>io.ak1</groupId>
   <artifactId>drawbox</artifactId>
-  <version>2.1.0-alpha02</version>
+  <version>2.1.0</version>
 </dependency>
 ```
 
 ### Ivy
 ```xml
-<dependency org='io.ak1' name='drawbox' rev='2.1.0-alpha02'>
+<dependency org='io.ak1' name='drawbox' rev='2.1.0'>
   <artifact name='drawbox' ext='pom' ></artifact>
 </dependency>
 ```
