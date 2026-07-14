@@ -31,8 +31,7 @@ import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onPreviewKeyEvent
 import androidx.compose.ui.input.key.type
 import androidx.compose.ui.input.pointer.PointerEventPass
-import androidx.compose.ui.input.pointer.PointerEventType
-import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.zIndex
 import androidx.compose.ui.unit.dp
@@ -342,6 +341,22 @@ fun HomeScreen(
             // so the editor's frame is the only one visible (no ghosting).
             hiddenElementIds = editingTextId?.let { setOf(it) } ?: emptySet(),
         )
+        // Commit overlay (#83.1) — composed BETWEEN the canvas and the toolbar
+        // layer below. It sits ABOVE the canvas (so a tap on empty canvas
+        // commits the edit) but BELOW the ContextBar (so its style chips get
+        // their taps and restyle the element instead of the overlay
+        // committing). No zIndex on purpose: a fillMaxSize Box WITH a zIndex
+        // captures pointer events (that regressed plain selection); relying on
+        // composition order keeps empty-area pass-through intact.
+        if (editingTextId != null) {
+            androidx.compose.foundation.layout.Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .pointerInput(editingTextId) {
+                        detectTapGestures(onTap = { commitTextEdit() })
+                    },
+            )
+        }
         BoxWithConstraints(modifier = Modifier.fillMaxSize().systemBarsPadding()) {
             val isNarrow = maxWidth < 600.dp
             val density = androidx.compose.ui.platform.LocalDensity.current
@@ -509,11 +524,7 @@ fun HomeScreen(
                         Modifier.align(Alignment.TopEnd)
                             .padding(top = 72.dp, end = 12.dp)
                             .alpha(chromeAlpha)
-                    }
-                        // While editing, sit above the commit overlay (z 9) so
-                        // style chips are tappable and restyle the element live
-                        // instead of committing the editor (#83.1).
-                        .zIndex(if (editingTextId != null) 9.5f else 0f),
+                    },
                 )
             }
 
@@ -648,51 +659,27 @@ fun HomeScreen(
             )
         }
 
-        // Inline text editor + outside-tap commit overlay. The editor itself
-        // renders frameless — same font/size/alignment/color as the element
-        // it'll become, no border, no Done button. The full-screen overlay
-        // below it captures any tap outside the field and triggers commit.
-        // Empty commits delete the element.
+        // Inline text editor — composed LAST so it layers above the toolbar
+        // (frameless: same font/size/alignment/color as the element it edits,
+        // no border, no Done button). The commit overlay is composed earlier,
+        // between the canvas and the toolbar layer. Empty edits delete the
+        // element. Esc reverts without committing (#83.5). No focus-loss
+        // auto-commit: DrawBox re-grabs canvas focus on every press, so a
+        // double-tap-to-edit (#83.2) briefly bounced focus and a focus-loss
+        // commit fired instantly, closing the editor before the user could
+        // type. Tap-away commit is handled by the overlay.
         val editingId = editingTextId
         if (editingId != null) {
             val target = state.elements.firstOrNull { it.id == editingId } as? Element.Text
             if (target == null) {
                 editingTextId = null
             } else {
-                // Commit overlay: catches taps outside the editor and commits.
-                // Mid-edit styling (#83.1): the selection ContextBar is raised
-                // ABOVE this overlay while editing and consumes its own taps, so
-                // a press that a style chip already consumed does NOT commit —
-                // tapping a chip restyles the (selected) element live instead.
-                // Presses on empty canvas remain unconsumed and commit.
+                // Wrapper fillMaxSize keeps InlineTextEditor's offset origin
+                // identical to the canvas. No zIndex (composition order already
+                // layers it above the toolbar) and no pointerInput, so taps
+                // pass through to the ContextBar; only the field captures input.
                 androidx.compose.foundation.layout.Box(
                     modifier = Modifier
-                        // Layer 2: above the canvas (z 0), below the editor
-                        // (z 10) and the editing ContextBar (z 9.5).
-                        .zIndex(9f)
-                        .fillMaxSize()
-                        .pointerInput(editingId) {
-                            awaitPointerEventScope {
-                                while (true) {
-                                    val event = awaitPointerEvent()
-                                    if (event.type == PointerEventType.Press &&
-                                        event.changes.none { it.isConsumed }
-                                    ) {
-                                        commitTextEdit()
-                                        break
-                                    }
-                                }
-                            }
-                        },
-                )
-                // Editor wrapper (fillMaxSize keeps InlineTextEditor's offset
-                // origin identical to the canvas). Esc reverts without
-                // committing; losing focus — IME dismiss, window blur, tap-away
-                // — commits (#83.5).
-                var editorHadFocus by remember(editingId) { mutableStateOf(false) }
-                androidx.compose.foundation.layout.Box(
-                    modifier = Modifier
-                        .zIndex(10f)
                         .fillMaxSize()
                         .onPreviewKeyEvent { e ->
                             if (e.type == KeyEventType.KeyDown && e.key == Key.Escape) {
@@ -701,10 +688,6 @@ fun HomeScreen(
                             } else {
                                 false
                             }
-                        }
-                        .onFocusChanged { focus ->
-                            if (focus.hasFocus) editorHadFocus = true
-                            else if (editorHadFocus) commitTextEdit()
                         },
                 ) {
                     InlineTextEditor(
