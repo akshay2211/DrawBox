@@ -17,6 +17,13 @@ The `2.0.x` line is the Kotlin Multiplatform rewrite. The `1.x` line was an Andr
   to every selected text element and show a dimmed "mixed" state
   (`ContextBarState.fontSizeMixed` / `textAlignmentMixed` / `fontFamilyMixed`)
   when the selection disagrees on a property.
+- **Configurable selection chrome (`SelectionChromeStyle`).** `DrawBox` takes a
+  new `selectionStyle` parameter for tuning the accent-colored selection box:
+  `padding` grows/shrinks the gap between an element and its box, plus
+  `handleSize`, `cornerRadius`, `strokeWidth`, and `accent`. The box now draws
+  with rounded corners and hollow rounded-square handles, and the box outline is
+  clipped so it never shows through a handle; resize hit-testing tracks the
+  padded box so grab targets stay aligned.
 
 ### Changed
 - **Sample: mid-edit styling and editor commit semantics (#83.1, #83.5).**
