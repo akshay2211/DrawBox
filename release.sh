@@ -309,17 +309,39 @@ if [ "$CONFIRM" != "y" ]; then
     exit 1
 fi
 
-# Step 5: Commit
+RELEASE_BRANCH="${BRANCH_PREFIX}${VERSION}"
+TAG="${TAG_PREFIX}${VERSION}"
+ARTIFACT_PATH=$(echo "$ARTIFACT" | tr ':' '/')
+
+# Step 5: Move onto the release branch BEFORE committing, so the release commit
+# is never born on the branch you happened to be standing on (e.g. main). The
+# working-tree edits carry over on checkout.
 echo ""
-echo "✅ Step 4: Committing changes..."
-git add .
+echo "🌿 Step 4: Preparing release branch $RELEASE_BRANCH..."
+if [ "$(git rev-parse --abbrev-ref HEAD)" = "$RELEASE_BRANCH" ]; then
+    echo "✅ Already on $RELEASE_BRANCH"
+elif git show-ref --verify --quiet "refs/heads/$RELEASE_BRANCH"; then
+    git checkout "$RELEASE_BRANCH"
+    echo "✅ Switched to existing $RELEASE_BRANCH"
+else
+    git checkout -b "$RELEASE_BRANCH"
+    echo "✅ Created $RELEASE_BRANCH"
+fi
+echo ""
+
+# Step 6: Commit — stage only the files this release touched, never `git add .`,
+# so unrelated working-tree changes don't get swept into the release commit.
+echo "✅ Step 5: Committing changes..."
+git add "$PROPS_FILE"
+if [ "$UPDATE_DOCS" = true ]; then
+    git add README.md docs/ gradle/libs.versions.toml
+fi
 git commit -m "chore: release $MODULE version $VERSION"
 echo "✅ Committed: chore: release $MODULE version $VERSION"
 echo ""
 
-# Step 6: Tag the release commit
-TAG="${TAG_PREFIX}${VERSION}"
-echo "🏷️  Step 5: Tagging release as $TAG..."
+# Step 7: Tag the release commit
+echo "🏷️  Step 6: Tagging release as $TAG..."
 if git rev-parse -q --verify "refs/tags/$TAG" >/dev/null; then
     echo "⚠️  Tag $TAG already exists locally — skipping. Delete it first with"
     echo "   'git tag -d $TAG' (and 'git push origin :refs/tags/$TAG' if pushed)"
@@ -330,19 +352,48 @@ else
 fi
 echo ""
 
-# Step 7: Show next steps
-RELEASE_BRANCH="${BRANCH_PREFIX}${VERSION}"
-ARTIFACT_PATH=$(echo "$ARTIFACT" | tr ':' '/')
-echo "🎉 Release prepared! Next steps:"
+# Step 8: Gated push + PR. Pushing and opening a PR are outward-facing, so they
+# get their own confirmation; declining (or missing gh) falls back to printing
+# the manual commands.
+print_manual_steps() {
+    echo "ℹ️  Manual steps to finish the release:"
+    echo "     git push -u origin $RELEASE_BRANCH"
+    echo "     git push origin $TAG"
+    echo "   Open a PR: https://github.com/akshay2211/DrawBox/compare/main...$RELEASE_BRANCH"
+}
+
+ask_yes_no "🚀 Push $RELEASE_BRANCH + $TAG and open a PR to main?" DO_PUSH
 echo ""
-echo "1. Review commit + tag: git log -1 && git show $TAG --stat"
-echo "2. Push to release branch:"
-echo "     git push origin HEAD:refs/heads/$RELEASE_BRANCH"
-echo "     git push origin $TAG"
-echo "   Open a PR from $RELEASE_BRANCH → main when CI is green."
-echo "3. Publish to Maven Central (needs Sonatype creds + signing key):"
+if [ "$DO_PUSH" = "y" ]; then
+    git push -u origin "$RELEASE_BRANCH"
+    git push origin "$TAG"
+    echo "✅ Pushed branch + tag"
+    if command -v gh >/dev/null 2>&1; then
+        gh pr create --base main --head "$RELEASE_BRANCH" \
+            --title "chore: release $MODULE $VERSION" \
+            --body "Release \`$MODULE\` **$VERSION** (\`$ARTIFACT\`).
+
+Publish to Maven Central after merge (needs Sonatype creds + signing key):
+\`\`\`
+./gradlew $GRADLE_PROJECT:publishAndReleaseToMavenCentral
+\`\`\`"
+        echo "✅ PR opened"
+    else
+        echo "⚠️  gh CLI not found — open the PR manually:"
+        echo "   https://github.com/akshay2211/DrawBox/compare/main...$RELEASE_BRANCH"
+    fi
+else
+    print_manual_steps
+fi
+echo ""
+
+# Step 9: Post-merge / publish reminders
+echo "🎉 Release prepared! Remaining steps:"
+echo ""
+echo "1. Merge the PR into main when CI is green."
+echo "2. Publish to Maven Central (needs Sonatype creds + signing key):"
 echo "     ./gradlew $GRADLE_PROJECT:publishAndReleaseToMavenCentral"
-echo "4. Watch deployment:    https://github.com/akshay2211/DrawBox/actions"
-echo "5. Check Maven Central: https://central.sonatype.com/artifact/$ARTIFACT_PATH"
-echo "6. Verify docs:         https://akshay2211.github.io/DrawBox/"
+echo "3. Watch deployment:    https://github.com/akshay2211/DrawBox/actions"
+echo "4. Check Maven Central: https://central.sonatype.com/artifact/$ARTIFACT_PATH"
+echo "5. Verify docs:         https://akshay2211.github.io/DrawBox/"
 echo ""
