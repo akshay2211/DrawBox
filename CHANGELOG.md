@@ -8,6 +8,16 @@ The `2.0.x` line is the Kotlin Multiplatform rewrite. The `1.x` line was an Andr
 
 ## [Unreleased]
 
+## [2.1.0] — 2026-07-14
+
+First stable release of the `2.1` line, promoting the two `2.1.0-alpha`
+pre-releases plus in-place text editing, configurable selection chrome, and
+the web font-differentiation fix. The new `2.1` surfaces (image / text
+elements, `io.ak1.drawbox.input`, pen-pressure sample fields, Kotlin/JS
+publishing) are now stable; see the earlier alpha entries for their details
+and the [migration note](#migration-20x--21x) for the one `Element.Path`
+change.
+
 ### Added
 - **In-place text editing gestures (#83).** Double-tapping an `Element.Text`
   in `SELECT` mode — or tapping an already-selected one again — now opens the
@@ -439,7 +449,8 @@ under semver. Incubating surfaces (collab plumbing, advanced eraser
 modes, etc.) are gated behind opt-in annotations and may evolve in
 minor versions.
 
-[Unreleased]: https://github.com/akshay2211/DrawBox/compare/v2.1.0-alpha02...HEAD
+[Unreleased]: https://github.com/akshay2211/DrawBox/compare/v2.1.0...HEAD
+[2.1.0]: https://github.com/akshay2211/DrawBox/compare/v2.1.0-alpha02...v2.1.0
 [2.1.0-alpha02]: https://github.com/akshay2211/DrawBox/compare/v2.1.0-alpha01...v2.1.0-alpha02
 [2.1.0-alpha01]: https://github.com/akshay2211/DrawBox/compare/v2.0.0...v2.1.0-alpha01
 [2.0.0]: https://github.com/akshay2211/DrawBox/compare/2.0.0-alpha02...v2.0.0
