@@ -185,6 +185,9 @@ $dokka.location:io.ak1.drawbox.domain.model/Event.PngSaved/throwable/#/PointingT
 $dokka.location:io.ak1.drawbox.domain.model/Event.SvgExported///PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-event/-svg-exported/index.html
 $dokka.location:io.ak1.drawbox.domain.model/Event.SvgExported/SvgExported/#kotlin.String/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-event/-svg-exported/-svg-exported.html
 $dokka.location:io.ak1.drawbox.domain.model/Event.SvgExported/svg/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-event/-svg-exported/svg.html
+$dokka.location:io.ak1.drawbox.domain.model/Event.TextEditRequested///PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-event/-text-edit-requested/index.html
+$dokka.location:io.ak1.drawbox.domain.model/Event.TextEditRequested/TextEditRequested/#kotlin.String/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-event/-text-edit-requested/-text-edit-requested.html
+$dokka.location:io.ak1.drawbox.domain.model/Event.TextEditRequested/id/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-event/-text-edit-requested/id.html
 $dokka.location:io.ak1.drawbox.domain.model/Event///PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-event/index.html
 $dokka.location:io.ak1.drawbox.domain.model/Intent.AddElement///PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-intent/-add-element/index.html
 $dokka.location:io.ak1.drawbox.domain.model/Intent.AddElement/AddElement/#io.ak1.drawbox.domain.model.Element/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-intent/-add-element/-add-element.html
@@ -239,6 +242,10 @@ $dokka.location:io.ak1.drawbox.domain.model/Intent.PanBy///PointingToDeclaration
 $dokka.location:io.ak1.drawbox.domain.model/Intent.PanBy/PanBy/#androidx.compose.ui.geometry.Offset/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-intent/-pan-by/-pan-by.html
 $dokka.location:io.ak1.drawbox.domain.model/Intent.PanBy/delta/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-intent/-pan-by/delta.html
 $dokka.location:io.ak1.drawbox.domain.model/Intent.Redo///PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-intent/-redo/index.html
+$dokka.location:io.ak1.drawbox.domain.model/Intent.RequestTextEditAt///PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-intent/-request-text-edit-at/index.html
+$dokka.location:io.ak1.drawbox.domain.model/Intent.RequestTextEditAt/RequestTextEditAt/#androidx.compose.ui.geometry.Offset#kotlin.Float/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-intent/-request-text-edit-at/-request-text-edit-at.html
+$dokka.location:io.ak1.drawbox.domain.model/Intent.RequestTextEditAt/offset/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-intent/-request-text-edit-at/offset.html
+$dokka.location:io.ak1.drawbox.domain.model/Intent.RequestTextEditAt/tolerance/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-intent/-request-text-edit-at/tolerance.html
 $dokka.location:io.ak1.drawbox.domain.model/Intent.Reset///PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-intent/-reset/index.html
 $dokka.location:io.ak1.drawbox.domain.model/Intent.ResetCamera///PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-intent/-reset-camera/index.html
 $dokka.location:io.ak1.drawbox.domain.model/Intent.SaveBitmap///PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-intent/-save-bitmap/index.html
@@ -553,6 +560,7 @@ $dokka.location:io.ak1.drawbox.input/DroppedImage/intrinsicSize/#/PointingToDecl
 $dokka.location:io.ak1.drawbox.presentation.reducer////PointingToDeclaration/-draw-box/io.ak1.drawbox.presentation.reducer/index.html
 $dokka.location:io.ak1.drawbox.presentation.reducer/Reducer///PointingToDeclaration/-draw-box/io.ak1.drawbox.presentation.reducer/-reducer/index.html
 $dokka.location:io.ak1.drawbox.presentation.reducer/Reducer/Reducer/#io.ak1.drawbox.domain.usecase.UseCase/PointingToDeclaration/-draw-box/io.ak1.drawbox.presentation.reducer/-reducer/-reducer.html
+$dokka.location:io.ak1.drawbox.presentation.reducer/Reducer/hitTopmost/#kotlin.collections.List[io.ak1.drawbox.domain.model.Element]#androidx.compose.ui.geometry.Offset#kotlin.Float/PointingToDeclaration/-draw-box/io.ak1.drawbox.presentation.reducer/-reducer/hit-topmost.html
 $dokka.location:io.ak1.drawbox.presentation.reducer/Reducer/reduce/#io.ak1.drawbox.domain.model.State#io.ak1.drawbox.domain.model.Intent/PointingToDeclaration/-draw-box/io.ak1.drawbox.presentation.reducer/-reducer/reduce.html
 $dokka.location:io.ak1.drawbox.presentation.viewmodel////PointingToDeclaration/-draw-box/io.ak1.drawbox.presentation.viewmodel/index.html
 $dokka.location:io.ak1.drawbox.presentation.viewmodel//rememberDrawBoxController/#io.ak1.drawbox.domain.usecase.UseCase#io.ak1.drawbox.domain.model.State/PointingToDeclaration/-draw-box/io.ak1.drawbox.presentation.viewmodel/remember-draw-box-controller.html
@@ -615,11 +623,20 @@ $dokka.location:io.ak1.drawbox.text/FontRegistry/keys/#/PointingToDeclaration/-
 $dokka.location:io.ak1.drawbox.text/FontRegistry/register/#kotlin.String#androidx.compose.ui.text.font.FontFamily/PointingToDeclaration/-draw-box/io.ak1.drawbox.text/-font-registry/register.html
 $dokka.location:io.ak1.drawbox.text/FontRegistry/resolve/#kotlin.String/PointingToDeclaration/-draw-box/io.ak1.drawbox.text/-font-registry/resolve.html
 $dokka.location:io.ak1.drawbox////PointingToDeclaration/-draw-box/io.ak1.drawbox/index.html
-$dokka.location:io.ak1.drawbox//DrawBox/#io.ak1.drawbox.domain.model.State#kotlin.Function1[io.ak1.drawbox.domain.model.Intent,kotlin.Unit]#androidx.compose.ui.Modifier#kotlin.Boolean#kotlin.collections.Set[kotlin.String]#kotlin.Function1[androidx.compose.foundation.layout.BoxScope,kotlin.Unit]/PointingToDeclaration/-draw-box/io.ak1.drawbox/-draw-box.html
+$dokka.location:io.ak1.drawbox//DrawBox/#io.ak1.drawbox.domain.model.State#kotlin.Function1[io.ak1.drawbox.domain.model.Intent,kotlin.Unit]#androidx.compose.ui.Modifier#kotlin.Boolean#kotlin.collections.Set[kotlin.String]#kotlin.Function1[androidx.compose.foundation.layout.BoxScope,kotlin.Unit]#io.ak1.drawbox.SelectionChromeStyle/PointingToDeclaration/-draw-box/io.ak1.drawbox/-draw-box.html
 $dokka.location:io.ak1.drawbox//DrawingPreview/#kotlin.collections.List[io.ak1.drawbox.domain.model.Element]#androidx.compose.ui.graphics.Color#androidx.compose.ui.Modifier#io.ak1.drawbox.domain.model.Viewport/PointingToDeclaration/-draw-box/io.ak1.drawbox/-drawing-preview.html
 $dokka.location:io.ak1.drawbox//createPath/#kotlin.collections.List[androidx.compose.ui.geometry.Offset]/PointingToDeclaration/-draw-box/io.ak1.drawbox/create-path.html
 $dokka.location:io.ak1.drawbox//decodeImageBitmap/#kotlin.ByteArray/PointingToDeclaration/-draw-box/io.ak1.drawbox/decode-image-bitmap.html
 $dokka.location:io.ak1.drawbox//decodeImageBitmapDownsampled/#kotlin.ByteArray#kotlin.Int#kotlin.Int/PointingToDeclaration/-draw-box/io.ak1.drawbox/decode-image-bitmap-downsampled.html
+$dokka.location:io.ak1.drawbox/SelectionChromeStyle.Companion///PointingToDeclaration/-draw-box/io.ak1.drawbox/-selection-chrome-style/-companion/index.html
+$dokka.location:io.ak1.drawbox/SelectionChromeStyle.Companion/Default/#/PointingToDeclaration/-draw-box/io.ak1.drawbox/-selection-chrome-style/-companion/-default.html
+$dokka.location:io.ak1.drawbox/SelectionChromeStyle///PointingToDeclaration/-draw-box/io.ak1.drawbox/-selection-chrome-style/index.html
+$dokka.location:io.ak1.drawbox/SelectionChromeStyle/SelectionChromeStyle/#androidx.compose.ui.unit.Dp#androidx.compose.ui.unit.Dp#androidx.compose.ui.unit.Dp#androidx.compose.ui.unit.Dp#androidx.compose.ui.graphics.Color/PointingToDeclaration/-draw-box/io.ak1.drawbox/-selection-chrome-style/-selection-chrome-style.html
+$dokka.location:io.ak1.drawbox/SelectionChromeStyle/accent/#/PointingToDeclaration/-draw-box/io.ak1.drawbox/-selection-chrome-style/accent.html
+$dokka.location:io.ak1.drawbox/SelectionChromeStyle/cornerRadius/#/PointingToDeclaration/-draw-box/io.ak1.drawbox/-selection-chrome-style/corner-radius.html
+$dokka.location:io.ak1.drawbox/SelectionChromeStyle/handleSize/#/PointingToDeclaration/-draw-box/io.ak1.drawbox/-selection-chrome-style/handle-size.html
+$dokka.location:io.ak1.drawbox/SelectionChromeStyle/padding/#/PointingToDeclaration/-draw-box/io.ak1.drawbox/-selection-chrome-style/padding.html
+$dokka.location:io.ak1.drawbox/SelectionChromeStyle/strokeWidth/#/PointingToDeclaration/-draw-box/io.ak1.drawbox/-selection-chrome-style/stroke-width.html
 io.ak1.drawbox
 io.ak1.drawbox.domain.model
 io.ak1.drawbox.domain.usecase
