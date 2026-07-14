@@ -8,7 +8,28 @@ The `2.0.x` line is the Kotlin Multiplatform rewrite. The `1.x` line was an Andr
 
 ## [Unreleased]
 
+### Added
+- **In-place text editing gestures (#83).** Double-tapping an `Element.Text`
+  in `SELECT` mode — or tapping an already-selected one again — now opens the
+  host editor via the new `Event.TextEditRequested(id)` (backed by the new
+  `Intent.RequestTextEditAt`). See [RFC 0001](docs/rfcs/0001-text-elements.md).
+- **Multi-text style editing (#83.3).** The context bar's text chips now apply
+  to every selected text element and show a dimmed "mixed" state
+  (`ContextBarState.fontSizeMixed` / `textAlignmentMixed` / `fontFamilyMixed`)
+  when the selection disagrees on a property.
+- **Configurable selection chrome (`SelectionChromeStyle`).** `DrawBox` takes a
+  new `selectionStyle` parameter for tuning the accent-colored selection box:
+  `padding` grows/shrinks the gap between an element and its box, plus
+  `handleSize`, `cornerRadius`, `strokeWidth`, and `accent`. The box now draws
+  with rounded corners and hollow rounded-square handles, and the box outline is
+  clipped so it never shows through a handle; resize hit-testing tracks the
+  padded box so grab targets stay aligned.
+
 ### Changed
+- **Sample: mid-edit styling and editor commit semantics (#83.1, #83.5).**
+  Tapping a style chip while the inline editor is open now restyles the element
+  instead of committing; `Esc` cancels without committing and losing focus
+  commits.
 - **`FontRegistry` now warns once per key on web targets** when a built-in
   key (`sans` / `serif` / `mono`) resolves to a generic `FontFamily` —
   the case Skia-WASM cannot differentiate. Warning is a one-shot `println`

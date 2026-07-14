@@ -1,5 +1,6 @@
 package io.ak1.drawbox.presentation.reducer
 
+import androidx.compose.ui.geometry.Offset
 import io.ak1.drawbox.domain.model.Element
 import io.ak1.drawbox.domain.model.HISTORY_CAP
 import io.ak1.drawbox.domain.model.Intent
@@ -194,6 +195,13 @@ class Reducer(
             val hit = useCase.hitTopmost(state.elements, intent.offset, intent.tolerance)
             state.copy(selectedIds = if (hit == null) emptySet() else setOf(hit.id))
         }
+        is Intent.RequestTextEditAt -> {
+            // Select the tapped text so the edit target is the sole selection;
+            // the controller emits Event.TextEditRequested off this. Leave
+            // selection untouched when the topmost hit isn't a text element.
+            val hit = useCase.hitTopmost(state.elements, intent.offset, intent.tolerance)
+            if (hit is Element.Text) state.copy(selectedIds = setOf(hit.id)) else state
+        }
         is Intent.SetMarqueeRect -> state.copy(marqueeRect = intent.rect)
         is Intent.CommitMarquee -> state.copy(
             selectedIds = useCase.selectInRect(state.elements, intent.rect),
@@ -364,6 +372,14 @@ class Reducer(
 
         else -> state
     }
+
+    /**
+     * Topmost element hit at [point] within [tolerance], or null. Exposes the
+     * pick used by [reduce] so the controller can resolve edit targets for
+     * [Event.TextEditRequested] without duplicating hit-test logic.
+     */
+    fun hitTopmost(elements: List<Element>, point: Offset, tolerance: Float): Element? =
+        useCase.hitTopmost(elements, point, tolerance)
 
     /** Push current elements onto [State.history] and clear [State.future]. */
     private fun State.snapshot(): State = copy(

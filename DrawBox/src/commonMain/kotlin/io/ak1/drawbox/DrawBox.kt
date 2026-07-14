@@ -38,6 +38,7 @@ import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.geometry.RoundRect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.isSpecified
 import androidx.compose.ui.unit.IntOffset
@@ -51,12 +52,14 @@ import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.graphics.PathFillType
 import androidx.compose.ui.graphics.ShaderBrush
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.graphics.drawscope.CanvasDrawScope
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.withTransform
@@ -69,6 +72,7 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import io.ak1.drawbox.domain.model.BackgroundPattern
@@ -178,6 +182,12 @@ fun DrawBox(
      * existing call sites are unaffected.
      */
     overlay: @Composable BoxScope.() -> Unit = {},
+    /**
+     * Visual tuning for the selection chrome (the accent-colored box + handles
+     * drawn around selected elements). Adjust [SelectionChromeStyle.padding] to
+     * grow or shrink the gap between an element and its selection box.
+     */
+    selectionStyle: SelectionChromeStyle = SelectionChromeStyle.Default,
 ) {
     // Two-layer split:
     //   - finalizedLayer: cached display list of "static" elements (everything not
@@ -275,8 +285,19 @@ fun DrawBox(
 
     val handleHitPx = with(density) { 16.dp.toPx() }
     val rotationOffsetPx = with(density) { 28.dp.toPx() }
-    val handleSizePx = with(density) { 8.dp.toPx() }
     val pickTolerancePx = with(density) { 12.dp.toPx() }
+    // Screen-space metrics for the selection chrome. Kept in px here (resolved
+    // once per density change) and scaled by inverseScale at draw time so the
+    // box, handles, and padding stay a constant on-screen size at any zoom.
+    val chromeMetrics = with(density) {
+        SelectionChromeMetrics(
+            handleSizePx = selectionStyle.handleSize.toPx(),
+            paddingPx = selectionStyle.padding.toPx(),
+            cornerRadiusPx = selectionStyle.cornerRadius.toPx(),
+            strokeWidthPx = selectionStyle.strokeWidth.toPx(),
+            accent = selectionStyle.accent,
+        )
+    }
 
     // The pointerInput coroutines are long-lived; reading state/onIntent through
     // rememberUpdatedState lets gesture callbacks see the current value without
@@ -504,6 +525,18 @@ fun DrawBox(
             }
             .pointerInput(Unit) {
                 detectTapGestures(
+                    onDoubleTap = { screenPos ->
+                        // Double-tap a text element in SELECT mode → request
+                        // in-place edit. The controller resolves the hit and
+                        // emits Event.TextEditRequested for the host to open its
+                        // editor; non-text hits are no-ops.
+                        val s = latestState
+                        if (s.effectiveMode == Mode.SELECT) {
+                            val world = s.viewport.screenToWorld(screenPos)
+                            val tol = pickTolerancePx / s.viewport.scale
+                            latestOnIntent(Intent.RequestTextEditAt(world, tol))
+                        }
+                    },
                     onTap = { screenPos ->
                         val s = latestState
                         val world = s.viewport.screenToWorld(screenPos)
@@ -567,6 +600,7 @@ fun DrawBox(
                                     handleHitWorld = handleHitPx / s.viewport.scale,
                                     rotationOffsetWorld = rotationOffsetPx / s.viewport.scale,
                                     pickToleranceWorld = pickTolerancePx / s.viewport.scale,
+                                    paddingWorld = chromeMetrics.paddingPx / s.viewport.scale,
                                 )
                                 interaction = when (classified) {
                                     is SelectionInteraction.SelectAndMove -> {
@@ -667,8 +701,16 @@ fun DrawBox(
                                 lastWorld = world
                             }
                             is SelectionInteraction.Resize -> {
+                                // The drawn handle floats [paddingWorld] outside the
+                                // element; map the pointer back to the true edge so
+                                // resizing tracks without a padding-sized jump.
+                                val paddingWorld = chromeMetrics.paddingPx / s.viewport.scale
+                                val localOffset = i.handle.outwardDir() * paddingWorld
+                                val rot = i.originalElement.rotation
+                                val worldOffset = if (rot == 0f) localOffset
+                                    else rotateAround(localOffset, Offset.Zero, rot)
                                 val newBounds = resizeBoundsForElement(
-                                    i.originalElement, i.handle, world,
+                                    i.originalElement, i.handle, world - worldOffset,
                                 )
                                 latestOnIntent(Intent.SetElementBounds(i.elementId, newBounds))
                             }
@@ -818,7 +860,7 @@ fun DrawBox(
                 }
                 drawSelectionChrome(
                     state = state,
-                    handleSizePx = handleSizePx,
+                    metrics = chromeMetrics,
                     rotationOffsetPx = rotationOffsetPx,
                     inverseScale = 1f / vp.scale,
                     hiddenElementIds = hiddenElementIds,
@@ -1027,6 +1069,7 @@ private fun classifySelection(
     handleHitWorld: Float,
     rotationOffsetWorld: Float,
     pickToleranceWorld: Float,
+    paddingWorld: Float,
 ): SelectionInteraction {
     // Single-selection: check shape-specific handles first.
     if (state.selectedIds.size == 1) {
@@ -1049,7 +1092,15 @@ private fun classifySelection(
                 }
                 // Fall through: drag on the line body = move existing selection.
             } else {
-                val b = element.bounds()
+                // Inflate by the chrome padding so the grab targets line up with
+                // the drawn box, which floats [paddingWorld] off the tight bounds.
+                val tight = element.bounds()
+                val b = Rect(
+                    left = tight.left - paddingWorld,
+                    top = tight.top - paddingWorld,
+                    right = tight.right + paddingWorld,
+                    bottom = tight.bottom + paddingWorld,
+                )
                 val rotHandle = rotationHandleWorld(b, element.rotation, rotationOffsetWorld)
                 if (distance(pointerWorld, rotHandle) <= handleHitWorld) {
                     return SelectionInteraction.Rotate(
@@ -1080,6 +1131,31 @@ private fun classifySelection(
     if (any != null) return SelectionInteraction.SelectAndMove
     // Empty space → marquee.
     return SelectionInteraction.Marquee(pointerWorld)
+}
+
+/**
+ * Outward direction (components in {-1, 0, 1}) a handle sits relative to the
+ * tight bounds. Multiplied by the chrome padding, this is how far the drawn
+ * handle floats off the true edge — subtract it from the resize pointer so a
+ * padded handle still maps back to the element's real edge instead of jumping.
+ */
+private fun ResizeHandle.outwardDir(): Offset = when (this) {
+    ResizeHandle.TopLeft -> Offset(-1f, -1f)
+    ResizeHandle.Top -> Offset(0f, -1f)
+    ResizeHandle.TopRight -> Offset(1f, -1f)
+    ResizeHandle.Right -> Offset(1f, 0f)
+    ResizeHandle.BottomRight -> Offset(1f, 1f)
+    ResizeHandle.Bottom -> Offset(0f, 1f)
+    ResizeHandle.BottomLeft -> Offset(-1f, 1f)
+    ResizeHandle.Left -> Offset(-1f, 0f)
+}
+
+/** Corners resize both axes at once; edge midpoints resize a single axis. */
+private fun ResizeHandle.isCorner(): Boolean = when (this) {
+    ResizeHandle.TopLeft, ResizeHandle.TopRight,
+    ResizeHandle.BottomRight, ResizeHandle.BottomLeft,
+    -> true
+    else -> false
 }
 
 private fun resizeHandlesLocal(bounds: Rect): List<Pair<ResizeHandle, Offset>> = listOf(
@@ -1116,12 +1192,43 @@ private fun rotationHandleWorld(
 
 // ==================== Selection chrome rendering ====================
 
-private val SelectionAccent = Color(0xFF2196F3)
-private val SelectionMarqueeFill = Color(0x222196F3)
+/**
+ * Visual configuration for the selection chrome — the accent-colored box and
+ * handles DrawBox paints around selected elements. All sizes are in [Dp] and
+ * stay a constant on-screen size regardless of zoom.
+ *
+ * @property padding Gap between an element's tight bounds and the drawn
+ *   selection box. Increase for more breathing room around the element,
+ *   decrease to hug it tightly.
+ * @property handleSize Diameter of the round resize / rotation handles.
+ * @property cornerRadius Corner radius of the selection box's rounded edges.
+ * @property strokeWidth Line thickness of the box and handle outlines.
+ * @property accent Accent color of the box, handles, and marquee.
+ */
+data class SelectionChromeStyle(
+    val padding: Dp = 6.dp,
+    val handleSize: Dp = 11.dp,
+    val cornerRadius: Dp = 8.dp,
+    val strokeWidth: Dp = 1.5.dp,
+    val accent: Color = Color(0xFF2196F3),
+) {
+    companion object {
+        val Default = SelectionChromeStyle()
+    }
+}
+
+/** Screen-space (px) resolution of a [SelectionChromeStyle], scaled per-frame. */
+private class SelectionChromeMetrics(
+    val handleSizePx: Float,
+    val paddingPx: Float,
+    val cornerRadiusPx: Float,
+    val strokeWidthPx: Float,
+    val accent: Color,
+)
 
 private fun DrawScope.drawSelectionChrome(
     state: State,
-    handleSizePx: Float,
+    metrics: SelectionChromeMetrics,
     rotationOffsetPx: Float,
     inverseScale: Float,
     hiddenElementIds: Set<String> = emptySet(),
@@ -1133,15 +1240,15 @@ private fun DrawScope.drawSelectionChrome(
         .forEach { el ->
             // LINE / ARROW get a minimal 3-dot chrome: start, end, and bend midpoint.
             if (el is Element.Shape && el.shapeType.isLineLike() && el.points.size >= 2) {
-                drawLineSelectionChrome(el, handleSizePx, inverseScale)
+                drawLineSelectionChrome(el, metrics, inverseScale)
                 return@forEach
             }
             val b = el.bounds()
             if (el.rotation == 0f) {
-                drawSelectionForElement(b, handleSizePx, rotationOffsetWorld, inverseScale)
+                drawSelectionForElement(b, metrics, rotationOffsetWorld, inverseScale)
             } else {
                 withTransform({ rotate(el.rotation, pivot = b.center) }) {
-                    drawSelectionForElement(b, handleSizePx, rotationOffsetWorld, inverseScale)
+                    drawSelectionForElement(b, metrics, rotationOffsetWorld, inverseScale)
                 }
             }
         }
@@ -1152,17 +1259,20 @@ private fun DrawScope.drawSelectionChrome(
             right = maxOf(rect.left, rect.right),
             bottom = maxOf(rect.top, rect.bottom),
         )
-        drawRect(
-            color = SelectionMarqueeFill,
+        val cornerWorld = metrics.cornerRadiusPx * inverseScale
+        drawRoundRect(
+            color = metrics.accent.copy(alpha = 0.13f),
             topLeft = r.topLeft,
             size = Size(r.width, r.height),
+            cornerRadius = CornerRadius(cornerWorld, cornerWorld),
         )
-        drawRect(
-            color = SelectionAccent,
+        drawRoundRect(
+            color = metrics.accent,
             topLeft = r.topLeft,
             size = Size(r.width, r.height),
+            cornerRadius = CornerRadius(cornerWorld, cornerWorld),
             style = Stroke(
-                width = 1.5f * inverseScale,
+                width = metrics.strokeWidthPx * inverseScale,
                 pathEffect = PathEffect.dashPathEffect(
                     floatArrayOf(8f * inverseScale, 6f * inverseScale),
                 ),
@@ -1173,74 +1283,113 @@ private fun DrawScope.drawSelectionChrome(
 
 private fun DrawScope.drawLineSelectionChrome(
     shape: Element.Shape,
-    handleSizePx: Float,
+    metrics: SelectionChromeMetrics,
     inverseScale: Float,
 ) {
     val start = shape.points[0]
     val end = shape.points.last()
     val mid = shape.bezierMidpoint()
-    val dotRadius = handleSizePx * 0.55f * inverseScale
-    val strokeWorld = 1.5f * inverseScale
+    val dotRadius = metrics.handleSizePx * 0.5f * inverseScale
     listOf(start, end, mid).forEach { p ->
-        drawCircle(color = Color.White, radius = dotRadius, center = p)
-        drawCircle(
-            color = SelectionAccent,
-            radius = dotRadius,
-            center = p,
-            style = Stroke(strokeWorld),
-        )
+        drawSquareHandle(p, dotRadius, metrics.strokeWidthPx * inverseScale, metrics.accent)
     }
 }
 
 private fun DrawScope.drawSelectionForElement(
     bounds: Rect,
-    handleSizePx: Float,
+    metrics: SelectionChromeMetrics,
     rotationOffsetWorld: Float,
     inverseScale: Float,
 ) {
-    // Bounding box.
-    drawRect(
-        color = SelectionAccent,
-        topLeft = bounds.topLeft,
-        size = Size(bounds.width, bounds.height),
-        style = Stroke(width = 1.5f * inverseScale),
+    // Inflate the tight bounds by the configured padding so the box floats a
+    // constant on-screen gap off the element rather than hugging it.
+    val pad = metrics.paddingPx * inverseScale
+    val box = Rect(
+        left = bounds.left - pad,
+        top = bounds.top - pad,
+        right = bounds.right + pad,
+        bottom = bounds.bottom + pad,
     )
-    // Rotation handle: short line up + filled circle.
-    val rotHandle = rotationHandleLocal(bounds, rotationOffsetWorld)
-    val handleWorld = handleSizePx * inverseScale
-    val strokeWorld = 1.5f * inverseScale
-    drawLine(
-        color = SelectionAccent,
-        start = Offset(bounds.center.x, bounds.top),
-        end = rotHandle,
-        strokeWidth = strokeWorld,
-    )
-    drawCircle(
-        color = Color.White,
-        radius = handleWorld * 0.6f,
-        center = rotHandle,
-    )
-    drawCircle(
-        color = SelectionAccent,
-        radius = handleWorld * 0.6f,
-        center = rotHandle,
-        style = Stroke(strokeWorld),
-    )
-    // Resize handles.
-    val half = handleWorld * 0.5f
-    resizeHandlesLocal(bounds).forEach { (_, p) ->
-        drawRect(
-            color = Color.White,
-            topLeft = Offset(p.x - half, p.y - half),
-            size = Size(handleWorld, handleWorld),
+    val strokeWorld = metrics.strokeWidthPx * inverseScale
+    val cornerWorld = metrics.cornerRadiusPx * inverseScale
+    val handleRadius = metrics.handleSizePx * 0.5f * inverseScale
+    val edgeRadius = handleRadius * 0.8f
+    val rotHandle = rotationHandleLocal(box, rotationOffsetWorld)
+
+    // Every handle as (center, radius): full-size rounded squares on the corners
+    // (both-axis resize), slightly smaller on the edge midpoints (single-axis),
+    // plus the rotation handle floated above the box.
+    val handles = buildList {
+        add(rotHandle to handleRadius)
+        resizeHandlesLocal(box).forEach { (handle, p) ->
+            add(p to if (handle.isCorner()) handleRadius else edgeRadius)
+        }
+    }
+
+    // Mask out the handle squares so the box outline and rotation connector are
+    // never drawn inside a hollow handle. EvenOdd turns the inner rects into holes.
+    val mask = Path().apply {
+        addRect(
+            Rect(
+                left = box.left - handleRadius,
+                top = rotHandle.y - handleRadius,
+                right = box.right + handleRadius,
+                bottom = box.bottom + handleRadius,
+            ),
         )
-        drawRect(
-            color = SelectionAccent,
-            topLeft = Offset(p.x - half, p.y - half),
-            size = Size(handleWorld, handleWorld),
-            style = Stroke(strokeWorld),
+        handles.forEach { (c, r) ->
+            addRoundRect(
+                RoundRect(
+                    rect = Rect(c.x - r, c.y - r, c.x + r, c.y + r),
+                    cornerRadius = CornerRadius(r * 0.35f, r * 0.35f),
+                ),
+            )
+        }
+        fillType = PathFillType.EvenOdd
+    }
+    clipPath(mask) {
+        // Rounded bounding box.
+        drawRoundRect(
+            color = metrics.accent,
+            topLeft = box.topLeft,
+            size = Size(box.width, box.height),
+            cornerRadius = CornerRadius(cornerWorld, cornerWorld),
+            style = Stroke(width = strokeWorld),
+        )
+        // Rotation connector: short line from the box up to the rotation handle.
+        drawLine(
+            color = metrics.accent,
+            start = Offset(box.center.x, box.top),
+            end = rotHandle,
+            strokeWidth = strokeWorld,
         )
     }
+    // Handles drawn on top, unclipped, so their outlines stay whole.
+    handles.forEach { (c, r) -> drawSquareHandle(c, r, strokeWorld, metrics.accent) }
+}
+
+/**
+ * A single handle: a hollow rounded-corner square outlined in the accent color.
+ * Used for every grip — corners, edge midpoints, the rotation handle, and
+ * line/arrow dots — for one consistent look. Corners are rounded to harmonize
+ * with the selection box; no fill, so the element beneath shows through.
+ */
+private fun DrawScope.drawSquareHandle(
+    center: Offset,
+    radius: Float,
+    strokeWidth: Float,
+    accent: Color,
+) {
+    val topLeft = Offset(center.x - radius, center.y - radius)
+    val size = Size(radius * 2f, radius * 2f)
+    val corner = CornerRadius(radius * 0.35f, radius * 0.35f)
+    drawRoundRect(
+        color = accent,
+        topLeft = topLeft,
+        size = size,
+        cornerRadius = corner,
+        style = Stroke(strokeWidth),
+    )
 }
 
 /**

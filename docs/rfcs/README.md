@@ -36,4 +36,6 @@ If you are unsure, open a GitHub Discussion or issue first — a maintainer will
 
 ## Index
 
-_(No RFCs have been accepted yet. The first candidates on the roadmap are the pluggable-tool API and the `DrawBoxAi` module — see [ROADMAP.md](../../ROADMAP.md).)_
+- [0001 — Text elements and in-place editing](0001-text-elements.md) — Accepted (retroactive). Tracks #74 / #83.
+
+_Next candidates on the roadmap: the pluggable-tool API and the `DrawBoxAi` module — see [ROADMAP.md](../../ROADMAP.md)._

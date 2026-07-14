@@ -20,6 +20,15 @@ data class ContextBarState(
     val textAlignment: TextAlignment = TextAlignment.LEFT,
     val fontFamilyKey: String = "sans",
     val fontFamilyKeys: Set<String> = setOf("sans", "serif", "mono"),
+    /**
+     * "Mixed value" flags for a multi-element text selection whose members
+     * disagree on a property. When set, the corresponding chip shows the
+     * first element's value dimmed and highlights no preset — picking one
+     * applies it to the whole selection. Single selections leave these false.
+     */
+    val fontSizeMixed: Boolean = false,
+    val textAlignmentMixed: Boolean = false,
+    val fontFamilyMixed: Boolean = false,
 )
 
 /**
