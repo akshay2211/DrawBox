@@ -6,10 +6,12 @@
 # kind of version bump if not passed on the command line; the next version is
 # computed from the module's current VERSION_NAME.
 #
-# Usage: ./release.sh [module] [bump]
-#   module : drawbox | drawbox-ui                         (prompted if omitted)
-#   bump   : major | minor | patch | alpha | beta | rc |  (prompted if omitted)
-#            stable | <explicit-version e.g. 2.2.0>
+# Usage: ./release.sh [--dry-run] [module] [bump]
+#   --dry-run, -n : print the full release plan and exit — touches no files,
+#                   makes no commit/tag/push. Skips confirmation prompts.
+#   module        : drawbox | drawbox-ui                  (prompted if omitted)
+#   bump          : major | minor | patch | alpha | beta | (prompted if omitted)
+#                   rc | stable | <explicit-version e.g. 2.2.0>
 #
 # Bump semantics (current → next):
 #   major   2.1.3        → 3.0.0
@@ -25,11 +27,13 @@
 #   ./release.sh drawbox minor
 #   ./release.sh drawbox-ui alpha
 #   ./release.sh drawbox 2.2.0       # explicit version still accepted
+#   ./release.sh --dry-run drawbox-ui alpha   # preview only, no changes
 
 set -e
 
 # Restore the cursor if the script exits mid-prompt (Ctrl-C, error, etc.).
-trap 'tput cnorm 2>/dev/null' EXIT
+# Only on a TTY — matches ask_index, which only hides the cursor interactively.
+trap '[ -t 1 ] && tput cnorm 2>/dev/null' EXIT
 
 # ── Interactive single-select prompt (Claude-style arrow-key menu) ──────────
 # Usage: ask_index "Question" RESULT_VAR "label 0" "label 1" ...
@@ -105,6 +109,19 @@ ask_yes_no() {
     ask_index "$1" _idx "Yes" "No"
     [ "$_idx" -eq 0 ] && printf -v "$__yn" 'y' || printf -v "$__yn" 'n'
 }
+
+# ── Argument parsing ────────────────────────────────────────────────────────
+# Pull out the --dry-run flag from anywhere in the args; the rest are treated
+# as positional [module] [bump].
+DRY_RUN=false
+ARGS=()
+for arg in "$@"; do
+    case "$arg" in
+        --dry-run|-n) DRY_RUN=true ;;
+        *) ARGS+=("$arg") ;;
+    esac
+done
+set -- "${ARGS[@]}"
 
 # ── Module selection ────────────────────────────────────────────────────────
 MODULE=$1
@@ -244,6 +261,29 @@ esac
 if [ "$VERSION" = "$CURRENT_VERSION" ]; then
     echo "❌ New version ($VERSION) matches the current version"
     exit 1
+fi
+
+# ── Dry run ─────────────────────────────────────────────────────────────────
+# Print the whole plan and exit — no sed, no gradle, no git, no gh.
+if [ "$DRY_RUN" = true ]; then
+    echo ""
+    echo "🌵 DRY RUN — nothing will be changed, committed, tagged, or pushed"
+    echo ""
+    echo "   Module          : $MODULE ($ARTIFACT)"
+    echo "   Version          : $CURRENT_VERSION → $VERSION"
+    echo "   Files to change  :"
+    echo "     - $PROPS_FILE  (VERSION_NAME=$VERSION)"
+    if [ "$UPDATE_DOCS" = true ]; then
+        echo "     - README.md, docs/, gradle/libs.versions.toml  ($ARTIFACT coords)"
+    fi
+    echo "   Release branch  : ${BRANCH_PREFIX}${VERSION}"
+    echo "   Tag             : ${TAG_PREFIX}${VERSION}"
+    echo "   Pull request    : ${BRANCH_PREFIX}${VERSION} → main"
+    echo "                     (title: \"chore: release $MODULE $VERSION\")"
+    echo "   Publish command : ./gradlew $GRADLE_PROJECT:publishAndReleaseToMavenCentral"
+    echo ""
+    echo "Re-run without --dry-run to execute."
+    exit 0
 fi
 
 echo ""
