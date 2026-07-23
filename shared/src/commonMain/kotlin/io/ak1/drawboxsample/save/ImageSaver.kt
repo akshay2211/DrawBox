@@ -2,16 +2,18 @@ package io.ak1.drawboxsample.save
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.ImageBitmap
 
 /**
  * Interface for saving drawing exports in various formats.
  */
 interface ImageSaver {
     /**
-     * Save a bitmap as PNG image
+     * Save already-encoded PNG bytes to a file the user can keep. The bytes
+     * come straight from [io.ak1.drawbox.presentation.viewmodel.DrawBoxController.exportPng]
+     * (via [io.ak1.drawbox.domain.model.Event.PngExported]), so no re-encoding
+     * is needed here.
      */
-    fun savePng(bitmap: ImageBitmap)
+    fun savePng(bytes: ByteArray)
 
     /**
      * Save SVG content as SVG file

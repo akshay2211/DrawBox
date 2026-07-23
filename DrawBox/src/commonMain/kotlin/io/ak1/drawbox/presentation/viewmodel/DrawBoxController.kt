@@ -10,6 +10,7 @@ import io.ak1.drawbox.domain.model.State
 import io.ak1.drawbox.domain.model.Mode
 import io.ak1.drawbox.domain.usecase.UseCase
 import io.ak1.drawbox.domain.usecase.SvgExporter
+import io.ak1.drawbox.domain.usecase.PngExporter
 import io.ak1.drawbox.presentation.reducer.Reducer
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,6 +23,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.text.TextMeasurer
 import io.ak1.drawbox.domain.model.BackgroundPattern
 import io.ak1.drawbox.domain.model.PayLoad
 import io.ak1.drawbox.domain.model.DrawingSerializer
@@ -170,7 +172,6 @@ class DrawBoxController(
         _intents.tryEmit(intent)
         // Handle side effects
         when (intent) {
-            is Intent.SaveBitmap -> emitSaveEvent(intent.bitmap,intent.throwable)
             is Intent.LoadDrawing -> emitLoadEvent()
             // Double-tap in SELECT mode: open the editor for the hit text.
             is Intent.RequestTextEditAt ->
@@ -194,11 +195,6 @@ class DrawBoxController(
     private fun updateHistoryState() {
         _canUndo.value = _state.value.history.isNotEmpty()
         _canRedo.value = _state.value.future.isNotEmpty()
-    }
-
-    private fun emitSaveEvent(bitmap: ImageBitmap?, throwable: Throwable?) {
-        // Emit event synchronously
-        _events.tryEmit(Event.PngSaved(bitmap, throwable))
     }
 
     private fun emitLoadEvent() {
@@ -426,9 +422,6 @@ class DrawBoxController(
 
     // ==================== Persistence Methods ====================
 
-    /** Capture and save the current drawing as a bitmap */
-    fun saveBitmap() = state.value.invokeBitmap.invoke()
-
     /**
      * Export the current drawing as a JSON string.
      *
@@ -456,6 +449,39 @@ class DrawBoxController(
             elements = _state.value.elements
         )
         _events.tryEmit(Event.SvgExported(svgContent))
+    }
+
+    /**
+     * Export the current drawing as a rasterized PNG.
+     *
+     * Emits [Event.PngExported] with the encoded bytes so the platform layer can
+     * persist or share the file, or [Event.Error] when the scene is empty or
+     * encoding fails.
+     *
+     * @param scale device-pixel multiplier over world units (`2f` for a crisp
+     *   HiDPI export), automatically clamped so neither side exceeds the
+     *   exporter's pixel cap.
+     * @param background fill behind the scene; `null` keeps it transparent.
+     * @param textMeasurer supply one from a composable (`rememberTextMeasurer()`)
+     *   for real text layout; when null, text elements render as placeholder
+     *   boxes. See [PngExporter].
+     */
+    fun exportPng(
+        scale: Float = 1f,
+        background: Color? = null,
+        textMeasurer: TextMeasurer? = null,
+    ) {
+        val png = PngExporter.exportToPng(
+            elements = _state.value.elements,
+            scale = scale,
+            background = background,
+            textMeasurer = textMeasurer,
+        )
+        if (png != null) {
+            _events.tryEmit(Event.PngExported(png))
+        } else {
+            _events.tryEmit(Event.Error("PNG export produced no output (empty scene or encode failure)"))
+        }
     }
 
     /**

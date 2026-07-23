@@ -1,14 +1,19 @@
 package io.ak1.drawbox.domain.model
 
-import androidx.compose.ui.graphics.ImageBitmap
-
 sealed class Event {
     data class ElementAdded(val element: Element) : Event()
     data class ElementUpdated(val element: Element) : Event()
     data class ElementDeleted(val elementId: String) : Event()
     data class HistoryChanged(val canUndo: Boolean, val canRedo: Boolean) : Event()
-    data class PngSaved(val bitmap: ImageBitmap?, val throwable: Throwable?) : Event()
     data class SvgExported(val svg: String) : Event()
+    data class PngExported(val bytes: ByteArray) : Event() {
+        // ByteArray uses identity equality by default; compare by content so
+        // two exports of the same payload are treated as equal.
+        override fun equals(other: Any?): Boolean =
+            this === other || (other is PngExported && bytes.contentEquals(other.bytes))
+
+        override fun hashCode(): Int = bytes.contentHashCode()
+    }
     data class JsonExported(val json: String) : Event()
     data class DrawingLoaded(val state: State) : Event()
     data class Error(val message: String, val throwable: Throwable? = null) : Event()

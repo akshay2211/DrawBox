@@ -8,6 +8,23 @@ The `2.0.x` line is the Kotlin Multiplatform rewrite. The `1.x` line was an Andr
 
 ## [Unreleased]
 
+### Added
+- **Headless PNG export (`DrawBoxController.exportPng`).** Renders the entire
+  scene off-screen from `state.elements` — the raster sibling of `exportSvg` —
+  and emits the encoded bytes via the new `Event.PngExported(bytes)`. Supports an
+  explicit `scale` (auto-clamped to a pixel cap), a nullable `background`
+  (transparent by default), and an optional `TextMeasurer` for real text glyphs.
+  Unlike the removed screen-capture route it needs no composed canvas and is not
+  limited to the current viewport.
+
+### Removed
+- **BREAKING: on-screen bitmap capture.** `DrawBoxController.saveBitmap()`,
+  `Event.PngSaved`, and `Intent.SaveBitmap` are gone; the internal
+  `capturePending`/`captureLayer` machinery in `DrawBox` was removed with them.
+  Migrate to `exportPng()` / `Event.PngExported` — see
+  [PNG Export migration notes](DrawBox/MIGRATION_GUIDE.md#png-export-savebitmap--exportpng-breaking-in-v30).
+  This warrants a **major** (`3.0.0`) release.
+
 ## [2.1.0] — 2026-07-14
 
 First stable release of the `2.1` line, promoting the two `2.1.0-alpha`

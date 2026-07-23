@@ -167,7 +167,7 @@ controller.reset()                    // Clear canvas
 controller.exportPath()               // Export as JSON
 controller.exportSvg()                // Export as SVG
 controller.importPath(jsonString)     // Import from JSON
-controller.saveBitmap()               // Save as bitmap
+controller.exportPng(textMeasurer = textMeasurer) // Export as PNG (headless raster)
 
 // State Monitoring
 controller.canUndo.collect { ... }    // Monitor undo availability
@@ -175,7 +175,7 @@ controller.canRedo.collect { ... }    // Monitor redo availability
 controller.events.collect { event ->  // Listen to events
     when (event) {
         is Event.SvgExported -> saveFile(event.svg)
-        is Event.PngSaved -> processImage(event.bitmap)
+        is Event.PngExported -> saveFile(event.bytes)
         is Event.Error -> showError(event.message)
         else -> {}
     }
