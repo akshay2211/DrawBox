@@ -14,10 +14,11 @@ val svg = controller.exportSvg()
 
 ### PNG Export
 
-Export as image:
+Export as image (headless raster; emits `Event.PngExported`):
 
 ```kotlin
-controller.saveBitmap()
+val textMeasurer = rememberTextMeasurer()
+controller.exportPng(textMeasurer = textMeasurer)
 ```
 
 ## Loading Previous Drawings
@@ -36,7 +37,7 @@ controller.events.collect { event ->
     when (event) {
         is Event.ElementAdded -> {}
         is Event.SvgExported -> {}
-        is Event.PngSaved -> {}
+        is Event.PngExported -> {}
         else -> {}
     }
 }

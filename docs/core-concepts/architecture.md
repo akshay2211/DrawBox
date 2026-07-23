@@ -272,8 +272,8 @@ sealed class Event {
     data class ElementUpdated(val element: Element) : Event()
     data class ElementDeleted(val elementId: String) : Event()
     data class HistoryChanged(val canUndo: Boolean, val canRedo: Boolean) : Event()
-    data class PngSaved(val bitmap: ImageBitmap?, val throwable: Throwable?) : Event()
     data class SvgExported(val svg: String) : Event()
+    data class PngExported(val bytes: ByteArray) : Event()
     data class DrawingLoaded(val state: State) : Event()
     data class Error(val message: String, val throwable: Throwable? = null) : Event()
 }
@@ -285,7 +285,7 @@ Listen to events:
 controller.events.collect { event ->
     when (event) {
         is Event.SvgExported -> saveFile(event.svg)
-        is Event.PngSaved -> processImage(event.bitmap)
+        is Event.PngExported -> saveFile(event.bytes)
         is Event.Error -> showErrorDialog(event.message)
         else -> {}
     }

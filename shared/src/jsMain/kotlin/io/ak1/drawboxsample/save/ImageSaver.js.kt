@@ -3,10 +3,7 @@ package io.ak1.drawboxsample.save
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.asSkiaBitmap
 import kotlinx.browser.document
-import org.jetbrains.skia.EncodedImageFormat
 import org.jetbrains.skia.Image
 import org.khronos.webgl.ArrayBuffer
 import org.khronos.webgl.Uint8Array
@@ -32,9 +29,7 @@ actual fun rememberImageSaver(): ImageSaver = remember { JsImageSaver() }
  * (`toJsString`, `JsArray`) aren't needed here.
  */
 private class JsImageSaver : ImageSaver {
-    override fun savePng(bitmap: ImageBitmap) {
-        val bytes = Image.makeFromBitmap(bitmap.asSkiaBitmap())
-            .encodeToData(EncodedImageFormat.PNG)?.bytes ?: return
+    override fun savePng(bytes: ByteArray) {
         val arr = Uint8Array(bytes.size)
         for (i in bytes.indices) arr[i] = bytes[i]
         downloadBlob(
