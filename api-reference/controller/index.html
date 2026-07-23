@@ -114,18 +114,21 @@
 <span class=w>        </span><span class=n>saveToFile</span><span class=p>(</span><span class=n>svg</span><span class=p>)</span>
 <span class=w>    </span><span class=p>}</span>
 <span class=p>}</span>
-</code></pre></div> <h3 id=export-as-png>Export as PNG<a class=headerlink href=#export-as-png title="Permanent link">&para;</a></h3> <p>Export drawings as raster image:</p> <div class=highlight><pre><span></span><code><span class=c1>// Save as bitmap</span>
-<span class=n>controller</span><span class=p>.</span><span class=na>saveBitmap</span><span class=p>()</span>
+</code></pre></div> <h3 id=export-as-png>Export as PNG<a class=headerlink href=#export-as-png title="Permanent link">&para;</a></h3> <p>Export the whole drawing as a raster image. <code>exportPng</code> renders the scene headlessly (not a screenshot of the current viewport) and emits the encoded PNG bytes via <code>Event.PngExported</code>; an empty scene or encode failure emits <code>Event.Error</code> instead.</p> <div class=highlight><pre><span></span><code><span class=kd>val</span><span class=w> </span><span class=nv>textMeasurer</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>rememberTextMeasurer</span><span class=p>()</span>
 
-<span class=c1>// Listen for PNG saved event</span>
+<span class=c1>// Trigger the export</span>
+<span class=n>controller</span><span class=p>.</span><span class=na>exportPng</span><span class=p>(</span>
+<span class=w>    </span><span class=n>scale</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=m>2f</span><span class=p>,</span><span class=w>                   </span><span class=c1>// HiDPI multiplier, clamped to the pixel cap</span>
+<span class=w>    </span><span class=n>background</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=kc>null</span><span class=p>,</span><span class=w>            </span><span class=c1>// null → transparent backdrop</span>
+<span class=w>    </span><span class=n>textMeasurer</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>textMeasurer</span><span class=p>,</span><span class=w> </span><span class=c1>// real text layout; omit → placeholder boxes</span>
+<span class=p>)</span>
+
+<span class=c1>// Listen for the encoded bytes</span>
 <span class=n>controller</span><span class=p>.</span><span class=na>events</span><span class=p>.</span><span class=na>collect</span><span class=w> </span><span class=p>{</span><span class=w> </span><span class=n>event</span><span class=w> </span><span class=o>-&gt;</span>
-<span class=w>    </span><span class=k>if</span><span class=w> </span><span class=p>(</span><span class=n>event</span><span class=w> </span><span class=k>is</span><span class=w> </span><span class=n>Event</span><span class=p>.</span><span class=na>PngSaved</span><span class=p>)</span><span class=w> </span><span class=p>{</span>
-<span class=w>        </span><span class=kd>val</span><span class=w> </span><span class=nv>bitmap</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>event</span><span class=p>.</span><span class=na>bitmap</span>
-<span class=w>        </span><span class=k>if</span><span class=w> </span><span class=p>(</span><span class=n>bitmap</span><span class=w> </span><span class=o>!=</span><span class=w> </span><span class=kc>null</span><span class=p>)</span><span class=w> </span><span class=p>{</span>
-<span class=w>            </span><span class=n>saveBitmapToFile</span><span class=p>(</span><span class=n>bitmap</span><span class=p>)</span>
-<span class=w>        </span><span class=p>}</span><span class=w> </span><span class=k>else</span><span class=w> </span><span class=k>if</span><span class=w> </span><span class=p>(</span><span class=n>event</span><span class=p>.</span><span class=na>throwable</span><span class=w> </span><span class=o>!=</span><span class=w> </span><span class=kc>null</span><span class=p>)</span><span class=w> </span><span class=p>{</span>
-<span class=w>            </span><span class=n>handleError</span><span class=p>(</span><span class=n>event</span><span class=p>.</span><span class=na>throwable</span><span class=p>)</span>
-<span class=w>        </span><span class=p>}</span>
+<span class=w>    </span><span class=k>when</span><span class=w> </span><span class=p>(</span><span class=n>event</span><span class=p>)</span><span class=w> </span><span class=p>{</span>
+<span class=w>        </span><span class=k>is</span><span class=w> </span><span class=n>Event</span><span class=p>.</span><span class=na>PngExported</span><span class=w> </span><span class=o>-&gt;</span><span class=w> </span><span class=n>saveBytesToFile</span><span class=p>(</span><span class=n>event</span><span class=p>.</span><span class=na>bytes</span><span class=p>)</span>
+<span class=w>        </span><span class=k>is</span><span class=w> </span><span class=n>Event</span><span class=p>.</span><span class=na>Error</span><span class=w> </span><span class=o>-&gt;</span><span class=w> </span><span class=n>handleError</span><span class=p>(</span><span class=n>event</span><span class=p>.</span><span class=na>message</span><span class=p>)</span>
+<span class=w>        </span><span class=k>else</span><span class=w> </span><span class=o>-&gt;</span><span class=w> </span><span class=p>{}</span>
 <span class=w>    </span><span class=p>}</span>
 <span class=p>}</span>
 </code></pre></div> <h3 id=export-as-json>Export as JSON<a class=headerlink href=#export-as-json title="Permanent link">&para;</a></h3> <p>Save/load drawing state:</p> <div class=highlight><pre><span></span><code><span class=c1>// Export current state as JSON</span>
@@ -157,12 +160,8 @@
 <span class=w>            </span><span class=k>is</span><span class=w> </span><span class=n>Event</span><span class=p>.</span><span class=na>SvgExported</span><span class=w> </span><span class=o>-&gt;</span><span class=w> </span><span class=p>{</span>
 <span class=w>                </span><span class=n>println</span><span class=p>(</span><span class=s>&quot;SVG exported: </span><span class=si>${</span><span class=n>event</span><span class=p>.</span><span class=na>svg</span><span class=p>.</span><span class=na>length</span><span class=si>}</span><span class=s> bytes&quot;</span><span class=p>)</span>
 <span class=w>            </span><span class=p>}</span>
-<span class=w>            </span><span class=k>is</span><span class=w> </span><span class=n>Event</span><span class=p>.</span><span class=na>PngSaved</span><span class=w> </span><span class=o>-&gt;</span><span class=w> </span><span class=p>{</span>
-<span class=w>                </span><span class=k>if</span><span class=w> </span><span class=p>(</span><span class=n>event</span><span class=p>.</span><span class=na>bitmap</span><span class=w> </span><span class=o>!=</span><span class=w> </span><span class=kc>null</span><span class=p>)</span><span class=w> </span><span class=p>{</span>
-<span class=w>                    </span><span class=n>println</span><span class=p>(</span><span class=s>&quot;PNG saved successfully&quot;</span><span class=p>)</span>
-<span class=w>                </span><span class=p>}</span><span class=w> </span><span class=k>else</span><span class=w> </span><span class=p>{</span>
-<span class=w>                    </span><span class=n>println</span><span class=p>(</span><span class=s>&quot;Error saving PNG: </span><span class=si>${</span><span class=n>event</span><span class=p>.</span><span class=na>throwable</span><span class=o>?.</span><span class=na>message</span><span class=si>}</span><span class=s>&quot;</span><span class=p>)</span>
-<span class=w>                </span><span class=p>}</span>
+<span class=w>            </span><span class=k>is</span><span class=w> </span><span class=n>Event</span><span class=p>.</span><span class=na>PngExported</span><span class=w> </span><span class=o>-&gt;</span><span class=w> </span><span class=p>{</span>
+<span class=w>                </span><span class=n>println</span><span class=p>(</span><span class=s>&quot;PNG exported: </span><span class=si>${</span><span class=n>event</span><span class=p>.</span><span class=na>bytes</span><span class=p>.</span><span class=na>size</span><span class=si>}</span><span class=s> bytes&quot;</span><span class=p>)</span>
 <span class=w>            </span><span class=p>}</span>
 <span class=w>            </span><span class=k>is</span><span class=w> </span><span class=n>Event</span><span class=p>.</span><span class=na>DrawingLoaded</span><span class=w> </span><span class=o>-&gt;</span><span class=w> </span><span class=p>{</span>
 <span class=w>                </span><span class=n>println</span><span class=p>(</span><span class=s>&quot;Drawing loaded&quot;</span><span class=p>)</span>
@@ -182,6 +181,7 @@
 
 <span class=w>    </span><span class=kd>var</span><span class=w> </span><span class=nv>showColorPicker</span><span class=w> </span><span class=k>by</span><span class=w> </span><span class=n>remember</span><span class=w> </span><span class=p>{</span><span class=w> </span><span class=n>mutableStateOf</span><span class=p>(</span><span class=kc>false</span><span class=p>)</span><span class=w> </span><span class=p>}</span>
 <span class=w>    </span><span class=kd>var</span><span class=w> </span><span class=nv>selectedColor</span><span class=w> </span><span class=k>by</span><span class=w> </span><span class=n>remember</span><span class=w> </span><span class=p>{</span><span class=w> </span><span class=n>mutableStateOf</span><span class=p>(</span><span class=n>Color</span><span class=p>.</span><span class=na>Red</span><span class=p>)</span><span class=w> </span><span class=p>}</span>
+<span class=w>    </span><span class=kd>val</span><span class=w> </span><span class=nv>textMeasurer</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>rememberTextMeasurer</span><span class=p>()</span>
 
 <span class=w>    </span><span class=c1>// Listen to events</span>
 <span class=w>    </span><span class=n>LaunchedEffect</span><span class=p>(</span><span class=kt>Unit</span><span class=p>)</span><span class=w> </span><span class=p>{</span>
@@ -190,10 +190,8 @@
 <span class=w>                </span><span class=k>is</span><span class=w> </span><span class=n>Event</span><span class=p>.</span><span class=na>SvgExported</span><span class=w> </span><span class=o>-&gt;</span><span class=w> </span><span class=p>{</span>
 <span class=w>                    </span><span class=n>saveFile</span><span class=p>(</span><span class=s>&quot;drawing.svg&quot;</span><span class=p>,</span><span class=w> </span><span class=n>event</span><span class=p>.</span><span class=na>svg</span><span class=p>)</span>
 <span class=w>                </span><span class=p>}</span>
-<span class=w>                </span><span class=k>is</span><span class=w> </span><span class=n>Event</span><span class=p>.</span><span class=na>PngSaved</span><span class=w> </span><span class=o>-&gt;</span><span class=w> </span><span class=p>{</span>
-<span class=w>                    </span><span class=k>if</span><span class=w> </span><span class=p>(</span><span class=n>event</span><span class=p>.</span><span class=na>bitmap</span><span class=w> </span><span class=o>!=</span><span class=w> </span><span class=kc>null</span><span class=p>)</span><span class=w> </span><span class=p>{</span>
-<span class=w>                        </span><span class=n>saveBitmap</span><span class=p>(</span><span class=n>event</span><span class=p>.</span><span class=na>bitmap</span><span class=p>)</span>
-<span class=w>                    </span><span class=p>}</span>
+<span class=w>                </span><span class=k>is</span><span class=w> </span><span class=n>Event</span><span class=p>.</span><span class=na>PngExported</span><span class=w> </span><span class=o>-&gt;</span><span class=w> </span><span class=p>{</span>
+<span class=w>                    </span><span class=n>saveBytes</span><span class=p>(</span><span class=s>&quot;drawing.png&quot;</span><span class=p>,</span><span class=w> </span><span class=n>event</span><span class=p>.</span><span class=na>bytes</span><span class=p>)</span>
 <span class=w>                </span><span class=p>}</span>
 <span class=w>                </span><span class=k>is</span><span class=w> </span><span class=n>Event</span><span class=p>.</span><span class=na>Error</span><span class=w> </span><span class=o>-&gt;</span><span class=w> </span><span class=p>{</span>
 <span class=w>                    </span><span class=n>showError</span><span class=p>(</span><span class=n>event</span><span class=p>.</span><span class=na>message</span><span class=p>)</span>
@@ -262,7 +260,7 @@
 <span class=w>                </span><span class=n>Text</span><span class=p>(</span><span class=s>&quot;SVG&quot;</span><span class=p>)</span>
 <span class=w>            </span><span class=p>}</span>
 
-<span class=w>            </span><span class=n>IconButton</span><span class=p>(</span><span class=n>onClick</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=p>{</span><span class=w> </span><span class=n>controller</span><span class=p>.</span><span class=na>saveBitmap</span><span class=p>()</span><span class=w> </span><span class=p>})</span><span class=w> </span><span class=p>{</span>
+<span class=w>            </span><span class=n>IconButton</span><span class=p>(</span><span class=n>onClick</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=p>{</span><span class=w> </span><span class=n>controller</span><span class=p>.</span><span class=na>exportPng</span><span class=p>(</span><span class=n>textMeasurer</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>textMeasurer</span><span class=p>)</span><span class=w> </span><span class=p>})</span><span class=w> </span><span class=p>{</span>
 <span class=w>                </span><span class=n>Text</span><span class=p>(</span><span class=s>&quot;PNG&quot;</span><span class=p>)</span>
 <span class=w>            </span><span class=p>}</span>
 
