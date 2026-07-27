@@ -4,10 +4,10 @@ on:
   pull_request:
     branches: [main]
     # Skip CI when a PR only touches documentation / media / repo metadata.
-    # Spotless, JVM tests, WASM compile, and iOS compile all only care about
-    # actual source code and build configuration. paths-ignore is matched
-    # against the entire PR diff — a PR that edits README AND a .kt file
-    # still runs CI, because the .kt file is not in this list.
+    # Spotless and the per-platform test jobs all only care about actual source
+    # code and build configuration. paths-ignore is matched against the entire
+    # PR diff — a PR that edits README AND a .kt file still runs CI, because the
+    # .kt file is not in this list.
     paths-ignore:
       - '**/*.md'
       - 'docs/**'
@@ -21,8 +21,12 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  validate:
-    name: Validate (JVM, Lint, WASM)
+  # Lint + JVM/JS/WASM tests. Every target below runs the shared commonTest
+  # suite (which includes the end-to-end "user can draw a stroke" tests), so a
+  # green run proves drawing actually works on that platform — not just that it
+  # compiles.
+  test:
+    name: Test (JVM, JS, WASM) + Lint
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -32,14 +36,30 @@ jobs:
           distribution: temurin
           java-version: 21
 
+      # JS and WASM browser tests run under Karma against headless Chrome, so a
+      # real browser must be on PATH for the runner to launch it. Export its
+      # path as CHROME_BIN, which karma-chrome-launcher uses to locate Chrome.
+      - name: Setup Chrome
+        id: setup-chrome
+        uses: browser-actions/setup-chrome@v1
+
+      - name: Expose Chrome to Karma
+        run: echo "CHROME_BIN=${{ steps.setup-chrome.outputs.chrome-path }}" >> "$GITHUB_ENV"
+
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v6
 
       - name: Spotless check
-        run: ./gradlew :DrawBox:spotlessCheck
+        run: ./gradlew :DrawBox:spotlessCheck :drawbox-ui:spotlessCheck
 
       - name: JVM tests
-        run: ./gradlew :DrawBox:jvmTest
+        run: ./gradlew :DrawBox:jvmTest :drawbox-ui:jvmTest
+
+      - name: JS (browser) tests
+        run: ./gradlew :DrawBox:jsTest :drawbox-ui:jsTest
+
+      - name: WASM (browser) tests
+        run: ./gradlew :DrawBox:wasmJsTest :drawbox-ui:wasmJsTest
 
       - name: WASM sample build
         run: ./gradlew :webApp:wasmJsBrowserDistribution
@@ -48,12 +68,16 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v7
         with:
-          name: jvm-test-reports
-          path: DrawBox/build/reports/tests/jvmTest
+          name: multiplatform-test-reports
+          path: |
+            DrawBox/build/reports/tests
+            drawbox-ui/build/reports/tests
           if-no-files-found: ignore
 
-  ios-compile:
-    name: iOS compile check
+  # iOS runs the same commonTest suite on the Kotlin/Native simulator target,
+  # so drawing is verified on Apple platforms too — not just compiled.
+  ios-test:
+    name: iOS test (simulator)
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v7
@@ -66,5 +90,15 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v6
 
-      - name: Compile iosSimulatorArm64
-        run: ./gradlew :DrawBox:compileKotlinIosSimulatorArm64
+      - name: iOS simulator tests
+        run: ./gradlew :DrawBox:iosSimulatorArm64Test :drawbox-ui:iosSimulatorArm64Test
+
+      - name: Upload test reports
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: ios-test-reports
+          path: |
+            DrawBox/build/reports/tests
+            drawbox-ui/build/reports/tests
+          if-no-files-found: ignore
