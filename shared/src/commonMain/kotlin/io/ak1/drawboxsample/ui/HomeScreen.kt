@@ -33,7 +33,6 @@ import androidx.compose.ui.input.key.type
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.zIndex
 import androidx.compose.ui.unit.dp
 import io.ak1.drawbox.DrawBox
@@ -74,9 +73,6 @@ fun HomeScreen(
     val showColorDialog = remember { mutableStateOf(false) }
     val showGrid = remember { mutableStateOf(true) }
     val imageSaver = rememberImageSaver()
-    // Supplied to exportPng so text elements lay out with real glyphs in the
-    // headless raster; without it they'd render as placeholder boxes.
-    val textMeasurer = rememberTextMeasurer()
     val themedBg = MaterialTheme.colorScheme.background
     val themedBrush = MaterialTheme.colorScheme.primary
 
@@ -103,7 +99,11 @@ fun HomeScreen(
     LaunchedEffect(viewModel) {
         viewModel.events.collect { event ->
             when (event) {
-                is Event.PngExported -> imageSaver.savePng(event.bytes)
+                is Event.PngSaved -> {
+                    if (event.bitmap != null) imageSaver.savePng(event.bitmap!!)
+                    else println("error ${event.throwable}")
+                }
+
                 is Event.SvgExported -> imageSaver.saveSvg(event.svg)
                 is Event.JsonExported -> imageSaver.saveJson(event.json)
                 // Double-tap (#83.2) or second tap on a selected text (#83.6):
@@ -121,7 +121,7 @@ fun HomeScreen(
     }
 
     // Debug print: dump selected element data on every selection change so the
-    // box the chrome draws can be compared to the actual element data.
+    // bbox the chrome draws can be compared to the actual element data.
     LaunchedEffect(state.selectedIds, state.elements) {
         if (state.selectedIds.isEmpty()) return@LaunchedEffect
         state.elements.filter { it.id in state.selectedIds }.forEach { el ->
@@ -622,7 +622,7 @@ fun HomeScreen(
             onThemeModeChange = onThemeModeChange,
             onDismiss = { drawerOpen = false },
             onDownloadSvg = { viewModel.exportSvg(); drawerOpen = false },
-            onDownloadPng = { viewModel.exportPng(textMeasurer = textMeasurer); drawerOpen = false },
+            onDownloadPng = { viewModel.saveBitmap(); drawerOpen = false },
             onExportJson = { viewModel.exportJson(); drawerOpen = false },
             onImportJson = {
                 imageSaver.loadJson { json -> viewModel.importPath(json) }

@@ -2,84 +2,6 @@
 
 This guide helps you migrate from the old callback-based API to the new state-driven MVI architecture, and introduces new v2.0 features like shapes and drawing modes.
 
----
-
-## PNG Export: `saveBitmap()` → `exportPng()` (breaking in v3.0)
-
-**v3.0 removes the on-screen bitmap-capture route and replaces it with a headless
-raster exporter.** If you called `controller.saveBitmap()` or observed
-`Event.PngSaved`, you must migrate.
-
-### What was removed
-
-| Removed | Replacement |
-| --- | --- |
-| `DrawBoxController.saveBitmap()` | `DrawBoxController.exportPng(...)` |
-| `Event.PngSaved(bitmap, throwable)` | `Event.PngExported(bytes)` (+ `Event.Error` on failure) |
-| `Intent.SaveBitmap` | *(internal — no longer needed)* |
-
-### Why
-
-The old route was a WYSIWYG screenshot bolted onto the render loop: it required
-the canvas to be composed on screen, captured only the current viewport, and
-handed back an unencoded `ImageBitmap`. `exportPng` is the raster sibling of
-`exportSvg` — it renders the **entire scene** headlessly from `state.elements`
-(no composition required), honours an explicit `scale`/`background`, clamps to a
-pixel cap, and emits **already-encoded PNG bytes**.
-
-### Before (v2.x)
-
-```kotlin
-// Trigger
-controller.saveBitmap()
-
-// Collect
-LaunchedEffect(controller) {
-    controller.events.collect { event ->
-        if (event is Event.PngSaved) {
-            event.bitmap?.let { saveImageBitmap(it) }
-                ?: showError(event.throwable?.message)
-        }
-    }
-}
-```
-
-### After (v3.0)
-
-```kotlin
-// A TextMeasurer is needed for real text glyphs in the headless raster.
-// Omit it and text elements render as placeholder boxes.
-val textMeasurer = rememberTextMeasurer()
-
-// Trigger
-controller.exportPng(
-    scale = 2f,               // HiDPI multiplier (auto-clamped to the pixel cap)
-    background = null,        // null → transparent backdrop
-    textMeasurer = textMeasurer,
-)
-
-// Collect — event.bytes is ready to write/share as-is
-LaunchedEffect(controller) {
-    controller.events.collect { event ->
-        when (event) {
-            is Event.PngExported -> saveBytes(event.bytes) // e.g. file.writeBytes(...)
-            is Event.Error -> showError(event.message)
-            else -> {}
-        }
-    }
-}
-```
-
-### Behavioural differences to expect
-
-- Output covers the **whole drawing** (union of element bounds + padding), not the
-  visible viewport. Pan/zoom no longer affect the result.
-- The backdrop is **transparent by default**; pass `background = ...` to fill it.
-- You receive **encoded PNG bytes**, so you no longer encode an `ImageBitmap` yourself.
-- Export works even when the canvas is not on screen.
-
----
-
 ## What's New in v2.0
 
 ### ✨ New Features
@@ -228,11 +150,7 @@ LaunchedEffect(viewModel) {
 }
 ```
 
-### PNG Export
-
-> As of v3.0 this is the only PNG path. See
-> [PNG Export: `saveBitmap()` → `exportPng()`](#png-export-savebitmap--exportpng-breaking-in-v30)
-> above for the full rationale and behavioural differences.
+### Bitmap Capture
 
 **Before (Old API)**
 ```kotlin
@@ -255,20 +173,14 @@ DrawBox(
     onIntent = viewModel::onIntent,
 )
 
-// Export the whole scene headlessly; collect the encoded bytes.
-val textMeasurer = rememberTextMeasurer()
+// Bitmap is captured via Intent.SaveBitmap event
 LaunchedEffect(viewModel) {
     viewModel.events.collect { event ->
-        when (event) {
-            is Event.PngExported -> saveBytes(event.bytes)
-            is Event.Error -> showError(event.message)
-            else -> {}
+        if (event is Event.DrawingSaved) {
+            event.bitmap?.let { saveBitmap(it) }
         }
     }
 }
-
-// …trigger from a button:
-Button(onClick = { viewModel.exportPng(textMeasurer = textMeasurer) }) { Text("PNG") }
 ```
 
 ### Drawing Shapes (NEW in v2.0)

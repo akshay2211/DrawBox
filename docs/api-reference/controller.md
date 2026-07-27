@@ -222,27 +222,21 @@ controller.events.collect { event ->
 
 ### Export as PNG
 
-Export the whole drawing as a raster image. `exportPng` renders the scene
-headlessly (not a screenshot of the current viewport) and emits the encoded
-PNG bytes via `Event.PngExported`; an empty scene or encode failure emits
-`Event.Error` instead.
+Export drawings as raster image:
 
 ```kotlin
-val textMeasurer = rememberTextMeasurer()
+// Save as bitmap
+controller.saveBitmap()
 
-// Trigger the export
-controller.exportPng(
-    scale = 2f,                   // HiDPI multiplier, clamped to the pixel cap
-    background = null,            // null → transparent backdrop
-    textMeasurer = textMeasurer, // real text layout; omit → placeholder boxes
-)
-
-// Listen for the encoded bytes
+// Listen for PNG saved event
 controller.events.collect { event ->
-    when (event) {
-        is Event.PngExported -> saveBytesToFile(event.bytes)
-        is Event.Error -> handleError(event.message)
-        else -> {}
+    if (event is Event.PngSaved) {
+        val bitmap = event.bitmap
+        if (bitmap != null) {
+            saveBitmapToFile(bitmap)
+        } else if (event.throwable != null) {
+            handleError(event.throwable)
+        }
     }
 }
 ```
@@ -288,8 +282,12 @@ LaunchedEffect(Unit) {
             is Event.SvgExported -> {
                 println("SVG exported: ${event.svg.length} bytes")
             }
-            is Event.PngExported -> {
-                println("PNG exported: ${event.bytes.size} bytes")
+            is Event.PngSaved -> {
+                if (event.bitmap != null) {
+                    println("PNG saved successfully")
+                } else {
+                    println("Error saving PNG: ${event.throwable?.message}")
+                }
             }
             is Event.DrawingLoaded -> {
                 println("Drawing loaded")
@@ -316,7 +314,6 @@ fun AdvancedDrawingScreen() {
     
     var showColorPicker by remember { mutableStateOf(false) }
     var selectedColor by remember { mutableStateOf(Color.Red) }
-    val textMeasurer = rememberTextMeasurer()
     
     // Listen to events
     LaunchedEffect(Unit) {
@@ -325,8 +322,10 @@ fun AdvancedDrawingScreen() {
                 is Event.SvgExported -> {
                     saveFile("drawing.svg", event.svg)
                 }
-                is Event.PngExported -> {
-                    saveBytes("drawing.png", event.bytes)
+                is Event.PngSaved -> {
+                    if (event.bitmap != null) {
+                        saveBitmap(event.bitmap)
+                    }
                 }
                 is Event.Error -> {
                     showError(event.message)
@@ -395,7 +394,7 @@ fun AdvancedDrawingScreen() {
                 Text("SVG")
             }
             
-            IconButton(onClick = { controller.exportPng(textMeasurer = textMeasurer) }) {
+            IconButton(onClick = { controller.saveBitmap() }) {
                 Text("PNG")
             }
             

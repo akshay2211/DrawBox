@@ -3,11 +3,15 @@ package io.ak1.drawboxsample.save
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asSkiaBitmap
 import kotlinx.cinterop.BetaInteropApi
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.addressOf
 import kotlinx.cinterop.useContents
 import kotlinx.cinterop.usePinned
+import org.jetbrains.skia.EncodedImageFormat
+import org.jetbrains.skia.Image
 import platform.Foundation.NSData
 import platform.Foundation.NSLog
 import platform.Foundation.NSString
@@ -42,10 +46,11 @@ private class IosImageSaver : ImageSaver {
     private var activeImageDelegate: ImagePickerDelegate? = null
 
     @OptIn(ExperimentalForeignApi::class, BetaInteropApi::class)
-    override fun savePng(bytes: ByteArray) {
+    override fun savePng(bitmap: ImageBitmap) {
         try {
-            if (bytes.isEmpty()) {
-                NSLog("Received empty PNG payload")
+            val bytes = Image.makeFromBitmap(bitmap.asSkiaBitmap())
+                .encodeToData(EncodedImageFormat.PNG)?.bytes ?: run {
+                NSLog("Failed to encode bitmap to PNG")
                 return
             }
             bytes.usePinned { pinned ->
