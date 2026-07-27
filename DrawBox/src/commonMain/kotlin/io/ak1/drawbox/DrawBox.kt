@@ -3,8 +3,12 @@ package io.ak1.drawbox
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.focusable
-import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.awaitDragOrCancellation
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.awaitTouchSlopOrCancellation
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.gestures.drag
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxSize
@@ -31,10 +35,12 @@ import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.PointerIcon
 import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.input.pointer.PointerType
+import androidx.compose.ui.input.pointer.changedToUpIgnoreConsumed
 import androidx.compose.ui.input.pointer.isCtrlPressed
 import androidx.compose.ui.input.pointer.isShiftPressed
 import androidx.compose.ui.input.pointer.isTertiaryPressed
 import androidx.compose.ui.input.pointer.pointerHoverIcon
+import androidx.compose.ui.input.pointer.positionChange
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
@@ -564,113 +570,119 @@ fun DrawBox(
                 var interaction: SelectionInteraction? = null
                 var lastWorld = Offset.Zero
 
-                detectDragGestures(
-                    onDragStart = { screenPos ->
-                        val s = latestState
-                        val world = s.viewport.screenToWorld(screenPos)
-                        lastWorld = world
-                        when (s.effectiveMode) {
-                            Mode.PAN -> {
-                                interaction = SelectionInteraction.Pan
-                            }
-                            Mode.SELECT -> {
-                                val classified = classifySelection(
-                                    state = s,
-                                    pointerWorld = world,
-                                    handleHitWorld = handleHitPx / s.viewport.scale,
-                                    rotationOffsetWorld = rotationOffsetPx / s.viewport.scale,
-                                    pickToleranceWorld = pickTolerancePx / s.viewport.scale,
-                                    paddingWorld = chromeMetrics.paddingPx / s.viewport.scale,
-                                )
-                                interaction = when (classified) {
-                                    is SelectionInteraction.SelectAndMove -> {
-                                        latestOnIntent(Intent.SelectAt(world, pickTolerancePx / s.viewport.scale))
-                                        latestOnIntent(Intent.BeginTransform)
-                                        dragInProgress = true
-                                        SelectionInteraction.Move
-                                    }
-                                    is SelectionInteraction.Move,
-                                    is SelectionInteraction.Resize,
-                                    is SelectionInteraction.Rotate,
-                                    is SelectionInteraction.LineEndpoint,
-                                    is SelectionInteraction.LineBend -> {
-                                        latestOnIntent(Intent.BeginTransform)
-                                        dragInProgress = true
-                                        classified
-                                    }
-                                    is SelectionInteraction.Marquee -> {
-                                        // Marquee doesn't mutate any element —
-                                        // keep dragInProgress=false so the cached
-                                        // layer keeps replaying for free.
-                                        latestOnIntent(Intent.SetMarqueeRect(Rect(world, world)))
-                                        classified
-                                    }
-                                    SelectionInteraction.Pan -> classified
+                // Gesture callbacks are the same logic detectDragGestures used to
+                // drive; they're hoisted to local functions so the custom
+                // awaitEachGesture loop below can start drawing gestures with
+                // zero touch-slop while keeping slop for SELECT/PAN.
+                fun onDragStart(screenPos: Offset) {
+                    val s = latestState
+                    val world = s.viewport.screenToWorld(screenPos)
+                    lastWorld = world
+                    when (s.effectiveMode) {
+                        Mode.PAN -> {
+                            interaction = SelectionInteraction.Pan
+                        }
+                        Mode.SELECT -> {
+                            val classified = classifySelection(
+                                state = s,
+                                pointerWorld = world,
+                                handleHitWorld = handleHitPx / s.viewport.scale,
+                                rotationOffsetWorld = rotationOffsetPx / s.viewport.scale,
+                                pickToleranceWorld = pickTolerancePx / s.viewport.scale,
+                                paddingWorld = chromeMetrics.paddingPx / s.viewport.scale,
+                            )
+                            interaction = when (classified) {
+                                is SelectionInteraction.SelectAndMove -> {
+                                    latestOnIntent(Intent.SelectAt(world, pickTolerancePx / s.viewport.scale))
+                                    latestOnIntent(Intent.BeginTransform)
+                                    dragInProgress = true
+                                    SelectionInteraction.Move
                                 }
-                            }
-                            Mode.PEN -> {
-                                latestOnIntent(Intent.InsertNewPath(world))
-                                dragInProgress = true
-                            }
-                            Mode.ERASER -> {
-                                // Open the erase gesture: BeginErase clears the
-                                // dirty flag so EraseAt can snapshot lazily on
-                                // the first actual hit. A drag that never
-                                // intersects an element pushes nothing to undo.
-                                latestOnIntent(Intent.BeginErase)
-                                latestOnIntent(Intent.EraseAt(world, s.eraserSize / s.viewport.scale))
-                                dragInProgress = true
-                            }
-                            else -> modeShapeType(s.effectiveMode)?.let { st ->
-                                latestOnIntent(Intent.InsertNewShape(st, world))
-                                dragInProgress = true
+                                is SelectionInteraction.Move,
+                                is SelectionInteraction.Resize,
+                                is SelectionInteraction.Rotate,
+                                is SelectionInteraction.LineEndpoint,
+                                is SelectionInteraction.LineBend -> {
+                                    latestOnIntent(Intent.BeginTransform)
+                                    dragInProgress = true
+                                    classified
+                                }
+                                is SelectionInteraction.Marquee -> {
+                                    // Marquee doesn't mutate any element —
+                                    // keep dragInProgress=false so the cached
+                                    // layer keeps replaying for free.
+                                    latestOnIntent(Intent.SetMarqueeRect(Rect(world, world)))
+                                    classified
+                                }
+                                SelectionInteraction.Pan -> classified
                             }
                         }
-                    },
-                    onDragEnd = {
-                        val s = latestState
-                        if (s.mode == Mode.SELECT) {
-                            val rect = s.marqueeRect
-                            if (interaction is SelectionInteraction.Marquee && rect != null) {
-                                latestOnIntent(Intent.CommitMarquee(rect))
-                            } else if (interaction is SelectionInteraction.Marquee) {
-                                latestOnIntent(Intent.SetMarqueeRect(null))
-                            }
-                            val maybeEndpoint = interaction as? SelectionInteraction.LineEndpoint
-                            if (maybeEndpoint != null) {
-                                val target = s.elements.firstOrNull { it.id == maybeEndpoint.elementId }
-                                if (target is Element.Shape && target.shapeType == ShapeType.ARROW) {
-                                    latestOnIntent(Intent.FinalizeArrowBindings(target.id))
-                                }
-                            }
-                        } else if (s.mode == Mode.ARROW) {
-                            // Just finished drawing an arrow — bind endpoints sitting
-                            // over a shape so the arrow becomes a connector.
-                            val justDrawn = s.elements.lastOrNull()
-                            if (justDrawn is Element.Shape && justDrawn.shapeType == ShapeType.ARROW) {
-                                latestOnIntent(Intent.FinalizeArrowBindings(justDrawn.id))
-                            }
-                        } else if (s.mode == Mode.ERASER) {
-                            latestOnIntent(Intent.EndErase)
+                        Mode.PEN -> {
+                            latestOnIntent(Intent.InsertNewPath(world))
+                            dragInProgress = true
                         }
-                        latestOnIntent(Intent.EndTransform)
-                        interaction = null
-                        dragInProgress = false
-                    },
-                    onDragCancel = {
-                        if (latestState.mode == Mode.SELECT &&
-                            interaction is SelectionInteraction.Marquee
-                        ) {
+                        Mode.ERASER -> {
+                            // Open the erase gesture: BeginErase clears the
+                            // dirty flag so EraseAt can snapshot lazily on
+                            // the first actual hit. A drag that never
+                            // intersects an element pushes nothing to undo.
+                            latestOnIntent(Intent.BeginErase)
+                            latestOnIntent(Intent.EraseAt(world, s.eraserSize / s.viewport.scale))
+                            dragInProgress = true
+                        }
+                        else -> modeShapeType(s.effectiveMode)?.let { st ->
+                            latestOnIntent(Intent.InsertNewShape(st, world))
+                            dragInProgress = true
+                        }
+                    }
+                }
+
+                fun onDragEnd() {
+                    val s = latestState
+                    if (s.mode == Mode.SELECT) {
+                        val rect = s.marqueeRect
+                        if (interaction is SelectionInteraction.Marquee && rect != null) {
+                            latestOnIntent(Intent.CommitMarquee(rect))
+                        } else if (interaction is SelectionInteraction.Marquee) {
                             latestOnIntent(Intent.SetMarqueeRect(null))
                         }
-                        if (latestState.mode == Mode.ERASER) {
-                            latestOnIntent(Intent.EndErase)
+                        val maybeEndpoint = interaction as? SelectionInteraction.LineEndpoint
+                        if (maybeEndpoint != null) {
+                            val target = s.elements.firstOrNull { it.id == maybeEndpoint.elementId }
+                            if (target is Element.Shape && target.shapeType == ShapeType.ARROW) {
+                                latestOnIntent(Intent.FinalizeArrowBindings(target.id))
+                            }
                         }
-                        latestOnIntent(Intent.EndTransform)
-                        interaction = null
-                        dragInProgress = false
-                    },
-                ) { change, dragAmount ->
+                    } else if (s.mode == Mode.ARROW) {
+                        // Just finished drawing an arrow — bind endpoints sitting
+                        // over a shape so the arrow becomes a connector.
+                        val justDrawn = s.elements.lastOrNull()
+                        if (justDrawn is Element.Shape && justDrawn.shapeType == ShapeType.ARROW) {
+                            latestOnIntent(Intent.FinalizeArrowBindings(justDrawn.id))
+                        }
+                    } else if (s.mode == Mode.ERASER) {
+                        latestOnIntent(Intent.EndErase)
+                    }
+                    latestOnIntent(Intent.EndTransform)
+                    interaction = null
+                    dragInProgress = false
+                }
+
+                fun onDragCancel() {
+                    if (latestState.mode == Mode.SELECT &&
+                        interaction is SelectionInteraction.Marquee
+                    ) {
+                        latestOnIntent(Intent.SetMarqueeRect(null))
+                    }
+                    if (latestState.mode == Mode.ERASER) {
+                        latestOnIntent(Intent.EndErase)
+                    }
+                    latestOnIntent(Intent.EndTransform)
+                    interaction = null
+                    dragInProgress = false
+                }
+
+                fun onDrag(change: PointerInputChange, dragAmount: Offset) {
                     val s = latestState
                     val world = s.viewport.screenToWorld(change.position)
                     when (s.effectiveMode) {
@@ -749,6 +761,43 @@ fun DrawBox(
                             latestOnIntent(Intent.UpdateLatestShape(world))
                         }
                     }
+                }
+
+                awaitEachGesture {
+                    val down = awaitFirstDown(requireUnconsumed = false)
+                    val drawing = latestState.effectiveMode.isDrawingMode()
+
+                    // Drawing modes begin on the first movement with zero touch-
+                    // slop, so a stroke / shape / eraser pass starts the instant
+                    // the finger moves and exactly at the press point — no ~8dp
+                    // lead-in. SELECT / PAN keep the system slop so a click with
+                    // small jitter isn't misread as a drag. A plain tap (no
+                    // movement) returns early and is handled by the
+                    // detectTapGestures handler above, so nothing is double-
+                    // inserted and a pinch that starts before any drag leaves no
+                    // stray dot.
+                    var overSlop = Offset.Zero
+                    val firstDrag = if (drawing) {
+                        awaitDragOrCancellation(down.id)
+                    } else {
+                        awaitTouchSlopOrCancellation(down.id) { change, over ->
+                            change.consume()
+                            overSlop = over
+                        }
+                    }
+                    if (firstDrag == null || firstDrag.changedToUpIgnoreConsumed()) {
+                        return@awaitEachGesture
+                    }
+
+                    onDragStart(if (drawing) down.position else firstDrag.position)
+                    onDrag(firstDrag, if (drawing) firstDrag.positionChange() else overSlop)
+                    if (drawing) firstDrag.consume()
+
+                    val completed = drag(firstDrag.id) { change ->
+                        onDrag(change, change.positionChange())
+                        change.consume()
+                    }
+                    if (completed) onDragEnd() else onDragCancel()
                 }
             },
     ) {
@@ -983,6 +1032,14 @@ private fun modeShapeType(mode: Mode): ShapeType? = when (mode) {
     Mode.LINE -> ShapeType.LINE
     Mode.PEN, Mode.SELECT, Mode.PAN, Mode.ERASER, Mode.TEXT -> null
 }
+
+/**
+ * Modes whose drag seeds a new element (freehand stroke, shape, or eraser pass).
+ * These start with zero touch-slop, so the gesture begins on the first movement
+ * at the exact finger-down point rather than after the ~8dp system slop.
+ */
+private fun Mode.isDrawingMode(): Boolean =
+    this == Mode.PEN || this == Mode.ERASER || modeShapeType(this) != null
 
 // ==================== Selection gesture support ====================
 
