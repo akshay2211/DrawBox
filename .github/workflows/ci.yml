@@ -41,7 +41,7 @@ jobs:
       # path as CHROME_BIN, which karma-chrome-launcher uses to locate Chrome.
       - name: Setup Chrome
         id: setup-chrome
-        uses: browser-actions/setup-chrome@v1
+        uses: browser-actions/setup-chrome@v2
 
       - name: Expose Chrome to Karma
         run: echo "CHROME_BIN=${{ steps.setup-chrome.outputs.chrome-path }}" >> "$GITHUB_ENV"
