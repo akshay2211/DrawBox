@@ -55,6 +55,13 @@ jobs:
       - name: JVM tests
         run: ./gradlew :DrawBox:jvmTest :drawbox-ui:jvmTest
 
+      # Roborazzi screenshot baselines (e.g. DrawGestureScreenshotTest) live in
+      # :shared. They are only *compared* against the committed PNGs under verify
+      # mode — a plain :shared:jvmTest neither records nor verifies. This step is
+      # what actually fails the build on any pixel drift.
+      - name: Screenshot tests (verify)
+        run: ./gradlew :shared:verifyRoborazziJvm
+
       - name: JS (browser) tests
         run: ./gradlew :DrawBox:jsTest :drawbox-ui:jsTest
 
@@ -72,6 +79,9 @@ jobs:
           path: |
             DrawBox/build/reports/tests
             drawbox-ui/build/reports/tests
+            shared/build/reports/tests
+            shared/build/reports/roborazzi
+            shared/build/outputs/roborazzi
           if-no-files-found: ignore
 
   # iOS runs the same commonTest suite on the Kotlin/Native simulator target,

@@ -39,9 +39,12 @@ import org.junit.Test
  * line it just drew, and out to the bottom-right. Rendered at a *light* alpha
  * (35% opacity).
  *
- * The captured frame is asserted byte-for-byte (changeThreshold = 0f → 100%
- * accuracy) against `src/jvmTest/snapshots/DrawGesture_alpha.png`. The first run
- * records the baseline; subsequent runs fail on any pixel drift.
+ * The captured frame is compared against `src/jvmTest/snapshots/DrawGesture_alpha.png`.
+ * Roborazzi only performs that comparison when run in *verify* mode
+ * (`./gradlew :shared:verifyRoborazziJvm`, or `-Proborazzi.test.verify=true`), which
+ * CI does — it fails on any pixel drift. A plain `:shared:jvmTest` run neither records
+ * nor verifies, so it passes regardless of the pixels. Record/update the baseline with
+ * `./gradlew :shared:recordRoborazziJvm`.
  *
  * Density is pinned to 1f so the 400×300 dp canvas is exactly 400×300 px and the
  * gesture coordinates below map 1:1 to pixels (and to world space, since the
@@ -104,8 +107,9 @@ class DrawGestureScreenshotTest {
         }
         composeRule.waitForIdle()
 
-        // Byte-exact by default (Roborazzi records the baseline on the first run,
-        // then fails on any pixel drift on subsequent runs — 100% match).
+        // Compared byte-for-byte against the committed baseline, but only under
+        // Roborazzi verify mode (`:shared:verifyRoborazziJvm`, wired into CI). A plain
+        // `:shared:jvmTest` run does not compare — see the class KDoc.
         composeRule.onRoot().captureRoboImage(
             filePath = "src/jvmTest/snapshots/DrawGesture_alpha.png",
         )
