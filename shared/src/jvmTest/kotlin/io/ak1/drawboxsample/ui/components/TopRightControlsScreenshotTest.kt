@@ -12,7 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.unit.dp
-import io.ak1.drawboxsample.ui.theme.ThemeMode
 import io.github.takahirom.roborazzi.captureRoboImage
 import org.junit.Rule
 import org.junit.Test
@@ -30,8 +29,6 @@ class TopRightControlsScreenshotTest {
                     TopRightControls(
                         isNarrow = false,
                         scalePercent = 100,
-                        themeMode = ThemeMode.SYSTEM,
-                        onThemeModeChange = {},
                         onZoomIn = {},
                         onZoomOut = {},
                         onZoomReset = {},
@@ -54,8 +51,6 @@ class TopRightControlsScreenshotTest {
                     TopRightControls(
                         isNarrow = true,
                         scalePercent = 75,
-                        themeMode = ThemeMode.LIGHT,
-                        onThemeModeChange = {},
                         onZoomIn = {},
                         onZoomOut = {},
                         onZoomReset = {},
@@ -78,8 +73,6 @@ class TopRightControlsScreenshotTest {
                     TopRightControls(
                         isNarrow = true,
                         scalePercent = 150,
-                        themeMode = ThemeMode.DARK,
-                        onThemeModeChange = {},
                         onZoomIn = {},
                         onZoomOut = {},
                         onZoomReset = {},
