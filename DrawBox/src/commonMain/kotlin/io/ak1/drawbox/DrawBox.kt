@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.NonSkippableComposable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -164,6 +165,16 @@ import kotlin.math.sqrt
  * @see renderElement for element-specific rendering
  */
 @Composable
+// ⚠️ Kotlin/Wasm + Compose workaround — DO NOT REMOVE without running the web app.
+// `State` is a pure-`val` data class, so the Compose compiler infers it STABLE. A
+// stable param puts DrawBox on Compose's structural-equality recompose-SKIPPING
+// path, and that path crashes on Kotlin/Wasm with "ref.cast failed to cast
+// reference to target heap type" (in ComposableLambdaImpl.invoke) the instant a
+// stroke mutates state — it compiles and renders, but drawing dies on the first
+// gesture. Marking DrawBox non-skippable forces it to always run its body instead
+// of taking the buggy skip path. Cost is negligible: DrawBox is driven by state
+// changes every frame it matters, so it rarely skipped anyway.
+@NonSkippableComposable
 fun DrawBox(
     state: State,
     onIntent: (Intent) -> Unit,
