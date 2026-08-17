@@ -28,7 +28,7 @@
 <span class=w>    </span><span class=p>}</span>
 <span class=p>}</span>
 </code></pre></div> <h2 id=step-2-display-the-screen-1-minute>Step 2: Display the Screen (1 minute)<a class=headerlink href=#step-2-display-the-screen-1-minute title="Permanent link">&para;</a></h2> <p>In your <code>MainActivity</code>:</p> <div class=highlight><pre><span></span><code><span class=kd>class</span><span class=w> </span><span class=nc>MainActivity</span><span class=w> </span><span class=p>:</span><span class=w> </span><span class=n>ComponentActivity</span><span class=p>()</span><span class=w> </span><span class=p>{</span>
-<span class=w>    </span><span class=kd>override</span><span class=w> </span><span class=kd>fun</span><span class=w> </span><span class=nf>onCreate</span><span class=p>(</span><span class=n>savedInstanceState</span><span class=p>:</span><span class=w> </span><span class=n>Bundle?)</span><span class=w> </span><span class=p>{</span>
+<span class=w>    </span><span class=kd>override</span><span class=w> </span><span class=kd>fun</span><span class=w> </span><span class=nf>onCreate</span><span class=p>(</span><span class=n>savedInstanceState</span><span class=p>:</span><span class=w> </span><span class=n>Bundle?</span><span class=p>)</span><span class=w> </span><span class=p>{</span>
 <span class=w>        </span><span class=k>super</span><span class=p>.</span><span class=na>onCreate</span><span class=p>(</span><span class=n>savedInstanceState</span><span class=p>)</span>
 
 <span class=w>        </span><span class=n>setContent</span><span class=w> </span><span class=p>{</span>
@@ -60,11 +60,11 @@
 <span class=w>        </span><span class=p>)</span><span class=w> </span><span class=p>{</span>
 <span class=w>            </span><span class=c1>// Change mode</span>
 <span class=w>            </span><span class=n>Button</span><span class=p>(</span><span class=n>onClick</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=p>{</span><span class=w> </span><span class=n>controller</span><span class=p>.</span><span class=na>setMode</span><span class=p>(</span><span class=n>Mode</span><span class=p>.</span><span class=na>PEN</span><span class=p>)</span><span class=w> </span><span class=p>})</span><span class=w> </span><span class=p>{</span>
-<span class=w>                </span><span class=n>Text</span><span class=p>(</span><span class=s>&quot;Pen&quot;</span><span class=p>)</span>
+<span class=w>                </span><span class=n>Text</span><span class=p>(</span><span class=s>"Pen"</span><span class=p>)</span>
 <span class=w>            </span><span class=p>}</span>
 
 <span class=w>            </span><span class=n>Button</span><span class=p>(</span><span class=n>onClick</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=p>{</span><span class=w> </span><span class=n>controller</span><span class=p>.</span><span class=na>setMode</span><span class=p>(</span><span class=n>Mode</span><span class=p>.</span><span class=na>RECTANGLE</span><span class=p>)</span><span class=w> </span><span class=p>})</span><span class=w> </span><span class=p>{</span>
-<span class=w>                </span><span class=n>Text</span><span class=p>(</span><span class=s>&quot;Rectangle&quot;</span><span class=p>)</span>
+<span class=w>                </span><span class=n>Text</span><span class=p>(</span><span class=s>"Rectangle"</span><span class=p>)</span>
 <span class=w>            </span><span class=p>}</span>
 
 <span class=w>            </span><span class=c1>// Undo button</span>
@@ -72,7 +72,7 @@
 <span class=w>                </span><span class=n>onClick</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=p>{</span><span class=w> </span><span class=n>controller</span><span class=p>.</span><span class=na>undo</span><span class=p>()</span><span class=w> </span><span class=p>},</span>
 <span class=w>                </span><span class=n>enabled</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>controller</span><span class=p>.</span><span class=na>canUndo</span><span class=p>.</span><span class=na>collectAsState</span><span class=p>(</span><span class=kc>false</span><span class=p>).</span><span class=na>value</span>
 <span class=w>            </span><span class=p>)</span><span class=w> </span><span class=p>{</span>
-<span class=w>                </span><span class=n>Text</span><span class=p>(</span><span class=s>&quot;Undo&quot;</span><span class=p>)</span>
+<span class=w>                </span><span class=n>Text</span><span class=p>(</span><span class=s>"Undo"</span><span class=p>)</span>
 <span class=w>            </span><span class=p>}</span>
 
 <span class=w>            </span><span class=c1>// Redo button</span>
@@ -80,7 +80,7 @@
 <span class=w>                </span><span class=n>onClick</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=p>{</span><span class=w> </span><span class=n>controller</span><span class=p>.</span><span class=na>redo</span><span class=p>()</span><span class=w> </span><span class=p>},</span>
 <span class=w>                </span><span class=n>enabled</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>controller</span><span class=p>.</span><span class=na>canRedo</span><span class=p>.</span><span class=na>collectAsState</span><span class=p>(</span><span class=kc>false</span><span class=p>).</span><span class=na>value</span>
 <span class=w>            </span><span class=p>)</span><span class=w> </span><span class=p>{</span>
-<span class=w>                </span><span class=n>Text</span><span class=p>(</span><span class=s>&quot;Redo&quot;</span><span class=p>)</span>
+<span class=w>                </span><span class=n>Text</span><span class=p>(</span><span class=s>"Redo"</span><span class=p>)</span>
 <span class=w>            </span><span class=p>}</span>
 <span class=w>        </span><span class=p>}</span>
 <span class=w>    </span><span class=p>}</span>
@@ -89,7 +89,7 @@
 <span class=w>    </span><span class=c1>// Show color picker dialog</span>
 <span class=w>    </span><span class=n>showColorPicker</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=kc>true</span>
 <span class=p>})</span><span class=w> </span><span class=p>{</span>
-<span class=w>    </span><span class=n>Text</span><span class=p>(</span><span class=s>&quot;Color&quot;</span><span class=p>)</span>
+<span class=w>    </span><span class=n>Text</span><span class=p>(</span><span class=s>"Color"</span><span class=p>)</span>
 <span class=p>}</span>
 
 <span class=k>if</span><span class=w> </span><span class=p>(</span><span class=n>showColorPicker</span><span class=p>)</span><span class=w> </span><span class=p>{</span>
@@ -144,33 +144,33 @@
 <span class=w>            </span><span class=n>verticalAlignment</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>Alignment</span><span class=p>.</span><span class=na>CenterVertically</span>
 <span class=w>        </span><span class=p>)</span><span class=w> </span><span class=p>{</span>
 <span class=w>            </span><span class=n>Button</span><span class=p>(</span><span class=n>onClick</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=p>{</span><span class=w> </span><span class=n>controller</span><span class=p>.</span><span class=na>setMode</span><span class=p>(</span><span class=n>Mode</span><span class=p>.</span><span class=na>PEN</span><span class=p>)</span><span class=w> </span><span class=p>})</span><span class=w> </span><span class=p>{</span>
-<span class=w>                </span><span class=n>Text</span><span class=p>(</span><span class=s>&quot;✏️ Pen&quot;</span><span class=p>)</span>
+<span class=w>                </span><span class=n>Text</span><span class=p>(</span><span class=s>"✏️ Pen"</span><span class=p>)</span>
 <span class=w>            </span><span class=p>}</span>
 
 <span class=w>            </span><span class=n>Button</span><span class=p>(</span><span class=n>onClick</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=p>{</span><span class=w> </span><span class=n>controller</span><span class=p>.</span><span class=na>setMode</span><span class=p>(</span><span class=n>Mode</span><span class=p>.</span><span class=na>RECTANGLE</span><span class=p>)</span><span class=w> </span><span class=p>})</span><span class=w> </span><span class=p>{</span>
-<span class=w>                </span><span class=n>Text</span><span class=p>(</span><span class=s>&quot;⬜ Rect&quot;</span><span class=p>)</span>
+<span class=w>                </span><span class=n>Text</span><span class=p>(</span><span class=s>"⬜ Rect"</span><span class=p>)</span>
 <span class=w>            </span><span class=p>}</span>
 
 <span class=w>            </span><span class=n>Button</span><span class=p>(</span><span class=n>onClick</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=p>{</span><span class=w> </span><span class=n>controller</span><span class=p>.</span><span class=na>setMode</span><span class=p>(</span><span class=n>Mode</span><span class=p>.</span><span class=na>CIRCLE</span><span class=p>)</span><span class=w> </span><span class=p>})</span><span class=w> </span><span class=p>{</span>
-<span class=w>                </span><span class=n>Text</span><span class=p>(</span><span class=s>&quot;⭕ Circle&quot;</span><span class=p>)</span>
+<span class=w>                </span><span class=n>Text</span><span class=p>(</span><span class=s>"⭕ Circle"</span><span class=p>)</span>
 <span class=w>            </span><span class=p>}</span>
 
 <span class=w>            </span><span class=n>Button</span><span class=p>(</span>
 <span class=w>                </span><span class=n>onClick</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=p>{</span><span class=w> </span><span class=n>controller</span><span class=p>.</span><span class=na>undo</span><span class=p>()</span><span class=w> </span><span class=p>},</span>
 <span class=w>                </span><span class=n>enabled</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>canUndo</span>
 <span class=w>            </span><span class=p>)</span><span class=w> </span><span class=p>{</span>
-<span class=w>                </span><span class=n>Text</span><span class=p>(</span><span class=s>&quot;↶ Undo&quot;</span><span class=p>)</span>
+<span class=w>                </span><span class=n>Text</span><span class=p>(</span><span class=s>"↶ Undo"</span><span class=p>)</span>
 <span class=w>            </span><span class=p>}</span>
 
 <span class=w>            </span><span class=n>Button</span><span class=p>(</span>
 <span class=w>                </span><span class=n>onClick</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=p>{</span><span class=w> </span><span class=n>controller</span><span class=p>.</span><span class=na>redo</span><span class=p>()</span><span class=w> </span><span class=p>},</span>
 <span class=w>                </span><span class=n>enabled</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>canRedo</span>
 <span class=w>            </span><span class=p>)</span><span class=w> </span><span class=p>{</span>
-<span class=w>                </span><span class=n>Text</span><span class=p>(</span><span class=s>&quot;↷ Redo&quot;</span><span class=p>)</span>
+<span class=w>                </span><span class=n>Text</span><span class=p>(</span><span class=s>"↷ Redo"</span><span class=p>)</span>
 <span class=w>            </span><span class=p>}</span>
 
 <span class=w>            </span><span class=n>Button</span><span class=p>(</span><span class=n>onClick</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=p>{</span><span class=w> </span><span class=n>controller</span><span class=p>.</span><span class=na>reset</span><span class=p>()</span><span class=w> </span><span class=p>})</span><span class=w> </span><span class=p>{</span>
-<span class=w>                </span><span class=n>Text</span><span class=p>(</span><span class=s>&quot;🔄 Reset&quot;</span><span class=p>)</span>
+<span class=w>                </span><span class=n>Text</span><span class=p>(</span><span class=s>"🔄 Reset"</span><span class=p>)</span>
 <span class=w>            </span><span class=p>}</span>
 <span class=w>        </span><span class=p>}</span>
 <span class=w>    </span><span class=p>}</span>

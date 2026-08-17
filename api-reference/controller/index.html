@@ -10,9 +10,9 @@
 <span class=w>    </span><span class=kd>val</span><span class=w> </span><span class=nv>state</span><span class=w> </span><span class=k>by</span><span class=w> </span><span class=n>controller</span><span class=p>.</span><span class=na>state</span><span class=p>.</span><span class=na>collectAsState</span><span class=p>()</span>
 
 <span class=w>    </span><span class=c1>// state contains all drawing information</span>
-<span class=w>    </span><span class=n>println</span><span class=p>(</span><span class=s>&quot;Canvas background: </span><span class=si>${</span><span class=n>state</span><span class=p>.</span><span class=na>bgColor</span><span class=si>}</span><span class=s>&quot;</span><span class=p>)</span>
-<span class=w>    </span><span class=n>println</span><span class=p>(</span><span class=s>&quot;Current mode: </span><span class=si>${</span><span class=n>state</span><span class=p>.</span><span class=na>mode</span><span class=si>}</span><span class=s>&quot;</span><span class=p>)</span>
-<span class=w>    </span><span class=n>println</span><span class=p>(</span><span class=s>&quot;Elements on canvas: </span><span class=si>${</span><span class=n>state</span><span class=p>.</span><span class=na>elements</span><span class=p>.</span><span class=na>size</span><span class=si>}</span><span class=s>&quot;</span><span class=p>)</span>
+<span class=w>    </span><span class=n>println</span><span class=p>(</span><span class=s>"Canvas background: </span><span class=si>${</span><span class=n>state</span><span class=p>.</span><span class=na>bgColor</span><span class=si>}</span><span class=s>"</span><span class=p>)</span>
+<span class=w>    </span><span class=n>println</span><span class=p>(</span><span class=s>"Current mode: </span><span class=si>${</span><span class=n>state</span><span class=p>.</span><span class=na>mode</span><span class=si>}</span><span class=s>"</span><span class=p>)</span>
+<span class=w>    </span><span class=n>println</span><span class=p>(</span><span class=s>"Elements on canvas: </span><span class=si>${</span><span class=n>state</span><span class=p>.</span><span class=na>elements</span><span class=p>.</span><span class=na>size</span><span class=si>}</span><span class=s>"</span><span class=p>)</span>
 <span class=p>}</span>
 </code></pre></div> <p>The <code>State</code> object contains:</p> <div class=highlight><pre><span></span><code><span class=n>state</span><span class=p>.</span><span class=na>elements</span><span class=w>         </span><span class=c1>// List&lt;Element&gt; - All drawable elements</span>
 <span class=n>state</span><span class=p>.</span><span class=na>undoStack</span><span class=w>        </span><span class=c1>// List&lt;Element&gt; - Redo history</span>
@@ -25,11 +25,11 @@
 <span class=kd>val</span><span class=w> </span><span class=nv>canRedo</span><span class=w> </span><span class=k>by</span><span class=w> </span><span class=n>controller</span><span class=p>.</span><span class=na>canRedo</span><span class=p>.</span><span class=na>collectAsState</span><span class=p>(</span><span class=kc>false</span><span class=p>)</span>
 
 <span class=n>Button</span><span class=p>(</span><span class=n>onClick</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=p>{</span><span class=w> </span><span class=n>controller</span><span class=p>.</span><span class=na>undo</span><span class=p>()</span><span class=w> </span><span class=p>},</span><span class=w> </span><span class=n>enabled</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>canUndo</span><span class=p>)</span><span class=w> </span><span class=p>{</span>
-<span class=w>    </span><span class=n>Text</span><span class=p>(</span><span class=s>&quot;Undo&quot;</span><span class=p>)</span>
+<span class=w>    </span><span class=n>Text</span><span class=p>(</span><span class=s>"Undo"</span><span class=p>)</span>
 <span class=p>}</span>
 
 <span class=n>Button</span><span class=p>(</span><span class=n>onClick</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=p>{</span><span class=w> </span><span class=n>controller</span><span class=p>.</span><span class=na>redo</span><span class=p>()</span><span class=w> </span><span class=p>},</span><span class=w> </span><span class=n>enabled</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>canRedo</span><span class=p>)</span><span class=w> </span><span class=p>{</span>
-<span class=w>    </span><span class=n>Text</span><span class=p>(</span><span class=s>&quot;Redo&quot;</span><span class=p>)</span>
+<span class=w>    </span><span class=n>Text</span><span class=p>(</span><span class=s>"Redo"</span><span class=p>)</span>
 <span class=p>}</span>
 </code></pre></div> <h2 id=drawing-mode-control>Drawing Mode Control<a class=headerlink href=#drawing-mode-control title="Permanent link">&para;</a></h2> <h3 id=switch-drawing-mode>Switch Drawing Mode<a class=headerlink href=#switch-drawing-mode title="Permanent link">&para;</a></h3> <div class=highlight><pre><span></span><code><span class=c1>// Freehand drawing</span>
 <span class=n>controller</span><span class=p>.</span><span class=na>setMode</span><span class=p>(</span><span class=n>Mode</span><span class=p>.</span><span class=na>PEN</span><span class=p>)</span>
@@ -44,8 +44,8 @@
 <span class=kd>val</span><span class=w> </span><span class=nv>currentMode</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>state</span><span class=p>.</span><span class=na>mode</span>
 
 <span class=k>when</span><span class=w> </span><span class=p>(</span><span class=n>currentMode</span><span class=p>)</span><span class=w> </span><span class=p>{</span>
-<span class=w>    </span><span class=n>Mode</span><span class=p>.</span><span class=na>PEN</span><span class=w> </span><span class=o>-&gt;</span><span class=w> </span><span class=n>println</span><span class=p>(</span><span class=s>&quot;Drawing freehand&quot;</span><span class=p>)</span>
-<span class=w>    </span><span class=n>Mode</span><span class=p>.</span><span class=na>RECTANGLE</span><span class=w> </span><span class=o>-&gt;</span><span class=w> </span><span class=n>println</span><span class=p>(</span><span class=s>&quot;Drawing rectangles&quot;</span><span class=p>)</span>
+<span class=w>    </span><span class=n>Mode</span><span class=p>.</span><span class=na>PEN</span><span class=w> </span><span class=o>-&gt;</span><span class=w> </span><span class=n>println</span><span class=p>(</span><span class=s>"Drawing freehand"</span><span class=p>)</span>
+<span class=w>    </span><span class=n>Mode</span><span class=p>.</span><span class=na>RECTANGLE</span><span class=w> </span><span class=o>-&gt;</span><span class=w> </span><span class=n>println</span><span class=p>(</span><span class=s>"Drawing rectangles"</span><span class=p>)</span>
 <span class=w>    </span><span class=c1>// ... etc</span>
 <span class=p>}</span>
 </code></pre></div> <h2 id=style-appearance>Style &amp; Appearance<a class=headerlink href=#style-appearance title="Permanent link">&para;</a></h2> <h3 id=stroke-color>Stroke Color<a class=headerlink href=#stroke-color title="Permanent link">&para;</a></h3> <div class=highlight><pre><span></span><code><span class=c1>// Set stroke color for new drawings</span>
@@ -105,7 +105,7 @@
 <span class=kd>val</span><span class=w> </span><span class=nv>svgString</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>controller</span><span class=p>.</span><span class=na>exportSvg</span><span class=p>()</span>
 
 <span class=c1>// Save to file</span>
-<span class=n>File</span><span class=p>(</span><span class=s>&quot;drawing.svg&quot;</span><span class=p>).</span><span class=na>writeText</span><span class=p>(</span><span class=n>svgString</span><span class=p>)</span>
+<span class=n>File</span><span class=p>(</span><span class=s>"drawing.svg"</span><span class=p>).</span><span class=na>writeText</span><span class=p>(</span><span class=n>svgString</span><span class=p>)</span>
 
 <span class=c1>// Or listen to export events</span>
 <span class=n>controller</span><span class=p>.</span><span class=na>events</span><span class=p>.</span><span class=na>collect</span><span class=w> </span><span class=p>{</span><span class=w> </span><span class=n>event</span><span class=w> </span><span class=o>-&gt;</span>
@@ -146,28 +146,28 @@
 <span class=w>    </span><span class=n>controller</span><span class=p>.</span><span class=na>events</span><span class=p>.</span><span class=na>collect</span><span class=w> </span><span class=p>{</span><span class=w> </span><span class=n>event</span><span class=w> </span><span class=o>-&gt;</span>
 <span class=w>        </span><span class=k>when</span><span class=w> </span><span class=p>(</span><span class=n>event</span><span class=p>)</span><span class=w> </span><span class=p>{</span>
 <span class=w>            </span><span class=k>is</span><span class=w> </span><span class=n>Event</span><span class=p>.</span><span class=na>ElementAdded</span><span class=w> </span><span class=o>-&gt;</span><span class=w> </span><span class=p>{</span>
-<span class=w>                </span><span class=n>println</span><span class=p>(</span><span class=s>&quot;Element added: </span><span class=si>${</span><span class=n>event</span><span class=p>.</span><span class=na>element</span><span class=si>}</span><span class=s>&quot;</span><span class=p>)</span>
+<span class=w>                </span><span class=n>println</span><span class=p>(</span><span class=s>"Element added: </span><span class=si>${</span><span class=n>event</span><span class=p>.</span><span class=na>element</span><span class=si>}</span><span class=s>"</span><span class=p>)</span>
 <span class=w>            </span><span class=p>}</span>
 <span class=w>            </span><span class=k>is</span><span class=w> </span><span class=n>Event</span><span class=p>.</span><span class=na>ElementUpdated</span><span class=w> </span><span class=o>-&gt;</span><span class=w> </span><span class=p>{</span>
-<span class=w>                </span><span class=n>println</span><span class=p>(</span><span class=s>&quot;Element updated: </span><span class=si>${</span><span class=n>event</span><span class=p>.</span><span class=na>element</span><span class=si>}</span><span class=s>&quot;</span><span class=p>)</span>
+<span class=w>                </span><span class=n>println</span><span class=p>(</span><span class=s>"Element updated: </span><span class=si>${</span><span class=n>event</span><span class=p>.</span><span class=na>element</span><span class=si>}</span><span class=s>"</span><span class=p>)</span>
 <span class=w>            </span><span class=p>}</span>
 <span class=w>            </span><span class=k>is</span><span class=w> </span><span class=n>Event</span><span class=p>.</span><span class=na>ElementDeleted</span><span class=w> </span><span class=o>-&gt;</span><span class=w> </span><span class=p>{</span>
-<span class=w>                </span><span class=n>println</span><span class=p>(</span><span class=s>&quot;Element deleted: </span><span class=si>${</span><span class=n>event</span><span class=p>.</span><span class=na>elementId</span><span class=si>}</span><span class=s>&quot;</span><span class=p>)</span>
+<span class=w>                </span><span class=n>println</span><span class=p>(</span><span class=s>"Element deleted: </span><span class=si>${</span><span class=n>event</span><span class=p>.</span><span class=na>elementId</span><span class=si>}</span><span class=s>"</span><span class=p>)</span>
 <span class=w>            </span><span class=p>}</span>
 <span class=w>            </span><span class=k>is</span><span class=w> </span><span class=n>Event</span><span class=p>.</span><span class=na>HistoryChanged</span><span class=w> </span><span class=o>-&gt;</span><span class=w> </span><span class=p>{</span>
-<span class=w>                </span><span class=n>println</span><span class=p>(</span><span class=s>&quot;Can undo: </span><span class=si>${</span><span class=n>event</span><span class=p>.</span><span class=na>canUndo</span><span class=si>}</span><span class=s>, Can redo: </span><span class=si>${</span><span class=n>event</span><span class=p>.</span><span class=na>canRedo</span><span class=si>}</span><span class=s>&quot;</span><span class=p>)</span>
+<span class=w>                </span><span class=n>println</span><span class=p>(</span><span class=s>"Can undo: </span><span class=si>${</span><span class=n>event</span><span class=p>.</span><span class=na>canUndo</span><span class=si>}</span><span class=s>, Can redo: </span><span class=si>${</span><span class=n>event</span><span class=p>.</span><span class=na>canRedo</span><span class=si>}</span><span class=s>"</span><span class=p>)</span>
 <span class=w>            </span><span class=p>}</span>
 <span class=w>            </span><span class=k>is</span><span class=w> </span><span class=n>Event</span><span class=p>.</span><span class=na>SvgExported</span><span class=w> </span><span class=o>-&gt;</span><span class=w> </span><span class=p>{</span>
-<span class=w>                </span><span class=n>println</span><span class=p>(</span><span class=s>&quot;SVG exported: </span><span class=si>${</span><span class=n>event</span><span class=p>.</span><span class=na>svg</span><span class=p>.</span><span class=na>length</span><span class=si>}</span><span class=s> bytes&quot;</span><span class=p>)</span>
+<span class=w>                </span><span class=n>println</span><span class=p>(</span><span class=s>"SVG exported: </span><span class=si>${</span><span class=n>event</span><span class=p>.</span><span class=na>svg</span><span class=p>.</span><span class=na>length</span><span class=si>}</span><span class=s> bytes"</span><span class=p>)</span>
 <span class=w>            </span><span class=p>}</span>
 <span class=w>            </span><span class=k>is</span><span class=w> </span><span class=n>Event</span><span class=p>.</span><span class=na>PngExported</span><span class=w> </span><span class=o>-&gt;</span><span class=w> </span><span class=p>{</span>
-<span class=w>                </span><span class=n>println</span><span class=p>(</span><span class=s>&quot;PNG exported: </span><span class=si>${</span><span class=n>event</span><span class=p>.</span><span class=na>bytes</span><span class=p>.</span><span class=na>size</span><span class=si>}</span><span class=s> bytes&quot;</span><span class=p>)</span>
+<span class=w>                </span><span class=n>println</span><span class=p>(</span><span class=s>"PNG exported: </span><span class=si>${</span><span class=n>event</span><span class=p>.</span><span class=na>bytes</span><span class=p>.</span><span class=na>size</span><span class=si>}</span><span class=s> bytes"</span><span class=p>)</span>
 <span class=w>            </span><span class=p>}</span>
 <span class=w>            </span><span class=k>is</span><span class=w> </span><span class=n>Event</span><span class=p>.</span><span class=na>DrawingLoaded</span><span class=w> </span><span class=o>-&gt;</span><span class=w> </span><span class=p>{</span>
-<span class=w>                </span><span class=n>println</span><span class=p>(</span><span class=s>&quot;Drawing loaded&quot;</span><span class=p>)</span>
+<span class=w>                </span><span class=n>println</span><span class=p>(</span><span class=s>"Drawing loaded"</span><span class=p>)</span>
 <span class=w>            </span><span class=p>}</span>
 <span class=w>            </span><span class=k>is</span><span class=w> </span><span class=n>Event</span><span class=p>.</span><span class=na>Error</span><span class=w> </span><span class=o>-&gt;</span><span class=w> </span><span class=p>{</span>
-<span class=w>                </span><span class=n>println</span><span class=p>(</span><span class=s>&quot;Error: </span><span class=si>${</span><span class=n>event</span><span class=p>.</span><span class=na>message</span><span class=si>}</span><span class=s>&quot;</span><span class=p>)</span>
+<span class=w>                </span><span class=n>println</span><span class=p>(</span><span class=s>"Error: </span><span class=si>${</span><span class=n>event</span><span class=p>.</span><span class=na>message</span><span class=si>}</span><span class=s>"</span><span class=p>)</span>
 <span class=w>            </span><span class=p>}</span>
 <span class=w>        </span><span class=p>}</span>
 <span class=w>    </span><span class=p>}</span>
@@ -188,10 +188,10 @@
 <span class=w>        </span><span class=n>controller</span><span class=p>.</span><span class=na>events</span><span class=p>.</span><span class=na>collect</span><span class=w> </span><span class=p>{</span><span class=w> </span><span class=n>event</span><span class=w> </span><span class=o>-&gt;</span>
 <span class=w>            </span><span class=k>when</span><span class=w> </span><span class=p>(</span><span class=n>event</span><span class=p>)</span><span class=w> </span><span class=p>{</span>
 <span class=w>                </span><span class=k>is</span><span class=w> </span><span class=n>Event</span><span class=p>.</span><span class=na>SvgExported</span><span class=w> </span><span class=o>-&gt;</span><span class=w> </span><span class=p>{</span>
-<span class=w>                    </span><span class=n>saveFile</span><span class=p>(</span><span class=s>&quot;drawing.svg&quot;</span><span class=p>,</span><span class=w> </span><span class=n>event</span><span class=p>.</span><span class=na>svg</span><span class=p>)</span>
+<span class=w>                    </span><span class=n>saveFile</span><span class=p>(</span><span class=s>"drawing.svg"</span><span class=p>,</span><span class=w> </span><span class=n>event</span><span class=p>.</span><span class=na>svg</span><span class=p>)</span>
 <span class=w>                </span><span class=p>}</span>
 <span class=w>                </span><span class=k>is</span><span class=w> </span><span class=n>Event</span><span class=p>.</span><span class=na>PngExported</span><span class=w> </span><span class=o>-&gt;</span><span class=w> </span><span class=p>{</span>
-<span class=w>                    </span><span class=n>saveBytes</span><span class=p>(</span><span class=s>&quot;drawing.png&quot;</span><span class=p>,</span><span class=w> </span><span class=n>event</span><span class=p>.</span><span class=na>bytes</span><span class=p>)</span>
+<span class=w>                    </span><span class=n>saveBytes</span><span class=p>(</span><span class=s>"drawing.png"</span><span class=p>,</span><span class=w> </span><span class=n>event</span><span class=p>.</span><span class=na>bytes</span><span class=p>)</span>
 <span class=w>                </span><span class=p>}</span>
 <span class=w>                </span><span class=k>is</span><span class=w> </span><span class=n>Event</span><span class=p>.</span><span class=na>Error</span><span class=w> </span><span class=o>-&gt;</span><span class=w> </span><span class=p>{</span>
 <span class=w>                    </span><span class=n>showError</span><span class=p>(</span><span class=n>event</span><span class=p>.</span><span class=na>message</span><span class=p>)</span>
@@ -220,16 +220,16 @@
 <span class=w>        </span><span class=p>)</span><span class=w> </span><span class=p>{</span>
 <span class=w>            </span><span class=c1>// Mode buttons</span>
 <span class=w>            </span><span class=n>IconButton</span><span class=p>(</span><span class=n>onClick</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=p>{</span><span class=w> </span><span class=n>controller</span><span class=p>.</span><span class=na>setMode</span><span class=p>(</span><span class=n>Mode</span><span class=p>.</span><span class=na>PEN</span><span class=p>)</span><span class=w> </span><span class=p>})</span><span class=w> </span><span class=p>{</span>
-<span class=w>                </span><span class=n>Icon</span><span class=p>(</span><span class=n>Icons</span><span class=p>.</span><span class=na>Default</span><span class=p>.</span><span class=na>Edit</span><span class=p>,</span><span class=w> </span><span class=s>&quot;Pen&quot;</span><span class=p>)</span>
+<span class=w>                </span><span class=n>Icon</span><span class=p>(</span><span class=n>Icons</span><span class=p>.</span><span class=na>Default</span><span class=p>.</span><span class=na>Edit</span><span class=p>,</span><span class=w> </span><span class=s>"Pen"</span><span class=p>)</span>
 <span class=w>            </span><span class=p>}</span>
 
 <span class=w>            </span><span class=n>IconButton</span><span class=p>(</span><span class=n>onClick</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=p>{</span><span class=w> </span><span class=n>controller</span><span class=p>.</span><span class=na>setMode</span><span class=p>(</span><span class=n>Mode</span><span class=p>.</span><span class=na>RECTANGLE</span><span class=p>)</span><span class=w> </span><span class=p>})</span><span class=w> </span><span class=p>{</span>
-<span class=w>                </span><span class=n>Text</span><span class=p>(</span><span class=s>&quot;⬜&quot;</span><span class=p>)</span>
+<span class=w>                </span><span class=n>Text</span><span class=p>(</span><span class=s>"⬜"</span><span class=p>)</span>
 <span class=w>            </span><span class=p>}</span>
 
 <span class=w>            </span><span class=c1>// Color picker</span>
 <span class=w>            </span><span class=n>Button</span><span class=p>(</span><span class=n>onClick</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=p>{</span><span class=w> </span><span class=n>showColorPicker</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=kc>true</span><span class=w> </span><span class=p>})</span><span class=w> </span><span class=p>{</span>
-<span class=w>                </span><span class=n>Text</span><span class=p>(</span><span class=s>&quot;Color&quot;</span><span class=p>)</span>
+<span class=w>                </span><span class=n>Text</span><span class=p>(</span><span class=s>"Color"</span><span class=p>)</span>
 <span class=w>            </span><span class=p>}</span>
 
 <span class=w>            </span><span class=c1>// Stroke width slider</span>
@@ -245,28 +245,28 @@
 <span class=w>                </span><span class=n>onClick</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=p>{</span><span class=w> </span><span class=n>controller</span><span class=p>.</span><span class=na>undo</span><span class=p>()</span><span class=w> </span><span class=p>},</span>
 <span class=w>                </span><span class=n>enabled</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>canUndo</span>
 <span class=w>            </span><span class=p>)</span><span class=w> </span><span class=p>{</span>
-<span class=w>                </span><span class=n>Text</span><span class=p>(</span><span class=s>&quot;↶&quot;</span><span class=p>)</span>
+<span class=w>                </span><span class=n>Text</span><span class=p>(</span><span class=s>"↶"</span><span class=p>)</span>
 <span class=w>            </span><span class=p>}</span>
 
 <span class=w>            </span><span class=n>IconButton</span><span class=p>(</span>
 <span class=w>                </span><span class=n>onClick</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=p>{</span><span class=w> </span><span class=n>controller</span><span class=p>.</span><span class=na>redo</span><span class=p>()</span><span class=w> </span><span class=p>},</span>
 <span class=w>                </span><span class=n>enabled</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>canRedo</span>
 <span class=w>            </span><span class=p>)</span><span class=w> </span><span class=p>{</span>
-<span class=w>                </span><span class=n>Text</span><span class=p>(</span><span class=s>&quot;↷&quot;</span><span class=p>)</span>
+<span class=w>                </span><span class=n>Text</span><span class=p>(</span><span class=s>"↷"</span><span class=p>)</span>
 <span class=w>            </span><span class=p>}</span>
 
 <span class=w>            </span><span class=c1>// Export</span>
 <span class=w>            </span><span class=n>IconButton</span><span class=p>(</span><span class=n>onClick</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=p>{</span><span class=w> </span><span class=n>controller</span><span class=p>.</span><span class=na>exportSvg</span><span class=p>()</span><span class=w> </span><span class=p>})</span><span class=w> </span><span class=p>{</span>
-<span class=w>                </span><span class=n>Text</span><span class=p>(</span><span class=s>&quot;SVG&quot;</span><span class=p>)</span>
+<span class=w>                </span><span class=n>Text</span><span class=p>(</span><span class=s>"SVG"</span><span class=p>)</span>
 <span class=w>            </span><span class=p>}</span>
 
 <span class=w>            </span><span class=n>IconButton</span><span class=p>(</span><span class=n>onClick</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=p>{</span><span class=w> </span><span class=n>controller</span><span class=p>.</span><span class=na>exportPng</span><span class=p>(</span><span class=n>textMeasurer</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>textMeasurer</span><span class=p>)</span><span class=w> </span><span class=p>})</span><span class=w> </span><span class=p>{</span>
-<span class=w>                </span><span class=n>Text</span><span class=p>(</span><span class=s>&quot;PNG&quot;</span><span class=p>)</span>
+<span class=w>                </span><span class=n>Text</span><span class=p>(</span><span class=s>"PNG"</span><span class=p>)</span>
 <span class=w>            </span><span class=p>}</span>
 
 <span class=w>            </span><span class=c1>// Reset</span>
 <span class=w>            </span><span class=n>IconButton</span><span class=p>(</span><span class=n>onClick</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=p>{</span><span class=w> </span><span class=n>controller</span><span class=p>.</span><span class=na>reset</span><span class=p>()</span><span class=w> </span><span class=p>})</span><span class=w> </span><span class=p>{</span>
-<span class=w>                </span><span class=n>Text</span><span class=p>(</span><span class=s>&quot;Reset&quot;</span><span class=p>)</span>
+<span class=w>                </span><span class=n>Text</span><span class=p>(</span><span class=s>"Reset"</span><span class=p>)</span>
 <span class=w>            </span><span class=p>}</span>
 <span class=w>        </span><span class=p>}</span>
 <span class=w>    </span><span class=p>}</span>
