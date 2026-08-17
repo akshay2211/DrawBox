@@ -62,6 +62,8 @@ class TopRightControlsScreenshotTest {
         }
         composeRule.onRoot().captureRoboImage(
             filePath = "src/jvmTest/snapshots/TopRightControls_narrow_light_zoom75.png",
+            // Renders the "75%" zoom label — tolerate cross-OS glyph rasterization.
+            roborazziOptions = textRenderingTolerance,
         )
     }
 
@@ -84,6 +86,8 @@ class TopRightControlsScreenshotTest {
         }
         composeRule.onRoot().captureRoboImage(
             filePath = "src/jvmTest/snapshots/TopRightControls_narrow_dark_zoom150.png",
+            // Renders the "150%" zoom label — tolerate cross-OS glyph rasterization.
+            roborazziOptions = textRenderingTolerance,
         )
     }
 

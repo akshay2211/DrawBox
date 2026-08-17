@@ -367,6 +367,8 @@ class ComplexSceneExportTest {
         }
         composeRule.onRoot().captureRoboImage(
             filePath = "src/jvmTest/snapshots/ComplexScene_canvas.png",
+            // Scene contains text elements — tolerate cross-OS glyph rasterization.
+            roborazziOptions = textRenderingTolerance,
         )
     }
 
