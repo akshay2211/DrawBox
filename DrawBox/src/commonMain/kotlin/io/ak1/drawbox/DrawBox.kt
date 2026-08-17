@@ -1723,7 +1723,7 @@ private fun DrawScope.drawShape(shape: Element.Shape) {
             if (hasFill) {
                 if (r > 0f) {
                     drawRoundRect(
-                        color = shape.fillColor!!,
+                        color = shape.fillColor,
                         topLeft = topLeft,
                         size = size,
                         cornerRadius = CornerRadius(r, r),
@@ -1731,7 +1731,7 @@ private fun DrawScope.drawShape(shape: Element.Shape) {
                     )
                 } else {
                     drawRect(
-                        color = shape.fillColor!!,
+                        color = shape.fillColor,
                         topLeft = topLeft,
                         size = size,
                         style = Fill,
@@ -1766,7 +1766,7 @@ private fun DrawScope.drawShape(shape: Element.Shape) {
             val radius = distance / 2
             if (hasFill) {
                 drawCircle(
-                    color = shape.fillColor!!,
+                    color = shape.fillColor,
                     radius = radius,
                     center = center,
                     style = Fill,
