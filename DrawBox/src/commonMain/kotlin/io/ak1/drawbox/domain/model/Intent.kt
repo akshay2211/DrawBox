@@ -4,7 +4,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
 
 /**
  * Represents a user action or system event that should change the drawing state.
@@ -434,17 +433,6 @@ sealed class Intent {
     object Reset : Intent()
 
     // ==================== Persistence Operations ====================
-
-    /**
-     * Save the current drawing as a bitmap.
-     *
-     * This is typically emitted internally by the ViewModel after capturing
-     * a bitmap from the graphics layer.
-     *
-     * @param bitmap The captured bitmap, or null if capture failed
-     * @param throwable The error if bitmap capture failed, null on success
-     */
-    data class SaveBitmap(val bitmap: ImageBitmap?, val throwable: Throwable?) : Intent()
 
     /** Load a previously saved drawing from storage */
     object LoadDrawing : Intent()

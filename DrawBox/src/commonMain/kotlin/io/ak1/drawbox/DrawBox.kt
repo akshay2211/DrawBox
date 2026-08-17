@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.NonSkippableComposable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -164,6 +165,16 @@ import kotlin.math.sqrt
  * @see renderElement for element-specific rendering
  */
 @Composable
+// ⚠️ Kotlin/Wasm + Compose workaround — DO NOT REMOVE without running the web app.
+// `State` is a pure-`val` data class, so the Compose compiler infers it STABLE. A
+// stable param puts DrawBox on Compose's structural-equality recompose-SKIPPING
+// path, and that path crashes on Kotlin/Wasm with "ref.cast failed to cast
+// reference to target heap type" (in ComposableLambdaImpl.invoke) the instant a
+// stroke mutates state — it compiles and renders, but drawing dies on the first
+// gesture. Marking DrawBox non-skippable forces it to always run its body instead
+// of taking the buggy skip path. Cost is negligible: DrawBox is driven by state
+// changes every frame it matters, so it rarely skipped anyway.
+@NonSkippableComposable
 fun DrawBox(
     state: State,
     onIntent: (Intent) -> Unit,
@@ -195,17 +206,11 @@ fun DrawBox(
      */
     selectionStyle: SelectionChromeStyle = SelectionChromeStyle.Default,
 ) {
-    // Two-layer split:
-    //   - finalizedLayer: cached display list of "static" elements (everything not
-    //     currently being mutated). Re-recorded only when the static set OR the
-    //     viewport changes — so a 500-element scene replays for free during an
-    //     active drag, since nothing changes outside the one element being drawn.
-    //   - captureLayer: one-shot recording used only when bitmap export is
-    //     requested. Records the full scene at world-space, dispatches the
-    //     resulting ImageBitmap, then sits idle. Keeps the per-frame fast path
-    //     free of capture concerns.
+    // finalizedLayer: cached display list of "static" elements (everything not
+    // currently being mutated). Re-recorded only when the static set OR the
+    // viewport changes — so a 500-element scene replays for free during an
+    // active drag, since nothing changes outside the one element being drawn.
     val finalizedLayer = rememberGraphicsLayer()
-    val captureLayer = rememberGraphicsLayer()
     val scope = rememberCoroutineScope()
     // Survives recompositions; rebuilt only when an Element.Path's points list
     // reference actually changes, so finalized strokes don't allocate a new
@@ -264,20 +269,6 @@ fun DrawBox(
     // static element is detected without scanning fields.
     var lastRecordedVp by remember { mutableStateOf<Viewport?>(null) }
     var lastRecordedStaticRefs by remember { mutableStateOf<List<Element>>(emptyList()) }
-
-    // Bitmap capture is request/serve: the controller's invokeBitmap call sets
-    // this; the next draw pass records the full scene into captureLayer and
-    // dispatches Intent.SaveBitmap. Avoids re-recording every frame "just in
-    // case" capture is invoked.
-    var capturePending by remember { mutableStateOf(false) }
-
-    LaunchedEffect(state.hashCode()) {
-        state.invokeBitmap = {
-            // invokeBitmap may be called off-main; bounce through scope so the
-            // State write happens on the Compose-friendly dispatcher.
-            scope.launch { capturePending = true }
-        }
-    }
 
     // Rasterize + tile the pattern once per [bgPattern] / density / layoutDirection
     // change. Without remember, every drag tick recomposes DrawBox, rebuilds the
@@ -823,8 +814,8 @@ fun DrawBox(
     ) {
         Canvas(modifier = Modifier.fillMaxSize()) {
             // Grid stays in the parent's .drawBehind so it never enters
-            // finalizedLayer — that keeps it out of bitmap export and out of the
-            // cached rendering, while still painting on every frame.
+            // finalizedLayer — that keeps it out of the cached rendering, while
+            // still painting on every frame.
             val vp = state.viewport
             val orderedElements = state.elements.sortedByZIndexIfNeeded()
 
@@ -933,28 +924,6 @@ fun DrawBox(
                             center = center,
                             style = Stroke(width = 1.5f / vp.scale),
                         )
-                    }
-                }
-            }
-
-            // On-demand bitmap capture: record the full scene into captureLayer,
-            // then dispatch SaveBitmap. The captureLayer is otherwise untouched,
-            // so the per-frame fast path stays clean of capture concerns.
-            if (capturePending) {
-                captureLayer.record {
-                    withTransform({
-                        translate(vp.offset.x, vp.offset.y)
-                        scale(vp.scale, vp.scale, pivot = Offset.Zero)
-                    }) {
-                        orderedElements.forEach { renderElement(it, pathCache, imageCache, textCache, textMeasurer, vp.scale) }
-                    }
-                }
-                capturePending = false
-                scope.launch {
-                    try {
-                        onIntent(Intent.SaveBitmap(captureLayer.toImageBitmap(), null))
-                    } catch (e: Throwable) {
-                        onIntent(Intent.SaveBitmap(null, e))
                     }
                 }
             }
@@ -1514,7 +1483,7 @@ private fun Painter.rasterize(
  *
  * @see drawShape for shape-specific rendering
  */
-private fun DrawScope.renderElement(
+internal fun DrawScope.renderElement(
     element: Element,
     pathCache: PathCache? = null,
     imageCache: ImageBitmapCache? = null,
@@ -1754,7 +1723,7 @@ private fun DrawScope.drawShape(shape: Element.Shape) {
             if (hasFill) {
                 if (r > 0f) {
                     drawRoundRect(
-                        color = shape.fillColor!!,
+                        color = shape.fillColor,
                         topLeft = topLeft,
                         size = size,
                         cornerRadius = CornerRadius(r, r),
@@ -1762,7 +1731,7 @@ private fun DrawScope.drawShape(shape: Element.Shape) {
                     )
                 } else {
                     drawRect(
-                        color = shape.fillColor!!,
+                        color = shape.fillColor,
                         topLeft = topLeft,
                         size = size,
                         style = Fill,
@@ -1797,7 +1766,7 @@ private fun DrawScope.drawShape(shape: Element.Shape) {
             val radius = distance / 2
             if (hasFill) {
                 drawCircle(
-                    color = shape.fillColor!!,
+                    color = shape.fillColor,
                     radius = radius,
                     center = center,
                     style = Fill,

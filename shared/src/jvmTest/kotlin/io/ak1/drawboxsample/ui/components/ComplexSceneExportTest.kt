@@ -6,7 +6,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.unit.dp
 import io.ak1.drawbox.DrawingPreview
@@ -367,6 +367,8 @@ class ComplexSceneExportTest {
         }
         composeRule.onRoot().captureRoboImage(
             filePath = "src/jvmTest/snapshots/ComplexScene_canvas.png",
+            // Scene contains text elements — tolerate cross-OS glyph rasterization.
+            roborazziOptions = textRenderingTolerance,
         )
     }
 

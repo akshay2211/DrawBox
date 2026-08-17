@@ -193,9 +193,7 @@ data class State(
      * [Intent.EndErase]; not persisted.
      */
     val erasingSessionDirty: Boolean = false,
-){
-    internal var invokeBitmap :(() -> Unit) = {}
-}
+)
 
 /**
  * The mode currently driving user input. Equals [State.mode] unless the user

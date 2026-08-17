@@ -3,8 +3,6 @@ package io.ak1.drawboxsample.save
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.toAwtImage
 import java.awt.image.BufferedImage
 import java.io.File
 import javax.imageio.ImageIO
@@ -15,7 +13,7 @@ import javax.swing.filechooser.FileNameExtensionFilter
 actual fun rememberImageSaver(): ImageSaver = remember { DesktopImageSaver() }
 
 private class DesktopImageSaver : ImageSaver {
-    override fun savePng(bitmap: ImageBitmap) {
+    override fun savePng(bytes: ByteArray) {
         val chooser = JFileChooser().apply {
             dialogTitle = "Save Drawing as PNG"
             fileFilter = FileNameExtensionFilter("PNG image", "png")
@@ -25,8 +23,7 @@ private class DesktopImageSaver : ImageSaver {
         val target = chooser.selectedFile.let {
             if (it.extension.equals("png", ignoreCase = true)) it else File("${it.absolutePath}.png")
         }
-        val awt: BufferedImage = bitmap.toAwtImage()
-        ImageIO.write(awt, "png", target)
+        target.writeBytes(bytes)
         println("PNG saved to: ${target.absolutePath}")
     }
 

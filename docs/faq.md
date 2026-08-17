@@ -98,14 +98,15 @@ val svg = controller.exportSvg()
 File("drawing.svg").writeText(svg)
 ```
 
-**PNG (Bitmap):**
+**PNG (Raster):**
 ```kotlin
-controller.saveBitmap()
+val textMeasurer = rememberTextMeasurer()
+controller.exportPng(textMeasurer = textMeasurer)
 
-// Listen for result
+// Listen for result — event.bytes is already-encoded PNG data
 controller.events.collect { event ->
-    if (event is Event.PngSaved) {
-        saveBitmapToFile(event.bitmap!!)
+    if (event is Event.PngExported) {
+        File("drawing.png").writeBytes(event.bytes)
     }
 }
 ```
