@@ -178,10 +178,11 @@ $dokka.location:io.ak1.drawbox.domain.model/Event.HistoryChanged/canUndo/#/Point
 $dokka.location:io.ak1.drawbox.domain.model/Event.JsonExported///PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-event/-json-exported/index.html
 $dokka.location:io.ak1.drawbox.domain.model/Event.JsonExported/JsonExported/#kotlin.String/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-event/-json-exported/-json-exported.html
 $dokka.location:io.ak1.drawbox.domain.model/Event.JsonExported/json/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-event/-json-exported/json.html
-$dokka.location:io.ak1.drawbox.domain.model/Event.PngSaved///PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-event/-png-saved/index.html
-$dokka.location:io.ak1.drawbox.domain.model/Event.PngSaved/PngSaved/#androidx.compose.ui.graphics.ImageBitmap?#kotlin.Throwable?/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-event/-png-saved/-png-saved.html
-$dokka.location:io.ak1.drawbox.domain.model/Event.PngSaved/bitmap/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-event/-png-saved/bitmap.html
-$dokka.location:io.ak1.drawbox.domain.model/Event.PngSaved/throwable/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-event/-png-saved/throwable.html
+$dokka.location:io.ak1.drawbox.domain.model/Event.PngExported///PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-event/-png-exported/index.html
+$dokka.location:io.ak1.drawbox.domain.model/Event.PngExported/PngExported/#kotlin.ByteArray/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-event/-png-exported/-png-exported.html
+$dokka.location:io.ak1.drawbox.domain.model/Event.PngExported/bytes/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-event/-png-exported/bytes.html
+$dokka.location:io.ak1.drawbox.domain.model/Event.PngExported/equals/#kotlin.Any?/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-event/-png-exported/equals.html
+$dokka.location:io.ak1.drawbox.domain.model/Event.PngExported/hashCode/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-event/-png-exported/hash-code.html
 $dokka.location:io.ak1.drawbox.domain.model/Event.SvgExported///PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-event/-svg-exported/index.html
 $dokka.location:io.ak1.drawbox.domain.model/Event.SvgExported/SvgExported/#kotlin.String/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-event/-svg-exported/-svg-exported.html
 $dokka.location:io.ak1.drawbox.domain.model/Event.SvgExported/svg/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-event/-svg-exported/svg.html
@@ -248,10 +249,6 @@ $dokka.location:io.ak1.drawbox.domain.model/Intent.RequestTextEditAt/offset/#/Po
 $dokka.location:io.ak1.drawbox.domain.model/Intent.RequestTextEditAt/tolerance/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-intent/-request-text-edit-at/tolerance.html
 $dokka.location:io.ak1.drawbox.domain.model/Intent.Reset///PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-intent/-reset/index.html
 $dokka.location:io.ak1.drawbox.domain.model/Intent.ResetCamera///PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-intent/-reset-camera/index.html
-$dokka.location:io.ak1.drawbox.domain.model/Intent.SaveBitmap///PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-intent/-save-bitmap/index.html
-$dokka.location:io.ak1.drawbox.domain.model/Intent.SaveBitmap/SaveBitmap/#androidx.compose.ui.graphics.ImageBitmap?#kotlin.Throwable?/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-intent/-save-bitmap/-save-bitmap.html
-$dokka.location:io.ak1.drawbox.domain.model/Intent.SaveBitmap/bitmap/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-intent/-save-bitmap/bitmap.html
-$dokka.location:io.ak1.drawbox.domain.model/Intent.SaveBitmap/throwable/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-intent/-save-bitmap/throwable.html
 $dokka.location:io.ak1.drawbox.domain.model/Intent.SelectAt///PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-intent/-select-at/index.html
 $dokka.location:io.ak1.drawbox.domain.model/Intent.SelectAt/SelectAt/#androidx.compose.ui.geometry.Offset#kotlin.Float/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-intent/-select-at/-select-at.html
 $dokka.location:io.ak1.drawbox.domain.model/Intent.SelectAt/offset/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-intent/-select-at/offset.html
@@ -509,6 +506,8 @@ $dokka.location:io.ak1.drawbox.domain.model/Viewport/zoomBy/#kotlin.Float#androi
 $dokka.location:io.ak1.drawbox.domain.model/Viewport/zoomTo/#kotlin.Float#androidx.compose.ui.geometry.Offset/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.model/-viewport/zoom-to.html
 $dokka.location:io.ak1.drawbox.domain.usecase////PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.usecase/index.html
 $dokka.location:io.ak1.drawbox.domain.usecase//supportsCornerRadius/io.ak1.drawbox.domain.model.ShapeType#/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.usecase/supports-corner-radius.html
+$dokka.location:io.ak1.drawbox.domain.usecase/PngExporter///PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.usecase/-png-exporter/index.html
+$dokka.location:io.ak1.drawbox.domain.usecase/PngExporter/exportToPng/#kotlin.collections.List[io.ak1.drawbox.domain.model.Element]#kotlin.Float#kotlin.Float#androidx.compose.ui.graphics.Color?#kotlin.Int#androidx.compose.ui.text.TextMeasurer?/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.usecase/-png-exporter/export-to-png.html
 $dokka.location:io.ak1.drawbox.domain.usecase/SvgExporter///PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.usecase/-svg-exporter/index.html
 $dokka.location:io.ak1.drawbox.domain.usecase/SvgExporter/exportToSvg/#kotlin.collections.List[io.ak1.drawbox.domain.model.Element]#kotlin.Int#kotlin.Int/PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.usecase/-svg-exporter/export-to-svg.html
 $dokka.location:io.ak1.drawbox.domain.usecase/UseCase///PointingToDeclaration/-draw-box/io.ak1.drawbox.domain.usecase/-use-case/index.html
@@ -574,6 +573,7 @@ $dokka.location:io.ak1.drawbox.presentation.viewmodel/DrawBoxController/deleteSe
 $dokka.location:io.ak1.drawbox.presentation.viewmodel/DrawBoxController/eraseAt/#androidx.compose.ui.geometry.Offset#kotlin.Float/PointingToDeclaration/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/erase-at.html
 $dokka.location:io.ak1.drawbox.presentation.viewmodel/DrawBoxController/events/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/events.html
 $dokka.location:io.ak1.drawbox.presentation.viewmodel/DrawBoxController/exportJson/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/export-json.html
+$dokka.location:io.ak1.drawbox.presentation.viewmodel/DrawBoxController/exportPng/#kotlin.Float#androidx.compose.ui.graphics.Color?#androidx.compose.ui.text.TextMeasurer?/PointingToDeclaration/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/export-png.html
 $dokka.location:io.ak1.drawbox.presentation.viewmodel/DrawBoxController/exportSvg/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/export-svg.html
 $dokka.location:io.ak1.drawbox.presentation.viewmodel/DrawBoxController/importPath/#kotlin.String/PointingToDeclaration/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/import-path.html
 $dokka.location:io.ak1.drawbox.presentation.viewmodel/DrawBoxController/insertImage/#kotlin.ByteArray#androidx.compose.ui.geometry.Size#androidx.compose.ui.geometry.Offset/PointingToDeclaration/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/insert-image.html
@@ -585,7 +585,6 @@ $dokka.location:io.ak1.drawbox.presentation.viewmodel/DrawBoxController/redo/#/P
 $dokka.location:io.ak1.drawbox.presentation.viewmodel/DrawBoxController/registerFont/#kotlin.String#androidx.compose.ui.text.font.FontFamily/PointingToDeclaration/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/register-font.html
 $dokka.location:io.ak1.drawbox.presentation.viewmodel/DrawBoxController/reset/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/reset.html
 $dokka.location:io.ak1.drawbox.presentation.viewmodel/DrawBoxController/resetCamera/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/reset-camera.html
-$dokka.location:io.ak1.drawbox.presentation.viewmodel/DrawBoxController/saveBitmap/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/save-bitmap.html
 $dokka.location:io.ak1.drawbox.presentation.viewmodel/DrawBoxController/selectAt/#androidx.compose.ui.geometry.Offset#kotlin.Float/PointingToDeclaration/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/select-at.html
 $dokka.location:io.ak1.drawbox.presentation.viewmodel/DrawBoxController/sendSelectionToBack/#/PointingToDeclaration/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/send-selection-to-back.html
 $dokka.location:io.ak1.drawbox.presentation.viewmodel/DrawBoxController/setBackgroundPattern/#androidx.compose.ui.graphics.painter.Painter?#androidx.compose.ui.graphics.Color?/PointingToDeclaration/-draw-box/io.ak1.drawbox.presentation.viewmodel/-draw-box-controller/set-background-pattern.html
@@ -628,6 +627,7 @@ $dokka.location:io.ak1.drawbox//DrawingPreview/#kotlin.collections.List[io.ak1.d
 $dokka.location:io.ak1.drawbox//createPath/#kotlin.collections.List[androidx.compose.ui.geometry.Offset]/PointingToDeclaration/-draw-box/io.ak1.drawbox/create-path.html
 $dokka.location:io.ak1.drawbox//decodeImageBitmap/#kotlin.ByteArray/PointingToDeclaration/-draw-box/io.ak1.drawbox/decode-image-bitmap.html
 $dokka.location:io.ak1.drawbox//decodeImageBitmapDownsampled/#kotlin.ByteArray#kotlin.Int#kotlin.Int/PointingToDeclaration/-draw-box/io.ak1.drawbox/decode-image-bitmap-downsampled.html
+$dokka.location:io.ak1.drawbox//encodeToPng/#androidx.compose.ui.graphics.ImageBitmap/PointingToDeclaration/-draw-box/io.ak1.drawbox/encode-to-png.html
 $dokka.location:io.ak1.drawbox/SelectionChromeStyle.Companion///PointingToDeclaration/-draw-box/io.ak1.drawbox/-selection-chrome-style/-companion/index.html
 $dokka.location:io.ak1.drawbox/SelectionChromeStyle.Companion/Default/#/PointingToDeclaration/-draw-box/io.ak1.drawbox/-selection-chrome-style/-companion/-default.html
 $dokka.location:io.ak1.drawbox/SelectionChromeStyle///PointingToDeclaration/-draw-box/io.ak1.drawbox/-selection-chrome-style/index.html
