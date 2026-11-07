@@ -57,6 +57,9 @@ extra:
 extra_css:
   - stylesheets/extra.css
 
+extra_javascript:
+  - javascripts/demo.js
+
 markdown_extensions:
   - pymdownx.highlight:
       use_pygments: true

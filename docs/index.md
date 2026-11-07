@@ -6,6 +6,31 @@
 
 Featured in **Android Weekly**, **Android Arsenal**, **Kotlin Weekly**, and **Google Dev Library**.
 
+## Try It Live
+
+The same Kotlin Multiplatform code that ships to Android, iOS, and desktop — compiled to WebAssembly and running right here. Not a video. Draw on it.
+
+<div class="demo-stage" id="demo-stage">
+  <button type="button" class="demo-launch" id="demo-launch" data-src="/DrawBox/sample/index.html" aria-label="Launch the interactive DrawBox demo">
+    <span class="demo-launch-grid" aria-hidden="true"></span>
+    <span class="demo-launch-inner">
+      <span class="demo-launch-play" aria-hidden="true">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg>
+      </span>
+      <span class="demo-launch-title">Launch interactive demo</span>
+      <span class="demo-launch-note">~14&nbsp;MB WebAssembly &middot; loads only when you click</span>
+    </span>
+  </button>
+  <div class="demo-loading" id="demo-loading" aria-hidden="true">
+    <span class="demo-loading-dot"></span>
+    <span class="demo-loading-dot"></span>
+    <span class="demo-loading-dot"></span>
+    <span class="demo-loading-label">Loading WebAssembly&hellip;</span>
+  </div>
+</div>
+
+<p class="demo-meta">Prefer a bigger canvas? <a href="/DrawBox/sample/">Open the demo full-screen</a>.</p>
+
 ## Key Capabilities
 
 ### Drawing Modes
