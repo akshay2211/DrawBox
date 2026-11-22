@@ -6,6 +6,9 @@
 
 # DrawBox
 
+> [!TIP]
+> **New from the author** — [**Foyer**](https://github.com/akshay2211/Foyer), a quiet, text-first Android launcher with a fully on-device AI assistant. Open source (GPL-3.0) and free on [Google Play](https://play.google.com/store/apps/details?id=com.foyerlauncher.foyer).
+
 [![Android Weekly](https://img.shields.io/badge/Featured%20in%20androidweekly.net-Issue%20%23502-blue.svg?style=flat-square)](https://androidweekly.net/issues/issue-502)
 [![Android Weekly](https://img.shields.io/badge/Featured%20in%20androidweekly.net-Issue%20%23733-blue.svg?style=flat-square)](https://androidweekly.net/issues/issue-733)
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-DrawBox-green.svg?style=flat-square)](https://android-arsenal.com/details/1/8292)
